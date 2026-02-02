@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <title>Lucky 3 Solitaire</title>
+    <style>
+        :root {
+            --bg-green: #0a3d1d;
+            --card-w: 20vw;
+            --card-h: 28vw;
+            --max-w: 80px;
+            --max-h: 115px;
+            --gold: #ffd700;
+            --fixed-gap: -22vw;
+        }
+
+        body {
+            font-family: 'Arial Black', sans-serif;
+            background: #051d0e;
+            margin: 0;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        #header {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.6);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        #board {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 20px 5px;
+            transition: all 0.5s ease;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            width: var(--card-w);
+            max-width: var(--max-w);
+            min-height: 120px;
+        }
+
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            max-width: var(--max-w);
+            max-height: var(--max-h);
+            background: white;
+            border-radius: 6px;
+            color: black;
+            position: relative;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+            transition: transform 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            margin-bottom: var(--fixed-gap);
+        }
+
+        @media (min-width: 450px) {
+            .card {
+                margin-bottom: -85px;
+            }
+        }
+
+        .card:last-child {
+            margin-bottom: 0;
+        }
+
+        .card.red {
+            color: #d32f2f;
+        }
+
+        .card.selected {
+            transform: translateX(40%) rotate(3deg);
+            z-index: 500 !important;
+            outline: 3px solid var(--gold);
+            filter: brightness(1.1);
+        }
+
+        /* 勝利動畫 */
+        .lucky-three-win {
+            animation: win-glow 1s infinite alternate;
+            z-index: 1000 !important;
+        }
+
+        @keyframes win-glow {
+            from {
+                transform: scale(1.2);
+                box-shadow: 0 0 20px var(--gold);
+            }
+
+            to {
+                transform: scale(1.4) rotate(10deg);
+                box-shadow: 0 0 50px white, 0 0 100px var(--gold);
+            }
+        }
+
+        #fx-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--gold);
+            animation: p-fly 0.8s forwards;
+        }
+
+        @keyframes p-fly {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--tx), var(--ty));
+                opacity: 0;
+            }
+        }
+
+        .combo-text {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.5rem;
+            color: var(--gold);
+            font-style: italic;
+            -webkit-text-stroke: 1px black;
+            animation: punch 0.6s forwards;
+            z-index: 10000;
+            text-align: center;
+        }
+
+        @keyframes punch {
+            0% {
+                scale: 0;
+            }
+
+            30% {
+                scale: 1.3;
+            }
+
+            100% {
+                scale: 1;
+                transform: translate(-50%, -80%);
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        #footer {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 10px calc(15px + env(safe-area-inset-bottom));
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--gold);
+        }
+
+        .pile {
+            width: 55px;
+            height: 75px;
+            border-radius: 5px;
+            border: 1px solid white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #deck-pile {
+            background: #1e88e5;
+            box-shadow: 3px 3px 0 #0d47a1;
+            cursor: pointer;
+            font-size: 26px;
+        }
+
+        /* 按鈕設計 */
+        .btn-main {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 4px #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 迴轉箭頭按鈕優化 */
+        #btn-undo {
+            background: #455a64;
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            border-radius: 50%;
+            /* 圓形按鈕更適合圖標 */
+            box-shadow: 0 4px #263238;
+        }
+
+        #btn-undo svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        #btn-undo:disabled {
+            opacity: 0.2;
+            box-shadow: none;
+        }
+
+        .btn-main:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px #1b5e20;
+        }
+
+        #btn-undo:active {
+            box-shadow: 0 2px #263238;
+        }
+
+        .flying {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .big-msg {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: var(--gold);
+            text-align: center;
+            z-index: 10001;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="header">
+        <div style="font-size: 10px;">DECK: <b id="deck-num">40</b></div>
+        <div style="color: var(--gold); letter-spacing: 2px;">LUCKY 3</div>
+        <div id="timer" style="font-size: 10px;">00:00</div>
+    </div>
+
+    <div id="board"></div>
+    <div id="fx-layer"></div>
+
+    <div id="footer">
+        <!-- 發牌 -->
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <div class="pile" id="deck-pile" onclick="dealOneCard()">🂠</div>
+            <div style="font-size: 10px; color: var(--gold); margin-top: 5px;">DEAL</div>
+        </div>
+
+        <!-- 中間操作區 -->
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button id="btn-undo" class="btn-main" onclick="undo()" disabled aria-label="Undo">
+                <!-- 迴轉箭頭 SVG -->
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
+                </svg>
+            </button>
+            <button id="btn-clear" class="btn-main" onclick="attemptClear()">CLEAR</button>
+        </div>
+
+        <!-- 已收納 -->
+        <div style="text-align: center;">
+            <div class="pile" id="discard-pile"
+                style="background: rgba(255,255,255,0.05); border: 1px dashed var(--gold);"></div>
+            <div style="font-size: 10px; color: var(--gold); margin-top: 5px;">SAVED: <b id="cleared-num">0</b></div>
+        </div>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js');
+        }
+
+        const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+        let deck = [], slots = [{ id: 0, cards: [], active: true }, { id: 1, cards: [], active: true }, { id: 2, cards: [], active: true }, { id: 3, cards: [], active: true }];
+        let selected = [], nextSlotIndex = 0, isBusy = false, clearedTotal = 0, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
+
+        function init() {
+            deck = [];
+            suits.forEach(s => ranks.forEach(r => deck.push({ rank: r, suit: s, val: r === 'A' ? 1 : parseInt(r), color: s === '♥' || s === '♦' ? 'red' : 'black' })));
+            deck.sort(() => Math.random() - 0.5);
+            render();
+            setInterval(() => {
+                const sec = Math.floor((Date.now() - startTime) / 1000);
+                const m = Math.floor(sec / 60).toString().padStart(2, '0');
+                const s = (sec % 60).toString().padStart(2, '0');
+                document.getElementById('timer').innerText = `${m}:${s}`;
+            }, 1000);
+        }
+
+        function render() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            slots.filter(s => s.active).forEach(slot => {
+                const col = document.createElement('div');
+                col.className = 'column'; col.id = `col-${slot.id}`;
+                slot.cards.forEach((card, idx) => {
+                    const div = document.createElement('div');
+                    const isSel = selected.find(s => s.slotId === slot.id && s.idx === idx);
+                    div.className = `card ${card.color} ${isSel ? 'selected' : ''}`;
+                    div.style.zIndex = isSel ? 600 : idx;
+                    div.innerHTML = `<div style="font-weight:bold">${card.rank}</div><div style="align-self:center; font-size:1.6rem">${card.suit}</div>`;
+                    div.onclick = () => {
+                        if (isBusy) return;
+                        const sIdx = selected.findIndex(s => s.slotId === slot.id && s.idx === idx);
+                        if (sIdx > -1) selected.splice(sIdx, 1);
+                        else {
+                            if (selected.length > 0 && selected[0].slotId !== slot.id) selected = [];
+                            if (selected.length < 3) selected.push({ slotId: slot.id, idx });
+                        }
+                        render();
+                    };
+                    col.appendChild(div);
+                });
+                board.appendChild(col);
+            });
+            document.getElementById('deck-num').innerText = deck.length;
+            document.getElementById('cleared-num').innerText = clearedTotal;
+        }
+
+        async function dealOneCard() {
+            if (deck.length === 0 || isBusy) return;
+            const avail = slots.find((s, i) => slots[(nextSlotIndex + i) % 4].active);
+            if (!avail) return;
+            isBusy = true; combo = 0;
+            const target = slots[(nextSlotIndex + slots.indexOf(avail)) % 4];
+            const prevIdx = nextSlotIndex;
+            nextSlotIndex = (slots.indexOf(target) + 1) % 4;
+
+            historyStack.push({ type: 'deal', slotId: target.id, prevIdx });
+            document.getElementById('btn-undo').disabled = false;
+
+            const card = deck.pop();
+            const fly = createFly(card, document.getElementById('deck-pile').getBoundingClientRect());
+            render();
+            const rect = document.getElementById(`col-${target.id}`).getBoundingClientRect();
+            const offset = (target.cards.length) * (window.innerWidth > 450 ? 30 : window.innerWidth * 0.08);
+
+            requestAnimationFrame(() => {
+                fly.style.left = rect.left + 'px'; fly.style.top = (rect.top + offset) + 'px';
+            });
+
+            setTimeout(() => {
+                target.cards.push(card); fly.remove(); render(); isBusy = false;
+                if (navigator.vibrate) navigator.vibrate(30);
+            }, 400);
+        }
+
+        async function attemptClear() {
+            if (selected.length !== 3 || isBusy) return;
+            const slotId = selected[0].slotId;
+            const slot = slots.find(s => s.id === slotId);
+            const sum = selected.reduce((a, c) => a + slot.cards[c.idx].val, 0);
+            const sorted = selected.map(s => s.idx).sort((a, b) => a - b);
+            const len = slot.cards.length;
+            const isPos = JSON.stringify(sorted) === JSON.stringify([len - 3, len - 2, len - 1]) ||
+                JSON.stringify(sorted) === JSON.stringify([0, len - 2, len - 1]) ||
+                JSON.stringify(sorted) === JSON.stringify([0, 1, len - 1]);
+
+            if ([9, 19, 29].includes(sum) && isPos) {
+                isBusy = true; combo++;
+                const clearedCards = selected.map(s => ({ idx: s.idx, data: { ...slot.cards[s.idx] } }));
+                historyStack.push({ type: 'clear', slotId, cards: clearedCards, prevLast: lastCleared, comboBefore: combo - 1 });
+                document.getElementById('btn-undo').disabled = false;
+
+                const dest = document.getElementById('discard-pile').getBoundingClientRect();
+                const colEl = document.getElementById(`col-${slotId}`);
+                lastCleared = slot.cards[sorted[sorted.length - 1]];
+
+                selected.forEach(s => {
+                    const fly = createFly(slot.cards[s.idx], colEl.children[s.idx].getBoundingClientRect());
+                    requestAnimationFrame(() => {
+                        fly.style.left = dest.left + 'px'; fly.style.top = dest.top + 'px';
+                        fly.style.transform = 'scale(0.5) rotate(20deg)'; fly.style.opacity = '0';
+                    });
+                    setTimeout(() => fly.remove(), 550);
+                });
+
+                setTimeout(() => {
+                    selected.map(s => s.idx).sort((a, b) => b - a).forEach(i => slot.cards.splice(i, 1));
+                    clearedTotal += 3; selected = [];
+                    if (slot.cards.length === 0) slot.active = false;
+                    render(); updateDiscard();
+                    if (sum === 29) spawnP(window.innerWidth / 2, window.innerHeight / 2);
+                    showCombo(sum);
+                    checkLucky3();
+                    isBusy = false;
+                    if (navigator.vibrate) navigator.vibrate(sum === 29 ? [60, 40, 60] : 40);
+                }, 300);
+            } else {
+                if (navigator.vibrate) navigator.vibrate(100);
+                document.getElementById('btn-clear').style.background = '#c62828';
+                setTimeout(() => document.getElementById('btn-clear').style.background = '', 300);
+                combo = 0;
+            }
+        }
+
+        function undo() {
+            if (historyStack.length === 0 || isBusy) return;
+            const last = historyStack.pop();
+            combo = last.comboBefore || 0;
+            if (last.type === 'deal') {
+                const s = slots.find(x => x.id === last.slotId);
+                deck.push(s.cards.pop()); nextSlotIndex = last.prevIdx;
+            } else {
+                const s = slots.find(x => x.id === last.slotId);
+                s.active = true; clearedTotal -= 3;
+                last.cards.sort((a, b) => a.idx - b.idx).forEach(c => s.cards.splice(c.idx, 0, c.data));
+                lastCleared = last.prevLast;
+            }
+            selected = []; render(); updateDiscard();
+            if (historyStack.length === 0) document.getElementById('btn-undo').disabled = true;
+        }
+
+        function checkLucky3() {
+            const all = slots.flatMap(s => s.cards);
+            if (deck.length === 0 && all.length === 1 && all[0].val === 3) {
+                const card = document.querySelector('.card');
+                card.classList.add('lucky-three-win');
+                const msg = document.createElement('div');
+                msg.className = 'big-msg';
+                msg.innerHTML = "LUCKY 3!<br>JACKPOT"; document.body.appendChild(msg);
+                setInterval(() => spawnP(Math.random() * window.innerWidth, Math.random() * window.innerHeight), 300);
+            }
+        }
+
+        function showCombo(s) {
+            if (combo < 2) return;
+            const t = document.createElement('div');
+            t.className = 'combo-text'; t.innerText = `${combo} COMBO!\n+${s}`;
+            document.getElementById('fx-layer').appendChild(t);
+            setTimeout(() => t.remove(), 600);
+        }
+
+        function spawnP(x, y) {
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div'); p.className = 'particle'; p.style.left = x + 'px'; p.style.top = y + 'px';
+                p.style.setProperty('--tx', (Math.random() - 0.5) * 400 + 'px'); p.style.setProperty('--ty', (Math.random() - 0.5) * 400 + 'px');
+                document.getElementById('fx-layer').appendChild(p); setTimeout(() => p.remove(), 800);
+            }
+        }
+
+        function createFly(data, rect) {
+            const f = document.createElement('div'); f.className = 'card flying ' + data.color;
+            f.innerHTML = `<div style="font-weight:bold">${data.rank}</div><div style="align-self:center; font-size:1.6rem">${data.suit}</div>`;
+            f.style.left = rect.left + 'px'; f.style.top = rect.top + 'px'; document.body.appendChild(f); return f;
+        }
+
+        function updateDiscard() {
+            const p = document.getElementById('discard-pile');
+            if (clearedTotal > 0 && lastCleared) {
+                p.innerHTML = `<div style="font-size:10px; position:absolute; top:2px; left:4px;">${lastCleared.rank}</div><div style="font-size:14px;">${lastCleared.suit}</div>`;
+                p.className = `pile has-cards ${lastCleared.color}`;
+                p.style.boxShadow = `3px 3px 0 rgba(255,215,0,0.4)`;
+            } else { p.className = 'pile'; p.innerHTML = ''; p.style.boxShadow = 'none'; }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
