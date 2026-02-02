@@ -1,7 +1,7 @@
 {
   "name": "Lucky 3 Solitaire",
   "short_name": "Lucky3",
-  "start_url": "./Lucky3.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",
