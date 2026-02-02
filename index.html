@@ -50,7 +50,7 @@
             align-items: flex-start;
             gap: 8px;
             padding: 20px 5px;
-            transition: all 0.5s ease;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .column {
@@ -59,6 +59,9 @@
             width: var(--card-w);
             max-width: var(--max-w);
             min-height: 120px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
         }
 
         .card {
@@ -94,6 +97,11 @@
             color: #d32f2f;
         }
 
+        .card.is-fading {
+            opacity: 0 !important;
+            visibility: hidden;
+        }
+
         .card.selected {
             transform: translateX(40%) rotate(3deg);
             z-index: 500 !important;
@@ -101,7 +109,106 @@
             filter: brightness(1.1);
         }
 
-        /* 勝利動畫 */
+        /* --- 特效層 --- */
+        #fx-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .column-beam {
+            position: absolute;
+            width: 100%;
+            height: 200vh;
+            top: -50vh;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
+            box-shadow: 0 0 30px white;
+            animation: beam-out 0.8s ease-out forwards;
+        }
+
+        @keyframes beam-out {
+            0% {
+                scaleX(0);
+                opacity: 0;
+            }
+
+            20% {
+                scaleX(1.5);
+                opacity: 1;
+            }
+
+            100% {
+                scaleX(0);
+                opacity: 0;
+            }
+        }
+
+        .column-clear-text {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 1rem;
+            color: #fff;
+            text-shadow: 0 0 10px var(--gold);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px 10px;
+            border-radius: 5px;
+            animation: text-float-up 1.2s ease-out forwards;
+        }
+
+        @keyframes text-float-up {
+            0% {
+                transform: translate(-50%, 0);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -120px);
+                opacity: 0;
+            }
+        }
+
+        .combo-text {
+            position: fixed;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.2rem;
+            color: #fff;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 165, 0, 0.6);
+            z-index: 10000;
+            animation: combo-fancy 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes combo-fancy {
+            0% {
+                scale: 0.5;
+                opacity: 0;
+            }
+
+            15% {
+                scale: 1.2;
+                opacity: 1;
+            }
+
+            75% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+        }
+
         .lucky-three-win {
             animation: win-glow 1s infinite alternate;
             z-index: 1000 !important;
@@ -117,13 +224,6 @@
                 transform: scale(1.4) rotate(10deg);
                 box-shadow: 0 0 50px white, 0 0 100px var(--gold);
             }
-        }
-
-        #fx-layer {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9999;
         }
 
         .particle {
@@ -146,36 +246,6 @@
             }
         }
 
-        .combo-text {
-            position: fixed;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3.5rem;
-            color: var(--gold);
-            font-style: italic;
-            -webkit-text-stroke: 1px black;
-            animation: punch 0.6s forwards;
-            z-index: 10000;
-            text-align: center;
-        }
-
-        @keyframes punch {
-            0% {
-                scale: 0;
-            }
-
-            30% {
-                scale: 1.3;
-            }
-
-            100% {
-                scale: 1;
-                transform: translate(-50%, -80%);
-                opacity: 0;
-            }
-        }
-
         /* Footer */
         #footer {
             background: rgba(0, 0, 0, 0.95);
@@ -194,6 +264,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         #deck-pile {
@@ -203,7 +274,17 @@
             font-size: 26px;
         }
 
-        /* 按鈕設計 */
+        #discard-pile {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed var(--gold);
+        }
+
+        .has-cards {
+            background: white !important;
+            color: black;
+            border: 1px solid #999 !important;
+        }
+
         .btn-main {
             background: #2e7d32;
             color: white;
@@ -212,20 +293,19 @@
             border-radius: 50px;
             font-weight: bold;
             box-shadow: 0 4px #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            cursor: pointer;
         }
 
-        /* 迴轉箭頭按鈕優化 */
         #btn-undo {
             background: #455a64;
             width: 50px;
             height: 50px;
             padding: 0;
             border-radius: 50%;
-            /* 圓形按鈕更適合圖標 */
             box-shadow: 0 4px #263238;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #btn-undo svg {
@@ -237,15 +317,12 @@
         #btn-undo:disabled {
             opacity: 0.2;
             box-shadow: none;
+            cursor: not-allowed;
         }
 
         .btn-main:active {
             transform: translateY(2px);
             box-shadow: 0 2px #1b5e20;
-        }
-
-        #btn-undo:active {
-            box-shadow: 0 2px #263238;
         }
 
         .flying {
@@ -273,7 +350,12 @@
     <div id="header">
         <div style="font-size: 10px;">DECK: <b id="deck-num">40</b></div>
         <div style="color: var(--gold); letter-spacing: 2px;">LUCKY 3</div>
-        <div id="timer" style="font-size: 10px;">00:00</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div id="timer" style="font-size: 10px;">00:00</div>
+            <div onclick="resetGame()"
+                style="font-size: 10px; background: #c62828; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                RESTART</div>
+        </div>
     </div>
 
     <div id="board"></div>
@@ -286,10 +368,9 @@
             <div style="font-size: 10px; color: var(--gold); margin-top: 5px;">DEAL</div>
         </div>
 
-        <!-- 中間操作區 -->
+        <!-- 中間按鈕 -->
         <div style="display: flex; align-items: center; gap: 15px;">
             <button id="btn-undo" class="btn-main" onclick="undo()" disabled aria-label="Undo">
-                <!-- 迴轉箭頭 SVG -->
                 <svg viewBox="0 0 24 24">
                     <path
                         d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
@@ -298,47 +379,88 @@
             <button id="btn-clear" class="btn-main" onclick="attemptClear()">CLEAR</button>
         </div>
 
-        <!-- 已收納 -->
+        <!-- 回收 -->
         <div style="text-align: center;">
-            <div class="pile" id="discard-pile"
-                style="background: rgba(255,255,255,0.05); border: 1px dashed var(--gold);"></div>
-            <div style="font-size: 10px; color: var(--gold); margin-top: 5px;">SAVED: <b id="cleared-num">0</b></div>
+            <div class="pile" id="discard-pile"></div>
+            <div style="font-size: 10px; color: var(--gold); margin-top: 5px;">RECYCLE</div>
         </div>
     </div>
 
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js');
+            navigator.serviceWorker.register('./sw.js').catch(() => { });
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        let deck = [], slots = [{ id: 0, cards: [], active: true }, { id: 1, cards: [], active: true }, { id: 2, cards: [], active: true }, { id: 3, cards: [], active: true }];
-        let selected = [], nextSlotIndex = 0, isBusy = false, clearedTotal = 0, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
+        let deck = [], slots = [];
+        let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
+        let winInterval = null;
 
+        // --- 初始化與重置 ---
         function init() {
+            // 強制解鎖狀態
+            isBusy = false;
+
+            // 清除 UI
+            const fxLayer = document.getElementById('fx-layer');
+            if (fxLayer) fxLayer.innerHTML = '';
+            const bigMsg = document.querySelector('.big-msg');
+            if (bigMsg) bigMsg.remove();
+            if (winInterval) clearInterval(winInterval);
+
+            // 重置資料
             deck = [];
             suits.forEach(s => ranks.forEach(r => deck.push({ rank: r, suit: s, val: r === 'A' ? 1 : parseInt(r), color: s === '♥' || s === '♦' ? 'red' : 'black' })));
             deck.sort(() => Math.random() - 0.5);
+
+            slots = [
+                { id: 0, cards: [], active: true },
+                { id: 1, cards: [], active: true },
+                { id: 2, cards: [], active: true },
+                { id: 3, cards: [], active: true }
+            ];
+
+            selected = [];
+            nextSlotIndex = 0;
+            historyStack = [];
+            combo = 0;
+            lastCleared = null;
+            startTime = Date.now();
+
+            // 重新渲染
+            document.getElementById('btn-undo').disabled = true;
             render();
-            setInterval(() => {
-                const sec = Math.floor((Date.now() - startTime) / 1000);
-                const m = Math.floor(sec / 60).toString().padStart(2, '0');
-                const s = (sec % 60).toString().padStart(2, '0');
-                document.getElementById('timer').innerText = `${m}:${s}`;
-            }, 1000);
+            updateDiscard();
         }
 
+        function resetGame() {
+            if (confirm("確定要重新開始嗎？所有進度將會遺失。")) {
+                init();
+            }
+        }
+
+        // 計時器 (只需在頁面加載時執行一次 setInterval)
+        setInterval(() => {
+            const sec = Math.floor((Date.now() - startTime) / 1000);
+            const m = Math.floor(sec / 60).toString().padStart(2, '0');
+            const s = (sec % 60).toString().padStart(2, '0');
+            const timerEl = document.getElementById('timer');
+            if (timerEl) timerEl.innerText = `${m}:${s}`;
+        }, 1000);
+
+        // --- 核心渲染 ---
         function render() {
             const board = document.getElementById('board');
-            board.innerHTML = '';
+            board.innerHTML = ''; // 徹底清空當前 DOM
+
             slots.filter(s => s.active).forEach(slot => {
                 const col = document.createElement('div');
                 col.className = 'column'; col.id = `col-${slot.id}`;
                 slot.cards.forEach((card, idx) => {
                     const div = document.createElement('div');
-                    const isSel = selected.find(s => s.slotId === slot.id && s.idx === idx);
-                    div.className = `card ${card.color} ${isSel ? 'selected' : ''}`;
-                    div.style.zIndex = isSel ? 600 : idx;
+                    const selObj = selected.find(s => s.slotId === slot.id && s.idx === idx);
+                    div.className = `card ${card.color} ${selObj ? 'selected' : ''}`;
+                    div.style.zIndex = selObj ? 600 : idx;
                     div.innerHTML = `<div style="font-weight:bold">${card.rank}</div><div style="align-self:center; font-size:1.6rem">${card.suit}</div>`;
                     div.onclick = () => {
                         if (isBusy) return;
@@ -355,9 +477,23 @@
                 board.appendChild(col);
             });
             document.getElementById('deck-num').innerText = deck.length;
-            document.getElementById('cleared-num').innerText = clearedTotal;
         }
 
+        // --- 特效邏輯 ---
+        function showColumnClearFX(slotId) {
+            const colEl = document.getElementById(`col-${slotId}`);
+            if (!colEl) return;
+            triggerHaptic([80, 50, 80]);
+            const beam = document.createElement('div'); beam.className = 'column-beam';
+            colEl.appendChild(beam);
+            const text = document.createElement('div'); text.className = 'column-clear-text';
+            text.innerText = 'COLUMN CLEAR!'; colEl.appendChild(text);
+            const rect = colEl.getBoundingClientRect();
+            for (let i = 0; i < 15; i++) spawnP(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            setTimeout(() => { if (beam.parentNode) beam.remove(); if (text.parentNode) text.remove(); }, 1200);
+        }
+
+        // --- 發牌與消除 ---
         async function dealOneCard() {
             if (deck.length === 0 || isBusy) return;
             const avail = slots.find((s, i) => slots[(nextSlotIndex + i) % 4].active);
@@ -373,7 +509,8 @@
             const card = deck.pop();
             const fly = createFly(card, document.getElementById('deck-pile').getBoundingClientRect());
             render();
-            const rect = document.getElementById(`col-${target.id}`).getBoundingClientRect();
+            const colEl = document.getElementById(`col-${target.id}`);
+            const rect = colEl.getBoundingClientRect();
             const offset = (target.cards.length) * (window.innerWidth > 450 ? 30 : window.innerWidth * 0.08);
 
             requestAnimationFrame(() => {
@@ -382,70 +519,68 @@
 
             setTimeout(() => {
                 target.cards.push(card); fly.remove(); render(); isBusy = false;
-                if (navigator.vibrate) navigator.vibrate(30);
             }, 400);
         }
 
         async function attemptClear() {
             if (selected.length !== 3 || isBusy) return;
-            const slotId = selected[0].slotId;
-            const slot = slots.find(s => s.id === slotId);
-            const sum = selected.reduce((a, c) => a + slot.cards[c.idx].val, 0);
-            const sorted = selected.map(s => s.idx).sort((a, b) => a - b);
-            const len = slot.cards.length;
-            const isPos = JSON.stringify(sorted) === JSON.stringify([len - 3, len - 2, len - 1]) ||
-                JSON.stringify(sorted) === JSON.stringify([0, len - 2, len - 1]) ||
-                JSON.stringify(sorted) === JSON.stringify([0, 1, len - 1]);
+            const slotId = selected[0].slotId; const slot = slots.find(s => s.id === slotId);
+            const currentCards = [...slot.cards]; const sum = selected.reduce((a, c) => a + currentCards[c.idx].val, 0);
+            const sortedIndices = selected.map(s => s.idx).sort((a, b) => a - b);
+            const len = currentCards.length;
+            const isPos = JSON.stringify(sortedIndices) === JSON.stringify([len - 3, len - 2, len - 1]) ||
+                JSON.stringify(sortedIndices) === JSON.stringify([0, len - 2, len - 1]) ||
+                JSON.stringify(sortedIndices) === JSON.stringify([0, 1, len - 1]);
 
             if ([9, 19, 29].includes(sum) && isPos) {
-                isBusy = true; combo++;
-                const clearedCards = selected.map(s => ({ idx: s.idx, data: { ...slot.cards[s.idx] } }));
-                historyStack.push({ type: 'clear', slotId, cards: clearedCards, prevLast: lastCleared, comboBefore: combo - 1 });
-                document.getElementById('btn-undo').disabled = false;
-
-                const dest = document.getElementById('discard-pile').getBoundingClientRect();
+                isBusy = true;
                 const colEl = document.getElementById(`col-${slotId}`);
-                lastCleared = slot.cards[sorted[sorted.length - 1]];
+                sortedIndices.forEach(idx => colEl.children[idx].classList.add('is-fading'));
+                const clearedObjects = sortedIndices.map(idx => ({ idx: idx, data: { ...currentCards[idx] } }));
+                historyStack.push({ type: 'clear', slotId, cards: clearedObjects, prevLast: lastCleared, comboBefore: combo });
+                document.getElementById('btn-undo').disabled = false;
+                const destRect = document.getElementById('discard-pile').getBoundingClientRect();
+                lastCleared = currentCards[sortedIndices[sortedIndices.length - 1]];
 
-                selected.forEach(s => {
-                    const fly = createFly(slot.cards[s.idx], colEl.children[s.idx].getBoundingClientRect());
+                sortedIndices.forEach(idx => {
+                    const fly = createFly(currentCards[idx], colEl.children[idx].getBoundingClientRect());
                     requestAnimationFrame(() => {
-                        fly.style.left = dest.left + 'px'; fly.style.top = dest.top + 'px';
+                        fly.style.left = destRect.left + 'px'; fly.style.top = destRect.top + 'px';
                         fly.style.transform = 'scale(0.5) rotate(20deg)'; fly.style.opacity = '0';
                     });
                     setTimeout(() => fly.remove(), 550);
                 });
 
                 setTimeout(() => {
-                    selected.map(s => s.idx).sort((a, b) => b - a).forEach(i => slot.cards.splice(i, 1));
-                    clearedTotal += 3; selected = [];
-                    if (slot.cards.length === 0) slot.active = false;
-                    render(); updateDiscard();
-                    if (sum === 29) spawnP(window.innerWidth / 2, window.innerHeight / 2);
-                    showCombo(sum);
-                    checkLucky3();
-                    isBusy = false;
+                    const recycled = sortedIndices.map(i => slot.cards[i]);
+                    deck.unshift(...recycled); // 循環補牌
+                    sortedIndices.sort((a, b) => b - a).forEach(i => slot.cards.splice(i, 1));
+                    combo++; selected = [];
+                    let colCleared = false; if (slot.cards.length === 0) { colCleared = true; showColumnClearFX(slotId); }
+
+                    setTimeout(() => {
+                        if (colCleared) slot.active = false;
+                        render(); updateDiscard(); showCombo(sum); checkLucky3(); isBusy = false;
+                    }, colCleared ? 800 : 0);
+
                     if (navigator.vibrate) navigator.vibrate(sum === 29 ? [60, 40, 60] : 40);
-                }, 300);
+                    if (sum === 29) spawnP(window.innerWidth / 2, window.innerHeight / 2);
+                }, 400);
             } else {
-                if (navigator.vibrate) navigator.vibrate(100);
+                combo = 0; triggerHaptic(100);
                 document.getElementById('btn-clear').style.background = '#c62828';
                 setTimeout(() => document.getElementById('btn-clear').style.background = '', 300);
-                combo = 0;
             }
         }
 
         function undo() {
             if (historyStack.length === 0 || isBusy) return;
-            const last = historyStack.pop();
-            combo = last.comboBefore || 0;
+            const last = historyStack.pop(); combo = last.comboBefore || 0;
             if (last.type === 'deal') {
-                const s = slots.find(x => x.id === last.slotId);
-                deck.push(s.cards.pop()); nextSlotIndex = last.prevIdx;
+                const s = slots.find(x => x.id === last.slotId); deck.push(s.cards.pop()); nextSlotIndex = last.prevIdx;
             } else {
-                const s = slots.find(x => x.id === last.slotId);
-                s.active = true; clearedTotal -= 3;
-                last.cards.sort((a, b) => a.idx - b.idx).forEach(c => s.cards.splice(c.idx, 0, c.data));
+                const s = slots.find(x => x.id === last.slotId); s.active = true;
+                deck.splice(0, 3); last.cards.sort((a, b) => a.idx - b.idx).forEach(c => s.cards.splice(c.idx, 0, c.data));
                 lastCleared = last.prevLast;
             }
             selected = []; render(); updateDiscard();
@@ -455,25 +590,27 @@
         function checkLucky3() {
             const all = slots.flatMap(s => s.cards);
             if (deck.length === 0 && all.length === 1 && all[0].val === 3) {
-                const card = document.querySelector('.card');
-                card.classList.add('lucky-three-win');
-                const msg = document.createElement('div');
-                msg.className = 'big-msg';
-                msg.innerHTML = "LUCKY 3!<br>JACKPOT"; document.body.appendChild(msg);
-                setInterval(() => spawnP(Math.random() * window.innerWidth, Math.random() * window.innerHeight), 300);
+                setTimeout(() => {
+                    const card = document.querySelector('.card'); if (card) card.classList.add('lucky-three-win');
+                    const msg = document.createElement('div'); msg.className = 'big-msg';
+                    msg.innerHTML = "LUCKY 3!<br>JACKPOT"; document.body.appendChild(msg);
+                    winInterval = setInterval(() => spawnP(Math.random() * window.innerWidth, Math.random() * window.innerHeight), 300);
+                }, 500);
             }
         }
 
         function showCombo(s) {
             if (combo < 2) return;
-            const t = document.createElement('div');
-            t.className = 'combo-text'; t.innerText = `${combo} COMBO!\n+${s}`;
-            document.getElementById('fx-layer').appendChild(t);
-            setTimeout(() => t.remove(), 600);
+            const layer = document.getElementById('fx-layer');
+            const comboDiv = document.createElement('div'); comboDiv.className = 'combo-text';
+            comboDiv.innerHTML = `${combo} COMBO!<br><span style="font-size:1.2rem;color:var(--gold)">+${s} PTS</span>`;
+            layer.appendChild(comboDiv); setTimeout(() => comboDiv.remove(), 1500);
         }
 
+        function triggerHaptic(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
+
         function spawnP(x, y) {
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 15; i++) {
                 const p = document.createElement('div'); p.className = 'particle'; p.style.left = x + 'px'; p.style.top = y + 'px';
                 p.style.setProperty('--tx', (Math.random() - 0.5) * 400 + 'px'); p.style.setProperty('--ty', (Math.random() - 0.5) * 400 + 'px');
                 document.getElementById('fx-layer').appendChild(p); setTimeout(() => p.remove(), 800);
@@ -488,7 +625,7 @@
 
         function updateDiscard() {
             const p = document.getElementById('discard-pile');
-            if (clearedTotal > 0 && lastCleared) {
+            if (lastCleared) {
                 p.innerHTML = `<div style="font-size:10px; position:absolute; top:2px; left:4px;">${lastCleared.rank}</div><div style="font-size:14px;">${lastCleared.suit}</div>`;
                 p.className = `pile has-cards ${lastCleared.color}`;
                 p.style.boxShadow = `3px 3px 0 rgba(255,215,0,0.4)`;
