@@ -506,6 +506,12 @@
 
             if (deck.length === 0) return;
 
+            // Deal時取消選取
+            if (selected.length > 0) {
+                selected = [];
+                render();
+            }
+
             const avail = slots.find((s, i) => slots[(nextSlotIndex + i) % 4].active);
             if (!avail) return;
             isBusy = true; combo = 0;
