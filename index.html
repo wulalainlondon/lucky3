@@ -17,7 +17,7 @@
             --max-w: 80px;
             --max-h: 115px;
             --gold: #ffd700;
-            --fixed-gap: -15vw;
+            --fixed-gap: -18vw;
         }
 
         body {
@@ -509,6 +509,27 @@
             filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.9));
         }
 
+        .card.mii-land-pop {
+            animation: mii-land-pop 0.42s cubic-bezier(0.2, 0.9, 0.25, 1.2);
+            transform-origin: 50% 85%;
+        }
+
+        @keyframes mii-land-pop {
+            0% {
+                transform: translateY(-8px) scale(1.08);
+                filter: brightness(1.12);
+            }
+
+            55% {
+                transform: translateY(2px) scale(0.97);
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+                filter: brightness(1);
+            }
+        }
+
         @keyframes mii-peek-rise {
             from {
                 transform: translateY(0) scale(1);
@@ -931,6 +952,40 @@
             }, 900);
         }
 
+        function getDealTargetTop(colEl, existingCount) {
+            if (!colEl || existingCount <= 0) return colEl?.getBoundingClientRect().top ?? 0;
+
+            const lastCardEl = colEl.children[existingCount - 1];
+            if (!lastCardEl) return colEl.getBoundingClientRect().top;
+
+            const lastRect = lastCardEl.getBoundingClientRect();
+            let step = 0;
+
+            if (existingCount >= 2) {
+                const prevCardEl = colEl.children[existingCount - 2];
+                if (prevCardEl) {
+                    const prevRect = prevCardEl.getBoundingClientRect();
+                    step = lastRect.top - prevRect.top;
+                }
+            }
+
+            if (!Number.isFinite(step) || step === 0) {
+                const style = getComputedStyle(lastCardEl);
+                const marginBottom = parseFloat(style.marginBottom) || 0;
+                step = lastRect.height + marginBottom;
+            }
+
+            return lastRect.top + step;
+        }
+
+        function popNewlyDealtCard(slotId) {
+            const colEl = document.getElementById(`col-${slotId}`);
+            if (!colEl || colEl.children.length === 0) return;
+            const newest = colEl.children[colEl.children.length - 1];
+            newest.classList.add('mii-land-pop');
+            setTimeout(() => newest.classList.remove('mii-land-pop'), 460);
+        }
+
         // --- 發牌與消除 ---
         async function dealOneCard() {
             if (isBusy) return;
@@ -971,10 +1026,11 @@
             render();
             const colEl = document.getElementById(`col-${target.id}`);
             const rect = colEl.getBoundingClientRect();
-            const offset = (target.cards.length) * (window.innerWidth > 450 ? 30 : window.innerWidth * 0.08);
+            const targetTop = getDealTargetTop(colEl, target.cards.length);
 
             requestAnimationFrame(() => {
-                fly.style.left = rect.left + 'px'; fly.style.top = (rect.top + offset) + 'px';
+                fly.style.left = rect.left + 'px';
+                fly.style.top = targetTop + 'px';
             });
 
             if (isMiiMoment) {
@@ -988,13 +1044,20 @@
                     target.cards.push(card);
                     fly.remove();
                     render();
+                    popNewlyDealtCard(target.id);
                     isBusy = false;
                     checkDeadlock();
                     saveGameState();
                 }, 1720);
             } else {
                 setTimeout(() => {
-                    target.cards.push(card); fly.remove(); render(); isBusy = false; checkDeadlock(); saveGameState();
+                    target.cards.push(card);
+                    fly.remove();
+                    render();
+                    popNewlyDealtCard(target.id);
+                    isBusy = false;
+                    checkDeadlock();
+                    saveGameState();
                 }, 400);
             }
         }
