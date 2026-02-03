@@ -392,7 +392,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        let deck = [], slots = [];
+        let deck = [], slots = [], discardPile = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
         let winInterval = null;
 
@@ -410,6 +410,7 @@
 
             // 重置資料
             deck = [];
+            discardPile = [];
             suits.forEach(s => ranks.forEach(r => deck.push({ rank: r, suit: s, val: r === 'A' ? 1 : parseInt(r), color: s === '♥' || s === '♦' ? 'red' : 'black' })));
             deck.sort(() => Math.random() - 0.5);
 
@@ -495,7 +496,16 @@
 
         // --- 發牌與消除 ---
         async function dealOneCard() {
-            if (deck.length === 0 || isBusy) return;
+            if (isBusy) return;
+
+            // 如果牌庫空了，但回收區有牌，則進行回收
+            if (deck.length === 0 && discardPile.length > 0) {
+                recycleDeck();
+                return;
+            }
+
+            if (deck.length === 0) return;
+
             const avail = slots.find((s, i) => slots[(nextSlotIndex + i) % 4].active);
             if (!avail) return;
             isBusy = true; combo = 0;
@@ -520,6 +530,32 @@
             setTimeout(() => {
                 target.cards.push(card); fly.remove(); render(); isBusy = false;
             }, 400);
+        }
+
+        function recycleDeck() {
+            if (isBusy || discardPile.length === 0) return;
+            isBusy = true;
+
+            // 顯示重新洗牌的提示
+            const msg = document.createElement('div');
+            msg.className = 'combo-text';
+            msg.style.color = 'var(--gold)';
+            msg.innerHTML = "RESHUFFLING...";
+            document.getElementById('fx-layer').appendChild(msg);
+
+            setTimeout(() => {
+                // 將回收區的牌移回牌庫並洗牌
+                deck = [...discardPile];
+                deck.sort(() => Math.random() - 0.5);
+                discardPile = [];
+                lastCleared = null;
+
+                msg.remove();
+                render();
+                updateDiscard();
+                isBusy = false;
+                triggerHaptic([50, 50, 50]);
+            }, 1000);
         }
 
         async function attemptClear() {
@@ -553,7 +589,7 @@
 
                 setTimeout(() => {
                     const recycled = sortedIndices.map(i => slot.cards[i]);
-                    deck.unshift(...recycled); // 循環補牌
+                    discardPile.push(...recycled); // 改為加入回收堆而非直接回牌庫
                     sortedIndices.sort((a, b) => b - a).forEach(i => slot.cards.splice(i, 1));
                     combo++; selected = [];
                     let colCleared = false; if (slot.cards.length === 0) { colCleared = true; showColumnClearFX(slotId); }
@@ -580,7 +616,9 @@
                 const s = slots.find(x => x.id === last.slotId); deck.push(s.cards.pop()); nextSlotIndex = last.prevIdx;
             } else {
                 const s = slots.find(x => x.id === last.slotId); s.active = true;
-                deck.splice(0, 3); last.cards.sort((a, b) => a.idx - b.idx).forEach(c => s.cards.splice(c.idx, 0, c.data));
+                // 從回收堆移除最後三張牌
+                discardPile.splice(-3);
+                last.cards.sort((a, b) => a.idx - b.idx).forEach(c => s.cards.splice(c.idx, 0, c.data));
                 lastCleared = last.prevLast;
             }
             selected = []; render(); updateDiscard();
