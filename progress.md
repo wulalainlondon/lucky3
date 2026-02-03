@@ -20,6 +20,7 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
   - badge highlights when the incoming 3-card sum can immediately form 9/19/29.
 - Fixed mii visibility bug: mii deal now flies in as a face-down card first, then reveals during the peek moment (no early rank/suit leak while landing).
 - Added "cheat" opening deck rule: bottom card is now guaranteed to be a randomly selected suit of 3; the remaining 39 cards are shuffled and dealt first from the top.
+- Added deadlock detection UX: when deck/recycle are empty and no legal 9/19/29 clear exists, show a modal with options to undo one step or start a new game.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.

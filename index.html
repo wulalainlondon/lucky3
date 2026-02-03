@@ -663,6 +663,71 @@
             border: 1px solid rgba(255, 215, 0, 0.45);
             color: #fff8cc;
         }
+
+        .deadlock-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10003;
+            padding: 20px;
+        }
+
+        .deadlock-panel {
+            width: min(430px, 92vw);
+            background: linear-gradient(180deg, #3a1111, #240a0a);
+            border: 2px solid #ff6b6b;
+            border-radius: 14px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+            padding: 18px;
+            text-align: center;
+        }
+
+        .deadlock-title {
+            margin: 0;
+            color: #ffd2d2;
+            font-size: 1.35rem;
+            letter-spacing: 0.5px;
+        }
+
+        .deadlock-text {
+            margin: 10px 0 14px;
+            font-size: 0.96rem;
+            line-height: 1.5;
+            color: #ffe6e6;
+        }
+
+        .deadlock-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .deadlock-btn {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            min-height: 44px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .deadlock-btn.undo {
+            background: #78909c;
+            color: #102027;
+        }
+
+        .deadlock-btn.new {
+            background: #ffd54f;
+            color: #3e2723;
+        }
+
+        .deadlock-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -713,7 +778,7 @@
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
-        let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false;
+        let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
 
         function shuffleInPlace(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
@@ -735,6 +800,8 @@
             if (bigMsg) bigMsg.remove();
             const winOverlay = document.getElementById('win-overlay');
             if (winOverlay) winOverlay.remove();
+            const deadlockOverlay = document.getElementById('deadlock-overlay');
+            if (deadlockOverlay) deadlockOverlay.remove();
             if (winInterval) clearInterval(winInterval);
 
             // 重置資料
@@ -768,6 +835,7 @@
             moveCount = 0;
             maxCombo = 0;
             hasWon = false;
+            deadlockShown = false;
 
             // 重新渲染
             document.getElementById('btn-undo').disabled = true;
@@ -861,7 +929,10 @@
                 return;
             }
 
-            if (deck.length === 0) return;
+            if (deck.length === 0) {
+                checkDeadlock();
+                return;
+            }
 
             // Deal時取消選取
             if (selected.length > 0) {
@@ -906,10 +977,11 @@
                     fly.remove();
                     render();
                     isBusy = false;
+                    checkDeadlock();
                 }, 1720);
             } else {
                 setTimeout(() => {
-                    target.cards.push(card); fly.remove(); render(); isBusy = false;
+                    target.cards.push(card); fly.remove(); render(); isBusy = false; checkDeadlock();
                 }, 400);
             }
         }
@@ -940,6 +1012,7 @@
                 updateDiscard();
                 isBusy = false;
                 triggerHaptic([50, 50, 50]);
+                checkDeadlock();
             }, 1000);
         }
 
@@ -985,6 +1058,7 @@
                     setTimeout(() => {
                         if (colCleared) slot.active = false;
                         render(); updateDiscard(); showCombo(sum); checkLucky3(); isBusy = false;
+                        if (!hasWon) checkDeadlock();
                     }, colCleared ? 800 : 0);
 
                     if (navigator.vibrate) navigator.vibrate(sum === 29 ? [60, 40, 60] : 40);
@@ -1005,6 +1079,7 @@
                 setTimeout(() => {
                     selected = [];
                     render();
+                    checkDeadlock();
                 }, 760);
             }
         }
@@ -1025,6 +1100,7 @@
             }
             selected = []; render(); updateDiscard();
             if (historyStack.length === 0) document.getElementById('btn-undo').disabled = true;
+            checkDeadlock();
         }
 
         function checkLucky3() {
@@ -1174,6 +1250,86 @@
 
         function playAgain() {
             init();
+        }
+
+        function hasLegalClearInSlot(cards) {
+            const len = cards.length;
+            if (len < 3) return false;
+
+            const candidates = [
+                [len - 3, len - 2, len - 1],
+                [0, len - 2, len - 1],
+                [0, 1, len - 1]
+            ];
+            const uniqueCandidates = [...new Set(candidates.map(c => JSON.stringify(c)))].map(x => JSON.parse(x));
+
+            return uniqueCandidates.some(indices => {
+                if (indices.some(i => i < 0 || i >= len)) return false;
+                const sum = indices.reduce((acc, i) => acc + cards[i].val, 0);
+                return [9, 19, 29].includes(sum);
+            });
+        }
+
+        function hasAnyLegalClear() {
+            return slots.some(s => s.active && hasLegalClearInSlot(s.cards));
+        }
+
+        function hideDeadlockOverlay() {
+            const overlay = document.getElementById('deadlock-overlay');
+            if (overlay) overlay.remove();
+            deadlockShown = false;
+        }
+
+        function showDeadlockOverlay() {
+            if (deadlockShown) return;
+            const old = document.getElementById('deadlock-overlay');
+            if (old) old.remove();
+
+            const canUndo = historyStack.length > 0;
+            const overlay = document.createElement('div');
+            overlay.className = 'deadlock-overlay';
+            overlay.id = 'deadlock-overlay';
+            overlay.innerHTML = `
+                <div class="deadlock-panel">
+                    <h3 class="deadlock-title">卡住了！目前無合法消除</h3>
+                    <p class="deadlock-text">牌庫已空，且場上沒有可消除的 9 / 19 / 29 組合。你想要倒轉一步，還是直接開新局？</p>
+                    <div class="deadlock-actions">
+                        <button type="button" class="deadlock-btn undo" onclick="resolveDeadlock('undo')" ${canUndo ? '' : 'disabled'}>倒轉一步</button>
+                        <button type="button" class="deadlock-btn new" onclick="resolveDeadlock('new')">開新局</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            deadlockShown = true;
+            triggerHaptic([80, 50, 80]);
+        }
+
+        function resolveDeadlock(action) {
+            hideDeadlockOverlay();
+            if (action === 'undo') {
+                undo();
+                return;
+            }
+            if (action === 'new') {
+                init();
+            }
+        }
+
+        function checkDeadlock() {
+            if (hasWon || isBusy) return false;
+
+            if (deck.length > 0 || clearedGroups.length > 0) {
+                hideDeadlockOverlay();
+                return false;
+            }
+
+            if (hasAnyLegalClear()) {
+                hideDeadlockOverlay();
+                return false;
+            }
+
+            showDeadlockOverlay();
+            return true;
         }
 
         init();
