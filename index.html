@@ -17,7 +17,7 @@
             --max-w: 80px;
             --max-h: 115px;
             --gold: #ffd700;
-            --fixed-gap: -22vw;
+            --fixed-gap: -20vw;
         }
 
         body {
@@ -231,6 +231,7 @@
         }
 
         @keyframes invalid-shake {
+
             0%,
             100% {
                 transform: translateX(0);
@@ -519,6 +520,7 @@
         }
 
         @keyframes mii-peek-shake {
+
             0%,
             100% {
                 transform: translateY(-12px) scale(1.07) rotate(-2deg);
@@ -776,6 +778,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+        const GAME_STATE_KEY = 'lucky3-current-game';
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
         let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
@@ -789,7 +792,7 @@
         }
 
         // --- 初始化與重置 ---
-        function init() {
+        function init(forceNew = false) {
             // 強制解鎖狀態
             isBusy = false;
 
@@ -803,6 +806,14 @@
             const deadlockOverlay = document.getElementById('deadlock-overlay');
             if (deadlockOverlay) deadlockOverlay.remove();
             if (winInterval) clearInterval(winInterval);
+
+            if (!forceNew && loadGameState()) {
+                document.getElementById('btn-undo').disabled = historyStack.length === 0;
+                render();
+                updateDiscard();
+                if (!hasWon) checkDeadlock();
+                return;
+            }
 
             // 重置資料
             deck = [];
@@ -841,11 +852,12 @@
             document.getElementById('btn-undo').disabled = true;
             render();
             updateDiscard();
+            saveGameState();
         }
 
         function resetGame() {
             if (confirm("確定要重新開始嗎？所有進度將會遺失。")) {
-                init();
+                init(true);
             }
         }
 
@@ -978,10 +990,11 @@
                     render();
                     isBusy = false;
                     checkDeadlock();
+                    saveGameState();
                 }, 1720);
             } else {
                 setTimeout(() => {
-                    target.cards.push(card); fly.remove(); render(); isBusy = false; checkDeadlock();
+                    target.cards.push(card); fly.remove(); render(); isBusy = false; checkDeadlock(); saveGameState();
                 }, 400);
             }
         }
@@ -1013,6 +1026,7 @@
                 isBusy = false;
                 triggerHaptic([50, 50, 50]);
                 checkDeadlock();
+                saveGameState();
             }, 1000);
         }
 
@@ -1059,6 +1073,7 @@
                         if (colCleared) slot.active = false;
                         render(); updateDiscard(); showCombo(sum); checkLucky3(); isBusy = false;
                         if (!hasWon) checkDeadlock();
+                        saveGameState();
                     }, colCleared ? 800 : 0);
 
                     if (navigator.vibrate) navigator.vibrate(sum === 29 ? [60, 40, 60] : 40);
@@ -1080,6 +1095,7 @@
                     selected = [];
                     render();
                     checkDeadlock();
+                    saveGameState();
                 }, 760);
             }
         }
@@ -1101,6 +1117,7 @@
             selected = []; render(); updateDiscard();
             if (historyStack.length === 0) document.getElementById('btn-undo').disabled = true;
             checkDeadlock();
+            saveGameState();
         }
 
         function checkLucky3() {
@@ -1249,7 +1266,7 @@
         }
 
         function playAgain() {
-            init();
+            init(true);
         }
 
         function hasLegalClearInSlot(cards) {
@@ -1311,7 +1328,7 @@
                 return;
             }
             if (action === 'new') {
-                init();
+                init(true);
             }
         }
 
@@ -1331,6 +1348,77 @@
             showDeadlockOverlay();
             return true;
         }
+
+        function buildSavePayload() {
+            const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            return {
+                deck,
+                slots,
+                discardPile,
+                clearedGroups,
+                nextSlotIndex,
+                historyStack,
+                combo,
+                lastCleared,
+                moveCount,
+                maxCombo,
+                hasWon,
+                elapsedSec
+            };
+        }
+
+        function isValidCard(card) {
+            return card && typeof card.rank === 'string' && typeof card.suit === 'string' && Number.isFinite(card.val) &&
+                (card.color === 'red' || card.color === 'black');
+        }
+
+        function isValidSlot(slot) {
+            return slot && Number.isInteger(slot.id) && Array.isArray(slot.cards) && typeof slot.active === 'boolean' &&
+                slot.cards.every(isValidCard);
+        }
+
+        function saveGameState() {
+            try {
+                localStorage.setItem(GAME_STATE_KEY, JSON.stringify(buildSavePayload()));
+            } catch (_) { }
+        }
+
+        function loadGameState() {
+            try {
+                const raw = localStorage.getItem(GAME_STATE_KEY);
+                if (!raw) return false;
+                const parsed = JSON.parse(raw);
+
+                if (!Array.isArray(parsed.deck) || !Array.isArray(parsed.slots) || !Array.isArray(parsed.discardPile) || !Array.isArray(parsed.clearedGroups)) return false;
+                if (!parsed.deck.every(isValidCard) || !parsed.discardPile.every(isValidCard)) return false;
+                if (!parsed.slots.every(isValidSlot)) return false;
+                if (!parsed.clearedGroups.every(group => Array.isArray(group) && group.every(isValidCard))) return false;
+
+                deck = parsed.deck;
+                slots = parsed.slots;
+                discardPile = parsed.discardPile;
+                clearedGroups = parsed.clearedGroups;
+                nextSlotIndex = Number.isInteger(parsed.nextSlotIndex) ? parsed.nextSlotIndex : 0;
+                historyStack = Array.isArray(parsed.historyStack) ? parsed.historyStack : [];
+                combo = Number.isInteger(parsed.combo) ? parsed.combo : 0;
+                lastCleared = parsed.lastCleared && isValidCard(parsed.lastCleared) ? parsed.lastCleared : null;
+                moveCount = Number.isInteger(parsed.moveCount) ? parsed.moveCount : 0;
+                maxCombo = Number.isInteger(parsed.maxCombo) ? parsed.maxCombo : 0;
+                hasWon = Boolean(parsed.hasWon);
+                deadlockShown = false;
+                selected = [];
+                const elapsedSec = Number.isFinite(parsed.elapsedSec) ? Math.max(0, parsed.elapsedSec) : 0;
+                startTime = Date.now() - elapsedSec * 1000;
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        window.addEventListener('beforeunload', saveGameState);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) saveGameState();
+        });
 
         init();
     </script>
