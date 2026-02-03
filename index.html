@@ -447,6 +447,74 @@
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .flying.mii-peek {
+            animation: mii-peek-rise 0.2s ease-out forwards, mii-peek-shake 0.4s ease-in-out 0.2s 2;
+            filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.9));
+        }
+
+        @keyframes mii-peek-rise {
+            from {
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                transform: translateY(-12px) scale(1.07) rotate(-2deg);
+            }
+        }
+
+        @keyframes mii-peek-shake {
+            0%,
+            100% {
+                transform: translateY(-12px) scale(1.07) rotate(-2deg);
+            }
+
+            50% {
+                transform: translateY(-9px) scale(1.11) rotate(2deg);
+            }
+        }
+
+        .mii-text {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.82rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: rgba(16, 18, 20, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            padding: 4px 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            animation: mii-text-pop 0.9s ease-out forwards;
+            z-index: 1003;
+        }
+
+        .mii-text.is-hot {
+            color: #fff9cf;
+            border-color: rgba(255, 215, 0, 0.85);
+            box-shadow: 0 0 14px rgba(255, 215, 0, 0.55);
+        }
+
+        @keyframes mii-text-pop {
+            0% {
+                transform: translate(-50%, 8px) scale(0.9);
+                opacity: 0;
+            }
+
+            20% {
+                transform: translate(-50%, 0) scale(1.05);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -10px) scale(1);
+                opacity: 0;
+            }
+        }
+
         .big-msg {
             position: fixed;
             top: 40%;
@@ -582,7 +650,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        let deck = [], slots = [], discardPile = [];
+        let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
         let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false;
 
@@ -603,6 +671,7 @@
             // 重置資料
             deck = [];
             discardPile = [];
+            clearedGroups = [];
             suits.forEach(s => ranks.forEach(r => deck.push({ rank: r, suit: s, val: r === 'A' ? 1 : parseInt(r), color: s === '♥' || s === '♦' ? 'red' : 'black' })));
             deck.sort(() => Math.random() - 0.5);
 
@@ -689,12 +758,28 @@
             setTimeout(() => { if (beam.parentNode) beam.remove(); if (text.parentNode) text.remove(); }, 1200);
         }
 
+        function showMiiFX(colEl, isHot) {
+            if (!colEl) return;
+            const existing = colEl.querySelector('.mii-text');
+            if (existing) existing.remove();
+
+            const text = document.createElement('div');
+            text.className = `mii-text ${isHot ? 'is-hot' : ''}`;
+            text.innerText = isHot ? '咪牌！有機會整列清空' : '咪牌中...';
+            colEl.appendChild(text);
+            triggerHaptic(isHot ? [30, 35, 60] : [25, 30, 25]);
+
+            setTimeout(() => {
+                if (text.parentNode) text.remove();
+            }, 900);
+        }
+
         // --- 發牌與消除 ---
         async function dealOneCard() {
             if (isBusy) return;
 
             // 如果牌庫空了，但回收區有牌，則進行回收
-            if (deck.length === 0 && discardPile.length > 0) {
+            if (deck.length === 0 && clearedGroups.length > 0) {
                 recycleDeck();
                 return;
             }
@@ -719,6 +804,9 @@
             moveCount++;
 
             const card = deck.pop();
+            const isMiiMoment = target.cards.length === 2;
+            const miiSum = isMiiMoment ? target.cards.reduce((acc, c) => acc + c.val, 0) + card.val : 0;
+            const isHotMii = isMiiMoment && [9, 19, 29].includes(miiSum);
             const fly = createFly(card, document.getElementById('deck-pile').getBoundingClientRect());
             render();
             const colEl = document.getElementById(`col-${target.id}`);
@@ -729,27 +817,44 @@
                 fly.style.left = rect.left + 'px'; fly.style.top = (rect.top + offset) + 'px';
             });
 
-            setTimeout(() => {
-                target.cards.push(card); fly.remove(); render(); isBusy = false;
-            }, 400);
+            if (isMiiMoment) {
+                setTimeout(() => {
+                    fly.classList.add('mii-peek');
+                    showMiiFX(colEl, isHotMii);
+                }, 420);
+
+                setTimeout(() => {
+                    target.cards.push(card);
+                    fly.remove();
+                    render();
+                    isBusy = false;
+                }, 980);
+            } else {
+                setTimeout(() => {
+                    target.cards.push(card); fly.remove(); render(); isBusy = false;
+                }, 400);
+            }
         }
 
         function recycleDeck() {
-            if (isBusy || discardPile.length === 0) return;
+            if (isBusy || clearedGroups.length === 0) return;
             isBusy = true;
 
             // 顯示重新洗牌的提示
             const msg = document.createElement('div');
             msg.className = 'combo-text';
             msg.style.color = 'var(--gold)';
-            msg.innerHTML = "RESHUFFLING...";
+            msg.innerHTML = "RECYCLING...";
             document.getElementById('fx-layer').appendChild(msg);
 
             setTimeout(() => {
-                // 將回收區的牌移回牌庫並洗牌
-                deck = [...discardPile];
-                deck.sort(() => Math.random() - 0.5);
+                // 按消除組順序回收：第一組消除的牌回到牌堆最上方（最先被抽到）
+                deck = [];
+                for (let i = clearedGroups.length - 1; i >= 0; i--) {
+                    deck.push(...clearedGroups[i]);
+                }
                 discardPile = [];
+                clearedGroups = [];
                 lastCleared = null;
 
                 msg.remove();
@@ -791,7 +896,8 @@
 
                 setTimeout(() => {
                     const recycled = sortedIndices.map(i => slot.cards[i]);
-                    discardPile.push(...recycled); // 改為加入回收堆而非直接回牌庫
+                    discardPile.push(...recycled); // 用於目前回收區顯示
+                    clearedGroups.push([...recycled]); // 保留每一組消除順序供回收牌堆使用
                     sortedIndices.sort((a, b) => b - a).forEach(i => slot.cards.splice(i, 1));
                     combo++; selected = [];
                     maxCombo = Math.max(maxCombo, combo);
@@ -823,6 +929,7 @@
                 const s = slots.find(x => x.id === last.slotId); s.active = true;
                 // 從回收堆移除最後三張牌
                 discardPile.splice(-3);
+                clearedGroups.pop();
                 last.cards.sort((a, b) => a.idx - b.idx).forEach(c => s.cards.splice(c.idx, 0, c.data));
                 lastCleared = last.prevLast;
             }
@@ -833,7 +940,7 @@
         function checkLucky3() {
             if (hasWon) return;
             const all = slots.flatMap(s => s.cards);
-            if (deck.length === 0 && all.length === 1 && all[0].val === 3) {
+            if (all.length === 1 && all[0].val === 3) {
                 hasWon = true;
                 setTimeout(() => {
                     const card = document.querySelector('.card'); if (card) card.classList.add('lucky-three-win');

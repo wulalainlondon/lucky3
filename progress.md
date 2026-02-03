@@ -11,6 +11,13 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
   - "再來一局" button to restart immediately.
 - Added runtime counters: `moveCount`, `maxCombo`, and `hasWon` guard to avoid duplicate win overlays.
 - Added personal best tracking (localStorage key: `lucky3-best-stats`) and a highlighted win message when this run breaks fastest-time / fewest-moves / highest-combo records.
+- Updated recycle rule: removed random recycle shuffle and now restore cards by clear-group order, with the first cleared group placed at deck top.
+- Updated win condition: win now triggers when only one card remains on board and its value is 3 (deck count no longer required).
+- Added "咪牌" tension moment when a column has 2 cards and is about to receive the 3rd:
+  - deal animation pauses briefly,
+  - flying card performs a peek/shake animation,
+  - column shows a short status badge,
+  - badge highlights when the incoming 3-card sum can immediately form 9/19/29.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
