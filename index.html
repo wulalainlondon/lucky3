@@ -39,8 +39,123 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
             background: rgba(0, 0, 0, 0.6);
             border-bottom: 2px solid var(--gold);
+        }
+
+        .header-stat {
+            font-size: 11px;
+            line-height: 1.2;
+            min-width: 64px;
+        }
+
+        .header-title {
+            color: var(--gold);
+            letter-spacing: 2px;
+            font-size: 1rem;
+            font-weight: 900;
+            text-align: center;
+            flex: 1;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-pill {
+            font-size: 12px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            min-width: 56px;
+            text-align: center;
+        }
+
+        .header-restart {
+            font-size: 11px;
+            background: #c62828;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            min-height: 40px;
+            min-width: 84px;
+            touch-action: manipulation;
+        }
+
+        .header-restart:active {
+            transform: translateY(1px);
+        }
+
+        @media (max-width: 520px) {
+            #header {
+                padding: 12px 12px;
+            }
+
+            .header-stat {
+                font-size: 13px;
+                min-width: 76px;
+            }
+
+            .header-title {
+                font-size: 1.25rem;
+                letter-spacing: 1.5px;
+            }
+
+            .timer-pill {
+                font-size: 14px;
+                min-width: 68px;
+                padding: 8px 12px;
+            }
+
+            .header-restart {
+                font-size: 13px;
+                min-height: 44px;
+                min-width: 92px;
+                padding: 10px 14px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 430px) {
+            #header {
+                padding: 6px 10px;
+                gap: 8px;
+            }
+
+            .header-stat {
+                font-size: 11px;
+                min-width: 60px;
+            }
+
+            .header-title {
+                font-size: 0.95rem;
+                letter-spacing: 1px;
+            }
+
+            .header-controls {
+                gap: 8px;
+            }
+
+            .timer-pill {
+                font-size: 11px;
+                min-width: 54px;
+                padding: 5px 9px;
+            }
+
+            .header-restart {
+                font-size: 11px;
+                min-height: 36px;
+                min-width: 78px;
+                padding: 8px 10px;
+            }
         }
 
         #board {
@@ -342,19 +457,94 @@
             text-align: center;
             z-index: 10001;
         }
+
+        .win-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10002;
+            padding: 20px;
+        }
+
+        .win-panel {
+            width: min(420px, 92vw);
+            background: linear-gradient(180deg, #123a1f, #0a2414);
+            border: 2px solid var(--gold);
+            border-radius: 14px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+            padding: 20px 18px;
+            text-align: center;
+        }
+
+        .win-title {
+            margin: 0;
+            color: var(--gold);
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .win-subtitle {
+            margin: 8px 0 14px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .win-stats {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+
+        .win-stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1rem;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .win-stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .win-play-again {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            background: var(--gold);
+            color: #1b1b1b;
+            font-weight: 900;
+            font-size: 1.05rem;
+            padding: 12px 14px;
+            cursor: pointer;
+            min-height: 46px;
+        }
+
+        .win-best {
+            margin: 0 0 12px;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: rgba(255, 215, 0, 0.18);
+            border: 1px solid rgba(255, 215, 0, 0.45);
+            color: #fff8cc;
+        }
     </style>
 </head>
 
 <body>
 
     <div id="header">
-        <div style="font-size: 10px;">DECK: <b id="deck-num">40</b></div>
-        <div style="color: var(--gold); letter-spacing: 2px;">LUCKY 3</div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <div id="timer" style="font-size: 10px;">00:00</div>
-            <div onclick="resetGame()"
-                style="font-size: 10px; background: #c62828; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: bold;">
-                RESTART</div>
+        <div class="header-stat">DECK: <b id="deck-num">40</b></div>
+        <div class="header-title">LUCKY 3</div>
+        <div class="header-controls">
+            <div id="timer" class="timer-pill">00:00</div>
+            <button type="button" class="header-restart" onclick="resetGame()">RESTART</button>
         </div>
     </div>
 
@@ -394,7 +584,7 @@
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
         let deck = [], slots = [], discardPile = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
-        let winInterval = null;
+        let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false;
 
         // --- 初始化與重置 ---
         function init() {
@@ -406,6 +596,8 @@
             if (fxLayer) fxLayer.innerHTML = '';
             const bigMsg = document.querySelector('.big-msg');
             if (bigMsg) bigMsg.remove();
+            const winOverlay = document.getElementById('win-overlay');
+            if (winOverlay) winOverlay.remove();
             if (winInterval) clearInterval(winInterval);
 
             // 重置資料
@@ -427,6 +619,9 @@
             combo = 0;
             lastCleared = null;
             startTime = Date.now();
+            moveCount = 0;
+            maxCombo = 0;
+            hasWon = false;
 
             // 重新渲染
             document.getElementById('btn-undo').disabled = true;
@@ -521,6 +716,7 @@
 
             historyStack.push({ type: 'deal', slotId: target.id, prevIdx });
             document.getElementById('btn-undo').disabled = false;
+            moveCount++;
 
             const card = deck.pop();
             const fly = createFly(card, document.getElementById('deck-pile').getBoundingClientRect());
@@ -598,6 +794,8 @@
                     discardPile.push(...recycled); // 改為加入回收堆而非直接回牌庫
                     sortedIndices.sort((a, b) => b - a).forEach(i => slot.cards.splice(i, 1));
                     combo++; selected = [];
+                    maxCombo = Math.max(maxCombo, combo);
+                    moveCount++;
                     let colCleared = false; if (slot.cards.length === 0) { colCleared = true; showColumnClearFX(slotId); }
 
                     setTimeout(() => {
@@ -618,6 +816,7 @@
         function undo() {
             if (historyStack.length === 0 || isBusy) return;
             const last = historyStack.pop(); combo = last.comboBefore || 0;
+            moveCount = Math.max(0, moveCount - 1);
             if (last.type === 'deal') {
                 const s = slots.find(x => x.id === last.slotId); deck.push(s.cards.pop()); nextSlotIndex = last.prevIdx;
             } else {
@@ -632,12 +831,13 @@
         }
 
         function checkLucky3() {
+            if (hasWon) return;
             const all = slots.flatMap(s => s.cards);
             if (deck.length === 0 && all.length === 1 && all[0].val === 3) {
+                hasWon = true;
                 setTimeout(() => {
                     const card = document.querySelector('.card'); if (card) card.classList.add('lucky-three-win');
-                    const msg = document.createElement('div'); msg.className = 'big-msg';
-                    msg.innerHTML = "LUCKY 3!<br>JACKPOT"; document.body.appendChild(msg);
+                    showWinPanel();
                     winInterval = setInterval(() => spawnP(Math.random() * window.innerWidth, Math.random() * window.innerHeight), 300);
                 }, 500);
             }
@@ -674,6 +874,90 @@
                 p.className = `pile has-cards ${lastCleared.color}`;
                 p.style.boxShadow = `3px 3px 0 rgba(255,215,0,0.4)`;
             } else { p.className = 'pile'; p.innerHTML = ''; p.style.boxShadow = 'none'; }
+        }
+
+        function formatTime(totalSec) {
+            const m = Math.floor(totalSec / 60).toString().padStart(2, '0');
+            const s = (totalSec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function loadBestStats() {
+            try {
+                const raw = localStorage.getItem('lucky3-best-stats');
+                if (!raw) return { fastestTimeSec: null, fewestMoves: null, highestCombo: 0 };
+                const parsed = JSON.parse(raw);
+                return {
+                    fastestTimeSec: Number.isFinite(parsed.fastestTimeSec) ? parsed.fastestTimeSec : null,
+                    fewestMoves: Number.isFinite(parsed.fewestMoves) ? parsed.fewestMoves : null,
+                    highestCombo: Number.isFinite(parsed.highestCombo) ? parsed.highestCombo : 0
+                };
+            } catch (_) {
+                return { fastestTimeSec: null, fewestMoves: null, highestCombo: 0 };
+            }
+        }
+
+        function saveBestStats(stats) {
+            try {
+                localStorage.setItem('lucky3-best-stats', JSON.stringify(stats));
+            } catch (_) { }
+        }
+
+        function updateBestStats(current) {
+            const best = loadBestStats();
+            const isNewFastest = best.fastestTimeSec == null || current.elapsedSec < best.fastestTimeSec;
+            const isNewFewestMoves = best.fewestMoves == null || current.moveCount < best.fewestMoves;
+            const isNewHighestCombo = current.maxCombo > (best.highestCombo || 0);
+
+            const nextBest = {
+                fastestTimeSec: isNewFastest ? current.elapsedSec : best.fastestTimeSec,
+                fewestMoves: isNewFewestMoves ? current.moveCount : best.fewestMoves,
+                highestCombo: isNewHighestCombo ? current.maxCombo : best.highestCombo
+            };
+            saveBestStats(nextBest);
+
+            return {
+                best: nextBest,
+                flags: { isNewFastest, isNewFewestMoves, isNewHighestCombo }
+            };
+        }
+
+        function buildBestMessage(result) {
+            const flags = result.flags;
+            if (flags.isNewFastest) return `🎉 本局最佳成績：破自己最快時間（${formatTime(result.best.fastestTimeSec)}）`;
+            if (flags.isNewFewestMoves) return `✨ 本局最佳成績：刷新最少步數（${result.best.fewestMoves} 步）`;
+            if (flags.isNewHighestCombo) return `🔥 本局最佳成績：刷新最高連擊（${result.best.highestCombo}）`;
+            return `最佳紀錄：最快 ${formatTime(result.best.fastestTimeSec || 0)} / 最少 ${result.best.fewestMoves || 0} 步`;
+        }
+
+        function showWinPanel() {
+            const old = document.getElementById('win-overlay');
+            if (old) old.remove();
+
+            const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            const bestResult = updateBestStats({ elapsedSec, moveCount, maxCombo });
+            const bestMessage = buildBestMessage(bestResult);
+            const overlay = document.createElement('div');
+            overlay.className = 'win-overlay';
+            overlay.id = 'win-overlay';
+            overlay.innerHTML = `
+                <div class="win-panel">
+                    <h2 class="win-title">LUCKY 3 JACKPOT</h2>
+                    <p class="win-subtitle">超讚！你把牌局收乾淨了 ✨</p>
+                    <div class="win-stats">
+                        <div class="win-stat-row"><span>用時</span><strong>${formatTime(elapsedSec)}</strong></div>
+                        <div class="win-stat-row"><span>總步數</span><strong>${moveCount}</strong></div>
+                        <div class="win-stat-row"><span>最高連擊</span><strong>${maxCombo}</strong></div>
+                    </div>
+                    <p class="win-best">${bestMessage}</p>
+                    <button type="button" class="win-play-again" onclick="playAgain()">再來一局</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function playAgain() {
+            init();
         }
 
         init();
