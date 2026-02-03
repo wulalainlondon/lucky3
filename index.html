@@ -224,6 +224,31 @@
             filter: brightness(1.1);
         }
 
+        .card.invalid-flash {
+            animation: invalid-shake 0.36s ease-in-out 2;
+            outline: 3px solid #ff3b30 !important;
+            box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.28), 0 0 16px rgba(255, 59, 48, 0.5);
+        }
+
+        @keyframes invalid-shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            50% {
+                transform: translateX(4px);
+            }
+
+            75% {
+                transform: translateX(-3px);
+            }
+        }
+
         /* --- 特效層 --- */
         #fx-layer {
             position: fixed;
@@ -969,6 +994,18 @@
                 combo = 0; triggerHaptic(100);
                 document.getElementById('btn-clear').style.background = '#c62828';
                 setTimeout(() => document.getElementById('btn-clear').style.background = '', 300);
+
+                const slotId = selected[0]?.slotId;
+                const colEl = slotId != null ? document.getElementById(`col-${slotId}`) : null;
+                selected.forEach(s => {
+                    const cardEl = colEl?.children?.[s.idx];
+                    if (cardEl) cardEl.classList.add('invalid-flash');
+                });
+
+                setTimeout(() => {
+                    selected = [];
+                    render();
+                }, 760);
             }
         }
 
