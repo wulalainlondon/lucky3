@@ -1181,7 +1181,7 @@
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
-        const TUTORIAL_KEY = 'lucky3-tutorial-v1';
+        const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
         const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', highContrast: false };
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
@@ -1189,6 +1189,7 @@
         let settings = { ...DEFAULT_SETTINGS };
         let audioCtx = null;
         let tutorial = { active: false, step: 0 };
+        let tutorialDeckMode = false;
 
         function shuffleInPlace(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
@@ -1196,6 +1197,46 @@
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr;
+        }
+
+        function createCard(rank, suit) {
+            return { rank, suit, val: rank === 'A' ? 1 : parseInt(rank, 10), color: suit === '♥' || suit === '♦' ? 'red' : 'black' };
+        }
+
+        function cardId(rank, suit) {
+            return `${rank}${suit}`;
+        }
+
+        function buildTutorialDeck() {
+            const fixedBottom = createCard('3', '♣');
+            const openingPlan = [
+                createCard('2', '♠'),
+                createCard('10', '♦'),
+                createCard('9', '♣'),
+                createCard('5', '♦'),
+                createCard('3', '♥'),
+                createCard('A', '♣'),
+                createCard('10', '♠'),
+                createCard('6', '♠'),
+                createCard('4', '♣'),
+                createCard('8', '♥'),
+                createCard('10', '♥'),
+                createCard('7', '♥')
+            ];
+
+            const used = new Set(openingPlan.map((c) => cardId(c.rank, c.suit)));
+            used.add(cardId(fixedBottom.rank, fixedBottom.suit));
+
+            const remaining = [];
+            suits.forEach((s) => ranks.forEach((r) => {
+                const id = cardId(r, s);
+                if (used.has(id)) return;
+                remaining.push(createCard(r, s));
+            }));
+            shuffleInPlace(remaining);
+
+            const topDeck = [...remaining, ...openingPlan.slice().reverse()];
+            return [fixedBottom, ...topDeck];
         }
 
         function seedOpeningCards(cardsPerColumn = 3) {
@@ -1348,17 +1389,22 @@
             contrastEl.addEventListener('change', (e) => updateSetting('highContrast', e.target.checked));
         }
 
-        function isTutorialCompleted() {
+        function getTutorialState() {
             try {
-                return localStorage.getItem(TUTORIAL_KEY) === '1';
+                return localStorage.getItem(TUTORIAL_STATE_KEY) || 'unseen';
             } catch (_) {
-                return false;
+                return 'unseen';
             }
         }
 
-        function setTutorialCompleted(value) {
+        function isTutorialDismissed() {
+            const state = getTutorialState();
+            return state === 'completed' || state === 'skipped';
+        }
+
+        function setTutorialState(state) {
             try {
-                localStorage.setItem(TUTORIAL_KEY, value ? '1' : '0');
+                localStorage.setItem(TUTORIAL_STATE_KEY, state);
             } catch (_) { }
         }
 
@@ -1369,28 +1415,29 @@
         }
 
         function startTutorial(force = false) {
-            if (!force && isTutorialCompleted()) return;
+            if (!force && isTutorialDismissed()) return;
             tutorial.active = true;
             tutorial.step = 0;
             renderTutorial();
             toggleTutorial(true);
         }
 
-        function closeTutorial(markCompleted = false) {
+        function closeTutorial(state = null) {
             tutorial.active = false;
-            if (markCompleted) setTutorialCompleted(true);
+            if (state === 'completed' || state === 'skipped') setTutorialState(state);
             toggleTutorial(false);
         }
 
         function replayTutorial() {
             toggleSettings(false);
-            startTutorial(true);
+            tutorialDeckMode = true;
+            init(true);
         }
 
         function nextTutorialStep() {
             tutorial.step = Math.min(4, tutorial.step + 1);
             if (tutorial.step === 4) {
-                setTutorialCompleted(true);
+                setTutorialState('completed');
                 playSound('hint');
             }
             renderTutorial();
@@ -1412,7 +1459,7 @@
                 primary.innerText = '開始教學';
                 secondary.innerText = '略過';
                 primary.onclick = () => { tutorial.step = 1; renderTutorial(); };
-                secondary.onclick = () => closeTutorial(false);
+                secondary.onclick = () => closeTutorial('skipped');
                 primary.style.display = '';
                 secondary.style.display = '';
                 return;
@@ -1425,7 +1472,7 @@
                 primary.style.display = 'none';
                 secondary.style.display = '';
                 secondary.innerText = '略過教學';
-                secondary.onclick = () => closeTutorial(false);
+                secondary.onclick = () => closeTutorial('skipped');
                 return;
             }
 
@@ -1436,7 +1483,7 @@
                 primary.style.display = 'none';
                 secondary.style.display = '';
                 secondary.innerText = '略過教學';
-                secondary.onclick = () => closeTutorial(false);
+                secondary.onclick = () => closeTutorial('skipped');
                 return;
             }
 
@@ -1447,7 +1494,7 @@
                 primary.style.display = 'none';
                 secondary.style.display = '';
                 secondary.innerText = '略過教學';
-                secondary.onclick = () => closeTutorial(false);
+                secondary.onclick = () => closeTutorial('skipped');
                 return;
             }
 
@@ -1457,7 +1504,7 @@
             primary.style.display = '';
             secondary.style.display = 'none';
             primary.innerText = '完成';
-            primary.onclick = () => closeTutorial(true);
+            primary.onclick = () => closeTutorial('completed');
         }
 
         function onTutorialEvent(eventName) {
@@ -1561,16 +1608,20 @@
             deck = [];
             discardPile = [];
             clearedGroups = [];
-            const fixedBottomSuit = suits[Math.floor(Math.random() * suits.length)];
-            const fixedBottomCard = { rank: '3', suit: fixedBottomSuit, val: 3, color: fixedBottomSuit === '♥' || fixedBottomSuit === '♦' ? 'red' : 'black' };
-            const topDeck = [];
-            suits.forEach(s => ranks.forEach(r => {
-                if (r === '3' && s === fixedBottomSuit) return;
-                topDeck.push({ rank: r, suit: s, val: r === 'A' ? 1 : parseInt(r), color: s === '♥' || s === '♦' ? 'red' : 'black' });
-            }));
-            shuffleInPlace(topDeck);
-            // pop() 會從尾端抽牌，讓底牌固定在 index 0，可確保它最後才被抽到。
-            deck = [fixedBottomCard, ...topDeck];
+            if (tutorialDeckMode) {
+                deck = buildTutorialDeck();
+            } else {
+                const fixedBottomSuit = suits[Math.floor(Math.random() * suits.length)];
+                const fixedBottomCard = { rank: '3', suit: fixedBottomSuit, val: 3, color: fixedBottomSuit === '♥' || fixedBottomSuit === '♦' ? 'red' : 'black' };
+                const topDeck = [];
+                suits.forEach(s => ranks.forEach(r => {
+                    if (r === '3' && s === fixedBottomSuit) return;
+                    topDeck.push({ rank: r, suit: s, val: r === 'A' ? 1 : parseInt(r), color: s === '♥' || s === '♦' ? 'red' : 'black' });
+                }));
+                shuffleInPlace(topDeck);
+                // pop() 會從尾端抽牌，讓底牌固定在 index 0，可確保它最後才被抽到。
+                deck = [fixedBottomCard, ...topDeck];
+            }
 
             slots = [
                 { id: 0, cards: [], active: true },
@@ -1598,7 +1649,12 @@
                 updateDiscard();
                 saveGameState();
                 if (!hasWon) checkDeadlock();
-                startTutorial(false);
+                if (tutorialDeckMode) {
+                    startTutorial(true);
+                    tutorialDeckMode = false;
+                } else {
+                    startTutorial(false);
+                }
             });
         }
 
@@ -2301,7 +2357,12 @@
         settings = loadSettings();
         bindSettingsUI();
         applySettings();
-        init();
+        if (!isTutorialDismissed()) {
+            tutorialDeckMode = true;
+            init(true);
+        } else {
+            init();
+        }
     </script>
 </body>
 

@@ -32,6 +32,8 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Added first-run interactive tutorial (~30 seconds) with event-driven steps (deal -> select 3 cards -> press MATCH 3), plus a "重播教學" entry in settings.
 - Tutorial step 2 now enforces legal selection positions; invalid 3-card picks trigger an explicit rule hint and auto-clear selected cards before allowing progression.
 - New-game opening now uses an animated one-by-one auto-deal (3 cards per column) to restore opening ceremony feel instead of instant prefill.
+- Tutorial sessions now start from a deterministic tutorial deck/seeded layout, guaranteeing the opening board has valid teaching moves and avoids "no-clear" dead ends.
+- Added explicit tutorial state record (`unseen`/`completed`/`skipped`); after either completion or skip, auto-tutorial no longer appears on future restarts unless manually replayed.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
