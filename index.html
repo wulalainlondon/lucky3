@@ -18,6 +18,7 @@
             --max-h: 115px;
             --gold: #ffd700;
             --fixed-gap: -20vw;
+            --anim-scale: 1;
         }
 
         body {
@@ -35,13 +36,17 @@
         }
 
         #header {
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 10px;
+            background: rgba(0, 0, 0, 0.62);
             border-bottom: 2px solid var(--gold);
+        }
+
+        .header-main {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            align-items: center;
+            gap: 8px;
+            min-height: 42px;
         }
 
         .header-stat {
@@ -52,109 +57,106 @@
 
         .header-title {
             color: var(--gold);
-            letter-spacing: 2px;
-            font-size: 1rem;
+            letter-spacing: 1.6px;
+            font-size: 1.02rem;
             font-weight: 900;
             text-align: center;
-            flex: 1;
+            line-height: 1;
         }
 
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: flex-end;
         }
 
         .timer-pill {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             font-variant-numeric: tabular-nums;
-            padding: 6px 10px;
+            padding: 7px 14px;
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 215, 0, 0.35);
-            min-width: 56px;
+            min-width: 84px;
             text-align: center;
         }
 
-        .header-restart {
-            font-size: 11px;
-            background: #c62828;
+        .header-settings {
+            font-size: 19px;
+            line-height: 1;
+            background: #263238;
             color: white;
             padding: 8px 12px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
             font-weight: 700;
-            min-height: 40px;
-            min-width: 84px;
+            min-height: 42px;
+            min-width: 48px;
             touch-action: manipulation;
-        }
-
-        .header-restart:active {
-            transform: translateY(1px);
         }
 
         @media (max-width: 520px) {
             #header {
-                padding: 12px 12px;
+                padding: 9px 8px;
             }
 
             .header-stat {
                 font-size: 13px;
-                min-width: 76px;
+                min-width: 72px;
             }
 
             .header-title {
-                font-size: 1.25rem;
-                letter-spacing: 1.5px;
+                font-size: 1.03rem;
+                letter-spacing: 1px;
             }
 
             .timer-pill {
-                font-size: 14px;
-                min-width: 68px;
-                padding: 8px 12px;
+                font-size: 13px;
+                min-width: 80px;
+                padding: 7px 10px;
             }
 
-            .header-restart {
-                font-size: 13px;
-                min-height: 44px;
-                min-width: 92px;
-                padding: 10px 14px;
+            .header-settings {
+                font-size: 20px;
+                min-height: 42px;
+                min-width: 42px;
+                padding: 8px 10px;
             }
         }
 
         @media (orientation: landscape) and (max-height: 430px) {
             #header {
-                padding: 6px 10px;
-                gap: 8px;
+                padding: 6px 8px;
+                gap: 6px;
             }
 
             .header-stat {
                 font-size: 11px;
-                min-width: 60px;
+                min-width: 58px;
             }
 
             .header-title {
-                font-size: 0.95rem;
-                letter-spacing: 1px;
+                font-size: 0.9rem;
+                letter-spacing: 0.8px;
             }
 
             .header-controls {
-                gap: 8px;
+                gap: 0;
             }
 
             .timer-pill {
                 font-size: 11px;
-                min-width: 54px;
+                min-width: 70px;
                 padding: 5px 9px;
             }
 
-            .header-restart {
-                font-size: 11px;
+            .header-settings {
+                font-size: 17px;
                 min-height: 36px;
-                min-width: 78px;
-                padding: 8px 10px;
+                min-width: 38px;
+                padding: 7px 8px;
             }
         }
 
@@ -165,7 +167,7 @@
             align-items: flex-start;
             gap: 8px;
             padding: 20px 5px;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all calc(0.6s * var(--anim-scale)) cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .column {
@@ -189,7 +191,7 @@
             color: black;
             position: relative;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
-            transition: transform 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            transition: transform calc(0.25s * var(--anim-scale)) cubic-bezier(0.18, 0.89, 0.32, 1.28);
             display: flex;
             flex-direction: column;
             padding: 6px;
@@ -219,13 +221,12 @@
 
         .card.selected {
             transform: translateX(40%) rotate(3deg);
-            z-index: 500 !important;
             outline: 3px solid var(--gold);
             filter: brightness(1.1);
         }
 
         .card.invalid-flash {
-            animation: invalid-shake 0.36s ease-in-out 2;
+            animation: invalid-shake calc(0.36s * var(--anim-scale)) ease-in-out 2;
             outline: 3px solid #ff3b30 !important;
             box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.28), 0 0 16px rgba(255, 59, 48, 0.5);
         }
@@ -265,7 +266,7 @@
             top: -50vh;
             background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
             box-shadow: 0 0 30px white;
-            animation: beam-out 0.8s ease-out forwards;
+            animation: beam-out calc(0.8s * var(--anim-scale)) ease-out forwards;
         }
 
         @keyframes beam-out {
@@ -297,7 +298,7 @@
             background: rgba(0, 0, 0, 0.6);
             padding: 5px 10px;
             border-radius: 5px;
-            animation: text-float-up 1.2s ease-out forwards;
+            animation: text-float-up calc(1.2s * var(--anim-scale)) ease-out forwards;
         }
 
         @keyframes text-float-up {
@@ -326,7 +327,7 @@
             text-align: center;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 165, 0, 0.6);
             z-index: 10000;
-            animation: combo-fancy 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation: combo-fancy calc(1.5s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
         @keyframes combo-fancy {
@@ -372,7 +373,7 @@
             width: 6px;
             height: 6px;
             background: var(--gold);
-            animation: p-fly 0.8s forwards;
+            animation: p-fly calc(0.8s * var(--anim-scale)) forwards;
         }
 
         @keyframes p-fly {
@@ -470,7 +471,7 @@
             position: fixed;
             z-index: 9999;
             pointer-events: none;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all calc(0.5s * var(--anim-scale)) cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .card.face-down {
@@ -505,12 +506,12 @@
         }
 
         .flying.mii-peek {
-            animation: mii-peek-rise 0.28s ease-out forwards, mii-peek-shake 0.58s ease-in-out 0.3s 2;
+            animation: mii-peek-rise calc(0.28s * var(--anim-scale)) ease-out forwards, mii-peek-shake calc(0.58s * var(--anim-scale)) ease-in-out calc(0.3s * var(--anim-scale)) 2;
             filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.9));
         }
 
         .card.mii-land-pop {
-            animation: mii-land-pop 0.42s cubic-bezier(0.2, 0.9, 0.25, 1.2);
+            animation: mii-land-pop calc(0.42s * var(--anim-scale)) cubic-bezier(0.2, 0.9, 0.25, 1.2);
             transform-origin: 50% 85%;
         }
 
@@ -567,7 +568,7 @@
             border-radius: 999px;
             padding: 4px 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            animation: mii-text-pop 1.4s ease-out forwards;
+            animation: mii-text-pop calc(1.4s * var(--anim-scale)) ease-out forwards;
             z-index: 1003;
         }
 
@@ -759,8 +760,269 @@
             font-size: 0.9rem;
             font-weight: 800;
             z-index: 10004;
-            animation: need-three-fade 1s ease-out forwards;
+            animation: need-three-fade calc(1s * var(--anim-scale)) ease-out forwards;
             pointer-events: none;
+        }
+
+        .need-three-tip.rule-hint {
+            max-width: min(360px, calc(100vw - 24px));
+            white-space: pre-line;
+            text-align: left;
+            line-height: 1.45;
+            border-color: rgba(255, 183, 77, 0.9);
+            color: #fff6dd;
+        }
+
+        .settings-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            z-index: 10005;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .settings-overlay.show {
+            display: flex;
+        }
+
+        .settings-panel {
+            width: min(430px, 92vw);
+            background: linear-gradient(180deg, #143021, #0d2217);
+            border: 2px solid var(--gold);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+        }
+
+        .settings-title {
+            margin: 0 0 12px;
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .setting-control {
+            font-size: 0.92rem;
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .setting-check {
+            width: 20px;
+            height: 20px;
+            accent-color: #ffd54f;
+        }
+
+        .settings-close {
+            margin-top: 14px;
+            width: 100%;
+            min-height: 44px;
+            border: none;
+            border-radius: 10px;
+            background: #ffd54f;
+            color: #1b1b1b;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .settings-restart {
+            margin-top: 10px;
+            width: 100%;
+            min-height: 44px;
+            border: none;
+            border-radius: 10px;
+            background: #c62828;
+            color: #fff;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .settings-secondary {
+            margin-top: 10px;
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .restart-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            z-index: 10006;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .restart-overlay.show {
+            display: flex;
+        }
+
+        .restart-panel {
+            width: min(390px, 90vw);
+            background: linear-gradient(180deg, #2e1111, #1c0909);
+            border: 2px solid #ff6b6b;
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+            text-align: center;
+        }
+
+        .restart-title {
+            margin: 0;
+            color: #ffd4d4;
+            font-size: 1.12rem;
+        }
+
+        .restart-text {
+            margin: 10px 0 14px;
+            color: #ffeaea;
+            font-size: 0.94rem;
+            line-height: 1.45;
+        }
+
+        .restart-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .restart-btn {
+            flex: 1;
+            min-height: 42px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .restart-btn.cancel {
+            background: #607d8b;
+            color: #fff;
+        }
+
+        .restart-btn.confirm {
+            background: #d32f2f;
+            color: #fff;
+        }
+
+        .tutorial-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(440px, calc(100vw - 22px));
+            z-index: 10007;
+            display: none;
+            pointer-events: none;
+        }
+
+        .tutorial-overlay.show {
+            display: block;
+        }
+
+        .tutorial-panel {
+            pointer-events: auto;
+            background: linear-gradient(180deg, rgba(12, 35, 25, 0.96), rgba(7, 21, 15, 0.97));
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+            padding: 12px;
+        }
+
+        .tutorial-title {
+            margin: 0;
+            font-size: 1.02rem;
+            color: #ffe066;
+            letter-spacing: 0.3px;
+        }
+
+        .tutorial-body {
+            margin: 8px 0 10px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+            color: #f6fff8;
+        }
+
+        .tutorial-status {
+            margin: 0 0 10px;
+            font-size: 0.85rem;
+            color: #d8f5de;
+            opacity: 0.92;
+        }
+
+        .tutorial-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tutorial-btn {
+            flex: 1;
+            min-height: 38px;
+            border: none;
+            border-radius: 9px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .tutorial-btn.primary {
+            background: #ffd54f;
+            color: #1f1f1f;
+        }
+
+        .tutorial-btn.secondary {
+            background: #546e7a;
+            color: #fff;
+        }
+
+        body.high-contrast {
+            background: #021409;
+            color: #fff;
+        }
+
+        body.high-contrast .column {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+        }
+
+        body.high-contrast .card {
+            border-width: 2px;
+            border-color: #111;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.65);
+        }
+
+        body.high-contrast .card.selected {
+            outline-color: #ffec3d;
+            filter: brightness(1.14);
         }
 
         @keyframes need-three-fade {
@@ -785,11 +1047,65 @@
 <body>
 
     <div id="header">
-        <div class="header-stat">DECK: <b id="deck-num">40</b></div>
-        <div class="header-title">LUCKY 3</div>
-        <div class="header-controls">
+        <div class="header-main">
+            <div class="header-stat">DECK: <b id="deck-num">40</b></div>
+            <div class="header-title">LUCKY 3</div>
             <div id="timer" class="timer-pill">00:00</div>
-            <button type="button" class="header-restart" onclick="resetGame()">RESTART</button>
+            <div class="header-controls">
+                <button type="button" class="header-settings" onclick="toggleSettings(true)" aria-label="設定">⚙</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-overlay" class="settings-overlay" onclick="onSettingsOverlayClick(event)">
+        <div class="settings-panel">
+            <h3 class="settings-title">遊戲設定</h3>
+            <div class="setting-row">
+                <div class="setting-label">音效</div>
+                <input id="setting-sound" class="setting-check" type="checkbox">
+            </div>
+            <div class="setting-row">
+                <div class="setting-label">震動</div>
+                <input id="setting-vibration" class="setting-check" type="checkbox">
+            </div>
+            <div class="setting-row">
+                <div class="setting-label">動畫速度</div>
+                <select id="setting-animation-speed" class="setting-control">
+                    <option value="slow">慢</option>
+                    <option value="normal">中</option>
+                    <option value="fast">快</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <div class="setting-label">高對比模式</div>
+                <input id="setting-high-contrast" class="setting-check" type="checkbox">
+            </div>
+            <button type="button" class="settings-secondary" onclick="replayTutorial()">重播教學</button>
+            <button type="button" class="settings-restart" onclick="resetGameFromSettings()">重新開局</button>
+            <button type="button" class="settings-close" onclick="toggleSettings(false)">關閉設定</button>
+        </div>
+    </div>
+
+    <div id="restart-overlay" class="restart-overlay" onclick="onRestartOverlayClick(event)">
+        <div class="restart-panel">
+            <h3 class="restart-title">確定重新開局？</h3>
+            <p class="restart-text">目前牌局進度會被清空，是否要開始新的一局？</p>
+            <div class="restart-actions">
+                <button type="button" class="restart-btn cancel" onclick="closeRestartConfirm()">取消</button>
+                <button type="button" class="restart-btn confirm" onclick="confirmRestartGame()">重新開局</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tutorial-overlay" class="tutorial-overlay">
+        <div class="tutorial-panel">
+            <h3 id="tutorial-title" class="tutorial-title"></h3>
+            <p id="tutorial-body" class="tutorial-body"></p>
+            <p id="tutorial-status" class="tutorial-status"></p>
+            <div class="tutorial-actions">
+                <button id="tutorial-primary" type="button" class="tutorial-btn primary"></button>
+                <button id="tutorial-secondary" type="button" class="tutorial-btn secondary"></button>
+            </div>
         </div>
     </div>
 
@@ -864,9 +1180,15 @@
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
         const GAME_STATE_KEY = 'lucky3-current-game';
+        const SETTINGS_KEY = 'lucky3-settings';
+        const TUTORIAL_KEY = 'lucky3-tutorial-v1';
+        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', highContrast: false };
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
         let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
+        let settings = { ...DEFAULT_SETTINGS };
+        let audioCtx = null;
+        let tutorial = { active: false, step: 0 };
 
         function shuffleInPlace(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
@@ -874,6 +1196,341 @@
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr;
+        }
+
+        function seedOpeningCards(cardsPerColumn = 3) {
+            for (let round = 0; round < cardsPerColumn; round++) {
+                for (let i = 0; i < slots.length; i++) {
+                    if (deck.length === 0) return;
+                    slots[i].cards.push(deck.pop());
+                }
+            }
+        }
+
+        function runOpeningDealAnimation(cardsPerColumn = 3) {
+            const queue = [];
+            for (let round = 0; round < cardsPerColumn; round++) {
+                for (let i = 0; i < slots.length; i++) {
+                    queue.push(slots[i].id);
+                }
+            }
+
+            isBusy = true;
+            selected = [];
+            render();
+
+            return new Promise((resolve) => {
+                const step = (index) => {
+                    if (index >= queue.length || deck.length === 0) {
+                        isBusy = false;
+                        resolve();
+                        return;
+                    }
+
+                    const slotId = queue[index];
+                    const slot = slots.find((s) => s.id === slotId);
+                    if (!slot || !slot.active) {
+                        step(index + 1);
+                        return;
+                    }
+
+                    const card = deck.pop();
+                    const deckRect = document.getElementById('deck-pile').getBoundingClientRect();
+                    const colEl = document.getElementById(`col-${slotId}`);
+                    const colRect = colEl.getBoundingClientRect();
+                    const targetTop = getDealTargetTop(colEl, slot.cards.length);
+                    const fly = createFly(card, deckRect);
+                    const flyDuration = getDelay(360);
+                    fly.style.willChange = 'transform';
+                    fly.style.transform = 'translate(0, 0)';
+
+                    playSound('deal');
+                    const deltaX = colRect.left - deckRect.left;
+                    const deltaY = targetTop - deckRect.top;
+                    const motion = fly.animate(
+                        [
+                            { transform: 'translate(0, 0)' },
+                            { transform: `translate(${deltaX}px, ${deltaY}px)` }
+                        ],
+                        {
+                            duration: flyDuration,
+                            easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
+                            fill: 'forwards'
+                        }
+                    );
+
+                    motion.onfinish = () => {
+                        slot.cards.push(card);
+                        fly.remove();
+                        render();
+                        setTimeout(() => step(index + 1), getDelay(30));
+                    };
+                };
+
+                step(0);
+            });
+        }
+
+        function getAnimScale() {
+            if (settings.animationSpeed === 'slow') return 1.35;
+            if (settings.animationSpeed === 'fast') return 0.75;
+            return 1;
+        }
+
+        function getDelay(ms) {
+            return Math.max(40, Math.round(ms * getAnimScale()));
+        }
+
+        function loadSettings() {
+            try {
+                const raw = localStorage.getItem(SETTINGS_KEY);
+                if (!raw) return { ...DEFAULT_SETTINGS };
+                const parsed = JSON.parse(raw);
+                return {
+                    sound: parsed.sound !== false,
+                    vibration: parsed.vibration !== false,
+                    animationSpeed: ['slow', 'normal', 'fast'].includes(parsed.animationSpeed) ? parsed.animationSpeed : 'normal',
+                    highContrast: Boolean(parsed.highContrast)
+                };
+            } catch (_) {
+                return { ...DEFAULT_SETTINGS };
+            }
+        }
+
+        function saveSettings() {
+            try {
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+            } catch (_) { }
+        }
+
+        function applySettings() {
+            document.documentElement.style.setProperty('--anim-scale', String(getAnimScale()));
+            document.body.classList.toggle('high-contrast', settings.highContrast);
+
+            const soundEl = document.getElementById('setting-sound');
+            const vibrationEl = document.getElementById('setting-vibration');
+            const speedEl = document.getElementById('setting-animation-speed');
+            const contrastEl = document.getElementById('setting-high-contrast');
+            if (soundEl) soundEl.checked = settings.sound;
+            if (vibrationEl) vibrationEl.checked = settings.vibration;
+            if (speedEl) speedEl.value = settings.animationSpeed;
+            if (contrastEl) contrastEl.checked = settings.highContrast;
+        }
+
+        function updateSetting(key, value) {
+            settings[key] = value;
+            applySettings();
+            saveSettings();
+        }
+
+        function toggleSettings(show) {
+            const overlay = document.getElementById('settings-overlay');
+            if (!overlay) return;
+            overlay.classList.toggle('show', show);
+        }
+
+        function onSettingsOverlayClick(event) {
+            if (event.target && event.target.id === 'settings-overlay') {
+                toggleSettings(false);
+            }
+        }
+
+        function bindSettingsUI() {
+            const soundEl = document.getElementById('setting-sound');
+            const vibrationEl = document.getElementById('setting-vibration');
+            const speedEl = document.getElementById('setting-animation-speed');
+            const contrastEl = document.getElementById('setting-high-contrast');
+            if (!soundEl || !vibrationEl || !speedEl || !contrastEl) return;
+
+            soundEl.addEventListener('change', (e) => updateSetting('sound', e.target.checked));
+            vibrationEl.addEventListener('change', (e) => updateSetting('vibration', e.target.checked));
+            speedEl.addEventListener('change', (e) => updateSetting('animationSpeed', e.target.value));
+            contrastEl.addEventListener('change', (e) => updateSetting('highContrast', e.target.checked));
+        }
+
+        function isTutorialCompleted() {
+            try {
+                return localStorage.getItem(TUTORIAL_KEY) === '1';
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function setTutorialCompleted(value) {
+            try {
+                localStorage.setItem(TUTORIAL_KEY, value ? '1' : '0');
+            } catch (_) { }
+        }
+
+        function toggleTutorial(show) {
+            const overlay = document.getElementById('tutorial-overlay');
+            if (!overlay) return;
+            overlay.classList.toggle('show', show);
+        }
+
+        function startTutorial(force = false) {
+            if (!force && isTutorialCompleted()) return;
+            tutorial.active = true;
+            tutorial.step = 0;
+            renderTutorial();
+            toggleTutorial(true);
+        }
+
+        function closeTutorial(markCompleted = false) {
+            tutorial.active = false;
+            if (markCompleted) setTutorialCompleted(true);
+            toggleTutorial(false);
+        }
+
+        function replayTutorial() {
+            toggleSettings(false);
+            startTutorial(true);
+        }
+
+        function nextTutorialStep() {
+            tutorial.step = Math.min(4, tutorial.step + 1);
+            if (tutorial.step === 4) {
+                setTutorialCompleted(true);
+                playSound('hint');
+            }
+            renderTutorial();
+        }
+
+        function renderTutorial() {
+            if (!tutorial.active) return;
+            const title = document.getElementById('tutorial-title');
+            const body = document.getElementById('tutorial-body');
+            const status = document.getElementById('tutorial-status');
+            const primary = document.getElementById('tutorial-primary');
+            const secondary = document.getElementById('tutorial-secondary');
+            if (!title || !body || !status || !primary || !secondary) return;
+
+            if (tutorial.step === 0) {
+                title.innerText = '新手教學（約 30 秒）';
+                body.innerText = '目標是把牌局玩到最後只剩一張「3」。清牌規則：同一列選 3 張，且總和要是 9 / 19 / 29。';
+                status.innerText = '準備好後開始，教學不會擋住你操作。';
+                primary.innerText = '開始教學';
+                secondary.innerText = '略過';
+                primary.onclick = () => { tutorial.step = 1; renderTutorial(); };
+                secondary.onclick = () => closeTutorial(false);
+                primary.style.display = '';
+                secondary.style.display = '';
+                return;
+            }
+
+            if (tutorial.step === 1) {
+                title.innerText = '步驟 1：先發一張牌';
+                body.innerText = '請點底部左側「DEAL」發一張牌，熟悉節奏。';
+                status.innerText = '等待你點擊 DEAL...';
+                primary.style.display = 'none';
+                secondary.style.display = '';
+                secondary.innerText = '略過教學';
+                secondary.onclick = () => closeTutorial(false);
+                return;
+            }
+
+            if (tutorial.step === 2) {
+                title.innerText = '步驟 2：選滿三張';
+                body.innerText = '在同一列選 3 張，合法位置只有三種：① 尾三張（前三張）② 頭1尾2 ③ 頭2尾1。';
+                status.innerText = '等待你用上述其中一種位置選滿 3 張...';
+                primary.style.display = 'none';
+                secondary.style.display = '';
+                secondary.innerText = '略過教學';
+                secondary.onclick = () => closeTutorial(false);
+                return;
+            }
+
+            if (tutorial.step === 3) {
+                title.innerText = '步驟 3：嘗試消三張';
+                body.innerText = '按下「消三張 / MATCH 3」。只要總和是 9 / 19 / 29，且位置符合「尾三張 / 頭1尾2 / 頭2尾1」就能消除。';
+                status.innerText = '等待你按下 MATCH 3...';
+                primary.style.display = 'none';
+                secondary.style.display = '';
+                secondary.innerText = '略過教學';
+                secondary.onclick = () => closeTutorial(false);
+                return;
+            }
+
+            title.innerText = '完成！你已會基本玩法';
+            body.innerText = '接下來目標是用最少步數完成牌局。之後可在設定中「重播教學」。';
+            status.innerText = '祝你連擊順利，拿下 Lucky 3！';
+            primary.style.display = '';
+            secondary.style.display = 'none';
+            primary.innerText = '完成';
+            primary.onclick = () => closeTutorial(true);
+        }
+
+        function onTutorialEvent(eventName) {
+            if (!tutorial.active) return;
+            if (tutorial.step === 1 && eventName === 'deal') {
+                nextTutorialStep();
+                return;
+            }
+            if (tutorial.step === 2 && eventName === 'selected_three') {
+                nextTutorialStep();
+                return;
+            }
+            if (tutorial.step === 3 && eventName === 'attempt_clear_success') {
+                nextTutorialStep();
+            }
+        }
+
+        function isLegalSelectionPosition(cardsLen, selectedIndices) {
+            if (cardsLen < 3 || selectedIndices.length !== 3) return false;
+            const sorted = [...selectedIndices].sort((a, b) => a - b);
+            const legal =
+                JSON.stringify(sorted) === JSON.stringify([cardsLen - 3, cardsLen - 2, cardsLen - 1]) ||
+                JSON.stringify(sorted) === JSON.stringify([0, cardsLen - 2, cardsLen - 1]) ||
+                JSON.stringify(sorted) === JSON.stringify([0, 1, cardsLen - 1]);
+            return legal;
+        }
+
+        function showTutorialRuleHint() {
+            const old = document.getElementById('need-three-tip');
+            if (old) old.remove();
+            const msg = document.createElement('div');
+            msg.id = 'need-three-tip';
+            msg.className = 'need-three-tip rule-hint';
+            msg.innerText = '教學提示：必須符合以下其一\n1) 尾三張（前三張）\n2) 頭1尾2\n3) 頭2尾1';
+            document.body.appendChild(msg);
+            triggerHaptic([18, 24, 18]);
+            playSound('hint');
+            setTimeout(() => {
+                if (msg.parentNode) msg.remove();
+            }, getDelay(1300));
+        }
+
+        function playTone(freq = 440, durationMs = 80, volume = 0.04, startAt = 0) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return;
+            if (!audioCtx) audioCtx = new Ctx();
+            if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => { });
+
+            const now = audioCtx.currentTime + startAt;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.value = freq;
+            osc.type = 'triangle';
+            gain.gain.setValueAtTime(0.0001, now);
+            gain.gain.linearRampToValueAtTime(volume, now + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + durationMs / 1000);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + durationMs / 1000 + 0.02);
+        }
+
+        function playSound(name) {
+            if (!settings.sound) return;
+            try {
+                if (name === 'deal') playTone(430, 50, 0.03);
+                else if (name === 'clear') { playTone(550, 70, 0.04); playTone(740, 80, 0.04, 0.06); }
+                else if (name === 'error') playTone(210, 110, 0.045);
+                else if (name === 'hint') playTone(360, 60, 0.025);
+                else if (name === 'recycle') { playTone(300, 70, 0.03); playTone(420, 70, 0.03, 0.08); }
+                else if (name === 'win') { playTone(520, 90, 0.05); playTone(780, 120, 0.05, 0.09); }
+                else if (name === 'deadlock') playTone(250, 120, 0.04);
+            } catch (_) { }
         }
 
         // --- 初始化與重置 ---
@@ -937,13 +1594,44 @@
             document.getElementById('btn-undo').disabled = true;
             render();
             updateDiscard();
-            saveGameState();
+            runOpeningDealAnimation(3).then(() => {
+                updateDiscard();
+                saveGameState();
+                if (!hasWon) checkDeadlock();
+                startTutorial(false);
+            });
         }
 
         function resetGame() {
-            if (confirm("確定要重新開始嗎？所有進度將會遺失。")) {
-                init(true);
+            openRestartConfirm();
+        }
+
+        function resetGameFromSettings() {
+            toggleSettings(false);
+            resetGame();
+        }
+
+        function openRestartConfirm() {
+            const overlay = document.getElementById('restart-overlay');
+            if (!overlay) return;
+            overlay.classList.add('show');
+        }
+
+        function closeRestartConfirm() {
+            const overlay = document.getElementById('restart-overlay');
+            if (!overlay) return;
+            overlay.classList.remove('show');
+        }
+
+        function onRestartOverlayClick(event) {
+            if (event.target && event.target.id === 'restart-overlay') {
+                closeRestartConfirm();
             }
+        }
+
+        function confirmRestartGame() {
+            closeRestartConfirm();
+            init(true);
         }
 
         // 計時器 (只需在頁面加載時執行一次 setInterval)
@@ -967,7 +1655,8 @@
                     const div = document.createElement('div');
                     const selObj = selected.find(s => s.slotId === slot.id && s.idx === idx);
                     div.className = `card ${card.color} ${selObj ? 'selected' : ''}`;
-                    div.style.zIndex = selObj ? 600 : idx;
+                    // Keep original stack order stable even when selected.
+                    div.style.zIndex = idx;
                     div.innerHTML = `<div style="font-weight:bold">${card.rank}</div><div style="align-self:center; font-size:1.6rem">${card.suit}</div>`;
                     div.onclick = () => {
                         if (isBusy) return;
@@ -976,6 +1665,22 @@
                         else {
                             if (selected.length > 0 && selected[0].slotId !== slot.id) selected = [];
                             if (selected.length < 3) selected.push({ slotId: slot.id, idx });
+                        }
+
+                        if (tutorial.active && tutorial.step === 2 && selected.length === 3) {
+                            const picked = selected.map(s => s.idx);
+                            const legal = isLegalSelectionPosition(slot.cards.length, picked);
+                            if (legal) {
+                                onTutorialEvent('selected_three');
+                            } else {
+                                showTutorialRuleHint();
+                                setTimeout(() => {
+                                    selected = [];
+                                    render();
+                                }, getDelay(650));
+                                render();
+                                return;
+                            }
                         }
                         render();
                     };
@@ -997,7 +1702,7 @@
             text.innerText = 'COLUMN CLEAR!'; colEl.appendChild(text);
             const rect = colEl.getBoundingClientRect();
             for (let i = 0; i < 15; i++) spawnP(rect.left + rect.width / 2, rect.top + rect.height / 2);
-            setTimeout(() => { if (beam.parentNode) beam.remove(); if (text.parentNode) text.remove(); }, 1200);
+            setTimeout(() => { if (beam.parentNode) beam.remove(); if (text.parentNode) text.remove(); }, getDelay(1200));
         }
 
         function showMiiFX(colEl) {
@@ -1013,7 +1718,7 @@
 
             setTimeout(() => {
                 if (text.parentNode) text.remove();
-            }, 900);
+            }, getDelay(900));
         }
 
         function getDealTargetTop(colEl, existingCount) {
@@ -1025,6 +1730,20 @@
             const lastRect = lastCardEl.getBoundingClientRect();
             let step = 0;
 
+            const getConfiguredGapPx = () => {
+                if (window.innerWidth >= 450) return -85;
+                const raw = getComputedStyle(document.documentElement).getPropertyValue('--fixed-gap').trim();
+                if (raw.endsWith('vw')) {
+                    const val = parseFloat(raw);
+                    if (Number.isFinite(val)) return (window.innerWidth * val) / 100;
+                }
+                if (raw.endsWith('px')) {
+                    const val = parseFloat(raw);
+                    if (Number.isFinite(val)) return val;
+                }
+                return 0;
+            };
+
             if (existingCount >= 2) {
                 const prevCardEl = colEl.children[existingCount - 2];
                 if (prevCardEl) {
@@ -1033,10 +1752,10 @@
                 }
             }
 
-            if (!Number.isFinite(step) || step === 0) {
-                const style = getComputedStyle(lastCardEl);
-                const marginBottom = parseFloat(style.marginBottom) || 0;
-                step = lastRect.height + marginBottom;
+            // existingCount===1 時，唯一那張仍是 :last-child，margin-bottom 會是 0，
+            // 會導致第二張落點算太低；改用配置間距計算，避免第二張卡頓。
+            if (!Number.isFinite(step) || step === 0 || existingCount === 1) {
+                step = lastRect.height + getConfiguredGapPx();
             }
 
             return lastRect.top + step;
@@ -1047,7 +1766,7 @@
             if (!colEl || colEl.children.length === 0) return;
             const newest = colEl.children[colEl.children.length - 1];
             newest.classList.add('mii-land-pop');
-            setTimeout(() => newest.classList.remove('mii-land-pop'), 460);
+            setTimeout(() => newest.classList.remove('mii-land-pop'), getDelay(460));
         }
 
         // --- 發牌與消除 ---
@@ -1081,6 +1800,8 @@
             historyStack.push({ type: 'deal', slotId: target.id, prevIdx });
             document.getElementById('btn-undo').disabled = false;
             moveCount++;
+            playSound('deal');
+            onTutorialEvent('deal');
 
             const card = deck.pop();
             const isMiiMoment = target.cards.length === 2;
@@ -1100,7 +1821,7 @@
                     revealFlyCard(fly, card);
                     fly.classList.add('mii-peek');
                     showMiiFX(colEl);
-                }, 760);
+                }, getDelay(760));
 
                 setTimeout(() => {
                     target.cards.push(card);
@@ -1110,7 +1831,7 @@
                     isBusy = false;
                     checkDeadlock();
                     saveGameState();
-                }, 1720);
+                }, getDelay(1720));
             } else {
                 setTimeout(() => {
                     target.cards.push(card);
@@ -1119,7 +1840,7 @@
                     isBusy = false;
                     checkDeadlock();
                     saveGameState();
-                }, 400);
+                }, getDelay(400));
             }
         }
 
@@ -1133,6 +1854,7 @@
             msg.style.color = 'var(--gold)';
             msg.innerHTML = "RECYCLING...";
             document.getElementById('fx-layer').appendChild(msg);
+            playSound('recycle');
 
             setTimeout(() => {
                 // 按消除組順序回收：第一組消除的牌回到牌堆最上方（最先被抽到）
@@ -1151,7 +1873,7 @@
                 triggerHaptic([50, 50, 50]);
                 checkDeadlock();
                 saveGameState();
-            }, 1000);
+            }, getDelay(1000));
         }
 
         function showNeedThreeHint(selectedCount) {
@@ -1167,13 +1889,14 @@
             const clearBtn = document.getElementById('btn-clear');
             if (clearBtn) {
                 clearBtn.style.background = '#ad1457';
-                setTimeout(() => { clearBtn.style.background = ''; }, 220);
+                setTimeout(() => { clearBtn.style.background = ''; }, getDelay(220));
             }
 
             triggerHaptic([18, 24, 18]);
+            playSound('hint');
             setTimeout(() => {
                 if (msg.parentNode) msg.remove();
-            }, 980);
+            }, getDelay(980));
         }
 
         async function attemptClear() {
@@ -1191,6 +1914,7 @@
                 JSON.stringify(sortedIndices) === JSON.stringify([0, 1, len - 1]);
 
             if ([9, 19, 29].includes(sum) && isPos) {
+                onTutorialEvent('attempt_clear_success');
                 isBusy = true;
                 const colEl = document.getElementById(`col-${slotId}`);
                 sortedIndices.forEach(idx => colEl.children[idx].classList.add('is-fading'));
@@ -1206,7 +1930,7 @@
                         fly.style.left = destRect.left + 'px'; fly.style.top = destRect.top + 'px';
                         fly.style.transform = 'scale(0.5) rotate(20deg)'; fly.style.opacity = '0';
                     });
-                    setTimeout(() => fly.remove(), 550);
+                    setTimeout(() => fly.remove(), getDelay(550));
                 });
 
                 setTimeout(() => {
@@ -1217,6 +1941,7 @@
                     combo++; selected = [];
                     maxCombo = Math.max(maxCombo, combo);
                     moveCount++;
+                    playSound('clear');
                     let colCleared = false; if (slot.cards.length === 0) { colCleared = true; showColumnClearFX(slotId); }
 
                     setTimeout(() => {
@@ -1224,15 +1949,16 @@
                         render(); updateDiscard(); showCombo(sum); checkLucky3(); isBusy = false;
                         if (!hasWon) checkDeadlock();
                         saveGameState();
-                    }, colCleared ? 800 : 0);
+                    }, colCleared ? getDelay(800) : 0);
 
-                    if (navigator.vibrate) navigator.vibrate(sum === 29 ? [60, 40, 60] : 40);
+                    triggerHaptic(sum === 29 ? [60, 40, 60] : 40);
                     if (sum === 29) spawnP(window.innerWidth / 2, window.innerHeight / 2);
-                }, 400);
+                }, getDelay(400));
             } else {
                 combo = 0; triggerHaptic(100);
+                playSound('error');
                 document.getElementById('btn-clear').style.background = '#c62828';
-                setTimeout(() => document.getElementById('btn-clear').style.background = '', 300);
+                setTimeout(() => document.getElementById('btn-clear').style.background = '', getDelay(300));
 
                 const slotId = selected[0]?.slotId;
                 const colEl = slotId != null ? document.getElementById(`col-${slotId}`) : null;
@@ -1246,7 +1972,7 @@
                     render();
                     checkDeadlock();
                     saveGameState();
-                }, 760);
+                }, getDelay(760));
             }
         }
 
@@ -1279,7 +2005,7 @@
                     const card = document.querySelector('.card'); if (card) card.classList.add('lucky-three-win');
                     showWinPanel();
                     winInterval = setInterval(() => spawnP(Math.random() * window.innerWidth, Math.random() * window.innerHeight), 300);
-                }, 500);
+                }, getDelay(500));
             }
         }
 
@@ -1288,16 +2014,16 @@
             const layer = document.getElementById('fx-layer');
             const comboDiv = document.createElement('div'); comboDiv.className = 'combo-text';
             comboDiv.innerHTML = `${combo} COMBO!<br><span style="font-size:1.2rem;color:var(--gold)">+${s} PTS</span>`;
-            layer.appendChild(comboDiv); setTimeout(() => comboDiv.remove(), 1500);
+            layer.appendChild(comboDiv); setTimeout(() => comboDiv.remove(), getDelay(1500));
         }
 
-        function triggerHaptic(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
+        function triggerHaptic(ms) { if (settings.vibration && navigator.vibrate) navigator.vibrate(ms); }
 
         function spawnP(x, y) {
             for (let i = 0; i < 15; i++) {
                 const p = document.createElement('div'); p.className = 'particle'; p.style.left = x + 'px'; p.style.top = y + 'px';
                 p.style.setProperty('--tx', (Math.random() - 0.5) * 400 + 'px'); p.style.setProperty('--ty', (Math.random() - 0.5) * 400 + 'px');
-                document.getElementById('fx-layer').appendChild(p); setTimeout(() => p.remove(), 800);
+                document.getElementById('fx-layer').appendChild(p); setTimeout(() => p.remove(), getDelay(800));
             }
         }
 
@@ -1396,6 +2122,7 @@
             const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
             const bestResult = updateBestStats({ elapsedSec, moveCount, maxCombo });
             const bestMessage = buildBestMessage(bestResult);
+            playSound('win');
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
             overlay.id = 'win-overlay';
@@ -1469,6 +2196,7 @@
             document.body.appendChild(overlay);
             deadlockShown = true;
             triggerHaptic([80, 50, 80]);
+            playSound('deadlock');
         }
 
         function resolveDeadlock(action) {
@@ -1570,6 +2298,9 @@
             if (document.hidden) saveGameState();
         });
 
+        settings = loadSettings();
+        bindSettingsUI();
+        applySettings();
         init();
     </script>
 </body>

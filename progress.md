@@ -24,6 +24,14 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Added autosave/resume for current run (localStorage key: `lucky3-current-game`), so reopening the page restores deck/board/history/timer progress.
 - Tuned stack overlap to `-18vw`, and refined mii deal landing by using measured stack geometry for fly target position plus a short landing pop animation on the dealt card.
 - Improved PWA update behavior: service worker now activates immediately, claims clients, checks for updates in the background, and auto-reloads users onto the latest version when a new SW is installed.
+- Added Settings panel (localStorage-backed) with live controls for sound, vibration, animation speed (slow/normal/fast), and high-contrast mode.
+- Animation-speed setting now scales key CSS/JS animations and timing delays immediately in-game; sound and vibration feedback are now centrally gated by settings.
+- Redesigned header layout into two rows (main controls + centered timer) to reduce crowding and prevent settings/restart overlap on narrow screens.
+- Refined header again to a cleaner single-row layout: restart moved into settings panel, top bar now keeps DECK/title/timer/settings only; enlarged settings icon for better tap accuracy.
+- Replaced native restart `confirm()` with an in-game styled confirmation modal to avoid browser-popup immersion breaks.
+- Added first-run interactive tutorial (~30 seconds) with event-driven steps (deal -> select 3 cards -> press MATCH 3), plus a "重播教學" entry in settings.
+- Tutorial step 2 now enforces legal selection positions; invalid 3-card picks trigger an explicit rule hint and auto-clear selected cards before allowing progression.
+- New-game opening now uses an animated one-by-one auto-deal (3 cards per column) to restore opening ceremony feel instead of instant prefill.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
