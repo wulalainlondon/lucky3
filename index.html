@@ -682,6 +682,17 @@
             color: #fff8cc;
         }
 
+        .win-fortune {
+            margin: 0 0 12px;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.93rem;
+            line-height: 1.45;
+            background: rgba(129, 199, 132, 0.18);
+            border: 1px solid rgba(165, 214, 167, 0.65);
+            color: #e8ffe8;
+        }
+
         .deadlock-overlay {
             position: fixed;
             inset: 0;
@@ -848,6 +859,18 @@
             cursor: pointer;
         }
 
+        .settings-achievement {
+            margin-top: 10px;
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
         .settings-restart {
             margin-top: 10px;
             width: 100%;
@@ -1004,6 +1027,96 @@
             color: #fff;
         }
 
+        .achievement-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            z-index: 10008;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .achievement-overlay.show {
+            display: flex;
+        }
+
+        .achievement-panel {
+            width: min(440px, 92vw);
+            max-height: 78vh;
+            overflow: auto;
+            background: linear-gradient(180deg, #112c1d, #0a1f14);
+            border: 2px solid #fdd835;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+        }
+
+        .achievement-title {
+            margin: 0 0 10px;
+            color: #ffe066;
+            font-size: 1.2rem;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .achievement-stat {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 8px;
+        }
+
+        .achievement-stat-label {
+            font-size: 0.78rem;
+            opacity: 0.9;
+        }
+
+        .achievement-stat-value {
+            margin-top: 2px;
+            font-size: 1.05rem;
+            font-weight: 900;
+        }
+
+        .achievement-badges {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .achievement-badge {
+            border-radius: 10px;
+            padding: 9px 10px;
+            border: 1px dashed rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.06);
+            font-size: 0.88rem;
+        }
+
+        .achievement-badge.unlocked {
+            border-style: solid;
+            border-color: rgba(255, 215, 64, 0.8);
+            background: rgba(255, 215, 64, 0.18);
+            color: #fff6c2;
+        }
+
+        .achievement-close {
+            width: 100%;
+            min-height: 42px;
+            border: none;
+            border-radius: 10px;
+            background: #ffd54f;
+            color: #1b1b1b;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
         body.high-contrast {
             background: #021409;
             color: #fff;
@@ -1080,6 +1193,7 @@
                 <div class="setting-label">高對比模式</div>
                 <input id="setting-high-contrast" class="setting-check" type="checkbox">
             </div>
+            <button type="button" class="settings-achievement" onclick="openAchievementsFromSettings()">成就頁面</button>
             <button type="button" class="settings-secondary" onclick="replayTutorial()">重播教學</button>
             <button type="button" class="settings-restart" onclick="resetGameFromSettings()">重新開局</button>
             <button type="button" class="settings-close" onclick="toggleSettings(false)">關閉設定</button>
@@ -1106,6 +1220,15 @@
                 <button id="tutorial-primary" type="button" class="tutorial-btn primary"></button>
                 <button id="tutorial-secondary" type="button" class="tutorial-btn secondary"></button>
             </div>
+        </div>
+    </div>
+
+    <div id="achievement-overlay" class="achievement-overlay" onclick="onAchievementOverlayClick(event)">
+        <div class="achievement-panel">
+            <h3 class="achievement-title">成就頁面</h3>
+            <div id="achievement-grid" class="achievement-grid"></div>
+            <div id="achievement-badges" class="achievement-badges"></div>
+            <button type="button" class="achievement-close" onclick="closeAchievements()">關閉</button>
         </div>
     </div>
 
@@ -1182,14 +1305,100 @@
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
+        const ACHIEVEMENTS_KEY = 'lucky3-achievements-v1';
+        const FORTUNE_POOL = {
+            '♠': [
+                '今日幸運籤：黑桃 3。做決定會特別果斷，工作與學習容易一次到位。',
+                '今日幸運籤：黑桃 3。你今天的行動力很強，卡關的事有機會快速突破。',
+                '今日幸運籤：黑桃 3。今天很適合處理最難的那件事，完成率偏高。',
+                '今日幸運籤：黑桃 3。專注力上升，短時間內就能把重點做完。',
+                '今日幸運籤：黑桃 3。你今天的判斷很準，適合拍板定案。',
+                '今日幸運籤：黑桃 3。勇敢往前一步，會遇到關鍵轉機。',
+                '今日幸運籤：黑桃 3。效率運亮起來，今天做事會特別俐落。',
+                '今日幸運籤：黑桃 3。今天適合清單式推進，越做越順。',
+                '今日幸運籤：黑桃 3。思路清晰，複雜問題會被你拆得很漂亮。',
+                '今日幸運籤：黑桃 3。今天是突破日，先做最難的反而最省力。',
+                '今日幸運籤：黑桃 3。你會比預期更快看到成果，放心衝刺。',
+                '今日幸運籤：黑桃 3。適合開啟新計畫，第一步就有好手感。',
+                '今日幸運籤：黑桃 3。臨場反應特別好，今天很有主導權。',
+                '今日幸運籤：黑桃 3。今天做取捨特別準，時間會被你用得很好。',
+                '今日幸運籤：黑桃 3。你今天的節奏很穩，容易連續拿下小勝利。',
+                '今日幸運籤：黑桃 3。直覺與理性同時在線，做什麼都更有把握。'
+            ],
+            '♥': [
+                '今日幸運籤：紅心 3。人際運上升，適合主動聯絡重要的人，會有好回應。',
+                '今日幸運籤：紅心 3。今天特別有溫暖緣分，合作與溝通都更順。',
+                '今日幸運籤：紅心 3。今天說出的善意會被放大，回饋會很快出現。',
+                '今日幸運籤：紅心 3。關係運走強，適合修復小誤會、拉近距離。',
+                '今日幸運籤：紅心 3。你今天很有感染力，容易得到支持。',
+                '今日幸運籤：紅心 3。今天適合表達感謝，會收穫超乎預期的善意。',
+                '今日幸運籤：紅心 3。情緒韌性高，今天能把心情照顧得很好。',
+                '今日幸運籤：紅心 3。溝通運佳，難聊的話題也能柔順落地。',
+                '今日幸運籤：紅心 3。今天容易遇到願意幫你一把的人。',
+                '今日幸運籤：紅心 3。真誠會成為你的幸運鑰匙。',
+                '今日幸運籤：紅心 3。今天適合合作，彼此加成感特別明顯。',
+                '今日幸運籤：紅心 3。把心裡想說的說出口，會有溫暖回音。',
+                '今日幸運籤：紅心 3。今天的你很有親和力，關係自然升溫。',
+                '今日幸運籤：紅心 3。柔軟但不退讓，今天會是很漂亮的平衡。',
+                '今日幸運籤：紅心 3。你今天散發安定感，容易成為團隊核心。',
+                '今日幸運籤：紅心 3。開放心態會帶來一個讓你心情很好的消息。'
+            ],
+            '♦': [
+                '今日幸運籤：方塊 3。財運與機會運偏強，小機會可能帶來大收穫。',
+                '今日幸運籤：方塊 3。今天適合談資源與效率，容易拿到超值結果。',
+                '今日幸運籤：方塊 3。今天對價格與價值的判斷特別準。',
+                '今日幸運籤：方塊 3。小小嘗試會帶來實際回報，值得主動出擊。',
+                '今日幸運籤：方塊 3。今天適合整理財務與計畫，會越理越清楚。',
+                '今日幸運籤：方塊 3。你今天很容易抓到高 CP 的選擇。',
+                '今日幸運籤：方塊 3。實用運很強，手邊工具與資源都能派上用場。',
+                '今日幸運籤：方塊 3。今天是「小投入大回報」的一天。',
+                '今日幸運籤：方塊 3。你今天會遇到提升效率的關鍵線索。',
+                '今日幸運籤：方塊 3。適合把想法落地，成果會比預期快。',
+                '今日幸運籤：方塊 3。今天的選擇題，你更容易選到對的那個。',
+                '今日幸運籤：方塊 3。把握小窗口，可能換來長期好處。',
+                '今日幸運籤：方塊 3。今天適合談條件，你會拿到漂亮平衡點。',
+                '今日幸運籤：方塊 3。偏財是資訊運，今天多看一眼就有收穫。',
+                '今日幸運籤：方塊 3。你今天的務實力很強，成效看得見。',
+                '今日幸運籤：方塊 3。好機會正在靠近，記得主動伸手接住。'
+            ],
+            '♣': [
+                '今日幸運籤：梅花 3。穩定運很強，手上的計畫可望扎實推進。',
+                '今日幸運籤：梅花 3。今天適合打基礎，持續做就會看到明顯成果。',
+                '今日幸運籤：梅花 3。累積型任務今天特別有感，越做越順。',
+                '今日幸運籤：梅花 3。你的耐心今天就是幸運，慢慢來反而最快。',
+                '今日幸運籤：梅花 3。今天適合把流程優化，後續會省很多力。',
+                '今日幸運籤：梅花 3。穩穩前進就是王道，成果正在堆高。',
+                '今日幸運籤：梅花 3。今天是「小步快跑」的好日子。',
+                '今日幸運籤：梅花 3。你今天很適合收斂與整理，品質會上升。',
+                '今日幸運籤：梅花 3。把節奏守住，今天會收穫一種踏實的好運。',
+                '今日幸運籤：梅花 3。穩定推進帶來驚喜，晚一點會看到回報。',
+                '今日幸運籤：梅花 3。今天很適合完成「差最後一步」的任務。',
+                '今日幸運籤：梅花 3。你今天的持續力很強，適合做長線布局。',
+                '今日幸運籤：梅花 3。今天把基礎打好，明天就能加速起飛。',
+                '今日幸運籤：梅花 3。你的節奏感在線，事情會一件件到位。',
+                '今日幸運籤：梅花 3。保持簡單與一致，今天會非常有收穫。',
+                '今日幸運籤：梅花 3。今天是成長日，穩定就是最強幸運。'
+            ]
+        };
         const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', highContrast: false };
+        const DEFAULT_ACHIEVEMENTS = {
+            wins: 0,
+            maxCombo: 0,
+            bestMoves: null,
+            bestTimeSec: null,
+            currentStreak: 0,
+            longestStreak: 0,
+            lastWinDate: ''
+        };
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
         let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
         let settings = { ...DEFAULT_SETTINGS };
+        let achievements = { ...DEFAULT_ACHIEVEMENTS };
         let audioCtx = null;
         let tutorial = { active: false, step: 0 };
         let tutorialDeckMode = false;
+        let winCardSuit = '';
 
         function shuffleInPlace(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
@@ -1201,6 +1410,11 @@
 
         function createCard(rank, suit) {
             return { rank, suit, val: rank === 'A' ? 1 : parseInt(rank, 10), color: suit === '♥' || suit === '♦' ? 'red' : 'black' };
+        }
+
+        function fortuneBySuit(suit) {
+            const list = FORTUNE_POOL[suit] || ['今日幸運籤：Lucky 3。今天會有一件小好事悄悄發生。'];
+            return list[Math.floor(Math.random() * list.length)];
         }
 
         function cardId(rank, suit) {
@@ -1580,6 +1794,134 @@
             } catch (_) { }
         }
 
+        function toLocalDateKey(date = new Date()) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function addDays(dateKey, deltaDays) {
+            if (!dateKey) return '';
+            const date = new Date(`${dateKey}T00:00:00`);
+            date.setDate(date.getDate() + deltaDays);
+            return toLocalDateKey(date);
+        }
+
+        function loadAchievements() {
+            try {
+                const raw = localStorage.getItem(ACHIEVEMENTS_KEY);
+                if (!raw) return { ...DEFAULT_ACHIEVEMENTS };
+                const parsed = JSON.parse(raw);
+                return {
+                    wins: Number.isInteger(parsed.wins) ? parsed.wins : 0,
+                    maxCombo: Number.isInteger(parsed.maxCombo) ? parsed.maxCombo : 0,
+                    bestMoves: Number.isInteger(parsed.bestMoves) ? parsed.bestMoves : null,
+                    bestTimeSec: Number.isInteger(parsed.bestTimeSec) ? parsed.bestTimeSec : null,
+                    currentStreak: Number.isInteger(parsed.currentStreak) ? parsed.currentStreak : 0,
+                    longestStreak: Number.isInteger(parsed.longestStreak) ? parsed.longestStreak : 0,
+                    lastWinDate: typeof parsed.lastWinDate === 'string' ? parsed.lastWinDate : ''
+                };
+            } catch (_) {
+                return { ...DEFAULT_ACHIEVEMENTS };
+            }
+        }
+
+        function saveAchievements() {
+            try {
+                localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(achievements));
+            } catch (_) { }
+        }
+
+        function updateAchievementsOnWin(current) {
+            achievements.wins += 1;
+            achievements.maxCombo = Math.max(achievements.maxCombo, current.maxCombo);
+            achievements.bestMoves = achievements.bestMoves == null ? current.moveCount : Math.min(achievements.bestMoves, current.moveCount);
+            achievements.bestTimeSec = achievements.bestTimeSec == null ? current.elapsedSec : Math.min(achievements.bestTimeSec, current.elapsedSec);
+
+            const today = toLocalDateKey();
+            if (achievements.lastWinDate !== today) {
+                const yesterday = addDays(today, -1);
+                if (achievements.lastWinDate === yesterday) achievements.currentStreak += 1;
+                else achievements.currentStreak = 1;
+                achievements.longestStreak = Math.max(achievements.longestStreak, achievements.currentStreak);
+                achievements.lastWinDate = today;
+            }
+
+            saveAchievements();
+        }
+
+        function achievementBadgeRows() {
+            const rows = [
+                {
+                    title: '連擊高手',
+                    ok: achievements.maxCombo >= 5,
+                    text: achievements.maxCombo >= 5 ? `已達成：最高連擊 ${achievements.maxCombo}` : `進度：最高連擊 ${achievements.maxCombo} / 5`
+                },
+                {
+                    title: '快手玩家',
+                    ok: achievements.bestMoves != null && achievements.bestMoves <= 18,
+                    text: achievements.bestMoves == null ? '進度：尚未完成牌局' : `進度：最短 ${achievements.bestMoves} 步（目標 18）`
+                },
+                {
+                    title: '穩定連勝',
+                    ok: achievements.longestStreak >= 3,
+                    text: `進度：最長連勝 ${achievements.longestStreak} 天（目標 3）`
+                },
+                {
+                    title: '老練玩家',
+                    ok: achievements.wins >= 10,
+                    text: `進度：累計勝利 ${achievements.wins} / 10`
+                }
+            ];
+            return rows;
+        }
+
+        function renderAchievements() {
+            const grid = document.getElementById('achievement-grid');
+            const badges = document.getElementById('achievement-badges');
+            if (!grid || !badges) return;
+
+            grid.innerHTML = `
+                <div class="achievement-stat"><div class="achievement-stat-label">累計勝利</div><div class="achievement-stat-value">${achievements.wins}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">目前連勝</div><div class="achievement-stat-value">${achievements.currentStreak} 天</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">最長連勝</div><div class="achievement-stat-value">${achievements.longestStreak} 天</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">最高連擊</div><div class="achievement-stat-value">${achievements.maxCombo}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">最短步數</div><div class="achievement-stat-value">${achievements.bestMoves == null ? '-' : achievements.bestMoves}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">最快時間</div><div class="achievement-stat-value">${achievements.bestTimeSec == null ? '-' : formatTime(achievements.bestTimeSec)}</div></div>
+            `;
+
+            badges.innerHTML = achievementBadgeRows().map((b) => `
+                <div class="achievement-badge ${b.ok ? 'unlocked' : ''}">
+                    <strong>${b.ok ? '✅' : '⬜'} ${b.title}</strong><br>${b.text}
+                </div>
+            `).join('');
+        }
+
+        function openAchievements() {
+            renderAchievements();
+            const overlay = document.getElementById('achievement-overlay');
+            if (!overlay) return;
+            overlay.classList.add('show');
+        }
+
+        function closeAchievements() {
+            const overlay = document.getElementById('achievement-overlay');
+            if (!overlay) return;
+            overlay.classList.remove('show');
+        }
+
+        function onAchievementOverlayClick(event) {
+            if (event.target && event.target.id === 'achievement-overlay') {
+                closeAchievements();
+            }
+        }
+
+        function openAchievementsFromSettings() {
+            toggleSettings(false);
+            openAchievements();
+        }
+
         // --- 初始化與重置 ---
         function init(forceNew = false) {
             // 強制解鎖狀態
@@ -1640,6 +1982,7 @@
             maxCombo = 0;
             hasWon = false;
             deadlockShown = false;
+            winCardSuit = '';
 
             // 重新渲染
             document.getElementById('btn-undo').disabled = true;
@@ -2056,6 +2399,7 @@
             if (hasWon) return;
             const all = slots.flatMap(s => s.cards);
             if (all.length === 1 && all[0].val === 3) {
+                winCardSuit = all[0].suit;
                 hasWon = true;
                 setTimeout(() => {
                     const card = document.querySelector('.card'); if (card) card.classList.add('lucky-three-win');
@@ -2176,7 +2520,11 @@
             if (old) old.remove();
 
             const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            const todayKey = toLocalDateKey();
+            const isFirstWinToday = achievements.lastWinDate !== todayKey;
+            const fortuneText = isFirstWinToday ? fortuneBySuit(winCardSuit) : '';
             const bestResult = updateBestStats({ elapsedSec, moveCount, maxCombo });
+            updateAchievementsOnWin({ elapsedSec, moveCount, maxCombo });
             const bestMessage = buildBestMessage(bestResult);
             playSound('win');
             const overlay = document.createElement('div');
@@ -2191,6 +2539,7 @@
                         <div class="win-stat-row"><span>總步數</span><strong>${moveCount}</strong></div>
                         <div class="win-stat-row"><span>最高連擊</span><strong>${maxCombo}</strong></div>
                     </div>
+                    ${fortuneText ? `<p class="win-fortune">${fortuneText}</p>` : ''}
                     <p class="win-best">${bestMessage}</p>
                     <button type="button" class="win-play-again" onclick="playAgain()">再來一局</button>
                 </div>
@@ -2355,6 +2704,7 @@
         });
 
         settings = loadSettings();
+        achievements = loadAchievements();
         bindSettingsUI();
         applySettings();
         if (!isTutorialDismissed()) {

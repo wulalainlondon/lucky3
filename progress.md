@@ -34,6 +34,8 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - New-game opening now uses an animated one-by-one auto-deal (3 cards per column) to restore opening ceremony feel instead of instant prefill.
 - Tutorial sessions now start from a deterministic tutorial deck/seeded layout, guaranteeing the opening board has valid teaching moves and avoids "no-clear" dead ends.
 - Added explicit tutorial state record (`unseen`/`completed`/`skipped`); after either completion or skip, auto-tutorial no longer appears on future restarts unless manually replayed.
+- Added an achievements page (from Settings) with persisted metrics: total wins, current/longest streak, max combo, best moves, and best time; badges unlock based on progression targets.
+- Added "daily first-clear fortune" messaging: only the first win of each day shows a positive suit-based lucky message on the win panel (subsequent same-day wins do not repeat it).
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
