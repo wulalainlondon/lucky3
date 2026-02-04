@@ -38,6 +38,8 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Added "daily first-clear fortune" messaging: only the first win of each day shows a positive suit-based lucky message on the win panel (subsequent same-day wins do not repeat it).
 - Added an alternate win condition for full-clear (`0 cards left`) with a dedicated "VOID CLEAR" victory panel and visuals, alongside the existing Lucky-3 one-card win.
 - Added full-clear achievement tracking (`zeroClearWins`) and a new badge "虛空收束" unlocked after first 0-card clear.
+- Removed the "forced bottom 3" cheat from normal games; standard runs now use full-random shuffle across all 40 cards.
+- Replaced curated seed pool with a lucky3-only 500-seed pool (deadlock seeds removed), and normal games now draw from this pool to strongly bias toward lucky3 outcomes.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
