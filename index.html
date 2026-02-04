@@ -62,6 +62,31 @@
             font-weight: 900;
             text-align: center;
             line-height: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .header-title-main {
+            line-height: 1;
+        }
+
+        .header-mode-tag {
+            display: none;
+            font-size: 0.56rem;
+            letter-spacing: 0.5px;
+            color: #d3ecff;
+            background: rgba(124, 190, 255, 0.22);
+            border: 1px solid rgba(124, 190, 255, 0.55);
+            border-radius: 999px;
+            padding: 2px 6px;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+
+        .header-mode-tag.show {
+            display: inline-block;
         }
 
         .header-controls {
@@ -112,6 +137,11 @@
                 letter-spacing: 1px;
             }
 
+            .header-mode-tag {
+                font-size: 0.54rem;
+                padding: 2px 5px;
+            }
+
             .timer-pill {
                 font-size: 13px;
                 min-width: 80px;
@@ -140,6 +170,11 @@
             .header-title {
                 font-size: 0.9rem;
                 letter-spacing: 0.8px;
+            }
+
+            .header-mode-tag {
+                font-size: 0.48rem;
+                padding: 1px 5px;
             }
 
             .header-controls {
@@ -905,6 +940,29 @@
             cursor: pointer;
         }
 
+        .settings-daily {
+            margin-top: 10px;
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid rgba(147, 214, 255, 0.55);
+            border-radius: 10px;
+            background: rgba(42, 102, 166, 0.35);
+            color: #d8eeff;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .win-daily {
+            margin: 0 0 12px;
+            padding: 9px 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.35;
+            background: rgba(103, 58, 183, 0.2);
+            border: 1px solid rgba(179, 136, 255, 0.55);
+            color: #efe2ff;
+        }
+
         .settings-restart {
             margin-top: 10px;
             width: 100%;
@@ -1140,6 +1198,104 @@
             color: #fff6c2;
         }
 
+        .achievement-progress {
+            margin-top: 7px;
+            width: 100%;
+            height: 7px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            overflow: hidden;
+        }
+
+        .achievement-progress-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #8bc34a, #ffeb3b);
+            transition: width 260ms ease;
+        }
+
+        .achievement-toast-wrap {
+            position: fixed;
+            top: calc(env(safe-area-inset-top) + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10020;
+            width: min(420px, 92vw);
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .achievement-toast {
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(20, 34, 20, 0.92);
+            border: 1px solid rgba(255, 215, 64, 0.62);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+            animation: achievement-toast-in calc(2.6s * var(--anim-scale)) ease forwards;
+        }
+
+        .achievement-toast-title {
+            font-size: 0.95rem;
+            font-weight: 900;
+            color: #ffe082;
+        }
+
+        .achievement-toast-body {
+            margin-top: 3px;
+            font-size: 0.82rem;
+            color: #e9fce8;
+        }
+
+        .achievement-burst {
+            position: fixed;
+            left: 50%;
+            top: 28%;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ffd54f;
+            pointer-events: none;
+            z-index: 10019;
+            transform: translate(-50%, -50%);
+            animation: achievement-burst calc(0.8s * var(--anim-scale)) ease-out forwards;
+        }
+
+        @keyframes achievement-burst {
+            0% {
+                opacity: 0.95;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.05);
+            }
+        }
+
+        @keyframes achievement-toast-in {
+            0% {
+                opacity: 0;
+                transform: translateY(-12px) scale(0.96);
+            }
+
+            10% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            85% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.98);
+            }
+        }
+
         .achievement-close {
             width: 100%;
             min-height: 42px;
@@ -1147,6 +1303,110 @@
             border-radius: 10px;
             background: #ffd54f;
             color: #1b1b1b;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .leaderboard-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            z-index: 10009;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .leaderboard-overlay.show {
+            display: flex;
+        }
+
+        .leaderboard-panel {
+            width: min(460px, 94vw);
+            max-height: 80vh;
+            overflow: auto;
+            background: linear-gradient(180deg, #0f2135, #0a1523);
+            border: 2px solid #7ec8ff;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+        }
+
+        .leaderboard-title {
+            margin: 0 0 8px;
+            color: #bfe6ff;
+            font-size: 1.2rem;
+        }
+
+        .leaderboard-subtitle {
+            margin: 0 0 10px;
+            font-size: 0.86rem;
+            color: #d7ebff;
+            opacity: 0.92;
+        }
+
+        .leaderboard-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .leaderboard-row {
+            display: grid;
+            grid-template-columns: 48px 1fr auto auto;
+            align-items: center;
+            gap: 8px;
+            border-radius: 10px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            font-size: 0.88rem;
+        }
+
+        .leaderboard-row.mine {
+            border-color: rgba(255, 215, 64, 0.7);
+            background: rgba(255, 215, 64, 0.17);
+        }
+
+        .leaderboard-rank {
+            font-weight: 900;
+            color: #ffe082;
+        }
+
+        .leaderboard-user {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .leaderboard-time {
+            color: #b9f6ca;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .leaderboard-moves {
+            color: #d4edff;
+            font-weight: 700;
+        }
+
+        .leaderboard-empty {
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.08);
+            color: #e3f2fd;
+        }
+
+        .leaderboard-close {
+            width: 100%;
+            min-height: 42px;
+            border: none;
+            border-radius: 10px;
+            background: #7ec8ff;
+            color: #0a1b2d;
             font-weight: 900;
             cursor: pointer;
         }
@@ -1196,7 +1456,10 @@
     <div id="header">
         <div class="header-main">
             <div class="header-stat">DECK: <b id="deck-num">40</b></div>
-            <div class="header-title">LUCKY 3</div>
+            <div class="header-title">
+                <span class="header-title-main">LUCKY 3</span>
+                <span id="header-mode-tag" class="header-mode-tag"></span>
+            </div>
             <div id="timer" class="timer-pill">00:00</div>
             <div class="header-controls">
                 <button type="button" class="header-settings" onclick="toggleSettings(true)" aria-label="設定">⚙</button>
@@ -1227,6 +1490,8 @@
                 <div class="setting-label">高對比模式</div>
                 <input id="setting-high-contrast" class="setting-check" type="checkbox">
             </div>
+            <button type="button" class="settings-daily" onclick="startDailyChallenge()">每日挑戰</button>
+            <button type="button" class="settings-achievement" onclick="openDailyLeaderboard()">今日排行榜</button>
             <button type="button" class="settings-achievement" onclick="openAchievementsFromSettings()">成就頁面</button>
             <button type="button" class="settings-secondary" onclick="replayTutorial()">重播教學</button>
             <button type="button" class="settings-restart" onclick="resetGameFromSettings()">重新開局</button>
@@ -1265,6 +1530,15 @@
             <button type="button" class="achievement-close" onclick="closeAchievements()">關閉</button>
         </div>
     </div>
+    <div id="leaderboard-overlay" class="leaderboard-overlay" onclick="onLeaderboardOverlayClick(event)">
+        <div class="leaderboard-panel">
+            <h3 class="leaderboard-title">今日排行榜</h3>
+            <p id="leaderboard-subtitle" class="leaderboard-subtitle">載入中...</p>
+            <div id="leaderboard-list" class="leaderboard-list"></div>
+            <button type="button" class="leaderboard-close" onclick="closeDailyLeaderboard()">關閉</button>
+        </div>
+    </div>
+    <div id="achievement-toast-wrap" class="achievement-toast-wrap"></div>
 
     <div id="board"></div>
     <div id="fx-layer"></div>
@@ -1340,6 +1614,7 @@
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
         const ACHIEVEMENTS_KEY = 'lucky3-achievements-v1';
+        const DAILY_CHALLENGE_KEY = 'lucky3-daily-challenge-v1';
         const FORTUNE_POOL = {
             '♠': [
                 '今日幸運籤：黑桃 3。做決定會特別果斷，工作與學習容易一次到位。',
@@ -1419,6 +1694,7 @@
         const DEFAULT_ACHIEVEMENTS = {
             wins: 0,
             zeroClearWins: 0,
+            streakShield: 0,
             maxCombo: 0,
             bestMoves: null,
             bestTimeSec: null,
@@ -1435,6 +1711,9 @@
         let tutorial = { active: false, step: 0 };
         let tutorialDeckMode = false;
         let winCardSuit = '';
+        let gameMode = 'normal';
+        let currentSeed = null;
+        let lastDailyRankText = '';
 
         function shuffleInPlace(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
@@ -1465,6 +1744,22 @@
         function pickCuratedSeed() {
             if (!Array.isArray(CURATED_SEED_POOL) || CURATED_SEED_POOL.length === 0) return null;
             const idx = Math.floor(Math.random() * CURATED_SEED_POOL.length);
+            return CURATED_SEED_POOL[idx] >>> 0;
+        }
+
+        function dailySeedIndex(dateKey) {
+            if (!dateKey) return 0;
+            let hash = 2166136261 >>> 0;
+            for (let i = 0; i < dateKey.length; i++) {
+                hash ^= dateKey.charCodeAt(i);
+                hash = Math.imul(hash, 16777619) >>> 0;
+            }
+            return hash;
+        }
+
+        function pickDailySeed(dateKey = toLocalDateKey()) {
+            if (!Array.isArray(CURATED_SEED_POOL) || CURATED_SEED_POOL.length === 0) return null;
+            const idx = dailySeedIndex(dateKey) % CURATED_SEED_POOL.length;
             return CURATED_SEED_POOL[idx] >>> 0;
         }
 
@@ -1653,6 +1948,18 @@
             overlay.classList.toggle('show', show);
         }
 
+        function updateHeaderModeTag() {
+            const tag = document.getElementById('header-mode-tag');
+            if (!tag) return;
+            if (gameMode === 'daily') {
+                tag.innerText = `今日挑戰 ${toLocalDateKey()}`;
+                tag.classList.add('show');
+            } else {
+                tag.innerText = '';
+                tag.classList.remove('show');
+            }
+        }
+
         function onSettingsOverlayClick(event) {
             if (event.target && event.target.id === 'settings-overlay') {
                 toggleSettings(false);
@@ -1714,7 +2021,12 @@
         function replayTutorial() {
             toggleSettings(false);
             tutorialDeckMode = true;
-            init(true);
+            init(true, { mode: 'normal' });
+        }
+
+        function startDailyChallenge() {
+            toggleSettings(false);
+            init(true, { mode: 'daily' });
         }
 
         function nextTutorialStep() {
@@ -1877,6 +2189,71 @@
             return toLocalDateKey(date);
         }
 
+        function loadDailyChallengeState() {
+            try {
+                const raw = localStorage.getItem(DAILY_CHALLENGE_KEY);
+                if (!raw) return { lastCompletedDate: '' };
+                const parsed = JSON.parse(raw);
+                return { lastCompletedDate: typeof parsed.lastCompletedDate === 'string' ? parsed.lastCompletedDate : '' };
+            } catch (_) {
+                return { lastCompletedDate: '' };
+            }
+        }
+
+        function saveDailyChallengeState(state) {
+            try {
+                localStorage.setItem(DAILY_CHALLENGE_KEY, JSON.stringify(state));
+            } catch (_) { }
+        }
+
+        function markDailyChallengeWin() {
+            if (gameMode !== 'daily') return '';
+            const today = toLocalDateKey();
+            const state = loadDailyChallengeState();
+            if (state.lastCompletedDate === today) {
+                return `📅 今日挑戰已完成（${today}）`;
+            }
+            state.lastCompletedDate = today;
+            saveDailyChallengeState(state);
+            return `✅ 今日挑戰首次完成！(${today})`;
+        }
+
+        async function submitDailyScoreIfNeeded(current, kind = 'lucky3') {
+            if (gameMode !== 'daily') {
+                lastDailyRankText = '';
+                return '';
+            }
+            const bridge = window.lucky3Firebase;
+            if (!bridge || !bridge.submitDailyScore) {
+                lastDailyRankText = '';
+                return '';
+            }
+            try {
+                const result = await bridge.submitDailyScore({
+                    dateKey: toLocalDateKey(),
+                    bestTimeMs: current.elapsedSec * 1000,
+                    moves: current.moveCount,
+                    maxCombo: current.maxCombo,
+                    resultKind: kind
+                });
+
+                if (result.status === 'created') {
+                    lastDailyRankText = '📈 已登錄今日排行榜（首次上榜）';
+                } else if (result.status === 'updated') {
+                    lastDailyRankText = '📈 今日排行榜成績已更新！';
+                } else if (result.status === 'skipped') {
+                    lastDailyRankText = '📈 今日排行榜維持你的最佳紀錄';
+                } else {
+                    lastDailyRankText = '';
+                }
+                return lastDailyRankText;
+            } catch (e) {
+                console.error('submit daily score failed:', e);
+                lastDailyRankText = '⚠️ 排行榜提交失敗（稍後可再試）';
+                return lastDailyRankText;
+            }
+        }
+
         function loadAchievements() {
             try {
                 const raw = localStorage.getItem(ACHIEVEMENTS_KEY);
@@ -1885,6 +2262,7 @@
                 return {
                     wins: Number.isInteger(parsed.wins) ? parsed.wins : 0,
                     zeroClearWins: Number.isInteger(parsed.zeroClearWins) ? parsed.zeroClearWins : 0,
+                    streakShield: Number.isInteger(parsed.streakShield) ? parsed.streakShield : 0,
                     maxCombo: Number.isInteger(parsed.maxCombo) ? parsed.maxCombo : 0,
                     bestMoves: Number.isInteger(parsed.bestMoves) ? parsed.bestMoves : null,
                     bestTimeSec: Number.isInteger(parsed.bestTimeSec) ? parsed.bestTimeSec : null,
@@ -1903,7 +2281,35 @@
             } catch (_) { }
         }
 
+        function getUnlockedBadgeTitles() {
+            return achievementBadgeRows().filter((r) => r.ok).map((r) => r.title);
+        }
+
+        function spawnAchievementBurst() {
+            const count = 14;
+            for (let i = 0; i < count; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'achievement-burst';
+                dot.style.setProperty('--tx', `${(Math.random() - 0.5) * 240}px`);
+                dot.style.setProperty('--ty', `${(Math.random() - 0.5) * 180}px`);
+                document.body.appendChild(dot);
+                setTimeout(() => dot.remove(), getDelay(900));
+            }
+        }
+
+        function showAchievementToast(title, body) {
+            const wrap = document.getElementById('achievement-toast-wrap');
+            if (!wrap) return;
+            const el = document.createElement('div');
+            el.className = 'achievement-toast';
+            el.innerHTML = `<div class="achievement-toast-title">${title}</div><div class="achievement-toast-body">${body}</div>`;
+            wrap.appendChild(el);
+            setTimeout(() => el.remove(), getDelay(2700));
+        }
+
         function updateAchievementsOnWin(current, kind = 'lucky3') {
+            const beforeUnlocked = new Set(getUnlockedBadgeTitles());
+            let streakNotice = '';
             achievements.wins += 1;
             if (kind === 'zero-clear') achievements.zeroClearWins += 1;
             achievements.maxCombo = Math.max(achievements.maxCombo, current.maxCombo);
@@ -1913,13 +2319,39 @@
             const today = toLocalDateKey();
             if (achievements.lastWinDate !== today) {
                 const yesterday = addDays(today, -1);
-                if (achievements.lastWinDate === yesterday) achievements.currentStreak += 1;
-                else achievements.currentStreak = 1;
+                const twoDaysAgo = addDays(today, -2);
+                if (achievements.lastWinDate === yesterday) {
+                    achievements.currentStreak += 1;
+                } else if (achievements.streakShield > 0 && achievements.lastWinDate === twoDaysAgo) {
+                    achievements.streakShield = Math.max(0, achievements.streakShield - 1);
+                    achievements.currentStreak += 1;
+                    streakNotice = '🛡️ 連勝保護生效：已幫你續上連勝！';
+                    showAchievementToast('🛡️ 連勝保護觸發', '你錯過 1 天，但連勝已保住。');
+                } else {
+                    achievements.currentStreak = 1;
+                }
                 achievements.longestStreak = Math.max(achievements.longestStreak, achievements.currentStreak);
                 achievements.lastWinDate = today;
             }
 
+            if (achievements.currentStreak >= 5 && achievements.streakShield < 1) {
+                achievements.streakShield = 1;
+                if (!streakNotice) streakNotice = '🛡️ 連勝保護充能完成：可容錯 1 天。';
+                showAchievementToast('🛡️ 連勝保護已充能', '連勝 5 天達成，已獲得 1 次保護。');
+            }
+
+            const afterUnlocked = new Set(getUnlockedBadgeTitles());
+            const unlockedNow = [...afterUnlocked].filter((x) => !beforeUnlocked.has(x));
+            if (unlockedNow.length > 0) {
+                unlockedNow.forEach((title) => {
+                    showAchievementToast(`🏆 成就解鎖：${title}`, '太強了！繼續保持這個節奏。');
+                });
+                spawnAchievementBurst();
+                playSound('hint');
+            }
+
             saveAchievements();
+            return { streakNotice };
         }
 
         function achievementBadgeRows() {
@@ -1927,27 +2359,32 @@
                 {
                     title: '連擊高手',
                     ok: achievements.maxCombo >= 5,
-                    text: achievements.maxCombo >= 5 ? `已達成：最高連擊 ${achievements.maxCombo}` : `進度：最高連擊 ${achievements.maxCombo} / 5`
+                    text: achievements.maxCombo >= 5 ? `已達成：最高連擊 ${achievements.maxCombo}` : `進度：最高連擊 ${achievements.maxCombo} / 5`,
+                    progress: Math.min(1, achievements.maxCombo / 5)
                 },
                 {
                     title: '快手玩家',
                     ok: achievements.bestMoves != null && achievements.bestMoves <= 18,
-                    text: achievements.bestMoves == null ? '進度：尚未完成牌局' : `進度：最短 ${achievements.bestMoves} 步（目標 18）`
+                    text: achievements.bestMoves == null ? '進度：尚未完成牌局' : `進度：最短 ${achievements.bestMoves} 步（目標 18）`,
+                    progress: achievements.bestMoves == null ? 0 : Math.min(1, 18 / achievements.bestMoves)
                 },
                 {
                     title: '穩定連勝',
                     ok: achievements.longestStreak >= 3,
-                    text: `進度：最長連勝 ${achievements.longestStreak} 天（目標 3）`
+                    text: `進度：最長連勝 ${achievements.longestStreak} 天（目標 3）`,
+                    progress: Math.min(1, achievements.longestStreak / 3)
                 },
                 {
                     title: '老練玩家',
                     ok: achievements.wins >= 10,
-                    text: `進度：累計勝利 ${achievements.wins} / 10`
+                    text: `進度：累計勝利 ${achievements.wins} / 10`,
+                    progress: Math.min(1, achievements.wins / 10)
                 },
                 {
                     title: '虛空收束',
                     ok: achievements.zeroClearWins >= 1,
-                    text: achievements.zeroClearWins >= 1 ? `已達成：全清零 ${achievements.zeroClearWins} 次` : '進度：完成 1 次全清零結局'
+                    text: achievements.zeroClearWins >= 1 ? `已達成：全清零 ${achievements.zeroClearWins} 次` : '進度：完成 1 次全清零結局',
+                    progress: Math.min(1, achievements.zeroClearWins / 1)
                 }
             ];
             return rows;
@@ -1961,6 +2398,7 @@
             grid.innerHTML = `
                 <div class="achievement-stat"><div class="achievement-stat-label">累計勝利</div><div class="achievement-stat-value">${achievements.wins}</div></div>
                 <div class="achievement-stat"><div class="achievement-stat-label">全清零勝利</div><div class="achievement-stat-value">${achievements.zeroClearWins}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">連勝保護</div><div class="achievement-stat-value">${achievements.streakShield > 0 ? '已充能' : '未充能'}</div></div>
                 <div class="achievement-stat"><div class="achievement-stat-label">目前連勝</div><div class="achievement-stat-value">${achievements.currentStreak} 天</div></div>
                 <div class="achievement-stat"><div class="achievement-stat-label">最長連勝</div><div class="achievement-stat-value">${achievements.longestStreak} 天</div></div>
                 <div class="achievement-stat"><div class="achievement-stat-label">最高連擊</div><div class="achievement-stat-value">${achievements.maxCombo}</div></div>
@@ -1971,6 +2409,7 @@
             badges.innerHTML = achievementBadgeRows().map((b) => `
                 <div class="achievement-badge ${b.ok ? 'unlocked' : ''}">
                     <strong>${b.ok ? '✅' : '⬜'} ${b.title}</strong><br>${b.text}
+                    <div class="achievement-progress"><div class="achievement-progress-fill" style="width:${Math.max(0, Math.min(100, Math.round((b.progress || 0) * 100)))}%"></div></div>
                 </div>
             `).join('');
         }
@@ -1999,10 +2438,79 @@
             openAchievements();
         }
 
+        function renderDailyLeaderboard(rows, uid, dateKey) {
+            const list = document.getElementById('leaderboard-list');
+            const subtitle = document.getElementById('leaderboard-subtitle');
+            if (!list || !subtitle) return;
+
+            subtitle.innerText = `日期：${dateKey}（Top ${rows.length || 20}）`;
+
+            if (!rows || rows.length === 0) {
+                list.innerHTML = '<div class="leaderboard-empty">今天還沒有人上榜，快成為第一名！</div>';
+                return;
+            }
+
+            let myRank = null;
+            list.innerHTML = rows.map((row) => {
+                const mine = uid && row.uid === uid;
+                if (mine) myRank = row.rank;
+                return `
+                    <div class="leaderboard-row ${mine ? 'mine' : ''}">
+                        <div class="leaderboard-rank">#${row.rank}</div>
+                        <div class="leaderboard-user">${mine ? '你' : row.name}</div>
+                        <div class="leaderboard-time">${formatMs(row.bestTimeMs)}</div>
+                        <div class="leaderboard-moves">${row.moves}步</div>
+                    </div>
+                `;
+            }).join('');
+
+            if (myRank) subtitle.innerText = `日期：${dateKey}｜你的排名：#${myRank}`;
+        }
+
+        async function openDailyLeaderboard() {
+            toggleSettings(false);
+            const overlay = document.getElementById('leaderboard-overlay');
+            const list = document.getElementById('leaderboard-list');
+            const subtitle = document.getElementById('leaderboard-subtitle');
+            if (!overlay || !list || !subtitle) return;
+
+            overlay.classList.add('show');
+            subtitle.innerText = '載入中...';
+            list.innerHTML = '<div class="leaderboard-empty">正在讀取排行榜資料...</div>';
+
+            const bridge = window.lucky3Firebase;
+            if (!bridge || !bridge.loadDailyLeaderboard) {
+                subtitle.innerText = 'Firebase 尚未就緒';
+                list.innerHTML = '<div class="leaderboard-empty">尚未連接雲端服務，請稍後重試。</div>';
+                return;
+            }
+
+            try {
+                const dateKey = toLocalDateKey();
+                const payload = await bridge.loadDailyLeaderboard(dateKey, 20);
+                renderDailyLeaderboard(payload.rows, payload.uid, dateKey);
+            } catch (e) {
+                console.error('load leaderboard failed:', e);
+                subtitle.innerText = '載入失敗';
+                list.innerHTML = '<div class="leaderboard-empty">排行榜讀取失敗，請稍後再試。</div>';
+            }
+        }
+
+        function closeDailyLeaderboard() {
+            const overlay = document.getElementById('leaderboard-overlay');
+            if (!overlay) return;
+            overlay.classList.remove('show');
+        }
+
+        function onLeaderboardOverlayClick(event) {
+            if (event.target && event.target.id === 'leaderboard-overlay') closeDailyLeaderboard();
+        }
+
         // --- 初始化與重置 ---
-        function init(forceNew = false) {
+        function init(forceNew = false, options = {}) {
             // 強制解鎖狀態
             isBusy = false;
+            const targetMode = options.mode === 'daily' ? 'daily' : 'normal';
 
             // 清除 UI
             const fxLayer = document.getElementById('fx-layer');
@@ -2015,8 +2523,9 @@
             if (deadlockOverlay) deadlockOverlay.remove();
             if (winInterval) clearInterval(winInterval);
 
-            if (!forceNew && loadGameState()) {
+            if (!forceNew && targetMode === 'normal' && loadGameState()) {
                 document.getElementById('btn-undo').disabled = historyStack.length === 0;
+                updateHeaderModeTag();
                 render();
                 updateDiscard();
                 if (!hasWon) checkDeadlock();
@@ -2029,8 +2538,11 @@
             clearedGroups = [];
             if (tutorialDeckMode) {
                 deck = buildTutorialDeck();
+                gameMode = 'normal';
+                currentSeed = null;
             } else {
-                const pickedSeed = pickCuratedSeed();
+                gameMode = targetMode;
+                const pickedSeed = gameMode === 'daily' ? pickDailySeed() : pickCuratedSeed();
                 if (pickedSeed == null) {
                     const fullDeck = [];
                     suits.forEach(s => ranks.forEach(r => {
@@ -2038,8 +2550,10 @@
                     }));
                     shuffleInPlace(fullDeck);
                     deck = fullDeck;
+                    currentSeed = null;
                 } else {
                     deck = buildSeededDeck(pickedSeed);
+                    currentSeed = pickedSeed;
                 }
             }
 
@@ -2064,6 +2578,7 @@
 
             // 重新渲染
             document.getElementById('btn-undo').disabled = true;
+            updateHeaderModeTag();
             render();
             updateDiscard();
             runOpeningDealAnimation(3).then(() => {
@@ -2108,7 +2623,7 @@
 
         function confirmRestartGame() {
             closeRestartConfirm();
-            init(true);
+            init(true, { mode: gameMode });
         }
 
         // 計時器 (只需在頁面加載時執行一次 setInterval)
@@ -2554,6 +3069,12 @@
             return `${m}:${s}`;
         }
 
+        function formatMs(ms) {
+            const sec = Math.floor(ms / 1000);
+            const cs = Math.floor((ms % 1000) / 10).toString().padStart(2, '0');
+            return `${formatTime(sec)}.${cs}`;
+        }
+
         function loadBestStats() {
             try {
                 const raw = localStorage.getItem('lucky3-best-stats');
@@ -2602,17 +3123,20 @@
             return `最佳紀錄：最快 ${formatTime(result.best.fastestTimeSec || 0)} / 最少 ${result.best.fewestMoves || 0} 步`;
         }
 
-        function showWinPanel() {
+        async function showWinPanel() {
             const old = document.getElementById('win-overlay');
             if (old) old.remove();
 
             const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            const current = { elapsedSec, moveCount, maxCombo };
             const todayKey = toLocalDateKey();
             const isFirstWinToday = achievements.lastWinDate !== todayKey;
             const fortuneText = isFirstWinToday ? fortuneBySuit(winCardSuit) : '';
-            const bestResult = updateBestStats({ elapsedSec, moveCount, maxCombo });
-            updateAchievementsOnWin({ elapsedSec, moveCount, maxCombo }, 'lucky3');
+            const bestResult = updateBestStats(current);
+            const achievementResult = updateAchievementsOnWin(current, 'lucky3');
             const bestMessage = buildBestMessage(bestResult);
+            const dailyMsg = markDailyChallengeWin();
+            const rankMsg = await submitDailyScoreIfNeeded(current, 'lucky3');
             playSound('win');
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
@@ -2627,6 +3151,9 @@
                         <div class="win-stat-row"><span>最高連擊</span><strong>${maxCombo}</strong></div>
                     </div>
                     ${fortuneText ? `<p class="win-fortune">${fortuneText}</p>` : ''}
+                    ${dailyMsg ? `<p class="win-daily">${dailyMsg}</p>` : ''}
+                    ${rankMsg ? `<p class="win-daily">${rankMsg}</p>` : ''}
+                    ${achievementResult.streakNotice ? `<p class="win-daily">${achievementResult.streakNotice}</p>` : ''}
                     <p class="win-best">${bestMessage}</p>
                     <button type="button" class="win-play-again" onclick="playAgain()">再來一局</button>
                 </div>
@@ -2634,14 +3161,17 @@
             document.body.appendChild(overlay);
         }
 
-        function showZeroClearWinPanel() {
+        async function showZeroClearWinPanel() {
             const old = document.getElementById('win-overlay');
             if (old) old.remove();
 
             const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
-            const bestResult = updateBestStats({ elapsedSec, moveCount, maxCombo });
-            updateAchievementsOnWin({ elapsedSec, moveCount, maxCombo }, 'zero-clear');
+            const current = { elapsedSec, moveCount, maxCombo };
+            const bestResult = updateBestStats(current);
+            const achievementResult = updateAchievementsOnWin(current, 'zero-clear');
             const bestMessage = buildBestMessage(bestResult);
+            const dailyMsg = markDailyChallengeWin();
+            const rankMsg = await submitDailyScoreIfNeeded(current, 'zero-clear');
             playSound('win');
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
@@ -2651,6 +3181,9 @@
                     <h2 class="void-win-title">VOID CLEAR</h2>
                     <p class="void-win-subtitle">你完成了稀有結局：場上 0 張牌！<br>這是一場超高難度的完美收束。</p>
                     <p class="void-win-badge">🏆 解鎖成就：虛空收束</p>
+                    ${dailyMsg ? `<p class="win-daily">${dailyMsg}</p>` : ''}
+                    ${rankMsg ? `<p class="win-daily">${rankMsg}</p>` : ''}
+                    ${achievementResult.streakNotice ? `<p class="win-daily">${achievementResult.streakNotice}</p>` : ''}
                     <div class="win-stats">
                         <div class="win-stat-row"><span>用時</span><strong>${formatTime(elapsedSec)}</strong></div>
                         <div class="win-stat-row"><span>總步數</span><strong>${moveCount}</strong></div>
@@ -2664,7 +3197,7 @@
         }
 
         function playAgain() {
-            init(true);
+            init(true, { mode: gameMode });
         }
 
         function hasLegalClearInSlot(cards) {
@@ -2762,6 +3295,8 @@
                 moveCount,
                 maxCombo,
                 hasWon,
+                gameMode,
+                currentSeed,
                 elapsedSec
             };
         }
@@ -2804,10 +3339,13 @@
                 moveCount = Number.isInteger(parsed.moveCount) ? parsed.moveCount : 0;
                 maxCombo = Number.isInteger(parsed.maxCombo) ? parsed.maxCombo : 0;
                 hasWon = Boolean(parsed.hasWon);
+                gameMode = parsed.gameMode === 'daily' ? 'daily' : 'normal';
+                currentSeed = Number.isInteger(parsed.currentSeed) ? parsed.currentSeed : null;
                 deadlockShown = false;
                 selected = [];
                 const elapsedSec = Number.isFinite(parsed.elapsedSec) ? Math.max(0, parsed.elapsedSec) : 0;
                 startTime = Date.now() - elapsedSec * 1000;
+                updateHeaderModeTag();
                 return true;
             } catch (_) {
                 return false;
@@ -2829,6 +3367,119 @@
         } else {
             init();
         }
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+        import {
+            getFirestore,
+            collection,
+            doc,
+            getDoc,
+            getDocs,
+            limit,
+            orderBy,
+            query,
+            serverTimestamp,
+            setDoc
+        } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCC5MVDctiEw_r4-bru2vaVozMjnzYx0KA",
+            authDomain: "lucky3-d6bb3.firebaseapp.com",
+            projectId: "lucky3-d6bb3",
+            storageBucket: "lucky3-d6bb3.firebasestorage.app",
+            messagingSenderId: "245595237917",
+            appId: "1:245595237917:web:a2643aa43f846a558c60f4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const ready = (async () => {
+            try {
+                await signInAnonymously(auth);
+            } catch (e) {
+                console.error("Anonymous auth failed:", e);
+            }
+        })();
+
+        function fallbackName(uid) {
+            return `Player-${String(uid || '').slice(0, 6) || 'guest'}`;
+        }
+
+        async function submitDailyScore(payload) {
+            await ready;
+            const user = auth.currentUser;
+            if (!user) throw new Error("auth user unavailable");
+
+            const dateKey = payload.dateKey;
+            const bestTimeMs = Number(payload.bestTimeMs);
+            const moves = Number(payload.moves);
+            const maxCombo = Number(payload.maxCombo);
+            const resultKind = payload.resultKind === 'zero-clear' ? 'zero-clear' : 'lucky3';
+            if (!dateKey || !Number.isFinite(bestTimeMs)) throw new Error("invalid payload");
+
+            const ref = doc(db, 'daily_leaderboards', dateKey, 'entries', user.uid);
+            const snap = await getDoc(ref);
+            const nextData = {
+                uid: user.uid,
+                name: fallbackName(user.uid),
+                bestTimeMs: Math.max(0, Math.round(bestTimeMs)),
+                moves: Number.isFinite(moves) ? Math.max(0, Math.round(moves)) : 0,
+                maxCombo: Number.isFinite(maxCombo) ? Math.max(0, Math.round(maxCombo)) : 0,
+                resultKind,
+                updatedAt: serverTimestamp()
+            };
+
+            if (!snap.exists()) {
+                await setDoc(ref, nextData);
+                return { status: 'created' };
+            }
+
+            const prev = snap.data() || {};
+            const prevBest = Number(prev.bestTimeMs);
+            if (Number.isFinite(prevBest) && nextData.bestTimeMs >= prevBest) {
+                return { status: 'skipped' };
+            }
+
+            if (typeof prev.name === 'string' && prev.name.trim()) nextData.name = prev.name;
+            await setDoc(ref, nextData, { merge: true });
+            return { status: 'updated' };
+        }
+
+        async function loadDailyLeaderboard(dateKey, topN = 20) {
+            await ready;
+            const user = auth.currentUser;
+            const col = collection(db, 'daily_leaderboards', dateKey, 'entries');
+            const q = query(col, orderBy('bestTimeMs', 'asc'), limit(Math.max(1, Math.min(50, topN || 20))));
+            const snap = await getDocs(q);
+            const rows = [];
+            snap.forEach((d, idx) => {
+                const data = d.data() || {};
+                rows.push({
+                    rank: idx + 1,
+                    uid: data.uid || d.id,
+                    name: typeof data.name === 'string' && data.name ? data.name : fallbackName(data.uid || d.id),
+                    bestTimeMs: Number.isFinite(data.bestTimeMs) ? data.bestTimeMs : 0,
+                    moves: Number.isFinite(data.moves) ? data.moves : 0
+                });
+            });
+            return {
+                uid: user ? user.uid : '',
+                rows
+            };
+        }
+
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        window.lucky3Firebase = {
+            ready,
+            submitDailyScore,
+            loadDailyLeaderboard
+        };
     </script>
 </body>
 

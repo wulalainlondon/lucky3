@@ -41,6 +41,9 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Removed the "forced bottom 3" cheat from normal games; standard runs now use full-random shuffle across all 40 cards.
 - Replaced curated seed pool with a lucky3-only 500-seed pool (deadlock seeds removed), and normal games now draw from this pool to strongly bias toward lucky3 outcomes.
 - Tuned curated seed pool again to 500 seeds with a 99% lucky3 / 1% zero-clear mix (495 lucky3 + 5 zero-clear) to keep almost all runs on the main win path while preserving rare zero-clear achievement moments.
+- Added a lightweight Daily Challenge entry in Settings: starts a daily-seeded run (stable seed by local date), shows a header mode tag, and records/display first completion status on win panels without introducing a separate home screen yet.
+- Achievements 2.0 upgrade: added streak protection (charge at 5-day streak, consume on a 1-day miss), badge progress bars, unlock toast popups, and burst animation feedback on newly unlocked achievements.
+- Integrated Firebase (Auth anonymous + Firestore) and added Daily Leaderboard flow: settings entry to open today's top list, upload daily-challenge win records, and show leaderboard submission feedback on win panels.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
