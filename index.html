@@ -823,7 +823,43 @@
 
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').catch(() => { });
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                refreshing = true;
+                window.location.reload();
+            });
+
+            navigator.serviceWorker.register('./sw.js').then((registration) => {
+                const activateWaiting = () => {
+                    if (registration.waiting) {
+                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    }
+                };
+
+                activateWaiting();
+
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    if (!newWorker) return;
+
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            activateWaiting();
+                        }
+                    });
+                });
+
+                setInterval(() => {
+                    registration.update().catch(() => { });
+                }, 60 * 1000);
+
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden) {
+                        registration.update().catch(() => { });
+                    }
+                });
+            }).catch(() => { });
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];

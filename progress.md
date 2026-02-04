@@ -23,6 +23,7 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Added deadlock detection UX: when deck/recycle are empty and no legal 9/19/29 clear exists, show a modal with options to undo one step or start a new game.
 - Added autosave/resume for current run (localStorage key: `lucky3-current-game`), so reopening the page restores deck/board/history/timer progress.
 - Tuned stack overlap to `-18vw`, and refined mii deal landing by using measured stack geometry for fly target position plus a short landing pop animation on the dealt card.
+- Improved PWA update behavior: service worker now activates immediately, claims clients, checks for updates in the background, and auto-reloads users onto the latest version when a new SW is installed.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
