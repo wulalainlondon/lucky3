@@ -36,6 +36,8 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Added explicit tutorial state record (`unseen`/`completed`/`skipped`); after either completion or skip, auto-tutorial no longer appears on future restarts unless manually replayed.
 - Added an achievements page (from Settings) with persisted metrics: total wins, current/longest streak, max combo, best moves, and best time; badges unlock based on progression targets.
 - Added "daily first-clear fortune" messaging: only the first win of each day shows a positive suit-based lucky message on the win panel (subsequent same-day wins do not repeat it).
+- Added an alternate win condition for full-clear (`0 cards left`) with a dedicated "VOID CLEAR" victory panel and visuals, alongside the existing Lucky-3 one-card win.
+- Added full-clear achievement tracking (`zeroClearWins`) and a new badge "虛空收束" unlocked after first 0-card clear.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.

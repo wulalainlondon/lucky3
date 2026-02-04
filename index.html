@@ -693,6 +693,40 @@
             color: #e8ffe8;
         }
 
+        .void-win-panel {
+            width: min(430px, 92vw);
+            background: radial-gradient(circle at top, #1f2a56 0%, #0d1433 55%, #070c21 100%);
+            border: 2px solid #8ec7ff;
+            border-radius: 16px;
+            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.6);
+            padding: 20px 18px;
+            text-align: center;
+        }
+
+        .void-win-title {
+            margin: 0;
+            color: #9dd3ff;
+            font-size: 1.76rem;
+            letter-spacing: 1px;
+        }
+
+        .void-win-subtitle {
+            margin: 8px 0 14px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #d7ecff;
+        }
+
+        .void-win-badge {
+            margin: 0 0 12px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(142, 199, 255, 0.7);
+            background: rgba(142, 199, 255, 0.18);
+            color: #eaf6ff;
+            font-weight: 800;
+        }
+
         .deadlock-overlay {
             position: fixed;
             inset: 0;
@@ -1383,6 +1417,7 @@
         const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', highContrast: false };
         const DEFAULT_ACHIEVEMENTS = {
             wins: 0,
+            zeroClearWins: 0,
             maxCombo: 0,
             bestMoves: null,
             bestTimeSec: null,
@@ -1815,6 +1850,7 @@
                 const parsed = JSON.parse(raw);
                 return {
                     wins: Number.isInteger(parsed.wins) ? parsed.wins : 0,
+                    zeroClearWins: Number.isInteger(parsed.zeroClearWins) ? parsed.zeroClearWins : 0,
                     maxCombo: Number.isInteger(parsed.maxCombo) ? parsed.maxCombo : 0,
                     bestMoves: Number.isInteger(parsed.bestMoves) ? parsed.bestMoves : null,
                     bestTimeSec: Number.isInteger(parsed.bestTimeSec) ? parsed.bestTimeSec : null,
@@ -1833,8 +1869,9 @@
             } catch (_) { }
         }
 
-        function updateAchievementsOnWin(current) {
+        function updateAchievementsOnWin(current, kind = 'lucky3') {
             achievements.wins += 1;
+            if (kind === 'zero-clear') achievements.zeroClearWins += 1;
             achievements.maxCombo = Math.max(achievements.maxCombo, current.maxCombo);
             achievements.bestMoves = achievements.bestMoves == null ? current.moveCount : Math.min(achievements.bestMoves, current.moveCount);
             achievements.bestTimeSec = achievements.bestTimeSec == null ? current.elapsedSec : Math.min(achievements.bestTimeSec, current.elapsedSec);
@@ -1872,6 +1909,11 @@
                     title: '老練玩家',
                     ok: achievements.wins >= 10,
                     text: `進度：累計勝利 ${achievements.wins} / 10`
+                },
+                {
+                    title: '虛空收束',
+                    ok: achievements.zeroClearWins >= 1,
+                    text: achievements.zeroClearWins >= 1 ? `已達成：全清零 ${achievements.zeroClearWins} 次` : '進度：完成 1 次全清零結局'
                 }
             ];
             return rows;
@@ -1884,6 +1926,7 @@
 
             grid.innerHTML = `
                 <div class="achievement-stat"><div class="achievement-stat-label">累計勝利</div><div class="achievement-stat-value">${achievements.wins}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">全清零勝利</div><div class="achievement-stat-value">${achievements.zeroClearWins}</div></div>
                 <div class="achievement-stat"><div class="achievement-stat-label">目前連勝</div><div class="achievement-stat-value">${achievements.currentStreak} 天</div></div>
                 <div class="achievement-stat"><div class="achievement-stat-label">最長連勝</div><div class="achievement-stat-value">${achievements.longestStreak} 天</div></div>
                 <div class="achievement-stat"><div class="achievement-stat-label">最高連擊</div><div class="achievement-stat-value">${achievements.maxCombo}</div></div>
@@ -2345,7 +2388,7 @@
 
                     setTimeout(() => {
                         if (colCleared) slot.active = false;
-                        render(); updateDiscard(); showCombo(sum); checkLucky3(); isBusy = false;
+                        render(); updateDiscard(); showCombo(sum); checkVictory(); isBusy = false;
                         if (!hasWon) checkDeadlock();
                         saveGameState();
                     }, colCleared ? getDelay(800) : 0);
@@ -2395,9 +2438,18 @@
             saveGameState();
         }
 
-        function checkLucky3() {
+        function checkVictory() {
             if (hasWon) return;
             const all = slots.flatMap(s => s.cards);
+            if (all.length === 0) {
+                hasWon = true;
+                setTimeout(() => {
+                    showZeroClearWinPanel();
+                    winInterval = setInterval(() => spawnP(Math.random() * window.innerWidth, Math.random() * window.innerHeight), 300);
+                }, getDelay(500));
+                return;
+            }
+
             if (all.length === 1 && all[0].val === 3) {
                 winCardSuit = all[0].suit;
                 hasWon = true;
@@ -2524,7 +2576,7 @@
             const isFirstWinToday = achievements.lastWinDate !== todayKey;
             const fortuneText = isFirstWinToday ? fortuneBySuit(winCardSuit) : '';
             const bestResult = updateBestStats({ elapsedSec, moveCount, maxCombo });
-            updateAchievementsOnWin({ elapsedSec, moveCount, maxCombo });
+            updateAchievementsOnWin({ elapsedSec, moveCount, maxCombo }, 'lucky3');
             const bestMessage = buildBestMessage(bestResult);
             playSound('win');
             const overlay = document.createElement('div');
@@ -2540,6 +2592,35 @@
                         <div class="win-stat-row"><span>最高連擊</span><strong>${maxCombo}</strong></div>
                     </div>
                     ${fortuneText ? `<p class="win-fortune">${fortuneText}</p>` : ''}
+                    <p class="win-best">${bestMessage}</p>
+                    <button type="button" class="win-play-again" onclick="playAgain()">再來一局</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function showZeroClearWinPanel() {
+            const old = document.getElementById('win-overlay');
+            if (old) old.remove();
+
+            const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            const bestResult = updateBestStats({ elapsedSec, moveCount, maxCombo });
+            updateAchievementsOnWin({ elapsedSec, moveCount, maxCombo }, 'zero-clear');
+            const bestMessage = buildBestMessage(bestResult);
+            playSound('win');
+            const overlay = document.createElement('div');
+            overlay.className = 'win-overlay';
+            overlay.id = 'win-overlay';
+            overlay.innerHTML = `
+                <div class="void-win-panel">
+                    <h2 class="void-win-title">VOID CLEAR</h2>
+                    <p class="void-win-subtitle">你完成了稀有結局：場上 0 張牌！<br>這是一場超高難度的完美收束。</p>
+                    <p class="void-win-badge">🏆 解鎖成就：虛空收束</p>
+                    <div class="win-stats">
+                        <div class="win-stat-row"><span>用時</span><strong>${formatTime(elapsedSec)}</strong></div>
+                        <div class="win-stat-row"><span>總步數</span><strong>${moveCount}</strong></div>
+                        <div class="win-stat-row"><span>最高連擊</span><strong>${maxCombo}</strong></div>
+                    </div>
                     <p class="win-best">${bestMessage}</p>
                     <button type="button" class="win-play-again" onclick="playAgain()">再來一局</button>
                 </div>
