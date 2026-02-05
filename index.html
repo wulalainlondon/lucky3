@@ -1490,6 +1490,14 @@
                 <div class="setting-label">高對比模式</div>
                 <input id="setting-high-contrast" class="setting-check" type="checkbox">
             </div>
+            <div class="setting-row">
+                <div class="setting-label">咪牌功能</div>
+                <input id="setting-mii-peek" class="setting-check" type="checkbox">
+            </div>
+            <div class="setting-row">
+                <div class="setting-label">回收動畫</div>
+                <input id="setting-recycle-anim" class="setting-check" type="checkbox">
+            </div>
             <button type="button" class="settings-daily" onclick="startDailyChallenge()">每日挑戰</button>
             <button type="button" class="settings-achievement" onclick="openDailyLeaderboard()">今日排行榜</button>
             <button type="button" class="settings-achievement" onclick="openAchievementsFromSettings()">成就頁面</button>
@@ -1615,6 +1623,8 @@
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
         const ACHIEVEMENTS_KEY = 'lucky3-achievements-v1';
         const DAILY_CHALLENGE_KEY = 'lucky3-daily-challenge-v1';
+        const DEV_MODE_KEY = 'lucky3-dev-mode-v1';
+        const TUTORIAL_FIXED_SEED = 6;
         const FORTUNE_POOL = {
             '♠': [
                 '今日幸運籤：黑桃 3。做決定會特別果斷，工作與學習容易一次到位。',
@@ -1690,7 +1700,7 @@
             ]
         };
         const CURATED_SEED_POOL = [4, 13, 17, 20, 23, 25, 27, 28, 36, 47, 49, 59, 60, 73, 74, 85, 109, 111, 112, 124, 125, 134, 135, 142, 144, 146, 166, 169, 180, 195, 200, 201, 213, 219, 225, 229, 230, 243, 250, 265, 268, 273, 276, 294, 304, 305, 313, 314, 316, 320, 323, 325, 328, 330, 342, 345, 355, 356, 368, 372, 376, 380, 381, 383, 384, 412, 413, 423, 425, 430, 433, 435, 438, 443, 452, 453, 456, 465, 467, 468, 470, 471, 475, 492, 495, 500, 505, 507, 509, 526, 531, 533, 534, 537, 539, 541, 542, 554, 556, 587, 608, 611, 619, 627, 630, 636, 638, 660, 662, 668, 676, 681, 686, 691, 697, 698, 699, 709, 710, 715, 716, 719, 723, 724, 725, 737, 739, 740, 742, 744, 745, 748, 752, 755, 769, 773, 776, 781, 788, 790, 797, 801, 804, 811, 812, 827, 834, 837, 856, 858, 863, 865, 866, 869, 871, 874, 882, 884, 899, 902, 905, 911, 914, 915, 920, 933, 949, 969, 978, 987, 990, 992, 997, 1004, 1011, 1015, 1017, 1022, 1024, 1026, 1030, 1031, 1043, 1046, 1055, 1058, 1059, 1062, 1070, 1072, 1075, 1083, 1084, 1088, 1089, 1091, 1099, 1102, 1105, 1106, 1107, 1110, 1111, 1113, 1114, 1115, 1120, 1122, 1123, 1132, 1133, 1135, 1137, 1139, 1140, 1142, 1145, 1146, 1148, 1153, 1156, 1157, 1159, 1172, 1176, 1178, 1183, 1193, 1198, 1207, 1209, 1219, 1223, 1227, 1229, 1244, 1247, 1256, 1261, 1271, 1276, 1277, 1281, 1294, 1295, 1297, 1302, 1309, 1315, 1319, 1333, 1334, 1337, 1339, 1344, 1349, 1350, 1352, 1353, 1357, 1363, 1365, 1366, 1370, 1375, 1385, 1389, 1390, 1396, 1397, 1401, 1402, 1405, 1409, 1417, 1422, 1423, 1431, 1443, 1448, 1451, 1464, 1468, 1469, 1475, 1476, 1487, 1491, 1493, 1494, 1502, 1530, 1532, 1535, 1537, 1541, 1543, 1560, 1564, 1565, 1571, 1575, 1576, 1579, 1583, 1587, 1598, 1603, 1604, 1605, 1612, 1615, 1630, 1643, 1647, 1652, 1659, 1666, 1669, 1678, 1679, 1680, 1687, 1688, 1694, 1696, 1697, 1703, 1722, 1726, 1733, 1746, 1749, 1753, 1759, 1761, 1765, 1768, 1771, 1777, 1781, 1784, 1791, 1793, 1794, 1796, 1812, 1815, 1820, 1825, 1831, 1836, 1839, 1847, 1851, 1862, 1867, 1868, 1877, 1878, 1881, 1883, 1885, 1892, 1893, 1897, 1901, 1903, 1905, 1908, 1909, 1913, 1916, 1917, 1924, 1928, 1929, 1930, 1933, 1941, 1942, 1944, 1950, 1954, 1958, 1960, 1979, 1980, 1982, 1995, 2001, 2007, 2009, 2015, 2027, 2030, 2031, 2034, 2047, 2050, 2052, 2053, 2055, 2070, 2076, 2077, 2083, 2084, 2089, 2092, 2093, 2095, 2097, 2103, 2107, 2108, 2110, 2112, 2120, 2125, 2130, 2136, 2137, 2139, 2146, 2148, 2155, 2158, 2163, 2173, 2182, 2186, 2200, 2206, 2207, 2211, 2217, 2218, 2223, 2224, 2227, 2234, 2237, 2252, 2254, 2257, 2269, 2279, 2288, 2289, 2293, 2306, 2310, 2311, 2322, 2323, 2329, 2331, 2332, 2337, 2342, 2361, 2371, 2375, 2376, 2380, 2384, 2392, 2397, 2398, 2399, 2401, 2406, 2407, 2414, 2416, 2418, 2419, 2420, 2423, 2425, 2430, 2431, 2445, 2460, 2461, 2467, 2469, 2473, 2476, 2479, 2483, 2484, 2486, 2499, 11, 16, 29, 50, 62];
-        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', highContrast: false };
+        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', highContrast: false, miiPeek: true, recycleAnim: true };
         const DEFAULT_ACHIEVEMENTS = {
             wins: 0,
             zeroClearWins: 0,
@@ -1714,6 +1724,9 @@
         let gameMode = 'normal';
         let currentSeed = null;
         let lastDailyRankText = '';
+        let developerMode = false;
+        let devTapCount = 0;
+        let devTapTimer = null;
 
         function shuffleInPlace(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
@@ -1787,19 +1800,22 @@
 
         function buildTutorialDeck() {
             const fixedBottom = createCard('3', '♣');
+            // Sequence is designed for tutorial flow:
+            // opening deals 11 cards -> columns become [3,3,3,2],
+            // then first manual DEAL draws the 12th card to column 4 and forms 9.
             const openingPlan = [
-                createCard('2', '♠'),
-                createCard('10', '♦'),
-                createCard('9', '♣'),
-                createCard('5', '♦'),
-                createCard('3', '♥'),
-                createCard('A', '♣'),
-                createCard('10', '♠'),
-                createCard('6', '♠'),
-                createCard('4', '♣'),
-                createCard('8', '♥'),
-                createCard('10', '♥'),
-                createCard('7', '♥')
+                createCard('2', '♠'),   // col1 #1
+                createCard('10', '♦'),  // col2 #1
+                createCard('5', '♣'),   // col3 #1
+                createCard('A', '♠'),   // col4 #1
+                createCard('8', '♥'),   // col1 #2
+                createCard('4', '♣'),   // col2 #2
+                createCard('6', '♠'),   // col3 #2
+                createCard('A', '♦'),   // col4 #2
+                createCard('7', '♦'),   // col1 #3
+                createCard('2', '♥'),   // col2 #3
+                createCard('4', '♠'),   // col3 #3
+                createCard('7', '♣')    // first manual DEAL -> col4 #3 => 1+1+7=9
             ];
 
             const used = new Set(openingPlan.map((c) => cardId(c.rank, c.suit)));
@@ -1811,7 +1827,8 @@
                 if (used.has(id)) return;
                 remaining.push(createCard(r, s));
             }));
-            shuffleInPlace(remaining);
+            // Tutorial deck uses a fixed seed so every tutorial run is reproducible.
+            shuffleWithRng(remaining, mulberry32(TUTORIAL_FIXED_SEED));
 
             const topDeck = [...remaining, ...openingPlan.slice().reverse()];
             return [fixedBottom, ...topDeck];
@@ -1826,13 +1843,18 @@
             }
         }
 
-        function runOpeningDealAnimation(cardsPerColumn = 3) {
-            const queue = [];
-            for (let round = 0; round < cardsPerColumn; round++) {
-                for (let i = 0; i < slots.length; i++) {
-                    queue.push(slots[i].id);
-                }
-            }
+        function runOpeningDealAnimation(cardsPerColumn = 3, queueOverride = null) {
+            const queue = Array.isArray(queueOverride) && queueOverride.length > 0
+                ? [...queueOverride]
+                : (() => {
+                    const autoQueue = [];
+                    for (let round = 0; round < cardsPerColumn; round++) {
+                        for (let i = 0; i < slots.length; i++) {
+                            autoQueue.push(slots[i].id);
+                        }
+                    }
+                    return autoQueue;
+                })();
 
             isBusy = true;
             selected = [];
@@ -1909,11 +1931,27 @@
                     sound: parsed.sound !== false,
                     vibration: parsed.vibration !== false,
                     animationSpeed: ['slow', 'normal', 'fast'].includes(parsed.animationSpeed) ? parsed.animationSpeed : 'normal',
-                    highContrast: Boolean(parsed.highContrast)
+                    highContrast: Boolean(parsed.highContrast),
+                    miiPeek: parsed.miiPeek !== false,
+                    recycleAnim: parsed.recycleAnim !== false
                 };
             } catch (_) {
                 return { ...DEFAULT_SETTINGS };
             }
+        }
+
+        function loadDeveloperMode() {
+            try {
+                return localStorage.getItem(DEV_MODE_KEY) === '1';
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function saveDeveloperMode() {
+            try {
+                localStorage.setItem(DEV_MODE_KEY, developerMode ? '1' : '0');
+            } catch (_) { }
         }
 
         function saveSettings() {
@@ -1930,10 +1968,14 @@
             const vibrationEl = document.getElementById('setting-vibration');
             const speedEl = document.getElementById('setting-animation-speed');
             const contrastEl = document.getElementById('setting-high-contrast');
+            const miiPeekEl = document.getElementById('setting-mii-peek');
+            const recycleAnimEl = document.getElementById('setting-recycle-anim');
             if (soundEl) soundEl.checked = settings.sound;
             if (vibrationEl) vibrationEl.checked = settings.vibration;
             if (speedEl) speedEl.value = settings.animationSpeed;
             if (contrastEl) contrastEl.checked = settings.highContrast;
+            if (miiPeekEl) miiPeekEl.checked = settings.miiPeek;
+            if (recycleAnimEl) recycleAnimEl.checked = settings.recycleAnim;
         }
 
         function updateSetting(key, value) {
@@ -1971,12 +2013,38 @@
             const vibrationEl = document.getElementById('setting-vibration');
             const speedEl = document.getElementById('setting-animation-speed');
             const contrastEl = document.getElementById('setting-high-contrast');
-            if (!soundEl || !vibrationEl || !speedEl || !contrastEl) return;
+            const miiPeekEl = document.getElementById('setting-mii-peek');
+            const recycleAnimEl = document.getElementById('setting-recycle-anim');
+            if (!soundEl || !vibrationEl || !speedEl || !contrastEl || !miiPeekEl || !recycleAnimEl) return;
 
             soundEl.addEventListener('change', (e) => updateSetting('sound', e.target.checked));
             vibrationEl.addEventListener('change', (e) => updateSetting('vibration', e.target.checked));
             speedEl.addEventListener('change', (e) => updateSetting('animationSpeed', e.target.value));
             contrastEl.addEventListener('change', (e) => updateSetting('highContrast', e.target.checked));
+            miiPeekEl.addEventListener('change', (e) => updateSetting('miiPeek', e.target.checked));
+            recycleAnimEl.addEventListener('change', (e) => updateSetting('recycleAnim', e.target.checked));
+
+            const titleEl = document.querySelector('.settings-title');
+            if (titleEl && !titleEl.dataset.devBound) {
+                titleEl.dataset.devBound = '1';
+                titleEl.addEventListener('click', () => {
+                    devTapCount += 1;
+                    if (devTapTimer) clearTimeout(devTapTimer);
+                    devTapTimer = setTimeout(() => {
+                        devTapCount = 0;
+                    }, 1200);
+
+                    if (devTapCount >= 7) {
+                        devTapCount = 0;
+                        developerMode = !developerMode;
+                        saveDeveloperMode();
+                        showAchievementToast(
+                            developerMode ? '🛠️ 開發者模式已開啟' : '🛠️ 開發者模式已關閉',
+                            developerMode ? 'DEAL 前會自動先消一組合法牌。' : 'DEAL 將恢復一般流程。'
+                        );
+                    }
+                });
+            }
         }
 
         function getTutorialState() {
@@ -2565,7 +2633,7 @@
             ];
 
             selected = [];
-            nextSlotIndex = 0;
+            nextSlotIndex = tutorialDeckMode ? 3 : 0;
             historyStack = [];
             combo = 0;
             lastCleared = null;
@@ -2581,7 +2649,8 @@
             updateHeaderModeTag();
             render();
             updateDiscard();
-            runOpeningDealAnimation(3).then(() => {
+            const tutorialOpeningQueue = tutorialDeckMode ? [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2] : null;
+            runOpeningDealAnimation(3, tutorialOpeningQueue).then(() => {
                 updateDiscard();
                 saveGameState();
                 if (!hasWon) checkDeadlock();
@@ -2761,9 +2830,116 @@
             setTimeout(() => newest.classList.remove('mii-land-pop'), getDelay(460));
         }
 
+        function getLegalClearIndices(cards) {
+            const len = cards.length;
+            if (len < 3) return [];
+
+            const candidates = [
+                [len - 3, len - 2, len - 1],
+                [0, len - 2, len - 1],
+                [0, 1, len - 1]
+            ];
+            const uniqueCandidates = [...new Set(candidates.map(c => JSON.stringify(c)))].map(x => JSON.parse(x));
+            return uniqueCandidates.filter((indices) => {
+                if (indices.some(i => i < 0 || i >= len)) return false;
+                const sum = indices.reduce((acc, i) => acc + cards[i].val, 0);
+                return [9, 19, 29].includes(sum);
+            });
+        }
+
+        function findFirstLegalClearMove() {
+            for (const slot of slots) {
+                if (!slot.active) continue;
+                const legal = getLegalClearIndices(slot.cards);
+                if (legal.length === 0) continue;
+                const indices = legal[0];
+                const sum = indices.reduce((acc, i) => acc + slot.cards[i].val, 0);
+                return { slotId: slot.id, indices: [...indices].sort((a, b) => a - b), sum };
+            }
+            return null;
+        }
+
+        function performClearMove(slotId, sortedIndices, sum) {
+            const slot = slots.find(s => s.id === slotId);
+            if (!slot) return Promise.resolve(false);
+
+            const currentCards = [...slot.cards];
+            if (sortedIndices.some(i => i < 0 || i >= currentCards.length)) return Promise.resolve(false);
+
+            isBusy = true;
+            const colEl = document.getElementById(`col-${slotId}`);
+            if (colEl) {
+                sortedIndices.forEach(idx => {
+                    const cardEl = colEl.children[idx];
+                    if (cardEl) cardEl.classList.add('is-fading');
+                });
+            }
+
+            const clearedObjects = sortedIndices.map(idx => ({ idx: idx, data: { ...currentCards[idx] } }));
+            historyStack.push({ type: 'clear', slotId, cards: clearedObjects, prevLast: lastCleared, comboBefore: combo });
+            document.getElementById('btn-undo').disabled = false;
+            const destRect = document.getElementById('discard-pile').getBoundingClientRect();
+            lastCleared = currentCards[sortedIndices[sortedIndices.length - 1]];
+
+            if (colEl) {
+                sortedIndices.forEach(idx => {
+                    const cardEl = colEl.children[idx];
+                    if (!cardEl) return;
+                    const fly = createFly(currentCards[idx], cardEl.getBoundingClientRect());
+                    requestAnimationFrame(() => {
+                        fly.style.left = destRect.left + 'px'; fly.style.top = destRect.top + 'px';
+                        fly.style.transform = 'scale(0.5) rotate(20deg)'; fly.style.opacity = '0';
+                    });
+                    setTimeout(() => fly.remove(), getDelay(550));
+                });
+            }
+
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const recycled = sortedIndices.map(i => slot.cards[i]);
+                    discardPile.push(...recycled);
+                    clearedGroups.push([...recycled]);
+                    sortedIndices.slice().sort((a, b) => b - a).forEach(i => slot.cards.splice(i, 1));
+                    combo++;
+                    selected = [];
+                    maxCombo = Math.max(maxCombo, combo);
+                    moveCount++;
+                    playSound('clear');
+                    let colCleared = false;
+                    if (slot.cards.length === 0) {
+                        colCleared = true;
+                        showColumnClearFX(slotId);
+                    }
+
+                    setTimeout(() => {
+                        if (colCleared) slot.active = false;
+                        render();
+                        updateDiscard();
+                        showCombo(sum);
+                        checkVictory();
+                        isBusy = false;
+                        if (!hasWon) checkDeadlock();
+                        saveGameState();
+                        resolve(true);
+                    }, colCleared ? getDelay(800) : 0);
+
+                    triggerHaptic(sum === 29 ? [60, 40, 60] : 40);
+                    if (sum === 29) spawnP(window.innerWidth / 2, window.innerHeight / 2);
+                }, getDelay(400));
+            });
+        }
+
         // --- 發牌與消除 ---
         async function dealOneCard() {
             if (isBusy) return;
+
+            if (developerMode && !tutorial.active) {
+                const autoMove = findFirstLegalClearMove();
+                if (autoMove) {
+                    await performClearMove(autoMove.slotId, autoMove.indices, autoMove.sum);
+                    if (hasWon || isBusy) return;
+                }
+            }
 
             // 如果牌庫空了，但回收區有牌，則進行回收
             if (deck.length === 0 && clearedGroups.length > 0) {
@@ -2796,7 +2972,7 @@
             onTutorialEvent('deal');
 
             const card = deck.pop();
-            const isMiiMoment = target.cards.length === 2;
+            const isMiiMoment = settings.miiPeek && target.cards.length === 2;
             const fly = createFly(card, document.getElementById('deck-pile').getBoundingClientRect(), { hidden: isMiiMoment });
             render();
             const colEl = document.getElementById(`col-${target.id}`);
@@ -2839,33 +3015,32 @@
         function recycleDeck() {
             if (isBusy || clearedGroups.length === 0) return;
             isBusy = true;
-
-            // 顯示重新洗牌的提示
-            const msg = document.createElement('div');
-            msg.className = 'combo-text';
-            msg.style.color = 'var(--gold)';
-            msg.innerHTML = "RECYCLING...";
-            document.getElementById('fx-layer').appendChild(msg);
             playSound('recycle');
-
-            setTimeout(() => {
-                // 按消除組順序回收：第一組消除的牌回到牌堆最上方（最先被抽到）
-                deck = [];
-                for (let i = clearedGroups.length - 1; i >= 0; i--) {
-                    deck.push(...clearedGroups[i]);
-                }
+            // 按消除組順序回收：第一組消除的牌回到牌堆最上方（最先被抽到）
+            const groupsInReturnOrder = [];
+            for (let i = clearedGroups.length - 1; i >= 0; i--) {
+                groupsInReturnOrder.push([...clearedGroups[i]]);
+            }
+            const rebuiltDeck = [];
+            groupsInReturnOrder.forEach((group) => rebuiltDeck.push(...group));
+            const applyRecycleResult = () => {
+                deck = rebuiltDeck;
                 discardPile = [];
                 clearedGroups = [];
                 lastCleared = null;
 
-                msg.remove();
                 render();
                 updateDiscard();
                 isBusy = false;
-                triggerHaptic([50, 50, 50]);
                 checkDeadlock();
                 saveGameState();
-            }, getDelay(1000));
+            };
+
+            if (settings.recycleAnim) {
+                animateRecycleReturn(groupsInReturnOrder).then(applyRecycleResult);
+            } else {
+                applyRecycleResult();
+            }
         }
 
         function showNeedThreeHint(selectedCount) {
@@ -2907,45 +3082,7 @@
 
             if ([9, 19, 29].includes(sum) && isPos) {
                 onTutorialEvent('attempt_clear_success');
-                isBusy = true;
-                const colEl = document.getElementById(`col-${slotId}`);
-                sortedIndices.forEach(idx => colEl.children[idx].classList.add('is-fading'));
-                const clearedObjects = sortedIndices.map(idx => ({ idx: idx, data: { ...currentCards[idx] } }));
-                historyStack.push({ type: 'clear', slotId, cards: clearedObjects, prevLast: lastCleared, comboBefore: combo });
-                document.getElementById('btn-undo').disabled = false;
-                const destRect = document.getElementById('discard-pile').getBoundingClientRect();
-                lastCleared = currentCards[sortedIndices[sortedIndices.length - 1]];
-
-                sortedIndices.forEach(idx => {
-                    const fly = createFly(currentCards[idx], colEl.children[idx].getBoundingClientRect());
-                    requestAnimationFrame(() => {
-                        fly.style.left = destRect.left + 'px'; fly.style.top = destRect.top + 'px';
-                        fly.style.transform = 'scale(0.5) rotate(20deg)'; fly.style.opacity = '0';
-                    });
-                    setTimeout(() => fly.remove(), getDelay(550));
-                });
-
-                setTimeout(() => {
-                    const recycled = sortedIndices.map(i => slot.cards[i]);
-                    discardPile.push(...recycled); // 用於目前回收區顯示
-                    clearedGroups.push([...recycled]); // 保留每一組消除順序供回收牌堆使用
-                    sortedIndices.sort((a, b) => b - a).forEach(i => slot.cards.splice(i, 1));
-                    combo++; selected = [];
-                    maxCombo = Math.max(maxCombo, combo);
-                    moveCount++;
-                    playSound('clear');
-                    let colCleared = false; if (slot.cards.length === 0) { colCleared = true; showColumnClearFX(slotId); }
-
-                    setTimeout(() => {
-                        if (colCleared) slot.active = false;
-                        render(); updateDiscard(); showCombo(sum); checkVictory(); isBusy = false;
-                        if (!hasWon) checkDeadlock();
-                        saveGameState();
-                    }, colCleared ? getDelay(800) : 0);
-
-                    triggerHaptic(sum === 29 ? [60, 40, 60] : 40);
-                    if (sum === 29) spawnP(window.innerWidth / 2, window.innerHeight / 2);
-                }, getDelay(400));
+                await performClearMove(slotId, sortedIndices, sum);
             } else {
                 combo = 0; triggerHaptic(100);
                 playSound('error');
@@ -3052,6 +3189,51 @@
             f.style.top = rect.top + 'px';
             document.body.appendChild(f);
             return f;
+        }
+
+        function animateRecycleReturn(groupsInReturnOrder) {
+            if (!Array.isArray(groupsInReturnOrder) || groupsInReturnOrder.length === 0) {
+                return Promise.resolve();
+            }
+
+            const fromEl = document.getElementById('discard-pile');
+            const toEl = document.getElementById('deck-pile');
+            if (!fromEl || !toEl) return Promise.resolve();
+
+            const fromRect = fromEl.getBoundingClientRect();
+            const toRect = toEl.getBoundingClientRect();
+            const groupDelay = getDelay(55);
+            const settleDelay = getDelay(220);
+            const flyLife = getDelay(380);
+
+            return new Promise((resolve) => {
+                let index = 0;
+                const step = () => {
+                    if (index >= groupsInReturnOrder.length) {
+                        setTimeout(resolve, settleDelay);
+                        return;
+                    }
+
+                    const group = groupsInReturnOrder[index] || [];
+                    group.forEach((card, cardIndex) => {
+                        const fly = createFly(card, fromRect, { hidden: true });
+                        const offsetX = (cardIndex - 1) * 2;
+                        const offsetY = (cardIndex - 1) * -2;
+                        fly.style.opacity = '0.94';
+                        requestAnimationFrame(() => {
+                            fly.style.left = `${toRect.left + offsetX}px`;
+                            fly.style.top = `${toRect.top + offsetY}px`;
+                            fly.style.transform = 'scale(0.9)';
+                            fly.style.opacity = '0.2';
+                        });
+                        setTimeout(() => fly.remove(), flyLife);
+                    });
+
+                    index += 1;
+                    setTimeout(step, groupDelay);
+                };
+                step();
+            });
         }
 
         function updateDiscard() {
@@ -3357,6 +3539,7 @@
             if (document.hidden) saveGameState();
         });
 
+        developerMode = loadDeveloperMode();
         settings = loadSettings();
         achievements = loadAchievements();
         bindSettingsUI();

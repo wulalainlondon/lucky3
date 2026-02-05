@@ -44,6 +44,9 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Added a lightweight Daily Challenge entry in Settings: starts a daily-seeded run (stable seed by local date), shows a header mode tag, and records/display first completion status on win panels without introducing a separate home screen yet.
 - Achievements 2.0 upgrade: added streak protection (charge at 5-day streak, consume on a 1-day miss), badge progress bars, unlock toast popups, and burst animation feedback on newly unlocked achievements.
 - Integrated Firebase (Auth anonymous + Firestore) and added Daily Leaderboard flow: settings entry to open today's top list, upload daily-challenge win records, and show leaderboard submission feedback on win panels.
+- Tutorial deck randomness removed: tutorial now uses a fixed seed shuffle (`TUTORIAL_FIXED_SEED`) for reproducible runs, tuned so the scripted tutorial deck resolves to the lucky3 ending under current deterministic clear strategy.
+- Added a hidden developer mode toggle path in Settings (tap title 7 times): when enabled, pressing DEAL first auto-clears one legal 9/19/29 group (if any), then proceeds to normal dealing flow.
+- Tutorial opening flow adjusted to avoid early ambiguity: tutorial auto-deal now starts as [3,3,3,2] cards per columns, with no legal clear available before the first player DEAL; the first DEAL targets column 4 and intentionally creates a valid 9/19/29 clear in that column.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
