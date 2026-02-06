@@ -48,10 +48,17 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Added a hidden developer mode toggle path in Settings (tap title 7 times): when enabled, pressing DEAL first auto-clears one legal 9/19/29 group (if any), then proceeds to normal dealing flow.
 - Tutorial opening flow adjusted to avoid early ambiguity: tutorial auto-deal now starts as [3,3,3,2] cards per columns, with no legal clear available before the first player DEAL; the first DEAL targets column 4 and intentionally creates a valid 9/19/29 clear in that column.
 
+## 2026-02-05
+- Added seed-pool builder script (`tools/build_seed_pool.py`) to curate pools with a target lucky3/zero-clear ratio under deterministic policy.
+- Rebuilt curated seed pool (500 seeds, 99% lucky3 / 1% zero-clear) using full-random deck and head1/head2-prioritized policy; updated `CURATED_SEED_POOL` in `index.html` from the generated JSON file.
+- Simulation policy order updated to prefer head1/head2 clears before tail3 in `tools/simulate_seeds.py`.
+ - Added settings display for app version and set `APP_VERSION` constant; service worker now triggers `registration.update()` on initial load and window focus for more reliable auto-update checks.
+
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
 - `maxCombo` tracks peak combo reached during run.
 - Validation: script syntax check passed with `node` (`js-ok`); Playwright client is present but local `playwright` package is missing, so full automated visual loop did not run in this pass.
+ - 2026-02-05: Installed `playwright` package and browsers (arm64). Playwright run still fails because the runtime expects mac-x64 browsers and downloading x64 Chromium failed due to DNS `cdn.playwright.dev` (ENOTFOUND).
 
 ## TODO / Suggestions
 - Consider showing a compact running stats widget during gameplay (current combo / moves).

@@ -75,10 +75,11 @@ def legal_clear_moves_for_col(col: List[int]) -> List[Tuple[int, int, int]]:
     L = len(col)
     if L < 3:
         return []
+    # Prefer head-position clears (head1tail2, head2tail1) before tail3.
     candidates = [
-        (L - 3, L - 2, L - 1),  # tail3
         (0, L - 2, L - 1),  # head1tail2
         (0, 1, L - 1),  # head2tail1
+        (L - 3, L - 2, L - 1),  # tail3
     ]
 
     seen = set()
