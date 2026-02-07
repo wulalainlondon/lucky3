@@ -52,7 +52,8 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Added seed-pool builder script (`tools/build_seed_pool.py`) to curate pools with a target lucky3/zero-clear ratio under deterministic policy.
 - Rebuilt curated seed pool (500 seeds, 99% lucky3 / 1% zero-clear) using full-random deck and head1/head2-prioritized policy; updated `CURATED_SEED_POOL` in `index.html` from the generated JSON file.
 - Simulation policy order updated to prefer head1/head2 clears before tail3 in `tools/simulate_seeds.py`.
- - Added settings display for app version and set `APP_VERSION` constant; service worker now triggers `registration.update()` on initial load and window focus for more reliable auto-update checks.
+- Added settings display for app version and set `APP_VERSION` constant; service worker now triggers `registration.update()` on initial load and window focus for more reliable auto-update checks.
+- PWA fullscreen update: switched manifest display mode to `fullscreen` with `display_override` fallback to `standalone`, and added `mobile-web-app-capable` meta for broader mobile web app fullscreen support.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
