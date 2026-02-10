@@ -13,10 +13,10 @@
     <style>
         :root {
             --bg-green: #0a3d1d;
-            --card-w: 20vw;
-            --card-h: 28vw;
-            --max-w: 80px;
-            --max-h: 115px;
+            --card-w: clamp(72px, 20vw, 96px);
+            --card-h: calc(var(--card-w) * 1.42);
+            --max-w: 96px;
+            --max-h: 136px;
             --gold: #ffd700;
             --fixed-gap: -20vw;
             --anim-scale: 1;
@@ -239,6 +239,90 @@
         @media (min-width: 450px) {
             .card {
                 margin-bottom: -85px;
+            }
+        }
+
+        @media (min-width: 900px) {
+            :root {
+                --card-w: min(13vw, 132px);
+                --max-w: 132px;
+                --max-h: 188px;
+                --fixed-gap: -98px;
+            }
+
+            #header {
+                padding: 12px 14px;
+            }
+
+            .header-main {
+                gap: 12px;
+            }
+
+            .header-stat {
+                font-size: 17px;
+                min-width: 112px;
+            }
+
+            .header-title {
+                font-size: 1.8rem;
+            }
+
+            .timer-pill {
+                font-size: 28px;
+                min-width: 176px;
+                padding: 10px 18px;
+            }
+
+            .header-settings {
+                font-size: 30px;
+                min-height: 56px;
+                min-width: 64px;
+            }
+
+            #board {
+                gap: 14px;
+                padding: 24px 10px;
+            }
+
+            #footer {
+                padding: 18px 12px calc(18px + env(safe-area-inset-bottom));
+            }
+
+            .pile {
+                width: 68px;
+                height: 93px;
+            }
+
+            #deck-pile {
+                font-size: 30px;
+            }
+
+            .btn-main {
+                font-size: 1.35rem;
+                padding: 16px 36px;
+            }
+
+            #btn-undo {
+                width: 62px;
+                height: 62px;
+            }
+
+            #btn-undo svg {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            :root {
+                --card-w: min(11vw, 154px);
+                --max-w: 154px;
+                --max-h: 220px;
+                --fixed-gap: -114px;
+            }
+
+            #board {
+                gap: 18px;
             }
         }
 
@@ -1298,8 +1382,68 @@
 
             100% {
                 opacity: 0;
-                transform: translateY(-10px) scale(0.98);
+                transform: translateY(-8px) scale(0.98);
             }
+        }
+
+        /* Update Prompt */
+        .update-prompt {
+            position: fixed;
+            bottom: max(24px, env(safe-area-inset-bottom) + 16px);
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            width: min(440px, 92vw);
+            background: rgba(12, 36, 18, 0.94);
+            border: 2px solid #ffd54f;
+            border-radius: 16px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 10030;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            transition: transform 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        .update-prompt.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .update-prompt-info {
+            flex: 1;
+        }
+
+        .update-prompt-title {
+            font-size: 1rem;
+            font-weight: 900;
+            color: #ffd54f;
+            line-height: 1.2;
+        }
+
+        .update-prompt-body {
+            font-size: 0.82rem;
+            color: #e8f5e9;
+            margin-top: 3px;
+            opacity: 0.9;
+        }
+
+        .update-prompt-btn {
+            background: #ffd54f;
+            color: #1b1b1b;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 4px #c6a700;
+        }
+
+        .update-prompt-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px #c6a700;
         }
 
         .achievement-close {
@@ -1586,6 +1730,15 @@
         </div>
     </div>
 
+    <!-- 更新提示 -->
+    <div id="update-prompt" class="update-prompt">
+        <div class="update-prompt-info">
+            <div class="update-prompt-title">✨ 發現新版本！</div>
+            <div class="update-prompt-body">優化遊戲體驗，立即更新生效。</div>
+        </div>
+        <button id="update-prompt-btn" class="update-prompt-btn">立即更新</button>
+    </div>
+
     <script>
         if ('serviceWorker' in navigator) {
             let refreshing = false;
@@ -1596,13 +1749,24 @@
             });
 
             navigator.serviceWorker.register('./sw.js').then((registration) => {
-                const activateWaiting = () => {
-                    if (registration.waiting) {
-                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                const showUpdatePrompt = () => {
+                    const prompt = document.getElementById('update-prompt');
+                    const btn = document.getElementById('update-prompt-btn');
+                    if (prompt && btn) {
+                        prompt.classList.add('show');
+                        btn.onclick = () => {
+                            if (registration.waiting) {
+                                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                            }
+                            prompt.classList.remove('show');
+                        };
                     }
                 };
 
-                activateWaiting();
+                if (registration.waiting) {
+                    showUpdatePrompt();
+                }
+
                 registration.update().catch(() => { });
 
                 registration.addEventListener('updatefound', () => {
@@ -1611,7 +1775,7 @@
 
                     newWorker.addEventListener('statechange', () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            activateWaiting();
+                            showUpdatePrompt();
                         }
                     });
                 });
@@ -1629,7 +1793,9 @@
                 window.addEventListener('focus', () => {
                     registration.update().catch(() => { });
                 });
-            }).catch(() => { });
+            }).catch((err) => {
+                console.error('SW registration failed:', err);
+            });
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
