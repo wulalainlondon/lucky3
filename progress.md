@@ -55,6 +55,7 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Added settings display for app version and set `APP_VERSION` constant; service worker now triggers `registration.update()` on initial load and window focus for more reliable auto-update checks.
 - PWA fullscreen update: switched manifest display mode to `fullscreen` with `display_override` fallback to `standalone`, and added `mobile-web-app-capable` meta for broader mobile web app fullscreen support.
 - Large-screen scaling pass: added tablet/large-device breakpoints (`min-width: 900px` and `min-width: 1200px`) to enlarge card size, header typography, timer, settings button, footer controls, and board spacing so gameplay no longer appears too small on devices like S11 Ultra.
+- Implemented container-driven scaling (phase 1+2): `#board` now uses capped layout width, and runtime `syncBoardScale()` computes card width/height/stack overlap from board container width instead of raw viewport, with resize/orientation listeners to keep proportions stable on large devices.
 
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.

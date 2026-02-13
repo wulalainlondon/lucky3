@@ -13,13 +13,15 @@
     <style>
         :root {
             --bg-green: #0a3d1d;
-            --card-w: clamp(72px, 20vw, 96px);
+            --card-w: 84px;
             --card-h: calc(var(--card-w) * 1.42);
-            --max-w: 96px;
-            --max-h: 136px;
+            --max-w: var(--card-w);
+            --max-h: var(--card-h);
             --gold: #ffd700;
-            --fixed-gap: -20vw;
+            --fixed-gap: -60px;
             --anim-scale: 1;
+            --board-max-width: 860px;
+            --board-gap: 8px;
         }
 
         body {
@@ -201,8 +203,11 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            gap: 8px;
+            gap: var(--board-gap);
             padding: 20px 5px;
+            width: min(100%, var(--board-max-width));
+            margin-inline: auto;
+            box-sizing: border-box;
             transition: all calc(0.6s * var(--anim-scale)) cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -210,7 +215,7 @@
             display: flex;
             flex-direction: column;
             width: var(--card-w);
-            max-width: var(--max-w);
+            max-width: var(--card-w);
             min-height: 120px;
             position: relative;
             background: rgba(255, 255, 255, 0.03);
@@ -220,8 +225,8 @@
         .card {
             width: var(--card-w);
             height: var(--card-h);
-            max-width: var(--max-w);
-            max-height: var(--max-h);
+            max-width: var(--card-w);
+            max-height: var(--card-h);
             background: white;
             border-radius: 6px;
             color: black;
@@ -244,10 +249,8 @@
 
         @media (min-width: 900px) {
             :root {
-                --card-w: min(13vw, 132px);
-                --max-w: 132px;
-                --max-h: 188px;
-                --fixed-gap: -98px;
+                --board-max-width: 1040px;
+                --board-gap: 14px;
             }
 
             #header {
@@ -315,10 +318,8 @@
 
         @media (min-width: 1200px) {
             :root {
-                --card-w: min(11vw, 154px);
-                --max-w: 154px;
-                --max-h: 220px;
-                --fixed-gap: -114px;
+                --board-max-width: 1240px;
+                --board-gap: 18px;
             }
 
             #board {
@@ -2104,6 +2105,28 @@
             return Math.max(40, Math.round(ms * getAnimScale()));
         }
 
+        function syncBoardScale() {
+            const board = document.getElementById('board');
+            if (!board) return;
+
+            const style = getComputedStyle(board);
+            const gap = parseFloat(style.columnGap || style.gap) || 8;
+            const usable = Math.max(260, board.clientWidth - gap * 3);
+            const viewportW = window.innerWidth || 360;
+
+            const minCard = viewportW >= 1200 ? 108 : viewportW >= 900 ? 92 : 60;
+            const maxCard = viewportW >= 1200 ? 154 : viewportW >= 900 ? 132 : 96;
+            const cardW = Math.min(maxCard, Math.max(minCard, Math.floor(usable / 4)));
+            const cardH = Math.round(cardW * 1.42);
+            const overlap = -Math.round(cardH * 0.72);
+
+            document.documentElement.style.setProperty('--card-w', `${cardW}px`);
+            document.documentElement.style.setProperty('--card-h', `${cardH}px`);
+            document.documentElement.style.setProperty('--max-w', `${cardW}px`);
+            document.documentElement.style.setProperty('--max-h', `${cardH}px`);
+            document.documentElement.style.setProperty('--fixed-gap', `${overlap}px`);
+        }
+
         function loadSettings() {
             try {
                 const raw = localStorage.getItem(SETTINGS_KEY);
@@ -2831,6 +2854,7 @@
             // 重新渲染
             document.getElementById('btn-undo').disabled = true;
             updateHeaderModeTag();
+            syncBoardScale();
             render();
             updateDiscard();
             const tutorialOpeningQueue = tutorialDeckMode ? [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2] : null;
@@ -2891,6 +2915,7 @@
         // --- 核心渲染 ---
         function render() {
             const board = document.getElementById('board');
+            syncBoardScale();
             board.innerHTML = ''; // 徹底清空當前 DOM
 
             slots.filter(s => s.active).forEach(slot => {
@@ -3722,6 +3747,8 @@
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) saveGameState();
         });
+        window.addEventListener('resize', syncBoardScale);
+        window.addEventListener('orientationchange', syncBoardScale);
 
         developerMode = loadDeveloperMode();
         settings = loadSettings();
