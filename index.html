@@ -327,6 +327,123 @@
             }
         }
 
+        /* --- Landscape Tablet (iPad, Samsung Tab, etc.) --- */
+        @media (orientation: landscape) and (min-width: 900px) and (min-height: 500px) {
+            body {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            #header {
+                width: 100%;
+                order: 0;
+                padding: 8px 16px;
+                flex-shrink: 0;
+            }
+
+            #board {
+                flex: 1;
+                order: 1;
+                align-items: center;
+                padding: 12px 20px;
+                min-height: 0;
+            }
+
+            #footer {
+                width: 100%;
+                order: 2;
+                padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
+                flex-shrink: 0;
+            }
+
+            .pile {
+                width: 62px;
+                height: 85px;
+            }
+
+            #deck-pile {
+                font-size: 28px;
+            }
+
+            .btn-main {
+                font-size: 1.2rem;
+                padding: 14px 32px;
+            }
+
+            #btn-undo {
+                width: 56px;
+                height: 56px;
+            }
+        }
+
+        /* Very tall landscape tablets (iPad Pro 12.9", Samsung Tab S Ultra) */
+        @media (orientation: landscape) and (min-width: 1100px) and (min-height: 700px) {
+            :root {
+                --board-max-width: 1100px;
+                --board-gap: 20px;
+            }
+
+            #header {
+                padding: 10px 24px;
+            }
+
+            .header-stat {
+                font-size: 18px;
+                min-width: 120px;
+            }
+
+            .header-title {
+                font-size: 1.6rem;
+            }
+
+            .timer-pill {
+                font-size: 22px;
+                min-width: 140px;
+                padding: 8px 16px;
+            }
+
+            .header-settings {
+                font-size: 26px;
+                min-height: 50px;
+                min-width: 56px;
+            }
+
+            #footer {
+                padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
+            }
+
+            .pile {
+                width: 72px;
+                height: 98px;
+            }
+
+            #deck-pile {
+                font-size: 32px;
+            }
+
+            .btn-main {
+                font-size: 1.3rem;
+                padding: 16px 40px;
+            }
+
+            #btn-undo {
+                width: 64px;
+                height: 64px;
+            }
+
+            #btn-undo svg {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        /* Compact landscape phones — override flex-direction back to column */
+        @media (orientation: landscape) and (max-height: 499px) {
+            body {
+                flex-direction: column;
+            }
+        }
+
         .card:last-child {
             margin-bottom: 0;
         }
@@ -555,6 +672,12 @@
             25% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
             55% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0; }
+        }
+
+        .number-flyout.error { color: rgba(255,80,80,0.9); text-shadow: 0 0 8px rgba(255,60,60,0.4); }
+        .number-result.error {
+            color: rgba(255,100,100,0.95);
+            text-shadow: 0 0 12px rgba(255,60,60,0.4);
         }
 
         /* --- Win Ring (soft glow) --- */
@@ -1989,7 +2112,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.02.06';
+        const APP_VERSION = '2026.04.11';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -2306,10 +2429,26 @@
             const gap = parseFloat(style.columnGap || style.gap) || 8;
             const usable = Math.max(260, board.clientWidth - gap * 3);
             const viewportW = window.innerWidth || 360;
+            const viewportH = window.innerHeight || 640;
+            const isLandscape = viewportW > viewportH && viewportH >= 500;
 
             const minCard = viewportW >= 1200 ? 108 : viewportW >= 900 ? 92 : 60;
             const maxCard = viewportW >= 1200 ? 154 : viewportW >= 900 ? 132 : 96;
-            const cardW = Math.min(maxCard, Math.max(minCard, Math.floor(usable / 4)));
+            let cardW = Math.min(maxCard, Math.max(minCard, Math.floor(usable / 4)));
+
+            // In landscape tablet, constrain card size by available height
+            // so tall stacks (10+ cards) don't overflow
+            if (isLandscape) {
+                const headerH = document.getElementById('header')?.offsetHeight || 60;
+                const footerH = document.getElementById('footer')?.offsetHeight || 90;
+                const boardH = viewportH - headerH - footerH - 30;
+                // Max stack ~10 cards: 1 full card + 9 overlaps
+                const overlapRatio = 0.28; // visible portion per overlapped card
+                const maxStackCards = 10;
+                const maxCardByHeight = Math.floor(boardH / (1 + (maxStackCards - 1) * overlapRatio) / 1.42);
+                cardW = Math.min(cardW, Math.max(minCard, maxCardByHeight));
+            }
+
             const cardH = Math.round(cardW * 1.42);
             const overlap = -Math.round(cardH * 0.72);
 
@@ -2884,11 +3023,13 @@
         }
 
         // === Show Number Flyout ===
-        function showNumberFlyout(cards, colEl, sum) {
+        function showNumberFlyout(cards, colEl, sum, isError = false) {
             if (!colEl) return;
-            const colRect = colEl.getBoundingClientRect();
-            const centerX = colRect.left + colRect.width / 2;
-            const centerY = colRect.top + colRect.height * 0.4;
+            const footer = document.getElementById('footer');
+            const footerTop = footer ? footer.getBoundingClientRect().top : window.innerHeight * 0.85;
+            const targetX = window.innerWidth / 2;
+            const targetY = footerTop - 36;
+            const errClass = isError ? ' error' : '';
             const flyouts = [];
 
             cards.forEach((card, i) => {
@@ -2896,7 +3037,7 @@
                 if (!cardEl) return;
                 const r = cardEl.getBoundingClientRect();
                 const el = document.createElement('div');
-                el.className = 'number-flyout';
+                el.className = 'number-flyout' + errClass;
                 el.textContent = card.data.val;
                 el.style.left = (r.left + r.width / 2) + 'px';
                 el.style.top = (r.top + r.height / 2) + 'px';
@@ -2905,17 +3046,17 @@
 
                 el.animate([
                     { left: (r.left + r.width / 2) + 'px', top: (r.top + r.height / 2) + 'px', opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
-                    { left: centerX + 'px', top: centerY + 'px', opacity: 1, transform: 'translate(-50%, -50%) scale(1.3)' }
+                    { left: targetX + 'px', top: targetY + 'px', opacity: 1, transform: 'translate(-50%, -50%) scale(1.3)' }
                 ], { duration: getDelay(350), delay: getDelay(50), easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' });
             });
 
             setTimeout(() => {
                 flyouts.forEach(f => f.remove());
                 const result = document.createElement('div');
-                result.className = 'number-result';
-                result.textContent = `= ${sum}`;
-                result.style.left = centerX + 'px';
-                result.style.top = centerY + 'px';
+                result.className = 'number-result' + errClass;
+                result.textContent = isError ? `= ${sum} ✗` : `= ${sum}`;
+                result.style.left = targetX + 'px';
+                result.style.top = targetY + 'px';
                 document.body.appendChild(result);
                 setTimeout(() => result.remove(), getDelay(800));
             }, getDelay(400));
@@ -3903,8 +4044,12 @@
                 document.getElementById('btn-clear').style.background = '#c62828';
                 setTimeout(() => document.getElementById('btn-clear').style.background = '', getDelay(300));
 
-                const slotId = selected[0]?.slotId;
-                const colEl = slotId != null ? document.getElementById(`col-${slotId}`) : null;
+                const errSlotId = selected[0]?.slotId;
+                const colEl = errSlotId != null ? document.getElementById(`col-${errSlotId}`) : null;
+                // Show error sum flyout
+                const errCards = selected.map(s => ({ idx: s.idx, data: { ...currentCards[s.idx] } }));
+                showNumberFlyout(errCards, colEl, sum, true);
+
                 selected.forEach(s => {
                     const cardEl = colEl?.children?.[s.idx];
                     if (cardEl) cardEl.classList.add('invalid-flash');
