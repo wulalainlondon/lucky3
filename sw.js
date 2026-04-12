@@ -1,4 +1,5 @@
-const CACHE_NAME = 'lucky3-v2026.04.12';
+const CACHE_NAME = 'lucky3-v2026.04.13';
+const FONTS_CACHE = 'lucky3-fonts-v1';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -23,6 +24,24 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
     const isSameOrigin = url.origin === self.location.origin;
     const isNavigation = event.request.mode === 'navigate';
+
+    // Google Fonts — cache-first（字型不會變動，離線也能用）
+    if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+        event.respondWith(
+            caches.open(FONTS_CACHE).then(async (cache) => {
+                const cached = await cache.match(event.request);
+                if (cached) return cached;
+                try {
+                    const response = await fetch(event.request);
+                    if (response.ok) cache.put(event.request, response.clone());
+                    return response;
+                } catch {
+                    return cached || new Response('', { status: 503 });
+                }
+            })
+        );
+        return;
+    }
 
     if (!isSameOrigin) return;
 
