@@ -537,6 +537,40 @@
             visibility: hidden;
         }
 
+        /* ── Long-stack compression ── */
+        .card.stack-middle {
+            opacity: 0.45;
+            filter: blur(0.9px) brightness(0.78);
+            margin-bottom: calc(var(--fixed-gap) - 10px);  /* extra overlap */
+            transition:
+                transform calc(0.25s * var(--anim-scale)) cubic-bezier(0.18, 0.89, 0.32, 1.28),
+                opacity 0.35s ease,
+                filter 0.35s ease,
+                margin-bottom 0.35s ease;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .stack-count-badge {
+            align-self: center;
+            background: rgba(0, 0, 0, 0.62);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 10px;
+            padding: 2px 9px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            z-index: 200;
+            pointer-events: none;
+            white-space: nowrap;
+            /* Negative margin to overlap the compressed cards beneath */
+            margin-top: -6px;
+            margin-bottom: -6px;
+            position: relative;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        }
+
         .card.selected {
             transform: translateX(40%) rotate(3deg);
             outline: 2px solid var(--gold);
@@ -6844,12 +6878,21 @@
             slots.filter(s => s.active).forEach(slot => {
                 const col = document.createElement('div');
                 col.className = 'column'; col.id = `col-${slot.id}`;
+                const COMPRESS_TOP = 3, COMPRESS_BOT = 3, COMPRESS_THRESH = 8;
+                const total = slot.cards.length;
+                // Suppress compression when 3 cards are selected (player needs to see all)
+                const doCompress = total > COMPRESS_THRESH && !threeReady;
+                const midStart = COMPRESS_TOP;
+                const midEnd = total - COMPRESS_BOT; // exclusive
                 slot.cards.forEach((card, idx) => {
                     const div = document.createElement('div');
                     const selObj = selected.find(s => s.slotId === slot.id && s.idx === idx);
                     const readyClass = selObj && threeReady ? ' selected-ready' : '';
                     const suitClass = card.suit === '♥' ? 'suit-heart' : card.suit === '♦' ? 'suit-diamond' : card.suit === '♠' ? 'suit-spade' : 'suit-club';
                     div.className = `card ${card.color} ${suitClass} ${selObj ? 'selected' : ''}${readyClass}`;
+                    if (doCompress && idx >= midStart && idx < midEnd) {
+                        div.className += ' stack-middle';
+                    }
                     // Keep original stack order stable even when selected.
                     div.style.zIndex = idx;
                     div.innerHTML = `
@@ -6889,6 +6932,13 @@
                         render();
                     };
                     col.appendChild(div);
+                    if (doCompress && idx === COMPRESS_TOP - 1) {
+                        const badge = document.createElement('div');
+                        badge.className = 'stack-count-badge';
+                        const midCount = midEnd - midStart;
+                        badge.textContent = `+${midCount}`;
+                        col.appendChild(badge);
+                    }
                 });
                 board.appendChild(col);
             });
