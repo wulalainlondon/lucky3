@@ -992,6 +992,29 @@
             100% { transform: scale(1);   box-shadow: none; }
         }
 
+        #btn-clear {
+            opacity: 0.45;
+            transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
+        }
+        #btn-clear.match-partial {
+            opacity: 0.8;
+            animation: match-partial-pulse 1.2s ease-in-out infinite;
+        }
+        #btn-clear.match-ready {
+            opacity: 1;
+            box-shadow: 0 4px #000, 0 0 12px rgba(0,230,118,0.6);
+            animation: match-ready-bounce 0.35s cubic-bezier(0.18,0.89,0.32,1.28) both;
+        }
+        @keyframes match-partial-pulse {
+            0%, 100% { box-shadow: 0 4px #000; }
+            50%       { box-shadow: 0 4px #000, 0 0 8px rgba(255,215,0,0.35); }
+        }
+        @keyframes match-ready-bounce {
+            0%   { transform: scale(0.93); }
+            60%  { transform: scale(1.07); }
+            100% { transform: scale(1); }
+        }
+
         .btn-main:active {
             transform: translateY(2px);
             box-shadow: 0 2px #1b5e20;
@@ -2024,6 +2047,12 @@
             filter: brightness(1.14);
         }
 
+        /* Colorblind-friendly suits in high-contrast mode */
+        body.high-contrast .card.suit-heart   { color: #1565C0; }
+        body.high-contrast .card.suit-diamond { color: #E65100; }
+        body.high-contrast .card.suit-spade,
+        body.high-contrast .card.suit-club    { color: #1a1a1a; }
+
         @keyframes need-three-fade {
             0% {
                 transform: translate(-50%, 10px);
@@ -2140,6 +2169,24 @@
             text-align: center;
             padding-bottom: 2px;
         }
+
+        /* ── Non-Latin locale font fallback ─────────────────────── */
+        body.locale-th  { font-family: 'Noto Sans Thai', 'Sarabun', system-ui, sans-serif; }
+        body.locale-vi  { font-family: 'Be Vietnam Pro', 'Noto Sans', system-ui, sans-serif; }
+        body.locale-ru,
+        body.locale-pl  { font-family: 'PT Sans', 'Arial', system-ui, sans-serif; }
+        body.locale-ar  { font-family: 'Noto Sans Arabic', system-ui, sans-serif; }
+        body.locale-zh-CN,
+        body.locale-zh-Hant { font-family: 'Noto Sans CJK TC', 'PingFang TC', 'Microsoft YaHei', system-ui, sans-serif; }
+        body.locale-ja  { font-family: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif; }
+        body.locale-ko  { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif; }
+        .win-prev-stats {
+            font-size: 0.72rem;
+            color: rgba(255,215,0,0.55);
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -2223,6 +2270,10 @@
             <div class="setting-row">
                 <div class="setting-label" data-i18n="settings.version">Version</div>
                 <div id="setting-version" class="setting-value">v-</div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-label" data-i18n="settings.bgm">Background Music</div>
+                <input id="setting-bgm" class="setting-check" type="checkbox">
             </div>
             <button type="button" class="settings-daily" onclick="startDailyChallenge()" data-i18n="settings.daily_challenge">Daily Challenge</button>
             <button type="button" class="settings-achievement" onclick="openDailyLeaderboard()" data-i18n="settings.today_leaderboard">Today's Leaderboard</button>
@@ -2473,6 +2524,7 @@
             'header.daily_tag': 'Daily {date}',
             'settings.title': 'Game Settings',
             'settings.sound': 'Sound',
+            'settings.bgm': 'Background Music',
             'settings.vibration': 'Vibration',
             'settings.animation_speed': 'Animation Speed',
             'settings.speed_slow': 'Slow',
@@ -4960,11 +5012,16 @@
             applyI18nToDom();
             updateHeaderModeTag();
             if (tutorial.active) renderTutorial();
+            // Apply locale-specific font class
+            document.body.className = document.body.className
+                .replace(/\blocale-\S+/g, '')
+                .trim();
+            document.body.classList.add('locale-' + currentLocale);
         }
 
         const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const SUPPORTS_VIBRATE = !IS_IOS && typeof navigator.vibrate === 'function';
-        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true };
+        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true, bgm: false };
         const DEFAULT_ACHIEVEMENTS = {
             wins: 0,
             zeroClearWins: 0,
@@ -4986,6 +5043,7 @@
         let tutorialDeckMode = false;
         let winCardSuit = '';
         let gameMode = 'normal';
+        let lastGameStats = null; // { timeStr, moves, combo }
         let dailyUndoCount = 0;
         let currentSeed = null;
         let lastDailyRankText = '';
@@ -5299,6 +5357,9 @@
             const recycleAnimEl = document.getElementById('setting-recycle-anim');
             const versionEl = document.getElementById('setting-version');
             if (soundEl) soundEl.checked = settings.sound;
+            const bgmEl = document.getElementById('setting-bgm');
+            if (bgmEl) bgmEl.checked = !!settings.bgm;
+            BGM.sync(!!settings.bgm);
             if (vibrationEl) vibrationEl.checked = settings.vibration;
             if (speedEl) speedEl.value = settings.animationSpeed;
             if (languageEl) languageEl.value = settings.locale || currentLocale;
@@ -5371,6 +5432,11 @@
             contrastEl.addEventListener('change', (e) => updateSetting('highContrast', e.target.checked));
             miiPeekEl.addEventListener('change', (e) => updateSetting('miiPeek', e.target.checked));
             recycleAnimEl.addEventListener('change', (e) => updateSetting('recycleAnim', e.target.checked));
+            document.getElementById('setting-bgm')?.addEventListener('change', e => {
+                settings.bgm = e.target.checked;
+                saveSettings();
+                BGM.sync(settings.bgm);
+            });
             document.getElementById('setting-player-name').addEventListener('blur', () => {
                 const trimmed = document.getElementById('setting-player-name').value.trim().slice(0, 12);
                 localStorage.setItem('lucky3-player-name', trimmed);
@@ -5999,6 +6065,21 @@
             freqs.forEach(f => playTone(f, durationMs, volume, startAt));
         }
 
+        // === Show Gold Flash (Sum=29 rare jackpot overlay) ===
+        function showGoldFlash() {
+            const el = document.createElement('div');
+            el.style.cssText = 'position:fixed;inset:0;background:rgba(255,215,0,0);pointer-events:none;z-index:9989;transition:background 80ms ease';
+            document.body.appendChild(el);
+            requestAnimationFrame(() => {
+                el.style.background = 'rgba(255,215,0,0.28)';
+                setTimeout(() => {
+                    el.style.transition = 'background 200ms ease';
+                    el.style.background = 'rgba(255,215,0,0)';
+                    setTimeout(() => el.remove(), 220);
+                }, 80);
+            });
+        }
+
         // === Show Clear Flash ===
         function showClearFlash(opts = {}) {
             const flash = document.createElement('div');
@@ -6079,6 +6160,102 @@
             osc.stop(now + durationMs / 1000 + 0.02);
         }
 
+        // ── Background Music Engine ──────────────────────────────────
+        const BGM = (() => {
+            let ctx = null;
+            let masterGain = null;
+            let droneOsc = null;
+            let padOsc = null;
+            let padLfo = null;
+            let pingTimer = null;
+            let running = false;
+
+            function getCtx() {
+                if (!ctx) {
+                    ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (ctx.state === 'suspended') ctx.resume();
+                return ctx;
+            }
+
+            function startDrone(c) {
+                droneOsc = c.createOscillator();
+                const g = c.createGain();
+                droneOsc.type = 'sine';
+                droneOsc.frequency.value = 55;
+                g.gain.value = 0.022;
+                droneOsc.connect(g); g.connect(masterGain);
+                droneOsc.start();
+            }
+
+            function startPad(c) {
+                padOsc = c.createOscillator();
+                padLfo = c.createOscillator();
+                const lfoGain = c.createGain();
+                const g = c.createGain();
+                padOsc.type = 'sine';
+                padOsc.frequency.value = 180;
+                padLfo.type = 'sine';
+                padLfo.frequency.value = 0.13;
+                lfoGain.gain.value = 7;
+                padLfo.connect(lfoGain);
+                lfoGain.connect(padOsc.frequency);
+                g.gain.value = 0.016;
+                padOsc.connect(g); g.connect(masterGain);
+                padOsc.start(); padLfo.start();
+            }
+
+            function schedulePing() {
+                const delay = 4000 + Math.random() * 5000;
+                pingTimer = setTimeout(() => {
+                    if (!running || !ctx) return;
+                    const c = ctx;
+                    const freq = 500 + Math.random() * 400;
+                    const osc = c.createOscillator();
+                    const g = c.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    g.gain.setValueAtTime(0, c.currentTime);
+                    g.gain.linearRampToValueAtTime(0.012, c.currentTime + 0.08);
+                    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 1.2);
+                    osc.connect(g); g.connect(masterGain);
+                    osc.start(c.currentTime);
+                    osc.stop(c.currentTime + 1.3);
+                    schedulePing();
+                }, delay);
+            }
+
+            return {
+                start() {
+                    if (running) return;
+                    const c = getCtx();
+                    masterGain = c.createGain();
+                    masterGain.gain.setValueAtTime(0, c.currentTime);
+                    masterGain.gain.linearRampToValueAtTime(0.9, c.currentTime + 1.5);
+                    masterGain.connect(c.destination);
+                    startDrone(c);
+                    startPad(c);
+                    schedulePing();
+                    running = true;
+                },
+                stop() {
+                    if (!running || !masterGain || !ctx) return;
+                    running = false;
+                    clearTimeout(pingTimer);
+                    masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
+                    setTimeout(() => {
+                        try { droneOsc?.stop(); padOsc?.stop(); padLfo?.stop(); } catch (_) {}
+                        try { masterGain?.disconnect(); } catch (_) {}
+                        droneOsc = padOsc = padLfo = masterGain = null;
+                    }, 1600);
+                },
+                sync(enabled) {
+                    if (enabled) this.start(); else this.stop();
+                }
+            };
+        })();
+        // ── End Background Music Engine ──────────────────────────────
+
         function playSound(name, opts = {}) {
             if (!settings.sound) return;
             try {
@@ -6087,9 +6264,11 @@
                 if (name === 'deal') playTone(430, 50, 0.03);
                 else if (name === 'clear') {
                     if (sum >= 29) {
-                        playChord([330, 550, 740, 880], 150, 0.04);
-                        // Echo
-                        playChord([330, 550, 740], 100, 0.02, 0.12);
+                        playChord([330, 550, 740, 880], 160, 0.045);
+                        // Reverb tail — 3 漸弱 echo
+                        playChord([330, 550, 740], 120, 0.028, 0.14);
+                        playChord([440, 660],       90,  0.016, 0.30);
+                        playChord([550],            70,  0.009, 0.48);
                     } else if (sum >= 19) {
                         playChord([440, 660, 880], 100, 0.04);
                     } else {
@@ -6669,7 +6848,8 @@
                     const div = document.createElement('div');
                     const selObj = selected.find(s => s.slotId === slot.id && s.idx === idx);
                     const readyClass = selObj && threeReady ? ' selected-ready' : '';
-                    div.className = `card ${card.color} ${selObj ? 'selected' : ''}${readyClass}`;
+                    const suitClass = card.suit === '♥' ? 'suit-heart' : card.suit === '♦' ? 'suit-diamond' : card.suit === '♠' ? 'suit-spade' : 'suit-club';
+                    div.className = `card ${card.color} ${suitClass} ${selObj ? 'selected' : ''}${readyClass}`;
                     // Keep original stack order stable even when selected.
                     div.style.zIndex = idx;
                     div.innerHTML = `
@@ -6713,6 +6893,18 @@
                 board.appendChild(col);
             });
             document.getElementById('deck-num').innerText = deck.length;
+
+            // Update MATCH 3 button state
+            const clearBtn = document.getElementById('btn-clear');
+            if (clearBtn) {
+                const n = selected.length;
+                clearBtn.classList.remove('match-partial', 'match-ready');
+                if (n === 3) {
+                    clearBtn.classList.add('match-ready');
+                } else if (n > 0) {
+                    clearBtn.classList.add('match-partial');
+                }
+            }
         }
 
         // --- 特效邏輯 ---
@@ -6862,6 +7054,7 @@
             if (sum >= 29) {
                 showClearFlash({ orange: true, intensity: 0.2 });
                 SHAKE.medium();
+                showGoldFlash();
                 triggerHaptic([80, 30, 80, 30, 80]);
             } else if (sum >= 19) {
                 showClearFlash({ intensity: 0.1 });
@@ -7481,6 +7674,7 @@
             if (old) old.remove();
 
             const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            const prevStats = lastGameStats ? { ...lastGameStats } : null;
             const current = { elapsedSec, moveCount, maxCombo };
             const todayKey = toLocalDateKey();
             const isFirstWinToday = achievements.lastWinDate !== todayKey;
@@ -7490,11 +7684,13 @@
             const bestMessage = buildBestMessage(bestResult);
             const dailyMsg = markDailyChallengeWin();
             const rankMsg = await submitDailyScoreIfNeeded(current, 'lucky3');
+            lastGameStats = { timeStr: formatTime(elapsedSec), moves: moveCount, combo: maxCombo };
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
             overlay.id = 'win-overlay';
             overlay.innerHTML = `
                 <div class="win-panel">
+                    ${prevStats ? `<div class="win-prev-stats">上局 ${prevStats.timeStr} · ${prevStats.moves}步 · ×${prevStats.combo}</div>` : ''}
                     <h2 class="win-title shimmer-text">LUCKY 3 JACKPOT</h2>
                     <p class="win-subtitle">${t('win.subtitle')}</p>
                     <div class="win-stats">
@@ -7548,17 +7744,20 @@
             if (old) old.remove();
 
             const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            const prevStats = lastGameStats ? { ...lastGameStats } : null;
             const current = { elapsedSec, moveCount, maxCombo };
             const bestResult = updateBestStats(current);
             const achievementResult = updateAchievementsOnWin(current, 'zero-clear');
             const bestMessage = buildBestMessage(bestResult);
             const dailyMsg = markDailyChallengeWin();
             const rankMsg = await submitDailyScoreIfNeeded(current, 'zero-clear');
+            lastGameStats = { timeStr: formatTime(elapsedSec), moves: moveCount, combo: maxCombo };
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
             overlay.id = 'win-overlay';
             overlay.innerHTML = `
                 <div class="void-win-panel">
+                    ${prevStats ? `<div class="win-prev-stats">上局 ${prevStats.timeStr} · ${prevStats.moves}步 · ×${prevStats.combo}</div>` : ''}
                     <h2 class="void-win-title">VOID CLEAR</h2>
                     <p class="void-win-subtitle">${t('void.subtitle')}</p>
                     <p class="void-win-badge">${t('void.badge')}</p>
