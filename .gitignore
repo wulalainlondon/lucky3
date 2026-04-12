@@ -2,3 +2,5 @@ node_modules/
 ios/App/Pods/
 ios/App/App.xcworkspace/xcuserdata/
 *.DS_Store
+playwright-report/
+test-results/
