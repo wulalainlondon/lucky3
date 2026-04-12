@@ -6878,7 +6878,16 @@
             slots.filter(s => s.active).forEach(slot => {
                 const col = document.createElement('div');
                 col.className = 'column'; col.id = `col-${slot.id}`;
-                const COMPRESS_TOP = 3, COMPRESS_BOT = 3, COMPRESS_THRESH = 8;
+                const COMPRESS_TOP = 3, COMPRESS_BOT = 3;
+                // Dynamic threshold: how many cards fit in the visible board area
+                const _cs = getComputedStyle(document.documentElement);
+                const _cardH = parseFloat(_cs.getPropertyValue('--card-h')) || 119;
+                const _gap   = parseFloat(_cs.getPropertyValue('--fixed-gap')) || -86;
+                const _stepH = _cardH + _gap; // visible height each stacked card adds (~28% of cardH)
+                const _headerH = document.getElementById('header')?.offsetHeight || 60;
+                const _footerH = document.getElementById('footer')?.offsetHeight || 90;
+                const _availH  = (window.innerHeight || 640) - _headerH - _footerH - 20;
+                const COMPRESS_THRESH = Math.max(6, Math.floor((_availH - _cardH) / _stepH) + 1);
                 const total = slot.cards.length;
                 // Suppress compression when 3 cards are selected (player needs to see all)
                 const doCompress = total > COMPRESS_THRESH && !threeReady;
