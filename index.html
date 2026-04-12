@@ -81,6 +81,8 @@
             font-size: 11px;
             line-height: 1.2;
             min-width: 64px;
+            display: flex;
+            flex-direction: column;
         }
 
         .header-title {
@@ -978,6 +980,16 @@
             opacity: 0.2;
             box-shadow: none;
             cursor: not-allowed;
+        }
+
+        #btn-undo.undo-ready {
+            animation: undo-ready-pop 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+        }
+
+        @keyframes undo-ready-pop {
+            0%   { transform: scale(0.85); }
+            60%  { transform: scale(1.18); box-shadow: 0 0 0 5px rgba(255,215,0,0.3); }
+            100% { transform: scale(1);   box-shadow: none; }
         }
 
         .btn-main:active {
@@ -2135,7 +2147,10 @@
 
     <div id="header">
         <div class="header-main">
-            <div class="header-stat"><span id="deck-label" data-i18n="header.deck_label">DECK</span>: <b id="deck-num">40</b></div>
+            <div class="header-stat">
+                <div><span id="deck-label" data-i18n="header.deck_label">DECK</span>: <b id="deck-num">40</b></div>
+                <div id="undo-count-row" style="display:none;font-size:0.78em;opacity:0.75;margin-top:1px;">↩ ×<span id="undo-count-num">0</span></div>
+            </div>
             <div class="header-title">
                 <span class="header-title-main">LUCKY 3</span>
                 <span id="header-mode-tag" class="header-mode-tag"></span>
@@ -4971,6 +4986,7 @@
         let tutorialDeckMode = false;
         let winCardSuit = '';
         let gameMode = 'normal';
+        let dailyUndoCount = 0;
         let currentSeed = null;
         let lastDailyRankText = '';
         let developerMode = false;
@@ -5317,6 +5333,7 @@
                 tag.innerText = '';
                 tag.classList.remove('show');
             }
+            updateUndoCountDisplay();
         }
 
         function onSettingsOverlayClick(event) {
@@ -6523,7 +6540,7 @@
             if (winInterval) clearInterval(winInterval);
 
             if (!forceNew && targetMode === 'normal' && loadGameState()) {
-                document.getElementById('btn-undo').disabled = historyStack.length === 0;
+                setUndoEnabled(historyStack.length > 0);
                 updateHeaderModeTag();
                 render();
                 updateDiscard();
@@ -6570,13 +6587,15 @@
             lastCleared = null;
             startTime = Date.now();
             moveCount = 0;
+            dailyUndoCount = 0;
+            updateUndoCountDisplay();
             maxCombo = 0;
             hasWon = false;
             deadlockShown = false;
             winCardSuit = '';
 
             // 重新渲染
-            document.getElementById('btn-undo').disabled = true;
+            setUndoEnabled(false);
             updateHeaderModeTag();
             syncBoardScale();
             render();
@@ -6819,7 +6838,7 @@
             const colEl = document.getElementById(`col-${slotId}`);
             const clearedObjects = sortedIndices.map(idx => ({ idx: idx, data: { ...currentCards[idx] } }));
             historyStack.push({ type: 'clear', slotId, cards: clearedObjects, prevLast: lastCleared, comboBefore: combo });
-            document.getElementById('btn-undo').disabled = false;
+            setUndoEnabled(true);
             const destRect = document.getElementById('discard-pile').getBoundingClientRect();
             lastCleared = currentCards[sortedIndices[sortedIndices.length - 1]];
 
@@ -6965,7 +6984,7 @@
             nextSlotIndex = (slots.indexOf(target) + 1) % 4;
 
             historyStack.push({ type: 'deal', slotId: target.id, prevIdx });
-            document.getElementById('btn-undo').disabled = false;
+            setUndoEnabled(true);
             moveCount++;
             playSound('deal');
             updateDeckWarnState();
@@ -7116,6 +7135,7 @@
             if (historyStack.length === 0 || isBusy) return;
             const last = historyStack.pop(); combo = last.comboBefore || 0;
             moveCount = Math.max(0, moveCount - 1);
+            if (gameMode === 'daily') { dailyUndoCount++; updateUndoCountDisplay(); }
             if (last.type === 'deal') {
                 const s = slots.find(x => x.id === last.slotId); deck.push(s.cards.pop()); nextSlotIndex = last.prevIdx;
             } else {
@@ -7127,7 +7147,7 @@
                 lastCleared = last.prevLast;
             }
             selected = []; render(); updateDiscard();
-            if (historyStack.length === 0) document.getElementById('btn-undo').disabled = true;
+            if (historyStack.length === 0) setUndoEnabled(false);
             checkDeadlock();
             saveGameState();
         }
@@ -7698,6 +7718,32 @@
             deckEl.addEventListener('contextmenu', e => e.preventDefault());
         }
         // ── End Hint System ───────────────────────────────────────────
+
+        function updateUndoCountDisplay() {
+            const row = document.getElementById('undo-count-row');
+            const num = document.getElementById('undo-count-num');
+            if (!row || !num) return;
+            if (gameMode === 'daily' && dailyUndoCount > 0) {
+                num.textContent = dailyUndoCount;
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+
+        function setUndoEnabled(enabled) {
+            const btn = document.getElementById('btn-undo');
+            if (!btn) return;
+            if (enabled) {
+                btn.disabled = false;
+                btn.classList.remove('undo-ready');
+                void btn.offsetWidth; // force reflow
+                btn.classList.add('undo-ready');
+            } else {
+                btn.disabled = true;
+                btn.classList.remove('undo-ready');
+            }
+        }
 
         function updateDeckWarnState() {
             const el = document.getElementById('deck-pile');
