@@ -2028,6 +2028,106 @@
                 opacity: 0;
             }
         }
+
+        #deck-pile.deck-warn {
+            border: 2px solid rgba(255, 100, 30, 0.9) !important;
+            animation: deck-warn-pulse 1.1s ease-in-out infinite;
+        }
+
+        @keyframes deck-warn-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 100, 30, 0); }
+            50%       { box-shadow: 0 0 0 6px rgba(255, 100, 30, 0.45); }
+        }
+
+        .hint-highlight {
+            outline: 3px solid #00e676 !important;
+            outline-offset: 2px;
+            animation: hint-card-pulse 0.6s ease-in-out 3;
+            z-index: 10;
+            position: relative;
+        }
+
+        @keyframes hint-card-pulse {
+            0%, 100% { filter: brightness(1); }
+            50%       { filter: brightness(1.35) drop-shadow(0 0 6px #00e676); }
+        }
+
+        #deck-pile.hint-press {
+            transform: scale(0.94);
+            transition: transform 0.15s ease;
+        }
+        .win-share-btn {
+            margin-top: 8px;
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid rgba(255,215,0,0.45);
+            border-radius: 10px;
+            background: rgba(255,215,0,0.1);
+            color: var(--gold);
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .win-share-btn:active { background: rgba(255,215,0,0.22); }
+
+        .streak-calendar {
+            margin: 12px 0 4px;
+            width: 100%;
+        }
+        .streak-calendar-title {
+            font-size: 0.78rem;
+            color: rgba(255,215,0,0.75);
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .streak-cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+        .streak-cal-day {
+            aspect-ratio: 1;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.62rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            line-height: 1.1;
+            gap: 1px;
+            min-height: 30px;
+        }
+        .streak-cal-day.today {
+            border-color: rgba(255,215,0,0.6);
+            background: rgba(255,215,0,0.08);
+        }
+        .streak-cal-day.has-win {
+            background: rgba(0,200,100,0.18);
+            border-color: rgba(0,200,100,0.5);
+        }
+        .streak-cal-day.has-win.today {
+            background: rgba(0,200,100,0.28);
+            border-color: #00e676;
+        }
+        .streak-cal-day .cal-suit {
+            font-size: 0.75rem;
+            line-height: 1;
+        }
+        .streak-cal-day .cal-num {
+            font-size: 0.55rem;
+            opacity: 0.7;
+        }
+        .streak-cal-weekday {
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.4);
+            text-align: center;
+            padding-bottom: 2px;
+        }
     </style>
 </head>
 
@@ -2100,6 +2200,10 @@
             <div class="setting-row">
                 <div class="setting-label" data-i18n="settings.recycle_anim">Recycle Animation</div>
                 <input id="setting-recycle-anim" class="setting-check" type="checkbox">
+            </div>
+            <div class="setting-row">
+                <div class="setting-label" data-i18n="settings.player_name">Player Name</div>
+                <input id="setting-player-name" class="setting-control" type="text" maxlength="12" placeholder="Lucky Player" style="width:110px;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,215,0,0.4);background:rgba(0,0,0,0.3);color:white;font-family:inherit;font-size:0.85rem;">
             </div>
             <div class="setting-row">
                 <div class="setting-label" data-i18n="settings.version">Version</div>
@@ -2259,6 +2363,16 @@
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
         const ACHIEVEMENTS_KEY = 'lucky3-achievements-v1';
+        const WIN_HISTORY_KEY = 'lucky3-win-history-v1';
+
+        function loadWinHistory() {
+            try { return JSON.parse(localStorage.getItem(WIN_HISTORY_KEY) || '{}'); }
+            catch { return {}; }
+        }
+
+        function saveWinHistory(h) {
+            localStorage.setItem(WIN_HISTORY_KEY, JSON.stringify(h));
+        }
         const DAILY_CHALLENGE_KEY = 'lucky3-daily-challenge-v1';
         const DEV_MODE_KEY = 'lucky3-dev-mode-v1';
         const TUTORIAL_FIXED_SEED = 6;
@@ -2353,6 +2467,7 @@
             'settings.high_contrast': 'High Contrast Mode',
             'settings.mii_peek': 'Card Preview',
             'settings.recycle_anim': 'Recycle Animation',
+            'settings.player_name': 'Player Name',
             'settings.version': 'Version',
             'settings.daily_challenge': 'Daily Challenge',
             'settings.today_leaderboard': "Today's Leaderboard",
@@ -2460,6 +2575,7 @@
             'win.stat.moves': 'Moves',
             'win.stat.max_combo': 'Max Combo',
             'win.play_again': 'Play Again',
+            'win.share': '📋 Share Result',
             'win.best.new_fastest': '🎉 New best this run: fastest time ({time})',
             'win.best.new_fewest_moves': '✨ New best this run: fewest moves ({moves})',
             'win.best.new_highest_combo': '🔥 New best this run: highest combo ({combo})',
@@ -5174,6 +5290,9 @@
             if (miiPeekEl) miiPeekEl.checked = settings.miiPeek;
             if (recycleAnimEl) recycleAnimEl.checked = settings.recycleAnim;
             if (versionEl) versionEl.innerText = `v${APP_VERSION}`;
+            const savedName = localStorage.getItem('lucky3-player-name') || '';
+            const nameInput = document.getElementById('setting-player-name');
+            if (nameInput) nameInput.value = savedName;
         }
 
         function updateSetting(key, value) {
@@ -5235,6 +5354,10 @@
             contrastEl.addEventListener('change', (e) => updateSetting('highContrast', e.target.checked));
             miiPeekEl.addEventListener('change', (e) => updateSetting('miiPeek', e.target.checked));
             recycleAnimEl.addEventListener('change', (e) => updateSetting('recycleAnim', e.target.checked));
+            document.getElementById('setting-player-name').addEventListener('blur', () => {
+                const trimmed = document.getElementById('setting-player-name').value.trim().slice(0, 12);
+                localStorage.setItem('lucky3-player-name', trimmed);
+            });
 
             const titleEl = document.querySelector('.settings-title');
             if (titleEl && !titleEl.dataset.devBound) {
@@ -6037,12 +6160,14 @@
                 return '';
             }
             try {
+                const playerName = (localStorage.getItem('lucky3-player-name') || '').trim();
                 const result = await bridge.submitDailyScore({
                     dateKey: toLocalDateKey(),
                     bestTimeMs: current.elapsedSec * 1000,
                     moves: current.moveCount,
                     maxCombo: current.maxCombo,
-                    resultKind: kind
+                    resultKind: kind,
+                    ...(playerName ? { name: playerName } : {})
                 });
 
                 if (result.status === 'created') {
@@ -6158,6 +6283,13 @@
                 playSound('hint');
             }
 
+            // Record today's first win suit for calendar
+            const wh = loadWinHistory();
+            if (!wh[today]) {
+                wh[today] = (kind === 'zero-clear') ? 'void' : (winCardSuit || '');
+                saveWinHistory(wh);
+            }
+
             saveAchievements();
             return { streakNotice };
         }
@@ -6204,6 +6336,51 @@
             return rows;
         }
 
+        function buildStreakCalendar() {
+            const today = toLocalDateKey();
+            const wh = loadWinHistory();
+            const suitEmoji = { spade: '♠', heart: '♥', diamond: '♦', club: '♣', void: '✨', '': '' };
+
+            // Build current month's dates
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const monthName = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            let html = `<div class="streak-calendar">
+                <div class="streak-calendar-title">${monthName}</div>
+                <div class="streak-cal-grid">`;
+
+            // Weekday headers
+            ['S','M','T','W','T','F','S'].forEach(d => {
+                html += `<div class="streak-cal-weekday">${d}</div>`;
+            });
+
+            // Empty cells before first day
+            for (let i = 0; i < firstDay; i++) {
+                html += `<div class="streak-cal-day" style="opacity:0;pointer-events:none"></div>`;
+            }
+
+            // Days
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const isToday = dateStr === today;
+                const suit = wh[dateStr];
+                const hasWin = !!suit;
+                const emoji = suitEmoji[suit] || '';
+                html += `<div class="streak-cal-day${hasWin ? ' has-win' : ''}${isToday ? ' today' : ''}">
+                    ${emoji ? `<span class="cal-suit">${emoji}</span>` : ''}
+                    <span class="cal-num">${d}</span>
+                </div>`;
+            }
+
+            html += `</div></div>`;
+            return html;
+        }
+
         function renderAchievements() {
             const grid = document.getElementById('achievement-grid');
             const badges = document.getElementById('achievement-badges');
@@ -6219,6 +6396,12 @@
                 <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.best_moves')}</div><div class="achievement-stat-value">${achievements.bestMoves == null ? '-' : achievements.bestMoves}</div></div>
                 <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.best_time')}</div><div class="achievement-stat-value">${achievements.bestTimeSec == null ? '-' : formatTime(achievements.bestTimeSec)}</div></div>
             `;
+
+            // Insert streak calendar
+            const gridEl = document.getElementById('achievement-grid');
+            if (gridEl) {
+                gridEl.insertAdjacentHTML('afterbegin', buildStreakCalendar());
+            }
 
             badges.innerHTML = achievementBadgeRows().map((b) => `
                 <div class="achievement-badge ${b.ok ? 'unlocked' : ''}">
@@ -6747,6 +6930,7 @@
         // --- 發牌與消除 ---
         async function dealOneCard() {
             if (isBusy) return;
+            clearHintHighlight();
 
             if (developerMode && !tutorial.active) {
                 const autoMove = findFirstLegalClearMove();
@@ -6784,6 +6968,7 @@
             document.getElementById('btn-undo').disabled = false;
             moveCount++;
             playSound('deal');
+            updateDeckWarnState();
             onTutorialEvent('deal');
 
             const card = deck.pop();
@@ -6885,6 +7070,7 @@
 
         async function attemptClear() {
             if (isBusy) return;
+            clearHintHighlight();
             if (selected.length !== 3) {
                 showNeedThreeHint(selected.length);
                 return;
@@ -6954,6 +7140,7 @@
 
             if (!isZeroClear && !isLucky3) return;
 
+            document.getElementById('deck-pile')?.classList.remove('deck-warn');
             if (isLucky3) winCardSuit = all[0].suit;
             hasWon = true;
 
@@ -7244,6 +7431,31 @@
             return t('win.best.summary', { time: formatTime(result.best.fastestTimeSec || 0), moves: result.best.fewestMoves || 0 });
         }
 
+        function buildShareText() {
+            const suitEmoji = { spade: '♠️', heart: '♥️', diamond: '♦️', club: '♣️' };
+            const emoji = suitEmoji[winCardSuit] || '🃏';
+            const date = toLocalDateKey ? toLocalDateKey() : new Date().toISOString().slice(0, 10);
+            const timeStr = document.querySelector('.win-stat-row strong[data-format="time"]')?.textContent || '';
+            const movesEl = document.querySelectorAll('.win-stat-row strong');
+            const moves = movesEl[1]?.textContent || '';
+            const combo = movesEl[2]?.textContent || '';
+            const isVoid = document.querySelector('.win-title')?.textContent?.includes('VOID') || false;
+            const resultLine = isVoid ? '🃏 VOID CLEAR' : `🃏 ${emoji} Lucky Win`;
+            return `Lucky 3 · ${date}\n⏱ ${timeStr} · 🎯 ${moves} moves · 🔥 Combo ×${combo}\n${resultLine}`;
+        }
+
+        function shareWinResult(btn, text) {
+            if (navigator.share) {
+                navigator.share({ text }).catch(() => {});
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const orig = btn.textContent;
+                    btn.textContent = '✅ Copied!';
+                    setTimeout(() => { btn.textContent = orig; }, 1800);
+                }).catch(() => {});
+            }
+        }
+
         async function showWinPanel() {
             const old = document.getElementById('win-overlay');
             if (old) old.remove();
@@ -7276,6 +7488,7 @@
                     ${achievementResult.streakNotice ? `<p class="win-daily">${achievementResult.streakNotice}</p>` : ''}
                     <p class="win-best">${bestMessage}</p>
                     <button type="button" class="win-play-again" onclick="playAgain()">${t('win.play_again')}</button>
+                    <button type="button" class="win-share-btn" onclick="shareWinResult(this, buildShareText())">${t('win.share')}</button>
                 </div>
             `;
             document.body.appendChild(overlay);
@@ -7339,6 +7552,7 @@
                     </div>
                     <p class="win-best">${bestMessage}</p>
                     <button type="button" class="win-play-again" onclick="playAgain()">${t('win.play_again')}</button>
+                    <button type="button" class="win-share-btn" onclick="shareWinResult(this, buildShareText())">${t('win.share')}</button>
                 </div>
             `;
             document.body.appendChild(overlay);
@@ -7429,7 +7643,71 @@
             }
         }
 
+        // ── Hint System ──────────────────────────────────────────────
+        let hintHoldTimer = null;
+        let hintClearTimer = null;
+
+        function showHintHighlight() {
+            clearHintHighlight();
+            const move = findFirstLegalClearMove();
+            const deckEl = document.getElementById('deck-pile');
+            if (!move) {
+                // No legal move: shake DEAL button
+                if (deckEl) {
+                    deckEl.style.animation = 'invalid-shake 0.36s ease-in-out';
+                    setTimeout(() => { if (deckEl) deckEl.style.animation = ''; }, 400);
+                }
+                return;
+            }
+            // Highlight the 3 cards
+            const colEl = document.getElementById(`col-${move.slotId}`);
+            if (!colEl) return;
+            const cardEls = colEl.querySelectorAll('.card');
+            move.indices.forEach(idx => {
+                if (cardEls[idx]) cardEls[idx].classList.add('hint-highlight');
+            });
+            // Auto-remove after 2s
+            hintClearTimer = setTimeout(clearHintHighlight, 2000);
+        }
+
+        function clearHintHighlight() {
+            document.querySelectorAll('.hint-highlight').forEach(el => el.classList.remove('hint-highlight'));
+            if (hintClearTimer) { clearTimeout(hintClearTimer); hintClearTimer = null; }
+        }
+
+        function initHintLongPress() {
+            const deckEl = document.getElementById('deck-pile');
+            if (!deckEl) return;
+
+            const startHold = () => {
+                deckEl.classList.add('hint-press');
+                hintHoldTimer = setTimeout(() => {
+                    deckEl.classList.remove('hint-press');
+                    showHintHighlight();
+                }, 1500);
+            };
+
+            const cancelHold = () => {
+                deckEl.classList.remove('hint-press');
+                if (hintHoldTimer) { clearTimeout(hintHoldTimer); hintHoldTimer = null; }
+            };
+
+            deckEl.addEventListener('pointerdown', startHold);
+            deckEl.addEventListener('pointerup',   cancelHold);
+            deckEl.addEventListener('pointerleave', cancelHold);
+            deckEl.addEventListener('contextmenu', e => e.preventDefault());
+        }
+        // ── End Hint System ───────────────────────────────────────────
+
+        function updateDeckWarnState() {
+            const el = document.getElementById('deck-pile');
+            if (!el) return;
+            const warn = deck.length === 0 && clearedGroups.length > 0 && !hasAnyLegalClear();
+            el.classList.toggle('deck-warn', warn);
+        }
+
         function checkDeadlock() {
+            updateDeckWarnState();
             if (hasWon || isBusy) return false;
 
             if (deck.length > 0 || clearedGroups.length > 0) {
@@ -7553,6 +7831,7 @@
         } else {
             init();
         }
+        initHintLongPress();
     </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
