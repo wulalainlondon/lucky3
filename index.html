@@ -6652,6 +6652,53 @@
             return _compressor;
         }
 
+        // === Real Sound System ===
+        const _soundCache = {};
+        const _soundBasePath = (() => {
+            if (window.Capacitor) return '/sounds/';
+            return './sounds/';
+        })();
+
+        async function _loadSound(name) {
+            if (_soundCache[name]) return _soundCache[name];
+            if (!audioCtx) {
+                const Ctx = window.AudioContext || window.webkitAudioContext;
+                if (!Ctx) return null;
+                audioCtx = new Ctx();
+            }
+            for (const ext of ['wav', 'mp3', 'ogg']) {
+                try {
+                    const res = await fetch(_soundBasePath + name + '.' + ext);
+                    if (!res.ok) continue;
+                    const buf = await res.arrayBuffer();
+                    const decoded = await audioCtx.decodeAudioData(buf);
+                    _soundCache[name] = decoded;
+                    return decoded;
+                } catch (_) {}
+            }
+            return null;
+        }
+
+        function preloadSounds() {
+            ['deal','clear9','clear19','clear29','error','win','recycle','deadlock'].forEach(n => _loadSound(n).catch(()=>{}));
+        }
+
+        function playRealSound(name, volume = 1.0) {
+            if (!settings.sound) return false;
+            const buf = _soundCache[name];
+            if (!buf || !audioCtx) return false;
+            if (audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf;
+            const gain = audioCtx.createGain();
+            gain.gain.value = volume;
+            src.connect(gain);
+            gain.connect(getCompressor() || audioCtx.destination);
+            src.start();
+            return true;
+        }
+        // === End Real Sound System ===
+
         function playTone(freq = 440, durationMs = 80, volume = 0.04, startAt = 0, waveform = 'triangle') {
             const Ctx = window.AudioContext || window.webkitAudioContext;
             if (!Ctx) return;
@@ -6773,17 +6820,22 @@
             try {
                 const sum = opts.sum || 0;
                 const cmb = opts.combo || 0;
-                if (name === 'deal') playTone(430, 50, 0.03);
-                else if (name === 'clear') {
+
+                if (name === 'deal') {
+                    if (playRealSound('deal', 0.9)) return;
+                    playTone(430, 50, 0.03);
+                } else if (name === 'clear') {
                     if (sum >= 29) {
+                        if (playRealSound('clear29', 1.0)) return;
                         playChord([330, 550, 740, 880], 160, 0.045);
-                        // Reverb tail — 3 漸弱 echo
                         playChord([330, 550, 740], 120, 0.028, 0.14);
                         playChord([440, 660],       90,  0.016, 0.30);
                         playChord([550],            70,  0.009, 0.48);
                     } else if (sum >= 19) {
+                        if (playRealSound('clear19', 0.9)) return;
                         playChord([440, 660, 880], 100, 0.04);
                     } else {
+                        if (playRealSound('clear9', 0.85)) return;
                         playTone(550, 70, 0.04); playTone(740, 80, 0.04, 0.06); playTone(880, 60, 0.03, 0.1);
                     }
                     // Combo pitch rise
@@ -6795,19 +6847,26 @@
                     } else if (cmb >= 2) {
                         playTone(500 + cmb * 40, 50, 0.02, 0.12);
                     }
-                }
-                else if (name === 'error') playTone(210, 110, 0.045);
-                else if (name === 'hint') playTone(360, 60, 0.025);
-                else if (name === 'recycle') { playTone(300, 70, 0.03); playTone(420, 70, 0.03, 0.08); }
-                else if (name === 'win') {
+                } else if (name === 'error') {
+                    if (playRealSound('error', 0.8)) return;
+                    playTone(210, 110, 0.045);
+                } else if (name === 'hint') {
+                    playTone(360, 60, 0.025);
+                } else if (name === 'recycle') {
+                    if (playRealSound('recycle', 0.85)) return;
+                    playTone(300, 70, 0.03); playTone(420, 70, 0.03, 0.08);
+                } else if (name === 'win') {
+                    if (playRealSound('win', 1.0)) return;
                     playTone(520, 100, 0.05);
                     playTone(660, 100, 0.05, 0.1);
                     playTone(780, 100, 0.05, 0.2);
                     playTone(1040, 150, 0.05, 0.3);
                     playChord([520, 780, 1040], 300, 0.03, 0.45);
-                }
-                else if (name === 'deadlock') playTone(250, 120, 0.04);
-                else if (name === 'columnClear') {
+                } else if (name === 'deadlock') {
+                    if (playRealSound('deadlock', 0.8)) return;
+                    playTone(250, 120, 0.04);
+                } else if (name === 'columnClear') {
+                    if (playRealSound('clear9', 0.75)) return;
                     playTone(660, 80, 0.04, 0, 'sine');
                     playTone(880, 100, 0.045, 0.08);
                 }
@@ -8755,6 +8814,7 @@
         }
         initHintLongPress();
         initAdSystem();
+        preloadSounds();
     </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
