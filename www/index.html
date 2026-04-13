@@ -6721,92 +6721,54 @@
 
         // ── Background Music Engine ──────────────────────────────────
         const BGM = (() => {
-            let ctx = null;
-            let masterGain = null;
-            let droneOsc = null;
-            let padOsc = null;
-            let padLfo = null;
-            let pingTimer = null;
+            let audioEl = null;
             let running = false;
+            const BGM_SRC = _soundBasePath + 'bgm.mp3';
 
-            function getCtx() {
-                if (!ctx) {
-                    ctx = new (window.AudioContext || window.webkitAudioContext)();
+            function getEl() {
+                if (!audioEl) {
+                    audioEl = new Audio(BGM_SRC);
+                    audioEl.loop = true;
+                    audioEl.volume = 0;
                 }
-                if (ctx.state === 'suspended') ctx.resume();
-                return ctx;
+                return audioEl;
             }
 
-            function startDrone(c) {
-                droneOsc = c.createOscillator();
-                const g = c.createGain();
-                droneOsc.type = 'sine';
-                droneOsc.frequency.value = 55;
-                g.gain.value = 0.05;
-                droneOsc.connect(g); g.connect(masterGain);
-                droneOsc.start();
+            function fadeIn(el) {
+                el.volume = 0;
+                el.play().catch(() => {});
+                let v = 0;
+                const timer = setInterval(() => {
+                    v = Math.min(v + 0.05, 0.45);
+                    el.volume = v;
+                    if (v >= 0.45) clearInterval(timer);
+                }, 80);
             }
 
-            function startPad(c) {
-                padOsc = c.createOscillator();
-                padLfo = c.createOscillator();
-                const lfoGain = c.createGain();
-                const g = c.createGain();
-                padOsc.type = 'sine';
-                padOsc.frequency.value = 180;
-                padLfo.type = 'sine';
-                padLfo.frequency.value = 0.13;
-                lfoGain.gain.value = 7;
-                padLfo.connect(lfoGain);
-                lfoGain.connect(padOsc.frequency);
-                g.gain.value = 0.038;
-                padOsc.connect(g); g.connect(masterGain);
-                padOsc.start(); padLfo.start();
-            }
-
-            function schedulePing() {
-                const delay = 4000 + Math.random() * 5000;
-                pingTimer = setTimeout(() => {
-                    if (!running || !ctx) return;
-                    const c = ctx;
-                    const freq = 500 + Math.random() * 400;
-                    const osc = c.createOscillator();
-                    const g = c.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.value = freq;
-                    g.gain.setValueAtTime(0, c.currentTime);
-                    g.gain.linearRampToValueAtTime(0.028, c.currentTime + 0.08);
-                    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 1.2);
-                    osc.connect(g); g.connect(masterGain);
-                    osc.start(c.currentTime);
-                    osc.stop(c.currentTime + 1.3);
-                    schedulePing();
-                }, delay);
+            function fadeOut(el, cb) {
+                let v = el.volume;
+                const timer = setInterval(() => {
+                    v = Math.max(v - 0.05, 0);
+                    el.volume = v;
+                    if (v <= 0) {
+                        clearInterval(timer);
+                        el.pause();
+                        el.currentTime = 0;
+                        if (cb) cb();
+                    }
+                }, 80);
             }
 
             return {
                 start() {
                     if (running) return;
-                    const c = getCtx();
-                    masterGain = c.createGain();
-                    masterGain.gain.setValueAtTime(0, c.currentTime);
-                    masterGain.gain.linearRampToValueAtTime(0.9, c.currentTime + 1.5);
-                    masterGain.connect(c.destination);
-                    startDrone(c);
-                    startPad(c);
-                    schedulePing();
                     running = true;
+                    fadeIn(getEl());
                 },
                 stop() {
-                    if (!running || !masterGain || !ctx) return;
+                    if (!running || !audioEl) return;
                     running = false;
-                    clearTimeout(pingTimer);
-                    masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
-                    setTimeout(() => {
-                        try { droneOsc?.stop(); padOsc?.stop(); padLfo?.stop(); } catch (_) {}
-                        try { masterGain?.disconnect(); } catch (_) {}
-                        droneOsc = padOsc = padLfo = masterGain = null;
-                    }, 1600);
+                    fadeOut(audioEl);
                 },
                 sync(enabled) {
                     if (enabled) this.start(); else this.stop();
