@@ -151,7 +151,10 @@
             min-height: 42px;
             min-width: 48px;
             touch-action: manipulation;
+            transition: transform calc(0.3s * var(--anim-scale)) ease;
         }
+        .header-settings:hover  { transform: rotate(28deg); }
+        .header-settings:active { transform: rotate(55deg) scale(0.93); }
 
         @media (max-width: 520px) {
             #header {
@@ -945,6 +948,120 @@
         .deadlock-panel { animation: panel-shake-in calc(0.5s * var(--anim-scale)) ease-out both; }
         .settings-overlay.show .settings-panel { animation: settings-slide-in calc(0.3s * var(--anim-scale)) ease-out both; }
         .win-overlay { animation: overlay-fade-in calc(0.3s * var(--anim-scale)) ease-out both; }
+
+        /* Item 2/3: Achievement + Leaderboard overlay 開場動畫 */
+        .achievement-overlay.show,
+        .leaderboard-overlay.show { animation: overlay-fade-in calc(0.22s * var(--anim-scale)) ease-out; }
+        .achievement-overlay.show .achievement-panel,
+        .leaderboard-overlay.show .leaderboard-panel {
+            animation: panel-spring-in calc(0.38s * var(--anim-scale)) cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+        }
+
+        /* Item 2/3: 關閉動畫 */
+        @keyframes overlay-fade-out {
+            from { opacity: 1; }
+            to   { opacity: 0; }
+        }
+        @keyframes panel-scale-out {
+            from { transform: scale(1);   opacity: 1; }
+            to   { transform: scale(0.88); opacity: 0; }
+        }
+        .achievement-overlay.closing,
+        .leaderboard-overlay.closing {
+            display: flex !important;
+            animation: overlay-fade-out calc(0.18s * var(--anim-scale)) ease-in forwards;
+        }
+        .achievement-overlay.closing .achievement-panel,
+        .leaderboard-overlay.closing .leaderboard-panel {
+            animation: panel-scale-out calc(0.16s * var(--anim-scale)) ease-in forwards;
+        }
+
+        /* Item 4: Settings 關閉動畫 */
+        @keyframes settings-slide-out {
+            from { transform: translateY(0);    opacity: 1; }
+            to   { transform: translateY(-16px); opacity: 0; }
+        }
+        .settings-overlay.closing { display: flex !important; }
+        .settings-overlay.closing .settings-panel {
+            animation: settings-slide-out calc(0.18s * var(--anim-scale)) ease-in forwards;
+        }
+
+        /* Item 1: Combo 斷裂提示 */
+        @keyframes combo-break-anim {
+            0%   { opacity: 0;   transform: translateX(-50%) scale(0.7); }
+            30%  { opacity: 1;   transform: translateX(-50%) scale(1.05); }
+            100% { opacity: 0;   transform: translateX(-50%) translateY(-22px) scale(0.85); }
+        }
+        .combo-break-text {
+            position: fixed;
+            top: 44%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff5555;
+            font-size: 0.82rem;
+            font-weight: 900;
+            pointer-events: none;
+            z-index: 5001;
+            animation: combo-break-anim calc(0.55s * var(--anim-scale)) ease-out forwards;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        /* Item 6: 棄牌堆落入動畫 */
+        @keyframes discard-drop-in {
+            0%   { transform: translateY(-10px) rotate(-6deg) scale(0.93); opacity: 0.6; }
+            60%  { transform: translateY(2px)   rotate(1deg)  scale(1.03); }
+            100% { transform: translateY(0)     rotate(0deg)  scale(1);    opacity: 1; }
+        }
+        .pile.discard-drop-in {
+            animation: discard-drop-in calc(0.22s * var(--anim-scale)) ease-out;
+        }
+
+        /* Item 7: 取消選牌彈回動畫 */
+        @keyframes card-deselect-snap {
+            0%   { transform: translateX(40%) rotate(3deg); }
+            55%  { transform: translateX(-4%) rotate(-0.5deg); }
+            100% { transform: translateX(0)   rotate(0deg); }
+        }
+        .card.deselecting {
+            animation: card-deselect-snap calc(0.13s * var(--anim-scale)) ease-out forwards;
+            pointer-events: none;
+        }
+
+        /* Item 8: Undo 禁用動畫 */
+        @keyframes undo-disable-anim {
+            0%   { transform: scale(1.04); }
+            55%  { transform: scale(0.86); }
+            100% { transform: scale(1); }
+        }
+        .btn-undo-disabling {
+            animation: undo-disable-anim calc(0.18s * var(--anim-scale)) ease-out;
+        }
+
+        /* Item 9: 遊戲初始欄位 stagger 出現 */
+        @keyframes col-appear {
+            from { opacity: 0; transform: translateY(-14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .board-init .column {
+            opacity: 0;
+            animation: col-appear calc(0.28s * var(--anim-scale)) ease-out forwards;
+        }
+        .board-init .column:nth-child(1) { animation-delay: calc(0s   * var(--anim-scale)); }
+        .board-init .column:nth-child(2) { animation-delay: calc(0.06s * var(--anim-scale)); }
+        .board-init .column:nth-child(3) { animation-delay: calc(0.12s * var(--anim-scale)); }
+        .board-init .column:nth-child(4) { animation-delay: calc(0.18s * var(--anim-scale)); }
+
+        /* Item 10: Checkbox 勾選彈跳 */
+        @keyframes check-pop-anim {
+            0%   { transform: scale(1); }
+            45%  { transform: scale(1.38); }
+            100% { transform: scale(1); }
+        }
+        .setting-check.check-pop {
+            animation: check-pop-anim calc(0.22s * var(--anim-scale)) cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
 
         /* --- Deck Animations --- */
         @keyframes deck-shuffle {
@@ -5935,7 +6052,14 @@
         function toggleSettings(show) {
             const overlay = document.getElementById('settings-overlay');
             if (!overlay) return;
-            overlay.classList.toggle('show', show);
+            if (!show && overlay.classList.contains('show')) {
+                overlay.classList.add('closing');
+                setTimeout(() => {
+                    overlay.classList.remove('show', 'closing');
+                }, getDelay(190));
+            } else {
+                overlay.classList.toggle('show', show);
+            }
         }
 
         function updateHeaderModeTag() {
@@ -5966,6 +6090,16 @@
             const miiPeekEl = document.getElementById('setting-mii-peek');
             const recycleAnimEl = document.getElementById('setting-recycle-anim');
             if (!soundEl || !vibrationEl || !speedEl || !languageEl || !contrastEl || !miiPeekEl || !recycleAnimEl) return;
+
+            // Item 10: Checkbox 勾選彈跳動畫
+            document.querySelectorAll('.setting-check').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    this.classList.remove('check-pop');
+                    void this.offsetWidth;
+                    this.classList.add('check-pop');
+                    setTimeout(() => this.classList.remove('check-pop'), getDelay(250));
+                });
+            });
 
             soundEl.addEventListener('change', (e) => updateSetting('sound', e.target.checked));
             vibrationEl.addEventListener('change', (e) => updateSetting('vibration', e.target.checked));
@@ -7218,7 +7352,8 @@
         function closeAchievements() {
             const overlay = document.getElementById('achievement-overlay');
             if (!overlay) return;
-            overlay.classList.remove('show');
+            overlay.classList.add('closing');
+            setTimeout(() => overlay.classList.remove('show', 'closing'), getDelay(190));
         }
 
         function onAchievementOverlayClick(event) {
@@ -7293,7 +7428,8 @@
         function closeDailyLeaderboard() {
             const overlay = document.getElementById('leaderboard-overlay');
             if (!overlay) return;
-            overlay.classList.remove('show');
+            overlay.classList.add('closing');
+            setTimeout(() => overlay.classList.remove('show', 'closing'), getDelay(190));
         }
 
         function onLeaderboardOverlayClick(event) {
@@ -7378,7 +7514,11 @@
             setUndoEnabled(false);
             updateHeaderModeTag();
             syncBoardScale();
+            // Item 9: 初始欄位 stagger 出現
+            const _board = document.getElementById('board');
+            if (_board) _board.classList.add('board-init');
             render();
+            if (_board) setTimeout(() => _board.classList.remove('board-init'), getDelay(500));
             updateDiscard();
             const tutorialOpeningQueue = tutorialDeckMode ? [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2] : null;
             runOpeningDealAnimation(3, tutorialOpeningQueue).then(() => {
@@ -7491,11 +7631,15 @@
                     div.onclick = () => {
                         if (isBusy) return;
                         const sIdx = selected.findIndex(s => s.slotId === slot.id && s.idx === idx);
-                        if (sIdx > -1) selected.splice(sIdx, 1);
-                        else {
-                            if (selected.length > 0 && selected[0].slotId !== slot.id) selected = [];
-                            if (selected.length < 3) selected.push({ slotId: slot.id, idx });
+                        if (sIdx > -1) {
+                            // Item 7: 取消選牌彈回動畫，短暫延遲後重渲染
+                            div.classList.add('deselecting');
+                            selected.splice(sIdx, 1);
+                            setTimeout(() => render(), getDelay(130));
+                            return;
                         }
+                        if (selected.length > 0 && selected[0].slotId !== slot.id) selected = [];
+                        if (selected.length < 3) selected.push({ slotId: slot.id, idx });
 
                         if (tutorial.active && tutorial.step === 2 && selected.length === 3) {
                             const picked = selected.map(s => s.idx);
@@ -7799,7 +7943,19 @@
 
             const avail = slots.find((s, i) => slots[(nextSlotIndex + i) % 4].active);
             if (!avail) return;
-            isBusy = true; combo = 0;
+            isBusy = true;
+            // Item 1: combo 斷裂提示
+            if (combo >= 2) {
+                const layer = document.getElementById('fx-layer');
+                if (layer) {
+                    const el = document.createElement('div');
+                    el.className = 'combo-break-text';
+                    el.textContent = `×${combo} COMBO`;
+                    layer.appendChild(el);
+                    setTimeout(() => el.remove(), getDelay(600));
+                }
+            }
+            combo = 0;
             const target = slots[(nextSlotIndex + slots.indexOf(avail)) % 4];
             const prevIdx = nextSlotIndex;
             nextSlotIndex = (slots.indexOf(target) + 1) % 4;
@@ -7812,6 +7968,14 @@
             onTutorialEvent('deal');
 
             const card = deck.pop();
+            // Item 5: 牌庫數字脈衝
+            const _deckNumEl = document.getElementById('deck-num');
+            if (_deckNumEl) {
+                _deckNumEl.classList.remove('deck-num-pulse');
+                void _deckNumEl.offsetWidth;
+                _deckNumEl.classList.add('deck-num-pulse');
+                setTimeout(() => _deckNumEl.classList.remove('deck-num-pulse'), getDelay(420));
+            }
             const isMiiMoment = settings.miiPeek && target.cards.length === 2;
             const fly = createFly(card, document.getElementById('deck-pile').getBoundingClientRect(), { hidden: isMiiMoment });
             render();
@@ -8218,6 +8382,9 @@
                 p.innerHTML = `<div style="font-size:10px; position:absolute; top:2px; left:4px;">${lastCleared.rank}</div><div style="font-size:14px;">${lastCleared.suit}</div>`;
                 p.className = `pile has-cards ${lastCleared.color}`;
                 p.style.boxShadow = `3px 3px 0 rgba(255,215,0,0.4)`;
+                void p.offsetWidth;
+                p.classList.add('discard-drop-in');
+                setTimeout(() => p.classList.remove('discard-drop-in'), getDelay(280));
             } else { p.className = 'pile'; p.innerHTML = ''; p.style.boxShadow = 'none'; }
         }
 
@@ -8580,6 +8747,10 @@
             } else {
                 btn.disabled = true;
                 btn.classList.remove('undo-ready');
+                btn.classList.remove('btn-undo-disabling');
+                void btn.offsetWidth;
+                btn.classList.add('btn-undo-disabling');
+                setTimeout(() => btn.classList.remove('btn-undo-disabling'), getDelay(220));
             }
         }
 
