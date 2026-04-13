@@ -542,6 +542,30 @@
             display: none;
         }
 
+        @keyframes card-compress {
+            0%   { height: var(--card-h); margin-bottom: var(--fixed-gap); opacity: 0.85; transform: scaleX(1); }
+            60%  { opacity: 0.2; transform: scaleX(0.92); }
+            100% { height: 0; margin-bottom: 0; opacity: 0; transform: scaleX(0.88); }
+        }
+
+        .card.stack-middle-animating {
+            animation: card-compress calc(0.32s * var(--anim-scale)) ease-in forwards;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        @keyframes badge-appear {
+            0%   { opacity: 0; transform: scale(0.6); }
+            65%  { transform: scale(1.18); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .stack-count-badge.appear {
+            animation: badge-appear calc(0.3s * var(--anim-scale)) ease-out forwards;
+            animation-delay: calc(0.18s * var(--anim-scale));
+            opacity: 0;
+        }
+
         .stack-count-badge {
             align-self: center;
             background: rgba(0, 0, 0, 0.62);
@@ -7414,6 +7438,7 @@
         }, 1000);
 
         // --- 核心渲染 ---
+        const compressedSlotIds = new Set(); // 追蹤哪些欄已完成壓縮（避免重複播放動畫）
         function render() {
             const board = document.getElementById('board');
             syncBoardScale();
@@ -7438,6 +7463,10 @@
                 const doCompress = total > COMPRESS_THRESH && !threeReady;
                 const midStart = COMPRESS_TOP;
                 const midEnd = total - COMPRESS_BOT; // exclusive
+                const wasCompressed = compressedSlotIds.has(slot.id);
+                const isNewlyCompressed = doCompress && !wasCompressed;
+                if (doCompress) compressedSlotIds.add(slot.id);
+                else compressedSlotIds.delete(slot.id);
                 slot.cards.forEach((card, idx) => {
                     const div = document.createElement('div');
                     const selObj = selected.find(s => s.slotId === slot.id && s.idx === idx);
@@ -7445,7 +7474,7 @@
                     const suitClass = card.suit === '♥' ? 'suit-heart' : card.suit === '♦' ? 'suit-diamond' : card.suit === '♠' ? 'suit-spade' : 'suit-club';
                     div.className = `card ${card.color} ${suitClass} ${selObj ? 'selected' : ''}${readyClass}`;
                     if (doCompress && idx >= midStart && idx < midEnd) {
-                        div.className += ' stack-middle';
+                        div.className += isNewlyCompressed ? ' stack-middle-animating' : ' stack-middle';
                     }
                     // Keep original stack order stable even when selected.
                     div.style.zIndex = idx;
@@ -7488,7 +7517,7 @@
                     col.appendChild(div);
                     if (doCompress && idx === COMPRESS_TOP - 1) {
                         const badge = document.createElement('div');
-                        badge.className = 'stack-count-badge';
+                        badge.className = isNewlyCompressed ? 'stack-count-badge appear' : 'stack-count-badge';
                         const midCount = midEnd - midStart;
                         badge.textContent = `+${midCount}`;
                         col.appendChild(badge);
