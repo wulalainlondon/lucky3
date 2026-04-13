@@ -539,16 +539,7 @@
 
         /* ── Long-stack compression ── */
         .card.stack-middle {
-            opacity: 0.45;
-            filter: blur(0.9px) brightness(0.78);
-            margin-bottom: calc(var(--fixed-gap) - 10px);  /* extra overlap */
-            transition:
-                transform calc(0.25s * var(--anim-scale)) cubic-bezier(0.18, 0.89, 0.32, 1.28),
-                opacity 0.35s ease,
-                filter 0.35s ease,
-                margin-bottom 0.35s ease;
-            pointer-events: none;
-            user-select: none;
+            display: none;
         }
 
         .stack-count-badge {
@@ -2593,10 +2584,6 @@
             'tutorial.step2.title': 'Step 2: Select three cards',
             'tutorial.step2.body': 'Pick 3 cards in one column. Valid patterns: ① bottom 3 cards ② top card + bottom 2 ③ top 2 cards + bottom card.',
             'tutorial.step2.status': 'Waiting for you to select a valid 3-card pattern...',
-            'tutorial.step3.title': 'Step 3: Watch Auto-Eliminate',
-            'tutorial.step3.body': 'Select 3 valid cards and they clear on their own — see the gold glow count down? Tap any selected card to cancel.',
-            'tutorial.step3.status': 'Select 3 cards to see it in action...',
-            'tutorial.step3.status_counting': 'Gold glow counting down — watch!',
             'tutorial.stepX.secondary': 'Skip tutorial',
             'tutorial.done.title': 'Done! You learned the basics',
             'tutorial.done.body': 'Now finish runs with fewer moves. You can replay tutorial in Settings.',
@@ -2732,10 +2719,6 @@
                 'tutorial.step2.title': '步驟 2：選滿三張',
                 'tutorial.step2.body': '在同一列選 3 張，合法位置只有三種：① 尾三張（前三張）② 頭1尾2 ③ 頭2尾1。',
                 'tutorial.step2.status': '等待你用上述其中一種位置選滿 3 張...',
-                'tutorial.step3.title': '步驟 3：觀察自動消除',
-                'tutorial.step3.body': '選好 3 張合法牌後，金色光暈倒數完畢即自動消除。想取消？點任何一張已選的牌即可。',
-                'tutorial.step3.status': '請選 3 張牌來觀察自動消除...',
-                'tutorial.step3.status_counting': '金色光暈倒數中——快看！',
                 'tutorial.stepX.secondary': '略過教學',
                 'tutorial.done.title': '完成！你已會基本玩法',
                 'tutorial.done.body': '接下來目標是用最少步數完成牌局。之後可在設定中「重播教學」。',
@@ -2871,10 +2854,6 @@
                 'tutorial.step2.title': 'ステップ2：3枚選ぶ',
                 'tutorial.step2.body': '同じ列から3枚選んでください。選べるパターン：①末尾3枚 ②先頭1枚＋末尾2枚 ③先頭2枚＋末尾1枚',
                 'tutorial.step2.status': '合法な3枚選択を待っています...',
-                'tutorial.step3.title': 'ステップ3：自動消去を見てみよう',
-                'tutorial.step3.body': '有効な3枚を選ぶと、金色の光がカウントダウンし、終わると自動で消去されます。キャンセルするには選択済みのカードをタップしてください。',
-                'tutorial.step3.status': '3枚選んで自動消去を確認してください...',
-                'tutorial.step3.status_counting': '金色の光がカウントダウン中 — 見ててください！',
                 'tutorial.stepX.secondary': 'チュートリアルをスキップ',
                 'tutorial.done.title': '完了！基本操作をマスターしました',
                 'tutorial.done.body': '次は少ない手数でクリアを目指しましょう。設定から「チュートリアルを再生」できます。',
@@ -3009,10 +2988,6 @@
                 'tutorial.step2.title': '2단계: 카드 3장 선택',
                 'tutorial.step2.body': '같은 열에서 3장을 선택하세요. 유효한 패턴: ①맨 아래 3장 ②맨 위 1장+맨 아래 2장 ③맨 위 2장+맨 아래 1장',
                 'tutorial.step2.status': '유효한 3장 선택을 기다리고 있습니다...',
-                'tutorial.step3.title': '3단계: 자동 제거 관찰',
-                'tutorial.step3.body': '유효한 3장을 선택하면 금빛 카운트다운 후 자동으로 제거됩니다. 취소하려면 선택된 카드를 탭하세요.',
-                'tutorial.step3.status': '3장을 선택해서 자동 제거를 확인하세요...',
-                'tutorial.step3.status_counting': '금빛 카운트다운 중 — 곧 제거됩니다!',
                 'tutorial.stepX.secondary': '튜토리얼 건너뛰기',
                 'tutorial.done.title': '완료! 기본 플레이를 익혔습니다',
                 'tutorial.done.body': '이제 더 적은 수로 클리어를 목표로 하세요. 설정에서 "튜토리얼 다시 보기"가 가능합니다.',
@@ -3147,10 +3122,6 @@
     'tutorial.step2.title': 'Paso 2: Selecciona tres cartas',
     'tutorial.step2.body': 'Elige 3 cartas en una columna. Patrones válidos: ① 3 cartas inferiores ② superior + 2 inferiores ③ 2 superiores + inferior',
     'tutorial.step2.status': 'Esperando una selección válida de 3 cartas...',
-    'tutorial.step3.title': 'Paso 3: Observa la eliminación automática',
-    'tutorial.step3.body': 'Selecciona 3 cartas válidas y se eliminarán solas — ¿ves el brillo dorado haciendo cuenta regresiva? Toca cualquier carta seleccionada para cancelar.',
-    'tutorial.step3.status': 'Selecciona 3 cartas para verlo en acción...',
-    'tutorial.step3.status_counting': '¡Cuenta regresiva dorada — mira!',
     'tutorial.stepX.secondary': 'Saltar tutorial',
     'tutorial.done.title': '¡Listo! Ya conoces lo básico',
     'tutorial.done.body': 'Intenta completar la partida con el menor número de movimientos. Puedes repetir el tutorial desde Configuración.',
@@ -3284,10 +3255,6 @@
     'tutorial.step2.title': 'Passo 2: Selecione três cartas',
     'tutorial.step2.body': 'Escolha 3 cartas em uma coluna. Padrões válidos: ① 3 cartas inferiores ② superior + 2 inferiores ③ 2 superiores + inferior',
     'tutorial.step2.status': 'Aguardando seleção válida de 3 cartas...',
-    'tutorial.step3.title': 'Passo 3: Observe a eliminação automática',
-    'tutorial.step3.body': 'Selecione 3 cartas válidas e elas se eliminam sozinhas — vê o brilho dourado fazendo a contagem regressiva? Toque em qualquer carta selecionada para cancelar.',
-    'tutorial.step3.status': 'Selecione 3 cartas para ver em ação...',
-    'tutorial.step3.status_counting': 'Contagem regressiva dourada — olha!',
     'tutorial.stepX.secondary': 'Pular tutorial',
     'tutorial.done.title': 'Pronto! Você aprendeu o básico',
     'tutorial.done.body': 'Agora tente completar partidas com menos jogadas. Você pode rever o tutorial nas Configurações.',
@@ -3421,10 +3388,6 @@
     'tutorial.step2.title': 'ขั้นตอนที่ 2: เลือกไพ่สามใบ',
     'tutorial.step2.body': 'เลือกไพ่ 3 ใบในแถวเดียว รูปแบบที่ถูกต้อง: ① ล่าง 3 ใบ ② บนสุด + ล่าง 2 ใบ ③ บน 2 ใบ + ล่างสุด',
     'tutorial.step2.status': 'รอการเลือกไพ่ 3 ใบที่ถูกต้อง...',
-    'tutorial.step3.title': 'ขั้นตอนที่ 3: ดูการกำจัดอัตโนมัติ',
-    'tutorial.step3.body': 'เลือก 3 ใบที่ถูกต้องแล้วจะหายไปเอง — เห็นการนับถอยหลังสีทองไหม? แตะไพ่ที่เลือกไว้เพื่อยกเลิก',
-    'tutorial.step3.status': 'เลือก 3 ใบเพื่อดูการทำงาน...',
-    'tutorial.step3.status_counting': 'นับถอยหลังสีทอง — ดูได้เลย!',
     'tutorial.stepX.secondary': 'ข้ามบทช่วยสอน',
     'tutorial.done.title': 'เสร็จแล้ว! คุณเรียนรู้พื้นฐานแล้ว',
     'tutorial.done.body': 'ลองจบเกมด้วยจำนวนตาน้อยที่สุด สามารถดูบทช่วยสอนอีกครั้งได้ในการตั้งค่า',
@@ -3558,10 +3521,6 @@
     'tutorial.step2.title': 'Langkah 2: Pilih tiga kartu',
     'tutorial.step2.body': 'Pilih 3 kartu dalam satu kolom. Pola valid: ① 3 kartu bawah ② atas + 2 bawah ③ 2 atas + bawah',
     'tutorial.step2.status': 'Menunggu pilihan 3 kartu yang valid...',
-    'tutorial.step3.title': 'Langkah 3: Saksikan eliminasi otomatis',
-    'tutorial.step3.body': 'Pilih 3 kartu valid dan kartu tersebut terhapus dengan sendirinya — lihat kilau emas menghitung mundur? Ketuk kartu terpilih untuk membatalkan.',
-    'tutorial.step3.status': 'Pilih 3 kartu untuk melihatnya beraksi...',
-    'tutorial.step3.status_counting': 'Hitungan mundur emas — saksikan!',
     'tutorial.stepX.secondary': 'Lewati tutorial',
     'tutorial.done.title': 'Selesai! Anda sudah menguasai dasar-dasarnya',
     'tutorial.done.body': 'Sekarang coba selesaikan permainan dengan langkah sesedikit mungkin. Tutorial bisa diputar ulang di Pengaturan.',
@@ -3695,10 +3654,6 @@
     'tutorial.step2.title': 'Étape 2 : Sélectionnez trois cartes',
     'tutorial.step2.body': 'Choisissez 3 cartes dans une colonne. Schémas valides : ① 3 cartes du bas ② haut + 2 bas ③ 2 hauts + bas',
     'tutorial.step2.status': 'En attente d\'une sélection valide de 3 cartes...',
-    'tutorial.step3.title': 'Étape 3 : Regardez l\'élimination auto',
-    'tutorial.step3.body': 'Sélectionnez 3 cartes valides et elles disparaissent seules — voyez le compte à rebours doré ? Appuyez sur une carte sélectionnée pour annuler.',
-    'tutorial.step3.status': 'Sélectionnez 3 cartes pour le voir en action...',
-    'tutorial.step3.status_counting': 'Compte à rebours doré — regardez !',
     'tutorial.stepX.secondary': 'Passer le tutoriel',
     'tutorial.done.title': 'Terminé ! Vous connaissez les bases',
     'tutorial.done.body': 'Essayez maintenant de finir les parties en un minimum de coups. Vous pouvez revoir le tutoriel dans les Paramètres.',
@@ -3833,10 +3788,6 @@
     'tutorial.step2.title': '步骤 2：选满三张',
     'tutorial.step2.body': '在同一列选 3 张，合法位置：①末尾3张 ②首1末2 ③首2末1。',
     'tutorial.step2.status': '等待你选满 3 张...',
-    'tutorial.step3.title': '步骤 3：观察自动消除',
-    'tutorial.step3.body': '选好 3 张合法牌后，金色光晕倒数完毕即自动消除。想取消？点任何一张已选的牌即可。',
-    'tutorial.step3.status': '请选 3 张牌来观察自动消除...',
-    'tutorial.step3.status_counting': '金色光晕倒数中——快看！',
     'tutorial.stepX.secondary': '略过教学',
     'tutorial.done.title': '完成！你已会基本玩法',
     'tutorial.done.body': '接下来目标是用最少步数完成牌局。之后可在设置中「重播教学」。',
@@ -3971,10 +3922,6 @@
     'tutorial.step2.title': 'Schritt 2: Drei Karten auswählen',
     'tutorial.step2.body': 'Wähle 3 Karten in einer Spalte. Gültige Muster: ① unterste 3 ② oberste + unterste 2 ③ oberste 2 + unterste',
     'tutorial.step2.status': 'Warte auf gültige 3-Karten-Auswahl...',
-    'tutorial.step3.title': 'Schritt 3: Automatisches Entfernen beobachten',
-    'tutorial.step3.body': 'Wähle 3 gültige Karten — sie verschwinden von allein. Siehst du den goldenen Countdown? Tippe eine ausgewählte Karte zum Abbrechen.',
-    'tutorial.step3.status': 'Wähle 3 Karten, um es zu sehen...',
-    'tutorial.step3.status_counting': 'Goldener Countdown — schau hin!',
     'tutorial.stepX.secondary': 'Tutorial überspringen',
     'tutorial.done.title': 'Fertig! Du kennst die Grundlagen',
     'tutorial.done.body': 'Versuche nun, Spiele mit möglichst wenigen Zügen abzuschließen. Du kannst das Tutorial in den Einstellungen wiederholen.',
@@ -4109,10 +4056,6 @@
     'tutorial.step2.title': 'Passo 2: Seleziona tre carte',
     'tutorial.step2.body': 'Scegli 3 carte in una colonna. Schemi validi: ① 3 carte in basso ② in cima + 2 in basso ③ 2 in cima + in basso',
     'tutorial.step2.status': 'In attesa di una selezione valida di 3 carte...',
-    'tutorial.step3.title': 'Passo 3: Osserva l\'eliminazione automatica',
-    'tutorial.step3.body': 'Seleziona 3 carte valide e si eliminano da sole — vedi il conto alla rovescia dorato? Tocca una carta selezionata per annullare.',
-    'tutorial.step3.status': 'Seleziona 3 carte per vederlo in azione...',
-    'tutorial.step3.status_counting': 'Conto alla rovescia dorato — guarda!',
     'tutorial.stepX.secondary': 'Salta tutorial',
     'tutorial.done.title': 'Fatto! Hai imparato le basi',
     'tutorial.done.body': 'Ora cerca di completare le partite con il minor numero di mosse. Puoi rivedere il tutorial nelle Impostazioni.',
@@ -4247,10 +4190,6 @@
     'tutorial.step2.title': 'Passo 2: Seleccione três cartas',
     'tutorial.step2.body': 'Escolha 3 cartas numa coluna. Padrões válidos: ① 3 cartas de baixo ② cima + 2 baixo ③ 2 cima + baixo',
     'tutorial.step2.status': 'À espera de uma selecção válida de 3 cartas...',
-    'tutorial.step3.title': 'Passo 3: Observa a eliminação automática',
-    'tutorial.step3.body': 'Seleciona 3 cartas válidas e eliminam-se sozinhas — vês o brilho dourado a fazer contagem regressiva? Toca numa carta selecionada para cancelar.',
-    'tutorial.step3.status': 'Seleciona 3 cartas para ver em ação...',
-    'tutorial.step3.status_counting': 'Contagem regressiva dourada — olha!',
     'tutorial.stepX.secondary': 'Saltar tutorial',
     'tutorial.done.title': 'Concluído! Já conhece as bases',
     'tutorial.done.body': 'Agora tente completar partidas com o menor número de jogadas. Pode rever o tutorial nas Definições.',
@@ -4384,10 +4323,6 @@
     'tutorial.step2.title': 'Stap 2: Selecteer drie kaarten',
     'tutorial.step2.body': 'Kies 3 kaarten in één kolom. Geldige patronen: ① onderste 3 ② bovenste + onderste 2 ③ bovenste 2 + onderste',
     'tutorial.step2.status': 'Wachten op geldige selectie van 3 kaarten...',
-    'tutorial.step3.title': 'Stap 3: Bekijk automatische eliminatie',
-    'tutorial.step3.body': 'Selecteer 3 geldige kaarten en ze verdwijnen vanzelf — zie je de gouden aftelling? Tik op een geselecteerde kaart om te annuleren.',
-    'tutorial.step3.status': 'Selecteer 3 kaarten om het te zien...',
-    'tutorial.step3.status_counting': 'Gouden aftelling — kijk!',
     'tutorial.stepX.secondary': 'Tutorial overslaan',
     'tutorial.done.title': 'Klaar! Je kent de basis',
     'tutorial.done.body': 'Probeer nu spellen te voltooien met zo min mogelijk zetten. Je kunt de tutorial herspelen via Instellingen.',
@@ -4521,10 +4456,6 @@
     'tutorial.step2.title': 'Шаг 2: Выбери три карты',
     'tutorial.step2.body': 'Выбери 3 карты в одном столбце. Допустимые схемы: ① нижние 3 ② верхняя + нижние 2 ③ верхние 2 + нижняя',
     'tutorial.step2.status': 'Ожидание правильного выбора 3 карт...',
-    'tutorial.step3.title': 'Шаг 3: Наблюдайте за авто-удалением',
-    'tutorial.step3.body': 'Выберите 3 подходящие карты — они исчезнут сами. Видите золотой обратный отсчёт? Нажмите на выбранную карту для отмены.',
-    'tutorial.step3.status': 'Выберите 3 карты, чтобы увидеть...',
-    'tutorial.step3.status_counting': 'Золотой отсчёт — смотри!',
     'tutorial.stepX.secondary': 'Пропустить обучение',
     'tutorial.done.title': 'Готово! Ты освоил основы',
     'tutorial.done.body': 'Теперь старайся завершать игры за как можно меньше ходов. Обучение можно повторить в Настройках.',
@@ -4658,10 +4589,6 @@
     'tutorial.step2.title': 'Krok 2: Wybierz trzy karty',
     'tutorial.step2.body': 'Wybierz 3 karty w jednej kolumnie. Prawidłowe wzorce: ① 3 dolne ② górna + 2 dolne ③ 2 górne + dolna',
     'tutorial.step2.status': 'Czekanie na prawidłowy wybór 3 kart...',
-    'tutorial.step3.title': 'Krok 3: Obserwuj automatyczne usunięcie',
-    'tutorial.step3.body': 'Wybierz 3 prawidłowe karty — znikną same. Widzisz złote odliczanie? Dotknij wybranej karty, aby anulować.',
-    'tutorial.step3.status': 'Wybierz 3 karty, aby zobaczyć...',
-    'tutorial.step3.status_counting': 'Złote odliczanie — popatrz!',
     'tutorial.stepX.secondary': 'Pomiń samouczek',
     'tutorial.done.title': 'Gotowe! Znasz już podstawy',
     'tutorial.done.body': 'Teraz próbuj kończyć gry z jak najmniejszą liczbą ruchów. Samouczek możesz powtórzyć w Ustawieniach.',
@@ -4795,10 +4722,6 @@
     'tutorial.step2.title': 'Adım 2: Üç kart seç',
     'tutorial.step2.body': 'Bir sütunda 3 kart seç. Geçerli desenler: ① alttaki 3 ② en üst + alttaki 2 ③ üstteki 2 + en alt',
     'tutorial.step2.status': 'Geçerli 3 kart seçimi bekleniyor...',
-    'tutorial.step3.title': 'Adım 3: Otomatik elemeyi izle',
-    'tutorial.step3.body': '3 geçerli kart seç — kendiliğinden temizlenir. Altın geri sayımı görüyor musun? İptal etmek için seçili bir karta dokun.',
-    'tutorial.step3.status': 'Görmek için 3 kart seç...',
-    'tutorial.step3.status_counting': 'Altın geri sayım — izle!',
     'tutorial.stepX.secondary': 'Öğreticiyi geç',
     'tutorial.done.title': 'Tamamlandı! Temelleri öğrendin',
     'tutorial.done.body': 'Şimdi oyunları olabildiğince az hamleyle bitirmeye çalış. Öğreticiyi Ayarlar\'dan tekrar oynayabilirsin.',
@@ -4932,10 +4855,6 @@
     'tutorial.step2.title': 'Bước 2: Chọn ba lá',
     'tutorial.step2.body': 'Chọn 3 lá trong một cột. Kiểu hợp lệ: ① 3 lá dưới ② lá trên + 2 lá dưới ③ 2 lá trên + lá dưới',
     'tutorial.step2.status': 'Chờ chọn 3 lá hợp lệ...',
-    'tutorial.step3.title': 'Bước 3: Xem loại bỏ tự động',
-    'tutorial.step3.body': 'Chọn 3 lá hợp lệ và chúng tự biến mất — thấy ánh vàng đếm ngược chưa? Chạm vào lá đã chọn để hủy.',
-    'tutorial.step3.status': 'Chọn 3 lá để xem thử...',
-    'tutorial.step3.status_counting': 'Đếm ngược vàng — xem nào!',
     'tutorial.stepX.secondary': 'Bỏ qua hướng dẫn',
     'tutorial.done.title': 'Hoàn thành! Đã nắm cơ bản',
     'tutorial.done.body': 'Giờ hãy thử hoàn thành ván trong ít nước nhất. Xem lại hướng dẫn trong Cài đặt.',
@@ -5644,17 +5563,6 @@
                 return;
             }
 
-            if (tutorial.step === 3) {
-                title.innerText = t('tutorial.step3.title');
-                body.innerText = t('tutorial.step3.body');
-                status.innerText = t('tutorial.step3.status');
-                primary.style.display = 'none';
-                secondary.style.display = '';
-                secondary.innerText = t('tutorial.stepX.secondary');
-                secondary.onclick = () => closeTutorial('skipped');
-                return;
-            }
-
             title.innerText = t('tutorial.done.title');
             body.innerText = t('tutorial.done.body');
             status.innerText = t('tutorial.done.status');
@@ -5670,18 +5578,11 @@
                 nextTutorialStep();
                 return;
             }
-            if (tutorial.step === 2 && eventName === 'selected_three') {
-                nextTutorialStep();
-                return;
-            }
-            if (tutorial.step === 3 && eventName === 'selected_three') {
-                // Cards selected — update status to show countdown is running
-                const statusEl = document.getElementById('tutorial-status');
-                if (statusEl) statusEl.innerText = t('tutorial.step3.status_counting');
-                return;
-            }
-            if (tutorial.step === 3 && eventName === 'attempt_clear_success') {
-                nextTutorialStep();
+            if (tutorial.step === 2 && eventName === 'attempt_clear_success') {
+                tutorial.step = 4;
+                setTutorialState('completed');
+                playSound('hint');
+                renderTutorial();
             }
         }
 
@@ -7379,11 +7280,11 @@
         function scheduleAutoEliminate() {
             if (autoEliminateTimer !== null) return; // already scheduled
             if (selected.length !== 3 || isBusy) return;
-            const autoDelay = (tutorial.active && tutorial.step === 3) ? 1500 : 600;
+            const delay = 0;
             autoEliminateTimer = setTimeout(() => {
                 autoEliminateTimer = null;
                 attemptClear();
-            }, getDelay(autoDelay));
+            }, delay);
         }
 
         function clearAutoEliminateTimer() {
