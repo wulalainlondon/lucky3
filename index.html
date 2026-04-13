@@ -1833,6 +1833,39 @@
             font-size: 0.88rem;
         }
 
+        .badge-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2px;
+        }
+
+        .badge-icon {
+            font-size: 1.8rem;
+            line-height: 1;
+            flex-shrink: 0;
+            filter: grayscale(0.4);
+        }
+
+        .achievement-badge.unlocked .badge-icon {
+            filter: grayscale(0) drop-shadow(0 0 6px rgba(255, 215, 64, 0.7));
+        }
+
+        .badge-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .badge-title {
+            font-size: 0.9rem;
+        }
+
+        .badge-text {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
         .achievement-badge.unlocked {
             border-style: solid;
             border-color: rgba(255, 215, 64, 0.8);
@@ -7026,6 +7059,7 @@
         function achievementBadgeRows() {
             const rows = [
                 {
+                    icon: '⚡',
                     title: t('achievement.badge.combo.title'),
                     ok: achievements.maxCombo >= 5,
                     text: achievements.maxCombo >= 5
@@ -7034,6 +7068,7 @@
                     progress: Math.min(1, achievements.maxCombo / 5)
                 },
                 {
+                    icon: '👟',
                     title: t('achievement.badge.moves.title'),
                     ok: achievements.bestMoves != null && achievements.bestMoves <= 18,
                     text: achievements.bestMoves == null
@@ -7042,18 +7077,21 @@
                     progress: achievements.bestMoves == null ? 0 : Math.min(1, 18 / achievements.bestMoves)
                 },
                 {
+                    icon: '🔥',
                     title: t('achievement.badge.streak.title'),
                     ok: achievements.longestStreak >= 3,
                     text: t('achievement.badge.streak.progress', { value: achievements.longestStreak }),
                     progress: Math.min(1, achievements.longestStreak / 3)
                 },
                 {
+                    icon: '🏆',
                     title: t('achievement.badge.wins.title'),
                     ok: achievements.wins >= 10,
                     text: t('achievement.badge.wins.progress', { value: achievements.wins }),
                     progress: Math.min(1, achievements.wins / 10)
                 },
                 {
+                    icon: '✨',
                     title: t('achievement.badge.zero.title'),
                     ok: achievements.zeroClearWins >= 1,
                     text: achievements.zeroClearWins >= 1
@@ -7116,14 +7154,14 @@
             if (!grid || !badges) return;
 
             grid.innerHTML = `
-                <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.wins')}</div><div class="achievement-stat-value">${achievements.wins}</div></div>
-                <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.zero_wins')}</div><div class="achievement-stat-value">${achievements.zeroClearWins}</div></div>
-                <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.streak_shield')}</div><div class="achievement-stat-value">${achievements.streakShield > 0 ? t('achievement.stat.shield_ready') : t('achievement.stat.shield_empty')}</div></div>
-                <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.current_streak')}</div><div class="achievement-stat-value">${t('common.days', { value: achievements.currentStreak })}</div></div>
-                <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.longest_streak')}</div><div class="achievement-stat-value">${t('common.days', { value: achievements.longestStreak })}</div></div>
-                <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.max_combo')}</div><div class="achievement-stat-value">${achievements.maxCombo}</div></div>
-                <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.best_moves')}</div><div class="achievement-stat-value">${achievements.bestMoves == null ? '-' : achievements.bestMoves}</div></div>
-                <div class="achievement-stat"><div class="achievement-stat-label">${t('achievement.stat.best_time')}</div><div class="achievement-stat-value">${achievements.bestTimeSec == null ? '-' : formatTime(achievements.bestTimeSec)}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">🏆 ${t('achievement.stat.wins')}</div><div class="achievement-stat-value">${achievements.wins}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">✨ ${t('achievement.stat.zero_wins')}</div><div class="achievement-stat-value">${achievements.zeroClearWins}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">🛡️ ${t('achievement.stat.streak_shield')}</div><div class="achievement-stat-value">${achievements.streakShield > 0 ? t('achievement.stat.shield_ready') : t('achievement.stat.shield_empty')}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">🔥 ${t('achievement.stat.current_streak')}</div><div class="achievement-stat-value">${t('common.days', { value: achievements.currentStreak })}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">📈 ${t('achievement.stat.longest_streak')}</div><div class="achievement-stat-value">${t('common.days', { value: achievements.longestStreak })}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">⚡ ${t('achievement.stat.max_combo')}</div><div class="achievement-stat-value">${achievements.maxCombo}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">👣 ${t('achievement.stat.best_moves')}</div><div class="achievement-stat-value">${achievements.bestMoves == null ? '-' : achievements.bestMoves}</div></div>
+                <div class="achievement-stat"><div class="achievement-stat-label">⏱️ ${t('achievement.stat.best_time')}</div><div class="achievement-stat-value">${achievements.bestTimeSec == null ? '-' : formatTime(achievements.bestTimeSec)}</div></div>
             `;
 
             // Insert streak calendar
@@ -7134,7 +7172,13 @@
 
             badges.innerHTML = achievementBadgeRows().map((b) => `
                 <div class="achievement-badge ${b.ok ? 'unlocked' : ''}">
-                    <strong>${b.ok ? '✅' : '⬜'} ${b.title}</strong><br>${b.text}
+                    <div class="badge-header">
+                        <span class="badge-icon">${b.icon}</span>
+                        <div class="badge-info">
+                            <strong class="badge-title">${b.ok ? '✅' : '⬜'} ${b.title}</strong>
+                            <span class="badge-text">${b.text}</span>
+                        </div>
+                    </div>
                     <div class="achievement-progress"><div class="achievement-progress-fill" style="width:${Math.max(0, Math.min(100, Math.round((b.progress || 0) * 100)))}%"></div></div>
                 </div>
             `).join('');
