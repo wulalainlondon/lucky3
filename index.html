@@ -6636,6 +6636,22 @@
             setTimeout(() => ring.remove(), getDelay(800));
         }
 
+        // 共用 compressor，防止多音同時播放破音
+        let _compressor = null;
+        function getCompressor() {
+            if (!audioCtx) return null;
+            if (!_compressor) {
+                _compressor = audioCtx.createDynamicsCompressor();
+                _compressor.threshold.value = -18;
+                _compressor.knee.value = 8;
+                _compressor.ratio.value = 4;
+                _compressor.attack.value = 0.003;
+                _compressor.release.value = 0.15;
+                _compressor.connect(audioCtx.destination);
+            }
+            return _compressor;
+        }
+
         function playTone(freq = 440, durationMs = 80, volume = 0.04, startAt = 0, waveform = 'triangle') {
             const Ctx = window.AudioContext || window.webkitAudioContext;
             if (!Ctx) return;
@@ -6648,10 +6664,10 @@
             osc.frequency.value = freq;
             osc.type = waveform;
             gain.gain.setValueAtTime(0.0001, now);
-            gain.gain.linearRampToValueAtTime(volume, now + 0.01);
+            gain.gain.linearRampToValueAtTime(volume * 2.8, now + 0.01);
             gain.gain.exponentialRampToValueAtTime(0.0001, now + durationMs / 1000);
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(getCompressor() || audioCtx.destination);
             osc.start(now);
             osc.stop(now + durationMs / 1000 + 0.02);
         }
@@ -6679,7 +6695,7 @@
                 const g = c.createGain();
                 droneOsc.type = 'sine';
                 droneOsc.frequency.value = 55;
-                g.gain.value = 0.022;
+                g.gain.value = 0.05;
                 droneOsc.connect(g); g.connect(masterGain);
                 droneOsc.start();
             }
@@ -6696,7 +6712,7 @@
                 lfoGain.gain.value = 7;
                 padLfo.connect(lfoGain);
                 lfoGain.connect(padOsc.frequency);
-                g.gain.value = 0.016;
+                g.gain.value = 0.038;
                 padOsc.connect(g); g.connect(masterGain);
                 padOsc.start(); padLfo.start();
             }
@@ -6712,7 +6728,7 @@
                     osc.type = 'sine';
                     osc.frequency.value = freq;
                     g.gain.setValueAtTime(0, c.currentTime);
-                    g.gain.linearRampToValueAtTime(0.012, c.currentTime + 0.08);
+                    g.gain.linearRampToValueAtTime(0.028, c.currentTime + 0.08);
                     g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 1.2);
                     osc.connect(g); g.connect(masterGain);
                     osc.start(c.currentTime);
