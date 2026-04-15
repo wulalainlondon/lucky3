@@ -2624,6 +2624,10 @@
                 <input id="setting-recycle-anim" class="setting-check" type="checkbox">
             </div>
             <div class="setting-row">
+                <div class="setting-label" data-i18n="settings.sum_helper">Sum Helper</div>
+                <input id="setting-sum-helper" class="setting-check" type="checkbox">
+            </div>
+            <div class="setting-row">
                 <div class="setting-label" data-i18n="settings.player_name">Player Name</div>
                 <input id="setting-player-name" class="setting-control" type="text" maxlength="12" placeholder="Lucky Player" style="width:110px;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,215,0,0.4);background:rgba(0,0,0,0.3);color:white;font-family:inherit;font-size:0.85rem;">
             </div>
@@ -2958,6 +2962,7 @@
             'settings.high_contrast': 'High Contrast Mode',
             'settings.mii_peek': 'Card Preview',
             'settings.recycle_anim': 'Recycle Animation',
+            'settings.sum_helper': 'Sum Helper',
             'settings.player_name': 'Player Name',
             'settings.version': 'Version',
             'settings.daily_challenge': 'Daily Challenge',
@@ -3110,6 +3115,7 @@
                 'settings.high_contrast': '高對比模式',
                 'settings.mii_peek': '咪牌功能',
                 'settings.recycle_anim': '回收動畫',
+                'settings.sum_helper': '加總輔助',
                 'settings.player_name': '玩家名稱',
                 'settings.version': '版本號',
                 'settings.daily_challenge': '每日挑戰',
@@ -3262,6 +3268,7 @@
                 'settings.high_contrast': 'ハイコントラストモード',
                 'settings.mii_peek': 'カードプレビュー',
                 'settings.recycle_anim': 'リサイクルアニメーション',
+                'settings.sum_helper': '合計ヘルパー',
                 'settings.player_name': 'プレイヤー名',
                 'settings.version': 'バージョン',
                 'settings.daily_challenge': 'デイリーチャレンジ',
@@ -3413,6 +3420,7 @@
                 'settings.high_contrast': '고대비 모드',
                 'settings.mii_peek': '카드 미리보기',
                 'settings.recycle_anim': '리사이클 애니메이션',
+                'settings.sum_helper': '합계 도우미',
                 'settings.player_name': '플레이어 이름',
                 'settings.version': '버전',
                 'settings.daily_challenge': '오늘의 도전',
@@ -4315,6 +4323,7 @@
     'settings.high_contrast': '高对比模式',
     'settings.mii_peek': '偷看功能',
     'settings.recycle_anim': '回收动画',
+    'settings.sum_helper': '加总辅助',
     'settings.player_name': '玩家名称',
     'settings.version': '版本号',
     'settings.daily_challenge': '每日挑战',
@@ -5585,7 +5594,7 @@
 
         const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const SUPPORTS_VIBRATE = !IS_IOS && typeof navigator.vibrate === 'function';
-        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true, bgm: false };
+        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true, bgm: false, sumHelper: false };
         const DEFAULT_ACHIEVEMENTS = {
             wins: 0,
             zeroClearWins: 0,
@@ -5932,6 +5941,8 @@
             if (contrastEl) contrastEl.checked = settings.highContrast;
             if (miiPeekEl) miiPeekEl.checked = settings.miiPeek;
             if (recycleAnimEl) recycleAnimEl.checked = settings.recycleAnim;
+            const sumHelperEl = document.getElementById('setting-sum-helper');
+            if (sumHelperEl) sumHelperEl.checked = !!settings.sumHelper;
             if (versionEl) versionEl.innerText = `v${APP_VERSION}`;
             const savedName = localStorage.getItem('lucky3-player-name') || '';
             const nameInput = document.getElementById('setting-player-name');
@@ -5998,6 +6009,7 @@
             contrastEl.addEventListener('change', (e) => updateSetting('highContrast', e.target.checked));
             miiPeekEl.addEventListener('change', (e) => updateSetting('miiPeek', e.target.checked));
             recycleAnimEl.addEventListener('change', (e) => updateSetting('recycleAnim', e.target.checked));
+            document.getElementById('setting-sum-helper')?.addEventListener('change', (e) => updateSetting('sumHelper', e.target.checked));
             document.getElementById('setting-bgm')?.addEventListener('change', e => {
                 settings.bgm = e.target.checked;
                 saveSettings();
@@ -7616,7 +7628,7 @@
         function updateSumBar() {
             const bar = document.getElementById('sum-bar');
             if (!bar) return;
-            if (selected.length === 0) {
+            if (!settings.sumHelper || selected.length === 0) {
                 bar.classList.add('hidden');
                 return;
             }
