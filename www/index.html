@@ -5564,6 +5564,7 @@
         };
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
+        const _slotRenderCache = {}; // slot.id -> fingerprint，用於 differential rendering
         let autoEliminateTimer = null;
         let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
         let settings = { ...DEFAULT_SETTINGS };
@@ -7298,6 +7299,12 @@
             isBusy = false;
             const targetMode = options.mode === 'daily' ? 'daily' : 'normal';
 
+            // 清除 render cache，確保新遊戲完整重建
+            Object.keys(_slotRenderCache).forEach(k => delete _slotRenderCache[k]);
+            // 清除 board DOM（新遊戲需要完整重建）
+            const boardEl = document.getElementById('board');
+            if (boardEl) boardEl.innerHTML = '';
+
             // 清除 UI
             const fxLayer = document.getElementById('fx-layer');
             if (fxLayer) fxLayer.innerHTML = '';
@@ -7433,10 +7440,33 @@
         function render() {
             const board = document.getElementById('board');
             syncBoardScale();
-            board.innerHTML = ''; // 徹底清空當前 DOM
 
             const threeReady = selected.length === 3;
-            slots.filter(s => s.active).forEach(slot => {
+            const activeSlots = slots.filter(s => s.active);
+            const activeIds = new Set(activeSlots.map(s => s.id));
+
+            // 移除已不存在的 column（slot 變 inactive）
+            [...board.children].forEach(child => {
+                const id = parseInt(child.id?.replace('col-', ''));
+                if (!isNaN(id) && !activeIds.has(id)) {
+                    delete _slotRenderCache[id];
+                    child.remove();
+                }
+            });
+
+            activeSlots.forEach(slot => {
+                // 計算 fingerprint：牌組內容 + 選取狀態 + threeReady
+                const selInSlot = selected.filter(s => s.slotId === slot.id);
+                const fp = slot.cards.map(c => c.rank + c.suit).join(',')
+                    + '|' + selInSlot.map(s => s.idx).sort((a, b) => a - b).join(',')
+                    + '|' + threeReady;
+
+                const existingCol = document.getElementById(`col-${slot.id}`);
+                if (existingCol && _slotRenderCache[slot.id] === fp) {
+                    return; // 內容未變，保留現有 DOM，避免不必要的重繪
+                }
+                _slotRenderCache[slot.id] = fp;
+
                 const col = document.createElement('div');
                 col.className = 'column'; col.id = `col-${slot.id}`;
                 const COMPRESS_TOP = 3, COMPRESS_BOT = 3;
@@ -7444,7 +7474,7 @@
                 const _cs = getComputedStyle(document.documentElement);
                 const _cardH = parseFloat(_cs.getPropertyValue('--card-h')) || 119;
                 const _gap   = parseFloat(_cs.getPropertyValue('--fixed-gap')) || -86;
-                const _stepH = _cardH + _gap; // visible height each stacked card adds (~28% of cardH)
+                const _stepH = _cardH + _gap;
                 const _headerH = document.getElementById('header')?.offsetHeight || 60;
                 const _footerH = document.getElementById('footer')?.offsetHeight || 90;
                 const _availH  = (window.innerHeight || 640) - _headerH - _footerH - 20;
@@ -7526,8 +7556,15 @@
                         col.appendChild(badge);
                     }
                 });
-                board.appendChild(col);
+
+                // 用 replaceChild 取代舊 column，board 永遠不會出現空白瞬間
+                if (existingCol) {
+                    board.replaceChild(col, existingCol);
+                } else {
+                    board.appendChild(col);
+                }
             });
+
             document.getElementById('deck-num').innerText = deck.length;
 
             // Auto-eliminate scheduling
