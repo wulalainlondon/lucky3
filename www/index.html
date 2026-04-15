@@ -972,6 +972,15 @@
             border: 1px dashed var(--gold);
         }
 
+        @keyframes discard-receive {
+            0%   { transform: scale(1); }
+            38%  { transform: scale(1.13); box-shadow: 3px 3px 0 rgba(255,215,0,0.5), 0 0 12px rgba(255,215,0,0.25); }
+            100% { transform: scale(1);   box-shadow: 3px 3px 0 rgba(255,215,0,0.4); }
+        }
+        #discard-pile.discard-receive {
+            animation: discard-receive 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+        }
+
         .has-cards {
             background: white !important;
             color: black;
@@ -7909,7 +7918,7 @@
                     setTimeout(() => {
                         if (colCleared) slot.active = false;
                         render();
-                        updateDiscard();
+                        updateDiscard(true);
                         showCombo(sum);
                         checkVictory();
                         isBusy = false;
@@ -8406,12 +8415,18 @@
             });
         }
 
-        function updateDiscard() {
+        function updateDiscard(pulse = false) {
             const p = document.getElementById('discard-pile');
             if (lastCleared) {
                 p.innerHTML = `<div style="font-size:10px; position:absolute; top:2px; left:4px;">${lastCleared.rank}</div><div style="font-size:14px;">${lastCleared.suit}</div>`;
                 p.className = `pile has-cards ${lastCleared.color}`;
                 p.style.boxShadow = `3px 3px 0 rgba(255,215,0,0.4)`;
+                if (pulse) {
+                    p.classList.remove('discard-receive');
+                    void p.offsetWidth;
+                    p.classList.add('discard-receive');
+                    setTimeout(() => p.classList.remove('discard-receive'), 320);
+                }
             } else { p.className = 'pile'; p.innerHTML = ''; p.style.boxShadow = 'none'; }
         }
 
