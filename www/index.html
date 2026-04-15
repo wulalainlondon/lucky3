@@ -1385,6 +1385,39 @@
             cursor: not-allowed;
         }
 
+        /* ── 選牌加總顯示 ── */
+        #sum-bar {
+            position: fixed;
+            left: 50%;
+            bottom: calc(90px + env(safe-area-inset-bottom));
+            transform: translateX(-50%);
+            background: rgba(20, 20, 20, 0.88);
+            border: 1px solid rgba(255, 215, 0, 0.45);
+            border-radius: 999px;
+            padding: 5px 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff9d0;
+            letter-spacing: 0.04em;
+            z-index: 500;
+            pointer-events: none;
+            white-space: nowrap;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+        #sum-bar.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(6px);
+        }
+        #sum-bar .sum-total {
+            color: #ffd700;
+        }
+        #sum-bar .sum-ok {
+            color: #7eff9a;
+        }
+        #sum-bar .sum-fail {
+            color: #ff7e7e;
+        }
+
         .need-three-tip {
             position: fixed;
             left: 50%;
@@ -2718,6 +2751,8 @@
     <div id="board"></div>
     <div id="fx-layer"></div>
     <canvas id="particle-canvas"></canvas>
+
+    <div id="sum-bar" class="hidden"></div>
 
     <div id="footer">
         <!-- 發牌 -->
@@ -7573,6 +7608,34 @@
             } else {
                 clearAutoEliminateTimer();
             }
+
+            updateSumBar();
+        }
+
+        // --- 選牌加總顯示 ---
+        function updateSumBar() {
+            const bar = document.getElementById('sum-bar');
+            if (!bar) return;
+            if (selected.length === 0) {
+                bar.classList.add('hidden');
+                return;
+            }
+            const slot = slots.find(s => s.id === selected[0].slotId);
+            if (!slot) { bar.classList.add('hidden'); return; }
+
+            const vals = selected.map(s => slot.cards[s.idx]?.val ?? 0);
+            const sum = vals.reduce((a, b) => a + b, 0);
+            const isComplete = selected.length === 3;
+            const isOk = isComplete && [9, 19, 29].includes(sum);
+
+            const parts = vals.map(v => `<span>${v}</span>`).join(' <span style="opacity:.6">+</span> ');
+            const totalClass = isComplete ? (isOk ? 'sum-ok' : 'sum-fail') : 'sum-total';
+            const totalStr = selected.length > 1
+                ? ` <span style="opacity:.5">=</span> <span class="${totalClass}">${sum}</span>`
+                : '';
+
+            bar.innerHTML = parts + totalStr;
+            bar.classList.remove('hidden');
         }
 
         // --- 特效邏輯 ---
