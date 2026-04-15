@@ -1023,6 +1023,45 @@
             100% { transform: scale(1);   box-shadow: none; }
         }
 
+        /* ── Undo 按下動畫 ── */
+        #btn-undo.undo-spinning {
+            animation: undo-btn-squish 0.38s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        #btn-undo.undo-spinning svg {
+            animation: undo-arrow-rewind 0.38s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes undo-btn-squish {
+            0%   { transform: scale(1); }
+            28%  { transform: scale(0.80); }
+            65%  { transform: scale(1.07); }
+            100% { transform: scale(1); }
+        }
+        @keyframes undo-arrow-rewind {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+
+        /* ── Undo 後牌落回動畫 ── */
+        @keyframes undo-card-return {
+            0%   { opacity: 0; transform: translateY(-14px) scale(0.86); }
+            60%  { transform: translateY(3px) scale(1.05); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .undo-card-return {
+            animation: undo-card-return 0.32s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+        }
+
+        /* ── Deal undo：牌堆數字 bump ── */
+        @keyframes deck-num-bump {
+            0%   { transform: scale(1);    color: inherit; }
+            40%  { transform: scale(1.5);  color: var(--gold); }
+            100% { transform: scale(1);    color: inherit; }
+        }
+        #deck-num.undo-bump {
+            animation: deck-num-bump 0.32s ease-out forwards;
+            display: inline-block;
+        }
+
         .btn-main:active {
             transform: translateY(2px);
             box-shadow: 0 2px #1b5e20;
@@ -8078,6 +8117,16 @@
 
         function undo() {
             if (historyStack.length === 0 || isBusy) return;
+
+            // 按鈕旋轉動畫
+            const btn = document.getElementById('btn-undo');
+            if (btn) {
+                btn.classList.remove('undo-spinning');
+                void btn.offsetWidth;
+                btn.classList.add('undo-spinning');
+                setTimeout(() => btn.classList.remove('undo-spinning'), 420);
+            }
+
             const last = historyStack.pop(); combo = last.comboBefore || 0;
             moveCount = Math.max(0, moveCount - 1);
             if (gameMode === 'daily') { dailyUndoCount++; updateUndoCountDisplay(); }
@@ -8092,6 +8141,36 @@
                 lastCleared = last.prevLast;
             }
             selected = []; render(); updateDiscard();
+
+            // post-render 動畫
+            if (last.type === 'deal') {
+                // 牌堆數字 bump
+                const deckNum = document.getElementById('deck-num');
+                if (deckNum) {
+                    deckNum.classList.remove('undo-bump');
+                    void deckNum.offsetWidth;
+                    deckNum.classList.add('undo-bump');
+                    setTimeout(() => deckNum.classList.remove('undo-bump'), 360);
+                }
+            } else if (last.type === 'clear') {
+                // 復原的三張牌依序落入
+                const colEl = document.getElementById(`col-${last.slotId}`);
+                if (colEl) {
+                    const restoredIdxs = last.cards.map(c => c.idx).sort((a, b) => a - b);
+                    const cardEls = [...colEl.querySelectorAll('.card')];
+                    restoredIdxs.forEach((ci, i) => {
+                        const el = cardEls[ci];
+                        if (!el) return;
+                        el.style.animationDelay = `${i * 45}ms`;
+                        el.classList.add('undo-card-return');
+                        setTimeout(() => {
+                            el.classList.remove('undo-card-return');
+                            el.style.animationDelay = '';
+                        }, 380 + i * 45);
+                    });
+                }
+            }
+
             if (historyStack.length === 0) setUndoEnabled(false);
             checkDeadlock();
             saveGameState();
