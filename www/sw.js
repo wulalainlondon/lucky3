@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lucky3-v2026.04.16';
+const CACHE_NAME = 'lucky3-v2026.04.17b';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',

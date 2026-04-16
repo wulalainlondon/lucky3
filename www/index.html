@@ -687,28 +687,32 @@
             text-align: center;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 165, 0, 0.6);
             z-index: 10000;
-            animation: combo-fancy calc(1.5s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation: combo-slam calc(1.6s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
-        @keyframes combo-fancy {
-            0% {
-                scale: 0.5;
-                opacity: 0;
-            }
+        @keyframes combo-slam {
+            0%   { scale: 2.0; opacity: 0; transform: translate(-50%, -50%); }
+            8%   { scale: 0.92; opacity: 1; transform: translate(-50%, -50%); }
+            16%  { scale: 1.06; transform: translate(-50%, -50%); }
+            28%  { scale: 1.0;  transform: translate(-50%, -50%); }
+            70%  { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -140%); }
+        }
 
-            15% {
-                scale: 1.2;
-                opacity: 1;
-            }
-
-            75% {
-                opacity: 1;
-            }
-
-            100% {
-                transform: translate(-50%, -100%);
-                opacity: 0;
-            }
+        /* Border flash on combo ≥ 2 */
+        .combo-border-flash {
+            position: fixed;
+            inset: 0;
+            border: 3px solid rgba(255, 215, 0, 0);
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 2px;
+            animation: combo-border-pulse calc(0.45s * var(--anim-scale)) ease-out forwards;
+        }
+        @keyframes combo-border-pulse {
+            0%   { border-color: rgba(255, 215, 0, 0.9); box-shadow: inset 0 0 28px rgba(255, 215, 0, 0.25); }
+            60%  { border-color: rgba(255, 215, 0, 0.4); box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1); }
+            100% { border-color: rgba(255, 215, 0, 0); box-shadow: none; }
         }
 
         .lucky-three-win {
@@ -832,14 +836,14 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
             filter: drop-shadow(0 0 12px rgba(255,215,0,0.4));
-            animation: combo-fancy calc(1.5s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards, combo-shimmer 2s ease-in-out infinite;
+            animation: combo-slam calc(1.6s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards, combo-shimmer 2s ease-in-out infinite;
         }
         .combo-text.tier-4 {
             font-size: 4.6rem;
             color: #fff;
             -webkit-text-stroke: 1px rgba(255,215,0,0.6);
             filter: drop-shadow(0 0 16px rgba(255,215,0,0.5)) drop-shadow(0 0 4px rgba(255,255,255,0.3));
-            animation: combo-fancy calc(1.5s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation: combo-slam calc(1.6s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
         .combo-text.tier-5 {
             font-size: 5rem;
@@ -2123,6 +2127,145 @@
             cursor: pointer;
         }
 
+        /* ── 規則說明 Overlay ── */
+        .rules-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.82);
+            z-index: 10010;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+        .rules-overlay.show {
+            display: flex;
+        }
+        .rules-panel {
+            width: min(440px, 92vw);
+            max-height: 82vh;
+            overflow-y: auto;
+            background: linear-gradient(180deg, #112c1d, #0a1f14);
+            border: 2px solid #fdd835;
+            border-radius: 14px;
+            padding: 18px 16px 14px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.6);
+        }
+        .rules-title {
+            margin: 0 0 14px;
+            color: #ffe066;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        .rules-section {
+            margin-bottom: 16px;
+        }
+        .rules-section-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: rgba(255, 215, 0, 0.65);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rules-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 215, 0, 0.2);
+        }
+        .rules-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.88);
+            line-height: 1.55;
+            margin: 0;
+        }
+        .rules-sums {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .rules-sum-pill {
+            flex: 1;
+            text-align: center;
+            background: rgba(255, 215, 0, 0.12);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            border-radius: 8px;
+            padding: 8px 4px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #ffe066;
+        }
+        .rules-sum-pill small {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 2px;
+        }
+        /* ── 迷你牌組示意圖 ── */
+        .rules-patterns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .rules-pattern {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .rules-pattern-label {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 2px;
+        }
+        .rules-mini-col {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .rules-mini-card {
+            width: 28px;
+            height: 18px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .rules-mini-card.gold {
+            background: rgba(255, 215, 0, 0.55);
+            border-color: #fdd835;
+        }
+        .rules-hint-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: 6px;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.45;
+        }
+        .rules-hint-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .rules-close {
+            width: 100%;
+            min-height: 42px;
+            border: none;
+            border-radius: 10px;
+            background: #ffd54f;
+            color: #1b1b1b;
+            font-weight: 900;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
         .leaderboard-overlay {
             position: fixed;
             inset: 0;
@@ -2692,6 +2835,8 @@
                 <button type="button" class="settings-achievement" onclick="openAchievementsFromSettings()" data-i18n="settings.achievements">🎖 Achievements</button>
             </div>
 
+            <button type="button" class="settings-secondary" onclick="openRules()" data-i18n="rules.settings_btn">📖 How to Play</button>
+
             <!-- 其他 + 危險操作 -->
             <div class="settings-footer-row">
                 <button type="button" class="settings-secondary" onclick="replayTutorial()" data-i18n="settings.replay_tutorial">Replay Tutorial</button>
@@ -2733,6 +2878,86 @@
             <button type="button" class="achievement-close" onclick="closeAchievements()" data-i18n="common.close">Close</button>
         </div>
     </div>
+    <div id="rules-overlay" class="rules-overlay" onclick="onRulesOverlayClick(event)">
+        <div class="rules-panel">
+            <h3 class="rules-title" data-i18n="rules.title">📖 How to Play</h3>
+
+            <!-- 目標 -->
+            <div class="rules-section">
+                <div class="rules-section-title" data-i18n="rules.goal_label">Goal</div>
+                <p class="rules-text" data-i18n="rules.goal_body">Clear the board down to a single <strong style="color:#ffe066">3</strong> card. Deal cards one at a time and eliminate sets of three.</p>
+            </div>
+
+            <!-- 合法消除 -->
+            <div class="rules-section">
+                <div class="rules-section-title" data-i18n="rules.sums_label">Valid Sums</div>
+                <p class="rules-text" data-i18n="rules.sums_body">Select 3 cards in the <em>same column</em> whose values add up to:</p>
+                <div class="rules-sums">
+                    <div class="rules-sum-pill">9<small>A-A-7 …</small></div>
+                    <div class="rules-sum-pill">19<small>A-9-9 …</small></div>
+                    <div class="rules-sum-pill">29<small>9-10-10 …</small></div>
+                </div>
+                <div class="rules-hint-row"><span class="rules-hint-icon">♠</span><span data-i18n="rules.card_values">A = 1 &nbsp;·&nbsp; 2–10 = face value</span></div>
+            </div>
+
+            <!-- 選牌位置 -->
+            <div class="rules-section">
+                <div class="rules-section-title" data-i18n="rules.positions_label">Valid Positions</div>
+                <p class="rules-text" data-i18n="rules.positions_body">Only these 3 patterns are allowed (shown for a 5-card column):</p>
+                <div class="rules-patterns">
+                    <!-- Pattern A: 尾三張 (top 2 locked, bottom 3 gold) -->
+                    <div class="rules-pattern">
+                        <div class="rules-pattern-label" data-i18n="rules.pattern_a">A</div>
+                        <div class="rules-mini-col">
+                            <div class="rules-mini-card"></div>
+                            <div class="rules-mini-card"></div>
+                            <div class="rules-mini-card gold"></div>
+                            <div class="rules-mini-card gold"></div>
+                            <div class="rules-mini-card gold"></div>
+                        </div>
+                    </div>
+                    <!-- Pattern B: 頭1 + 尾2 -->
+                    <div class="rules-pattern">
+                        <div class="rules-pattern-label" data-i18n="rules.pattern_b">B</div>
+                        <div class="rules-mini-col">
+                            <div class="rules-mini-card gold"></div>
+                            <div class="rules-mini-card"></div>
+                            <div class="rules-mini-card"></div>
+                            <div class="rules-mini-card gold"></div>
+                            <div class="rules-mini-card gold"></div>
+                        </div>
+                    </div>
+                    <!-- Pattern C: 頭2 + 尾1 -->
+                    <div class="rules-pattern">
+                        <div class="rules-pattern-label" data-i18n="rules.pattern_c">C</div>
+                        <div class="rules-mini-col">
+                            <div class="rules-mini-card gold"></div>
+                            <div class="rules-mini-card gold"></div>
+                            <div class="rules-mini-card"></div>
+                            <div class="rules-mini-card"></div>
+                            <div class="rules-mini-card gold"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rules-hint-row"><span class="rules-hint-icon">💡</span><span data-i18n="rules.positions_hint">Top cards = dealt first. Bottom card = most recent deal.</span></div>
+            </div>
+
+            <!-- 回收 -->
+            <div class="rules-section">
+                <div class="rules-section-title" data-i18n="rules.recycle_label">Recycle</div>
+                <p class="rules-text" data-i18n="rules.recycle_body">When the deck runs out, tap <strong>RECYCLE</strong> to reshuffle discarded cards back into the deck. Each recycle costs one move.</p>
+            </div>
+
+            <!-- Undo -->
+            <div class="rules-section">
+                <div class="rules-section-title" data-i18n="rules.undo_label">Undo</div>
+                <p class="rules-text" data-i18n="rules.undo_body">Tap the ↩ button to reverse your last action (deal or clear). Use it wisely — each undo counts as a move.</p>
+            </div>
+
+            <button type="button" class="rules-close" onclick="closeRules()" data-i18n="common.close">Close</button>
+        </div>
+    </div>
+
     <div id="leaderboard-overlay" class="leaderboard-overlay" onclick="onLeaderboardOverlayClick(event)">
         <div class="leaderboard-panel">
             <h3 class="leaderboard-title" data-i18n="leaderboard.title">Today's Leaderboard</h3>
@@ -2900,7 +3125,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.15';
+        const APP_VERSION = '2026.04.17';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -3143,7 +3368,24 @@
             'ad.close_in': 'Close Ad ({n}s)',
             'ad.close_now': 'Close Ad',
             'settings.section_display': 'Display',
-            'settings.section_content': 'Content'
+            'settings.section_content': 'Content',
+            'rules.settings_btn': '📖 How to Play',
+            'rules.title': '📖 How to Play',
+            'rules.goal_label': 'Goal',
+            'rules.goal_body': 'Clear the board down to a single 3 card. Deal cards one at a time and eliminate sets of three.',
+            'rules.sums_label': 'Valid Sums',
+            'rules.sums_body': 'Select 3 cards in the same column whose values add up to:',
+            'rules.card_values': 'A = 1 · 2–10 = face value',
+            'rules.positions_label': 'Valid Positions',
+            'rules.positions_body': 'Only these 3 patterns are allowed (shown for a 5-card column):',
+            'rules.pattern_a': 'Bottom 3',
+            'rules.pattern_b': 'Top 1 + Bottom 2',
+            'rules.pattern_c': 'Top 2 + Bottom 1',
+            'rules.positions_hint': 'Top cards = dealt first. Bottom card = most recently dealt.',
+            'rules.recycle_label': 'Recycle',
+            'rules.recycle_body': 'When the deck runs out, tap RECYCLE to reshuffle discarded cards back into the deck. Each recycle costs one move.',
+            'rules.undo_label': 'Undo',
+            'rules.undo_body': 'Tap the ↩ button to reverse your last action (deal or clear). Use it wisely — each undo counts as a move.'
         };
         const I18N_STRINGS = {
             'zh-Hant': {
@@ -3296,7 +3538,24 @@
                 'ad.close_in': '關閉廣告（{n}秒）',
                 'ad.close_now': '關閉廣告',
                 'settings.section_display': '顯示',
-                'settings.section_content': '內容'
+                'settings.section_content': '內容',
+                'rules.settings_btn': '📖 遊戲規則',
+                'rules.title': '📖 遊戲規則',
+                'rules.goal_label': '目標',
+                'rules.goal_body': '把牌局清到只剩一張「3」。每次發一張牌，選三張同列的牌消除。',
+                'rules.sums_label': '合法點數組合',
+                'rules.sums_body': '在同一列選 3 張牌，點數總和必須是：',
+                'rules.card_values': 'A = 1 ·  2–10 = 面值',
+                'rules.positions_label': '合法位置',
+                'rules.positions_body': '只有以下 3 種選牌方式（以 5 張牌的列為例）：',
+                'rules.pattern_a': '尾三張',
+                'rules.pattern_b': '頭1＋尾2',
+                'rules.pattern_c': '頭2＋尾1',
+                'rules.positions_hint': '頂部＝最早發的牌，底部＝最近發的牌。',
+                'rules.recycle_label': '回收',
+                'rules.recycle_body': '牌庫空了之後，點 RECYCLE 把棄牌堆重新洗入牌庫。每次回收算一步。',
+                'rules.undo_label': '倒轉',
+                'rules.undo_body': '點 ↩ 按鈕可倒退一個動作（發牌或消除）。每次倒轉算一步。'
             },
             en: I18N_BASE_EN,
             ja: {
@@ -3449,7 +3708,24 @@
                 'ad.close_in': '広告を閉じる（{n}秒）',
                 'ad.close_now': '広告を閉じる',
                 'settings.section_display': '表示',
-                'settings.section_content': 'コンテンツ'
+                'settings.section_content': 'コンテンツ',
+                'rules.settings_btn': '📖 遊び方',
+                'rules.title': '📖 遊び方',
+                'rules.goal_label': '目標',
+                'rules.goal_body': 'ボードを「3」1枚だけ残してクリア。1枚ずつカードを配り、3枚セットを消します。',
+                'rules.sums_label': '合法な合計',
+                'rules.sums_body': '同じ列の3枚を選び、合計が以下になるようにします：',
+                'rules.card_values': 'A = 1 · 2〜10 = 額面',
+                'rules.positions_label': '合法なポジション',
+                'rules.positions_body': '以下の3パターンのみ有効（5枚の列の場合）：',
+                'rules.pattern_a': '下3枚',
+                'rules.pattern_b': '上1枚 + 下2枚',
+                'rules.pattern_c': '上2枚 + 下1枚',
+                'rules.positions_hint': '上のカード＝最初に配られた。下のカード＝最近配られた。',
+                'rules.recycle_label': 'リサイクル',
+                'rules.recycle_body': 'デッキが空になったら、RECYCLEをタップして捨て札をデッキに戻します。1回のリサイクルで1手消費。',
+                'rules.undo_label': '元に戻す',
+                'rules.undo_body': '↩ボタンで最後のアクション（配牌またはクリア）を取り消します。1回の取り消しで1手消費。'
             },
             ko: {
                 'meta.title': 'Lucky 3 솔리테어',
@@ -3601,7 +3877,24 @@
                 'ad.close_in': '광고 닫기（{n}초）',
                 'ad.close_now': '광고 닫기',
                 'settings.section_display': '디스플레이',
-                'settings.section_content': '콘텐츠'
+                'settings.section_content': '콘텐츠',
+                'rules.settings_btn': '📖 게임 방법',
+                'rules.title': '📖 게임 방법',
+                'rules.goal_label': '목표',
+                'rules.goal_body': '보드를 「3」 카드 하나만 남기고 비우세요. 한 장씩 카드를 내고 세 장 세트를 제거합니다.',
+                'rules.sums_label': '유효한 합계',
+                'rules.sums_body': '같은 열에서 3장을 선택하고 합계가 다음이 되어야 합니다：',
+                'rules.card_values': 'A = 1 · 2–10 = 면값',
+                'rules.positions_label': '유효한 위치',
+                'rules.positions_body': '다음 3가지 패턴만 허용됩니다（5장 열 기준）：',
+                'rules.pattern_a': '하단 3장',
+                'rules.pattern_b': '상단 1장 + 하단 2장',
+                'rules.pattern_c': '상단 2장 + 하단 1장',
+                'rules.positions_hint': '상단 카드＝먼저 배분된 카드. 하단 카드＝가장 최근 배분.',
+                'rules.recycle_label': '재활용',
+                'rules.recycle_body': '덱이 비면 RECYCLE을 탭하여 버린 카드를 덱으로 되돌립니다. 재활용 1회＝1수.',
+                'rules.undo_label': '되돌리기',
+                'rules.undo_body': '↩ 버튼으로 마지막 행동（배분 또는 제거）을 되돌립니다. 되돌리기 1회＝1수.'
             },
             es: {
     'meta.title': 'Lucky 3 Solitario',
@@ -3751,7 +4044,24 @@
     'ad.close_in': 'Cerrar anuncio ({n}s)',
     'ad.close_now': 'Cerrar anuncio',
     'settings.section_display': 'Pantalla',
-    'settings.section_content': 'Contenido'
+    'settings.section_content': 'Contenido',
+                'rules.settings_btn': '📖 Cómo jugar',
+                'rules.title': '📖 Cómo jugar',
+                'rules.goal_label': 'Objetivo',
+                'rules.goal_body': 'Despeja el tablero hasta que quede solo una carta «3». Reparte cartas de una en una y elimina grupos de tres.',
+                'rules.sums_label': 'Sumas válidas',
+                'rules.sums_body': 'Selecciona 3 cartas de la misma columna cuya suma sea:',
+                'rules.card_values': 'A = 1 · 2–10 = valor nominal',
+                'rules.positions_label': 'Posiciones válidas',
+                'rules.positions_body': 'Solo se permiten estos 3 patrones（para una columna de 5 cartas）：',
+                'rules.pattern_a': '3 últimas',
+                'rules.pattern_b': '1ª + 2 últimas',
+                'rules.pattern_c': '2 primeras + 1 última',
+                'rules.positions_hint': 'Cartas superiores = repartidas primero. Carta inferior = repartida más recientemente.',
+                'rules.recycle_label': 'Reciclar',
+                'rules.recycle_body': 'Cuando el mazo se agote, pulsa RECYCLE para volver a barajar las cartas descartadas. Cada reciclaje cuenta como un movimiento.',
+                'rules.undo_label': 'Deshacer',
+                'rules.undo_body': 'Pulsa ↩ para revertir tu última acción（repartir o eliminar）. Cada deshacer cuenta como un movimiento.'
             },
             'pt-BR': {
     'meta.title': 'Lucky 3 Paciência',
@@ -3901,7 +4211,24 @@
     'ad.close_in': 'Fechar anúncio ({n}s)',
     'ad.close_now': 'Fechar anúncio',
     'settings.section_display': 'Exibição',
-    'settings.section_content': 'Conteúdo'
+    'settings.section_content': 'Conteúdo',
+                'rules.settings_btn': '📖 Como jogar',
+                'rules.title': '📖 Como jogar',
+                'rules.goal_label': 'Objetivo',
+                'rules.goal_body': 'Limpe o tabuleiro até restar apenas uma carta «3». Distribua cartas uma a uma e elimine conjuntos de três.',
+                'rules.sums_label': 'Somas válidas',
+                'rules.sums_body': 'Selecione 3 cartas da mesma coluna cuja soma seja:',
+                'rules.card_values': 'A = 1 · 2–10 = valor nominal',
+                'rules.positions_label': 'Posições válidas',
+                'rules.positions_body': 'Apenas estes 3 padrões são permitidos（para uma coluna de 5 cartas）：',
+                'rules.pattern_a': '3 de baixo',
+                'rules.pattern_b': '1ª + 2 de baixo',
+                'rules.pattern_c': '2 de cima + 1 de baixo',
+                'rules.positions_hint': 'Cartas de cima = distribuídas primeiro. Carta de baixo = distribuída mais recentemente.',
+                'rules.recycle_label': 'Reciclar',
+                'rules.recycle_body': 'Quando o baralho acabar, toque RECYCLE para embaralhar as cartas descartadas de volta. Cada reciclagem conta como um movimento.',
+                'rules.undo_label': 'Desfazer',
+                'rules.undo_body': 'Toque ↩ para reverter sua última ação（distribuir ou eliminar）. Cada desfazer conta como um movimento.'
             },
             th: {
     'meta.title': 'Lucky 3 ไพ่คนเดียว',
@@ -4051,7 +4378,24 @@
     'ad.close_in': 'ปิดโฆษณา ({n}วิ)',
     'ad.close_now': 'ปิดโฆษณา',
     'settings.section_display': 'การแสดงผล',
-    'settings.section_content': 'เนื้อหา'
+    'settings.section_content': 'เนื้อหา',
+                'rules.settings_btn': '📖 วิธีเล่น',
+                'rules.title': '📖 วิธีเล่น',
+                'rules.goal_label': 'เป้าหมาย',
+                'rules.goal_body': 'เคลียร์กระดานจนเหลือแค่ไพ่ «3» ใบเดียว แจกไพ่ทีละใบและกำจัดชุด 3 ใบ',
+                'rules.sums_label': 'ผลรวมที่ถูกต้อง',
+                'rules.sums_body': 'เลือกไพ่ 3 ใบในคอลัมน์เดียวกันที่รวมกันได้:',
+                'rules.card_values': 'A = 1 · 2–10 = ค่าหน้าไพ่',
+                'rules.positions_label': 'ตำแหน่งที่ถูกต้อง',
+                'rules.positions_body': 'อนุญาตเฉพาะ 3 รูปแบบนี้เท่านั้น（สำหรับคอลัมน์ 5 ใบ）：',
+                'rules.pattern_a': '3 ใบล่าง',
+                'rules.pattern_b': 'ใบบน 1 + ใบล่าง 2',
+                'rules.pattern_c': 'ใบบน 2 + ใบล่าง 1',
+                'rules.positions_hint': 'ไพ่บน = แจกก่อน · ไพ่ล่าง = แจกล่าสุด',
+                'rules.recycle_label': 'รีไซเคิล',
+                'rules.recycle_body': 'เมื่อสำรับไพ่หมด แตะ RECYCLE เพื่อสับไพ่ที่ทิ้งแล้วกลับเข้าสำรับ การรีไซเคิลแต่ละครั้งนับเป็น 1 ตา',
+                'rules.undo_label': 'ย้อนกลับ',
+                'rules.undo_body': 'แตะ ↩ เพื่อยกเลิกการกระทำล่าสุด（แจกหรือกำจัด） การย้อนกลับแต่ละครั้งนับเป็น 1 ตา'
             },
             id: {
     'meta.title': 'Lucky 3 Solitaire',
@@ -4201,7 +4545,24 @@
     'ad.close_in': 'Tutup Iklan ({n}d)',
     'ad.close_now': 'Tutup Iklan',
     'settings.section_display': 'Tampilan',
-    'settings.section_content': 'Konten'
+    'settings.section_content': 'Konten',
+                'rules.settings_btn': '📖 Cara Bermain',
+                'rules.title': '📖 Cara Bermain',
+                'rules.goal_label': 'Tujuan',
+                'rules.goal_body': 'Bersihkan papan hingga tersisa satu kartu «3». Bagikan kartu satu per satu dan eliminasi tiga kartu sekaligus.',
+                'rules.sums_label': 'Jumlah Valid',
+                'rules.sums_body': 'Pilih 3 kartu di kolom yang sama dengan jumlah nilai:',
+                'rules.card_values': 'A = 1 · 2–10 = nilai nominal',
+                'rules.positions_label': 'Posisi Valid',
+                'rules.positions_body': 'Hanya 3 pola ini yang diperbolehkan（untuk kolom 5 kartu）：',
+                'rules.pattern_a': '3 bawah',
+                'rules.pattern_b': '1 atas + 2 bawah',
+                'rules.pattern_c': '2 atas + 1 bawah',
+                'rules.positions_hint': 'Kartu atas = dibagikan pertama. Kartu bawah = dibagikan terakhir.',
+                'rules.recycle_label': 'Daur Ulang',
+                'rules.recycle_body': 'Saat dek habis, ketuk RECYCLE untuk mengocok kartu buangan kembali ke dek. Setiap daur ulang menghitung satu langkah.',
+                'rules.undo_label': 'Urungkan',
+                'rules.undo_body': 'Ketuk ↩ untuk membatalkan tindakan terakhir（bagikan atau eliminasi）. Setiap urungkan menghitung satu langkah.'
             },
             fr: {
     'meta.title': 'Lucky 3 Solitaire',
@@ -4352,7 +4713,24 @@
     'ad.close_in': 'Fermer la pub ({n}s)',
     'ad.close_now': 'Fermer la pub',
     'settings.section_display': 'Affichage',
-    'settings.section_content': 'Contenu'
+    'settings.section_content': 'Contenu',
+                'rules.settings_btn': '📖 Comment jouer',
+                'rules.title': '📖 Comment jouer',
+                'rules.goal_label': 'Objectif',
+                'rules.goal_body': "Videz le plateau jusqu'à n'avoir plus qu'une seule carte «3». Distribuez les cartes une à une et éliminez les groupes de trois.",
+                'rules.sums_label': 'Sommes valides',
+                'rules.sums_body': 'Sélectionnez 3 cartes dans la même colonne dont la somme est :',
+                'rules.card_values': 'A = 1 · 2–10 = valeur nominale',
+                'rules.positions_label': 'Positions valides',
+                'rules.positions_body': 'Seuls ces 3 schémas sont autorisés（pour une colonne de 5 cartes）：',
+                'rules.pattern_a': '3 du bas',
+                'rules.pattern_b': '1ère + 2 du bas',
+                'rules.pattern_c': '2 du haut + 1 du bas',
+                'rules.positions_hint': 'Cartes du haut = distribuées en premier. Carte du bas = distribuée en dernier.',
+                'rules.recycle_label': 'Recycler',
+                'rules.recycle_body': 'Quand le paquet est vide, appuyez sur RECYCLE pour remettre les cartes défaussées dans le paquet. Chaque recyclage compte comme un mouvement.',
+                'rules.undo_label': 'Annuler',
+                'rules.undo_body': 'Appuyez sur ↩ pour annuler votre dernière action（distribuer ou éliminer）. Chaque annulation compte comme un mouvement.'
             },
             'zh-CN': {
     'meta.title': 'Lucky 3 接龙',
@@ -4487,7 +4865,24 @@
     'toast.dev_on_title': '🛠️ 开发者模式已开启',
     'toast.dev_on_body': 'DEAL 前会自动先消一组合法牌。',
     'toast.dev_off_title': '🛠️ 开发者模式已关闭',
-    'toast.dev_off_body': 'DEAL 将恢复一般流程。'
+    'toast.dev_off_body': 'DEAL 将恢复一般流程。',
+    'rules.settings_btn': '📖 游戏规则',
+    'rules.title': '📖 游戏规则',
+    'rules.goal_label': '目标',
+    'rules.goal_body': '清空牌局直到只剩一张「3」。每次发一张牌，选三张同列的牌消除。',
+    'rules.sums_label': '合法点数组合',
+    'rules.sums_body': '在同一列选 3 张牌，点数之和必须是：',
+    'rules.card_values': 'A = 1 · 2–10 = 面值',
+    'rules.positions_label': '合法位置',
+    'rules.positions_body': '只允许以下 3 种选牌方式（以 5 张牌的列为例）：',
+    'rules.pattern_a': '末3张',
+    'rules.pattern_b': '头1张 + 末2张',
+    'rules.pattern_c': '头2张 + 末1张',
+    'rules.positions_hint': '顶部 = 最先发的牌 · 底部 = 最近发的牌',
+    'rules.recycle_label': '回收',
+    'rules.recycle_body': '牌库空了之后，点 RECYCLE 将弃牌堆重新洗入牌库。每次回收算一步。',
+    'rules.undo_label': '撤销',
+    'rules.undo_body': '点击 ↩ 撤销上一步操作（发牌或消除）。每次撤销算一步。'
             },
             de: {
     'meta.title': 'Lucky 3 Solitaire',
@@ -4621,7 +5016,24 @@
     'toast.dev_on_title': '🛠️ Entwicklermodus aktiviert',
     'toast.dev_on_body': 'Vor jedem DEAL wird automatisch ein gültiger Zug gespielt.',
     'toast.dev_off_title': '🛠️ Entwicklermodus deaktiviert',
-    'toast.dev_off_body': 'DEAL kehrt zum normalen Ablauf zurück.'
+    'toast.dev_off_body': 'DEAL kehrt zum normalen Ablauf zurück.',
+    'rules.settings_btn': '📖 Spielanleitung',
+    'rules.title': '📖 Spielanleitung',
+    'rules.goal_label': 'Ziel',
+    'rules.goal_body': 'Leere das Spielfeld bis auf eine einzelne «3»-Karte. Ziehe Karten einzeln und eliminiere Dreier-Gruppen.',
+    'rules.sums_label': 'Gültige Summen',
+    'rules.sums_body': 'Wähle 3 Karten in einer Spalte, deren Werte zusammen ergeben:',
+    'rules.card_values': 'A = 1 · 2–10 = Nennwert',
+    'rules.positions_label': 'Gültige Positionen',
+    'rules.positions_body': 'Nur diese 3 Muster sind erlaubt（für eine Spalte mit 5 Karten）：',
+    'rules.pattern_a': 'Untere 3',
+    'rules.pattern_b': '1. oben + 2 unten',
+    'rules.pattern_c': '2 oben + 1 unten',
+    'rules.positions_hint': 'Obere Karten = zuerst gezogen. Untere Karte = zuletzt gezogen.',
+    'rules.recycle_label': 'Recyceln',
+    'rules.recycle_body': 'Wenn der Stapel leer ist, tippe RECYCLE, um die abgeworfenen Karten zurückzumischen. Jedes Recyceln kostet einen Zug.',
+    'rules.undo_label': 'Rückgängig',
+    'rules.undo_body': 'Tippe ↩, um deine letzte Aktion（Karte ziehen oder eliminieren）rückgängig zu machen. Jedes Rückgängig kostet einen Zug.'
             },
             it: {
     'meta.title': 'Lucky 3 Solitario',
@@ -4755,7 +5167,24 @@
     'toast.dev_on_title': '🛠️ Modalità sviluppatore attivata',
     'toast.dev_on_body': 'Prima di ogni DEAL viene eseguita automaticamente una mossa valida.',
     'toast.dev_off_title': '🛠️ Modalità sviluppatore disattivata',
-    'toast.dev_off_body': 'DEAL torna al flusso normale.'
+    'toast.dev_off_body': 'DEAL torna al flusso normale.',
+    'rules.settings_btn': '📖 Come giocare',
+    'rules.title': '📖 Come giocare',
+    'rules.goal_label': 'Obiettivo',
+    'rules.goal_body': 'Svuota il tavolo fino a lasciare solo una carta «3». Distribuisci le carte una alla volta ed elimina gruppi di tre.',
+    'rules.sums_label': 'Somme valide',
+    'rules.sums_body': 'Seleziona 3 carte nella stessa colonna la cui somma sia:',
+    'rules.card_values': 'A = 1 · 2–10 = valore nominale',
+    'rules.positions_label': 'Posizioni valide',
+    'rules.positions_body': 'Solo questi 3 schemi sono consentiti（per una colonna da 5 carte）：',
+    'rules.pattern_a': 'Ultime 3',
+    'rules.pattern_b': '1ª + ultime 2',
+    'rules.pattern_c': 'Prime 2 + ultima 1',
+    'rules.positions_hint': 'Carte in alto = distribuite per prime. Carta in basso = distribuita per ultima.',
+    'rules.recycle_label': 'Riciclare',
+    'rules.recycle_body': 'Quando il mazzo è esaurito, tocca RECYCLE per rimescolare le carte scartate nel mazzo. Ogni riciclo conta come una mossa.',
+    'rules.undo_label': 'Annulla',
+    'rules.undo_body': "Tocca ↩ per annullare l'ultima azione（distribuire o eliminare）. Ogni annullamento conta come una mossa."
             },
             'pt-PT': {
     'meta.title': 'Lucky 3 Solitário',
@@ -4888,7 +5317,24 @@
     'toast.dev_on_title': '🛠️ Modo de programador activado',
     'toast.dev_on_body': 'Antes de cada DEAL, é executada automaticamente uma jogada válida.',
     'toast.dev_off_title': '🛠️ Modo de programador desactivado',
-    'toast.dev_off_body': 'DEAL regressa ao fluxo normal.'
+    'toast.dev_off_body': 'DEAL regressa ao fluxo normal.',
+    'rules.settings_btn': '📖 Como jogar',
+    'rules.title': '📖 Como jogar',
+    'rules.goal_label': 'Objetivo',
+    'rules.goal_body': 'Limpe o tabuleiro até restar apenas uma carta «3». Distribua cartas uma a uma e elimine conjuntos de três.',
+    'rules.sums_label': 'Somas válidas',
+    'rules.sums_body': 'Selecione 3 cartas da mesma coluna cuja soma seja:',
+    'rules.card_values': 'A = 1 · 2–10 = valor facial',
+    'rules.positions_label': 'Posições válidas',
+    'rules.positions_body': 'Apenas estes 3 padrões são permitidos（para uma coluna de 5 cartas）：',
+    'rules.pattern_a': '3 de baixo',
+    'rules.pattern_b': '1ª + 2 de baixo',
+    'rules.pattern_c': '2 de cima + 1 de baixo',
+    'rules.positions_hint': 'Cartas de cima = distribuídas primeiro. Carta de baixo = distribuída mais recentemente.',
+    'rules.recycle_label': 'Reciclar',
+    'rules.recycle_body': 'Quando o baralho acabar, toque RECYCLE para baralhar as cartas descartadas de volta. Cada reciclagem conta como um movimento.',
+    'rules.undo_label': 'Desfazer',
+    'rules.undo_body': 'Toque ↩ para reverter a sua última ação（distribuir ou eliminar）. Cada desfazer conta como um movimento.'
             },
             nl: {
     'meta.title': 'Lucky 3 Solitaire',
@@ -5021,7 +5467,24 @@
     'toast.dev_on_title': '🛠️ Ontwikkelaarsmodus ingeschakeld',
     'toast.dev_on_body': 'Voor elke DEAL wordt automatisch een geldige zet gespeeld.',
     'toast.dev_off_title': '🛠️ Ontwikkelaarsmodus uitgeschakeld',
-    'toast.dev_off_body': 'DEAL keert terug naar de normale stroom.'
+    'toast.dev_off_body': 'DEAL keert terug naar de normale stroom.',
+    'rules.settings_btn': '📖 Speluitleg',
+    'rules.title': '📖 Speluitleg',
+    'rules.goal_label': 'Doel',
+    'rules.goal_body': 'Maak het bord leeg tot er slechts één «3»-kaart over is. Deel kaarten één voor één en elimineer sets van drie.',
+    'rules.sums_label': 'Geldige sommen',
+    'rules.sums_body': 'Selecteer 3 kaarten in dezelfde kolom waarvan de som is:',
+    'rules.card_values': 'A = 1 · 2–10 = nominale waarde',
+    'rules.positions_label': 'Geldige posities',
+    'rules.positions_body': 'Alleen deze 3 patronen zijn toegestaan（voor een kolom van 5 kaarten）：',
+    'rules.pattern_a': 'Onderste 3',
+    'rules.pattern_b': '1e bovenste + 2 onderste',
+    'rules.pattern_c': '2 bovenste + 1 onderste',
+    'rules.positions_hint': 'Bovenste kaarten = als eerste gedeeld. Onderste kaart = meest recent gedeeld.',
+    'rules.recycle_label': 'Recyclen',
+    'rules.recycle_body': 'Als het deck leeg is, tik op RECYCLE om de afgeworpen kaarten terug in het deck te schudden. Elke recycling telt als één zet.',
+    'rules.undo_label': 'Ongedaan maken',
+    'rules.undo_body': 'Tik op ↩ om je laatste actie（delen of elimineren）ongedaan te maken. Elke ongedaan making telt als één zet.'
             },
             ru: {
     'meta.title': 'Lucky 3 Пасьянс',
@@ -5154,7 +5617,24 @@
     'toast.dev_on_title': '🛠️ Режим разработчика включён',
     'toast.dev_on_body': 'Перед каждым DEAL автоматически выполняется один допустимый ход.',
     'toast.dev_off_title': '🛠️ Режим разработчика выключен',
-    'toast.dev_off_body': 'DEAL возвращается к обычному режиму.'
+    'toast.dev_off_body': 'DEAL возвращается к обычному режиму.',
+    'rules.settings_btn': '📖 Как играть',
+    'rules.title': '📖 Как играть',
+    'rules.goal_label': 'Цель',
+    'rules.goal_body': 'Очистите поле до одной карты «3». Раздавайте карты по одной и убирайте группы по три.',
+    'rules.sums_label': 'Допустимые суммы',
+    'rules.sums_body': 'Выберите 3 карты в одном столбце, сумма которых равна:',
+    'rules.card_values': 'A = 1 · 2–10 = номинал',
+    'rules.positions_label': 'Допустимые позиции',
+    'rules.positions_body': 'Допустимы только эти 3 шаблона（для столбца из 5 карт）：',
+    'rules.pattern_a': 'Нижние 3',
+    'rules.pattern_b': '1-я сверху + 2 снизу',
+    'rules.pattern_c': '2 сверху + 1 снизу',
+    'rules.positions_hint': 'Верхние карты = розданы первыми. Нижняя карта = раздана последней.',
+    'rules.recycle_label': 'Переработка',
+    'rules.recycle_body': 'Когда колода кончится, нажмите RECYCLE, чтобы перетасовать сброшенные карты обратно. Каждая переработка стоит один ход.',
+    'rules.undo_label': 'Отменить',
+    'rules.undo_body': 'Нажмите ↩, чтобы отменить последнее действие（раздача или удаление）. Каждая отмена стоит один ход.'
             },
             pl: {
     'meta.title': 'Lucky 3 Pasjans',
@@ -5287,7 +5767,24 @@
     'toast.dev_on_title': '🛠️ Tryb dewelopera włączony',
     'toast.dev_on_body': 'Przed każdym DEAL automatycznie wykonywany jest prawidłowy ruch.',
     'toast.dev_off_title': '🛠️ Tryb dewelopera wyłączony',
-    'toast.dev_off_body': 'DEAL wraca do normalnego przepływu.'
+    'toast.dev_off_body': 'DEAL wraca do normalnego przepływu.',
+    'rules.settings_btn': '📖 Jak grać',
+    'rules.title': '📖 Jak grać',
+    'rules.goal_label': 'Cel',
+    'rules.goal_body': 'Wyczyść planszę do jednej karty «3». Rozdawaj karty po jednej i eliminuj zestawy po trzy.',
+    'rules.sums_label': 'Prawidłowe sumy',
+    'rules.sums_body': 'Wybierz 3 karty w tej samej kolumnie, których suma wynosi:',
+    'rules.card_values': 'A = 1 · 2–10 = wartość nominalna',
+    'rules.positions_label': 'Prawidłowe pozycje',
+    'rules.positions_body': 'Dozwolone są tylko te 3 wzorce（dla kolumny 5 kart）：',
+    'rules.pattern_a': '3 dolne',
+    'rules.pattern_b': '1. górna + 2 dolne',
+    'rules.pattern_c': '2 górne + 1 dolna',
+    'rules.positions_hint': 'Górne karty = rozdane jako pierwsze. Dolna karta = rozdana jako ostatnia.',
+    'rules.recycle_label': 'Recykling',
+    'rules.recycle_body': 'Gdy talia się skończy, dotknij RECYCLE, aby przetasować odrzucone karty z powrotem. Każdy recykling kosztuje jeden ruch.',
+    'rules.undo_label': 'Cofnij',
+    'rules.undo_body': 'Dotknij ↩, aby cofnąć ostatnią czynność（rozdanie lub eliminację）. Każde cofnięcie kosztuje jeden ruch.'
             },
             tr: {
     'meta.title': 'Lucky 3 Solitaire',
@@ -5420,7 +5917,24 @@
     'toast.dev_on_title': '🛠️ Geliştirici modu açık',
     'toast.dev_on_body': 'Her DEAL öncesinde geçerli bir hamle otomatik oynanır.',
     'toast.dev_off_title': '🛠️ Geliştirici modu kapalı',
-    'toast.dev_off_body': 'DEAL normal akışa geri döner.'
+    'toast.dev_off_body': 'DEAL normal akışa geri döner.',
+    'rules.settings_btn': '📖 Nasıl Oynanır',
+    'rules.title': '📖 Nasıl Oynanır',
+    'rules.goal_label': 'Hedef',
+    'rules.goal_body': 'Tahtayı tek «3» kartı kalana kadar temizle. Kartları tek tek dağıt ve üçlü grupları ele.',
+    'rules.sums_label': 'Geçerli Toplamlar',
+    'rules.sums_body': 'Aynı sütunda toplamı aşağıdakine eşit 3 kart seç:',
+    'rules.card_values': 'A = 1 · 2–10 = yüz değeri',
+    'rules.positions_label': 'Geçerli Konumlar',
+    'rules.positions_body': 'Yalnızca bu 3 düzen geçerlidir（5 kartlık sütun için）：',
+    'rules.pattern_a': 'Alt 3',
+    'rules.pattern_b': '1. üst + alt 2',
+    'rules.pattern_c': '2 üst + alt 1',
+    'rules.positions_hint': 'Üst kartlar = önce dağıtıldı. Alt kart = en son dağıtıldı.',
+    'rules.recycle_label': 'Geri Dönüşüm',
+    'rules.recycle_body': "Deste bitince RECYCLE'a dokunarak atılan kartları geri karıştır. Her geri dönüşüm bir hamle sayılır.",
+    'rules.undo_label': 'Geri Al',
+    'rules.undo_body': '↩ düğmesine dokunarak son işlemi（dağıtma veya eleme）geri al. Her geri alma bir hamle sayılır.'
             },
             vi: {
     'meta.title': 'Lucky 3 Solitaire',
@@ -5553,7 +6067,24 @@
     'toast.dev_on_title': '🛠️ Chế độ nhà phát triển bật',
     'toast.dev_on_body': 'Trước mỗi DEAL, một nước hợp lệ được tự động thực hiện.',
     'toast.dev_off_title': '🛠️ Chế độ nhà phát triển tắt',
-    'toast.dev_off_body': 'DEAL trở về luồng thông thường.'
+    'toast.dev_off_body': 'DEAL trở về luồng thông thường.',
+    'rules.settings_btn': '📖 Cách chơi',
+    'rules.title': '📖 Cách chơi',
+    'rules.goal_label': 'Mục tiêu',
+    'rules.goal_body': 'Xóa sạch bảng cho đến khi chỉ còn một lá «3». Rút từng lá bài và loại bỏ các bộ ba.',
+    'rules.sums_label': 'Tổng hợp lệ',
+    'rules.sums_body': 'Chọn 3 lá trong cùng một cột có tổng là:',
+    'rules.card_values': 'A = 1 · 2–10 = giá trị mặt bài',
+    'rules.positions_label': 'Vị trí hợp lệ',
+    'rules.positions_body': 'Chỉ cho phép 3 mẫu sau（cho cột 5 lá）：',
+    'rules.pattern_a': '3 lá dưới',
+    'rules.pattern_b': 'Lá đầu + 2 lá dưới',
+    'rules.pattern_c': '2 lá đầu + 1 lá dưới',
+    'rules.positions_hint': 'Lá trên = phát trước. Lá dưới = phát gần nhất.',
+    'rules.recycle_label': 'Tái chế',
+    'rules.recycle_body': 'Khi bộ bài cạn, nhấn RECYCLE để xáo lại các lá đã bỏ vào bộ. Mỗi lần tái chế tính một nước.',
+    'rules.undo_label': 'Hoàn tác',
+    'rules.undo_body': 'Nhấn ↩ để hoàn tác hành động cuối（phát hoặc xóa）. Mỗi lần hoàn tác tính một nước.'
             }
         };
         const SUPPORTED_LOCALES = ['zh-Hant', 'en', 'ja', 'ko', 'es', 'pt-BR', 'th', 'id', 'fr', 'zh-CN', 'de', 'it', 'pt-PT', 'nl', 'ru', 'pl', 'tr', 'vi'];
@@ -7322,6 +7853,21 @@
             openAchievements();
         }
 
+        function openRules() {
+            toggleSettings(false);
+            const overlay = document.getElementById('rules-overlay');
+            if (overlay) overlay.classList.add('show');
+        }
+
+        function closeRules() {
+            const overlay = document.getElementById('rules-overlay');
+            if (overlay) overlay.classList.remove('show');
+        }
+
+        function onRulesOverlayClick(event) {
+            if (event.target && event.target.id === 'rules-overlay') closeRules();
+        }
+
         function renderDailyLeaderboard(rows, uid, dateKey) {
             const list = document.getElementById('leaderboard-list');
             const subtitle = document.getElementById('leaderboard-subtitle');
@@ -8258,45 +8804,67 @@
 
         function showCombo(s) {
             if (combo < 2) return;
-            const layer = document.getElementById('fx-layer');
-            const comboDiv = document.createElement('div');
-            // Determine tier
+            // Capture state before async delay — combo may reset if player acts fast
+            const capturedCombo = combo;
             let tier;
-            if (combo >= 10) tier = 5;
-            else if (combo >= 7) tier = 4;
-            else if (combo >= 5) tier = 3;
-            else if (combo >= 3) tier = 2;
+            if (capturedCombo >= 10) tier = 5;
+            else if (capturedCombo >= 7) tier = 4;
+            else if (capturedCombo >= 5) tier = 3;
+            else if (capturedCombo >= 3) tier = 2;
             else tier = 1;
-            comboDiv.className = `combo-text tier-${tier}`;
-            comboDiv.innerHTML = `${combo} COMBO!<br><span style="font-size:1.2rem;color:var(--gold)">+${s} PTS</span>`;
-            layer.appendChild(comboDiv); setTimeout(() => comboDiv.remove(), getDelay(1500));
 
-            const cx = window.innerWidth / 2, cy = window.innerHeight * 0.45;
-            // Tier-based effects — restrained escalation
-            if (tier >= 5) {
-                SHAKE.medium();
-                ParticleSystem.emit('fireworks', cx, cy, { count: 35 });
-                const vig = document.createElement('div');
-                vig.className = 'golden-vignette';
-                document.body.appendChild(vig);
-                setTimeout(() => vig.remove(), getDelay(2000));
-            } else if (tier >= 4) {
-                SHAKE.light();
-                ParticleSystem.emit('confetti', cx, cy, { count: 25 });
-                const warm = document.createElement('div');
-                warm.className = 'warm-flash';
-                document.body.appendChild(warm);
-                setTimeout(() => warm.remove(), getDelay(800));
-            } else if (tier >= 3) {
-                ParticleSystem.emit('fountain', cx, cy, { count: 18 });
-                const warm = document.createElement('div');
-                warm.className = 'warm-flash';
-                document.body.appendChild(warm);
-                setTimeout(() => warm.remove(), getDelay(800));
-            } else if (tier >= 2) {
-                ParticleSystem.emit('fountain', cx, cy, { count: 10 });
-            }
-            // tier 1 (combo=2): text only, no particles — understated
+            // ── 200ms 空拍：讓上一個消除特效沉澱，再砸進來 ──
+            setTimeout(() => {
+                const layer = document.getElementById('fx-layer');
+                const comboDiv = document.createElement('div');
+                comboDiv.className = `combo-text tier-${tier}`;
+                comboDiv.innerHTML = `${capturedCombo} COMBO!<br><span style="font-size:1.2rem;color:var(--gold)">+${s} PTS</span>`;
+                layer.appendChild(comboDiv);
+                setTimeout(() => comboDiv.remove(), getDelay(1600));
+
+                // ── Combo sting：三音上行確立感 ──
+                if (settings.sound) {
+                    playTone(700,  100, 0.028, 0.0);
+                    playTone(880,  100, 0.028, 0.09);
+                    playTone(1100, 130, 0.022, 0.18);
+                }
+
+                const cx = window.innerWidth / 2, cy = window.innerHeight * 0.45;
+
+                // ── 金邊邊框閃（tier ≥ 2）──
+                if (tier >= 2) {
+                    const borderEl = document.createElement('div');
+                    borderEl.className = 'combo-border-flash';
+                    document.body.appendChild(borderEl);
+                    setTimeout(() => borderEl.remove(), getDelay(450));
+                }
+
+                // ── Tier-based 特效 ──
+                if (tier >= 5) {
+                    SHAKE.medium();
+                    ParticleSystem.emit('fireworks', cx, cy, { count: 35 });
+                    const vig = document.createElement('div');
+                    vig.className = 'golden-vignette';
+                    document.body.appendChild(vig);
+                    setTimeout(() => vig.remove(), getDelay(2000));
+                } else if (tier >= 4) {
+                    SHAKE.light();
+                    ParticleSystem.emit('confetti', cx, cy, { count: 25 });
+                    const warm = document.createElement('div');
+                    warm.className = 'warm-flash';
+                    document.body.appendChild(warm);
+                    setTimeout(() => warm.remove(), getDelay(800));
+                } else if (tier >= 3) {
+                    ParticleSystem.emit('fountain', cx, cy, { count: 18 });
+                    const warm = document.createElement('div');
+                    warm.className = 'warm-flash';
+                    document.body.appendChild(warm);
+                    setTimeout(() => warm.remove(), getDelay(800));
+                } else if (tier >= 2) {
+                    ParticleSystem.emit('fountain', cx, cy, { count: 10 });
+                }
+                // tier 1 (combo=2): sting + slam text only — understated
+            }, getDelay(200));
         }
 
         async function triggerHaptic(ms) {
