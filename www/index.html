@@ -3326,6 +3326,24 @@
             'achievement.badge.zero.title': 'Void Convergence',
             'achievement.badge.zero.done': 'Done: zero-clear {value} times',
             'achievement.badge.zero.progress': 'Progress: complete 1 zero-clear ending',
+            'achievement.badge.ironwill.title': 'Iron Will',
+            'achievement.badge.ironwill.done': 'Done: {value} wins without undo',
+            'achievement.badge.ironwill.progress': 'Progress: win once without using undo',
+            'achievement.badge.suitcollector.title': 'Suit Collector',
+            'achievement.badge.suitcollector.progress': 'Progress: {value} / 4 suits won',
+            'achievement.badge.luckydraw.title': 'Lucky Draw',
+            'achievement.badge.luckydraw.done': 'Done: won with ♠3 as the final card',
+            'achievement.badge.luckydraw.progress': 'Progress: win with ♠3 as the final card',
+            'achievement.badge.fullsweep.title': 'Full Sweep',
+            'achievement.badge.fullsweep.done': 'Done: cleared all 4 columns {value} times',
+            'achievement.badge.fullsweep.progress': 'Progress: clear all 4 columns in one game',
+            'achievement.badge.dailyregular.title': 'Daily Regular',
+            'achievement.badge.dailyregular.progress': 'Progress: {value} / 7 daily challenge wins',
+            'achievement.badge.grandmaster.title': 'Grandmaster',
+            'achievement.badge.grandmaster.progress': 'Progress: {value} / 50 total wins',
+            'achievement.badge.chainreaction.title': 'Chain Reaction',
+            'achievement.badge.chainreaction.done': 'Done: {value} times',
+            'achievement.badge.chainreaction.progress': 'Progress: trigger 3+ combos in one game',
             'achievement.stat.wins': 'Total Wins',
             'achievement.stat.zero_wins': 'Zero-Clear Wins',
             'achievement.stat.streak_shield': 'Streak Shield',
@@ -3496,6 +3514,24 @@
                 'achievement.badge.zero.title': '虛空收束',
                 'achievement.badge.zero.done': '已達成：全清零 {value} 次',
                 'achievement.badge.zero.progress': '進度：完成 1 次全清零結局',
+                'achievement.badge.ironwill.title': '鐵血意志',
+                'achievement.badge.ironwill.done': '完成：不用 undo 獲勝 {value} 次',
+                'achievement.badge.ironwill.progress': '進度：一次不用 undo 完成一局',
+                'achievement.badge.suitcollector.title': '四色收集家',
+                'achievement.badge.suitcollector.progress': '進度：已用 {value} / 4 種花色獲勝',
+                'achievement.badge.luckydraw.title': '幸運抽選',
+                'achievement.badge.luckydraw.done': '完成：以♠3作為最後一張牌獲勝',
+                'achievement.badge.luckydraw.progress': '進度：以♠3作為最後一張牌獲勝',
+                'achievement.badge.fullsweep.title': '全欄清除',
+                'achievement.badge.fullsweep.done': '完成：清空全部4欄 {value} 次',
+                'achievement.badge.fullsweep.progress': '進度：同一局清空全部4欄',
+                'achievement.badge.dailyregular.title': '每日常客',
+                'achievement.badge.dailyregular.progress': '進度：每日挑戰獲勝 {value} / 7 次',
+                'achievement.badge.grandmaster.title': '宗師',
+                'achievement.badge.grandmaster.progress': '進度：累積獲勝 {value} / 50 次',
+                'achievement.badge.chainreaction.title': '連鎖反應',
+                'achievement.badge.chainreaction.done': '完成：共 {value} 次',
+                'achievement.badge.chainreaction.progress': '進度：同一局觸發3次以上 combo',
                 'achievement.stat.wins': '累計勝利',
                 'achievement.stat.zero_wins': '全清零勝利',
                 'achievement.stat.streak_shield': '連勝保護',
@@ -6186,7 +6222,12 @@
             bestTimeSec: null,
             currentStreak: 0,
             longestStreak: 0,
-            lastWinDate: ''
+            lastWinDate: '',
+            noUndoWins: 0,
+            suitWins: { spade: false, heart: false, diamond: false, club: false },
+            fullSweepWins: 0,
+            dailyWins: 0,
+            comboGameWins: 0
         };
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
@@ -6200,6 +6241,9 @@
         let tutorialDeckMode = false;
         let winCardSuit = '';
         let gameMode = 'normal';
+        let undoUsedThisGame = false;
+        let columnsCleared = 0;
+        let comboEventsThisGame = 0;
         let lastGameStats = null; // { timeStr, moves, combo }
         let dailyUndoCount = 0;
         let currentSeed = null;
@@ -7602,6 +7646,7 @@
                 const raw = localStorage.getItem(ACHIEVEMENTS_KEY);
                 if (!raw) return { ...DEFAULT_ACHIEVEMENTS };
                 const parsed = JSON.parse(raw);
+                const sw = parsed.suitWins || {};
                 return {
                     wins: Number.isInteger(parsed.wins) ? parsed.wins : 0,
                     zeroClearWins: Number.isInteger(parsed.zeroClearWins) ? parsed.zeroClearWins : 0,
@@ -7611,7 +7656,12 @@
                     bestTimeSec: Number.isInteger(parsed.bestTimeSec) ? parsed.bestTimeSec : null,
                     currentStreak: Number.isInteger(parsed.currentStreak) ? parsed.currentStreak : 0,
                     longestStreak: Number.isInteger(parsed.longestStreak) ? parsed.longestStreak : 0,
-                    lastWinDate: typeof parsed.lastWinDate === 'string' ? parsed.lastWinDate : ''
+                    lastWinDate: typeof parsed.lastWinDate === 'string' ? parsed.lastWinDate : '',
+                    noUndoWins: Number.isInteger(parsed.noUndoWins) ? parsed.noUndoWins : 0,
+                    suitWins: { spade: !!sw.spade, heart: !!sw.heart, diamond: !!sw.diamond, club: !!sw.club },
+                    fullSweepWins: Number.isInteger(parsed.fullSweepWins) ? parsed.fullSweepWins : 0,
+                    dailyWins: Number.isInteger(parsed.dailyWins) ? parsed.dailyWins : 0,
+                    comboGameWins: Number.isInteger(parsed.comboGameWins) ? parsed.comboGameWins : 0
                 };
             } catch (_) {
                 return { ...DEFAULT_ACHIEVEMENTS };
@@ -7658,6 +7708,13 @@
             achievements.maxCombo = Math.max(achievements.maxCombo, current.maxCombo);
             achievements.bestMoves = achievements.bestMoves == null ? current.moveCount : Math.min(achievements.bestMoves, current.moveCount);
             achievements.bestTimeSec = achievements.bestTimeSec == null ? current.elapsedSec : Math.min(achievements.bestTimeSec, current.elapsedSec);
+
+            // New achievements
+            if (!undoUsedThisGame) achievements.noUndoWins += 1;
+            if (gameMode === 'daily') achievements.dailyWins += 1;
+            if (columnsCleared >= 4) achievements.fullSweepWins += 1;
+            if (comboEventsThisGame >= 3) achievements.comboGameWins += 1;
+            if (winCardSuit && winCardSuit !== 'void') achievements.suitWins[winCardSuit] = true;
 
             const today = toLocalDateKey();
             if (achievements.lastWinDate !== today) {
@@ -7746,6 +7803,63 @@
                         ? t('achievement.badge.zero.done', { value: achievements.zeroClearWins })
                         : t('achievement.badge.zero.progress'),
                     progress: Math.min(1, achievements.zeroClearWins / 1)
+                },
+                {
+                    icon: '🚫',
+                    title: t('achievement.badge.ironwill.title'),
+                    ok: achievements.noUndoWins >= 1,
+                    text: achievements.noUndoWins >= 1
+                        ? t('achievement.badge.ironwill.done', { value: achievements.noUndoWins })
+                        : t('achievement.badge.ironwill.progress'),
+                    progress: Math.min(1, achievements.noUndoWins)
+                },
+                {
+                    icon: '🃏',
+                    title: t('achievement.badge.suitcollector.title'),
+                    ok: Object.values(achievements.suitWins).every(Boolean),
+                    text: t('achievement.badge.suitcollector.progress', { value: Object.values(achievements.suitWins).filter(Boolean).length }),
+                    progress: Object.values(achievements.suitWins).filter(Boolean).length / 4
+                },
+                {
+                    icon: '♠',
+                    title: t('achievement.badge.luckydraw.title'),
+                    ok: achievements.suitWins.spade === true,
+                    text: achievements.suitWins.spade
+                        ? t('achievement.badge.luckydraw.done')
+                        : t('achievement.badge.luckydraw.progress'),
+                    progress: achievements.suitWins.spade ? 1 : 0
+                },
+                {
+                    icon: '🧹',
+                    title: t('achievement.badge.fullsweep.title'),
+                    ok: achievements.fullSweepWins >= 1,
+                    text: achievements.fullSweepWins >= 1
+                        ? t('achievement.badge.fullsweep.done', { value: achievements.fullSweepWins })
+                        : t('achievement.badge.fullsweep.progress'),
+                    progress: Math.min(1, achievements.fullSweepWins)
+                },
+                {
+                    icon: '📅',
+                    title: t('achievement.badge.dailyregular.title'),
+                    ok: achievements.dailyWins >= 7,
+                    text: t('achievement.badge.dailyregular.progress', { value: achievements.dailyWins }),
+                    progress: Math.min(1, achievements.dailyWins / 7)
+                },
+                {
+                    icon: '👑',
+                    title: t('achievement.badge.grandmaster.title'),
+                    ok: achievements.wins >= 50,
+                    text: t('achievement.badge.grandmaster.progress', { value: achievements.wins }),
+                    progress: Math.min(1, achievements.wins / 50)
+                },
+                {
+                    icon: '⚡⚡',
+                    title: t('achievement.badge.chainreaction.title'),
+                    ok: achievements.comboGameWins >= 1,
+                    text: achievements.comboGameWins >= 1
+                        ? t('achievement.badge.chainreaction.done', { value: achievements.comboGameWins })
+                        : t('achievement.badge.chainreaction.progress'),
+                    progress: Math.min(1, achievements.comboGameWins)
                 }
             ];
             return rows;
@@ -8018,6 +8132,9 @@
             hasWon = false;
             deadlockShown = false;
             winCardSuit = '';
+            undoUsedThisGame = false;
+            columnsCleared = 0;
+            comboEventsThisGame = 0;
 
             // 重新渲染
             setUndoEnabled(false);
@@ -8463,6 +8580,7 @@
                     let colCleared = false;
                     if (slot.cards.length === 0) {
                         colCleared = true;
+                        columnsCleared++;
                         showColumnClearFX(slotId);
                     }
 
@@ -8687,6 +8805,7 @@
                 setTimeout(() => btn.classList.remove('undo-spinning'), 420);
             }
 
+            undoUsedThisGame = true;
             const last = historyStack.pop(); combo = last.comboBefore || 0;
             moveCount = Math.max(0, moveCount - 1);
             if (gameMode === 'daily') { dailyUndoCount++; updateUndoCountDisplay(); }
@@ -8809,6 +8928,7 @@
             if (combo < 2) return;
             // Capture state before async delay — combo may reset if player acts fast
             const capturedCombo = combo;
+            comboEventsThisGame++;
             let tier;
             if (capturedCombo >= 10) tier = 5;
             else if (capturedCombo >= 7) tier = 4;
