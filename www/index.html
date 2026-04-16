@@ -5940,7 +5940,9 @@
                     locale: normalizeLocale(parsed.locale || detectInitialLocale()),
                     highContrast: Boolean(parsed.highContrast),
                     miiPeek: parsed.miiPeek !== false,
-                    recycleAnim: parsed.recycleAnim !== false
+                    recycleAnim: parsed.recycleAnim !== false,
+                    bgm: Boolean(parsed.bgm),
+                    sumHelper: Boolean(parsed.sumHelper)
                 };
             } catch (_) {
                 return { ...DEFAULT_SETTINGS };
