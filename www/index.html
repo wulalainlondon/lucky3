@@ -9821,6 +9821,15 @@
         initHintLongPress();
         initAdSystem();
         preloadSounds();
+
+        // === Capacitor native init ===
+        (async () => {
+            if (!window.Capacitor?.isNativePlatform?.()) return;
+            const { SplashScreen, StatusBar } = window.Capacitor.Plugins;
+            try { await StatusBar.setStyle({ style: 'DARK' }); } catch (_) {}
+            try { await StatusBar.setBackgroundColor({ color: '#051d0e' }); } catch (_) {}
+            try { await SplashScreen.hide({ fadeOutDuration: 300 }); } catch (_) {}
+        })();
     </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
