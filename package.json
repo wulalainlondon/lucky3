@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "main": "pixi.min.js",
   "scripts": {
+    "sync": "npx cap sync",
+    "open:ios": "bash tools/build-native.sh ios",
+    "open:android": "bash tools/build-native.sh android",
+    "build": "bash tools/build-native.sh",
+    "build:aab": "cd android && ./gradlew bundleRelease && echo 'AAB: android/app/build/outputs/bundle/release/app-release.aab'",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report"

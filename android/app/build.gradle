@@ -16,10 +16,19 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            storeFile file('lucky3-release.keystore')
+            storePassword System.getenv('LUCKY3_STORE_PASS') ?: 'Lucky3Store2026'
+            keyAlias 'lucky3'
+            keyPassword System.getenv('LUCKY3_KEY_PASS') ?: 'Lucky3Store2026'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }

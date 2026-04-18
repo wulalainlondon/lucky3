@@ -4,3 +4,8 @@ ios/App/App.xcworkspace/xcuserdata/
 *.DS_Store
 playwright-report/
 test-results/
+
+# Android signing — never commit these
+android/app/*.keystore
+android/app/*.jks
+tools/KEYSTORE_CREDENTIALS.md

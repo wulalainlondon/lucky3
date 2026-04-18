@@ -1,0 +1,62 @@
+// Lucky 3 Solitaire — Firestore Security Rules
+// 貼到 Firebase Console > Firestore > Rules 頁面
+//
+// 規則設計原則：
+// 1. 只允許已認證的 anonymous user 寫入自己的 UID 條目
+// 2. 任何人可讀取排行榜（公開資料）
+// 3. 嚴格驗證寫入的欄位型別與範圍，防止惡意資料
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // === Daily Leaderboard ===
+    match /daily_leaderboards/{dateKey}/entries/{uid} {
+
+      // 任何人可讀（公開排行榜）
+      allow read: if true;
+
+      // 只允許本人寫入自己的條目
+      allow create, update: if
+        request.auth != null &&
+        request.auth.uid == uid &&
+        isValidDateKey(dateKey) &&
+        isValidEntry(request.resource.data);
+
+      // 不允許刪除（防止刷榜）
+      allow delete: if false;
+    }
+
+    // === 其他所有路徑：禁止存取 ===
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // === 輔助函式 ===
+
+    function isValidDateKey(key) {
+      // 只允許 YYYY-MM-DD 格式
+      return key.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+
+    function isValidEntry(data) {
+      return
+        // 必要欄位存在
+        data.keys().hasAll(['uid', 'name', 'bestTimeMs', 'moves', 'maxCombo', 'resultKind', 'updatedAt']) &&
+        // uid 必須與認證用戶一致
+        data.uid == request.auth.uid &&
+        // name: string, 最長 20 字元
+        data.name is string && data.name.size() <= 20 &&
+        // bestTimeMs: 正整數，最多 2 小時（7,200,000 ms）
+        data.bestTimeMs is int && data.bestTimeMs >= 0 && data.bestTimeMs <= 7200000 &&
+        // moves: 非負整數，最多 10,000 步
+        data.moves is int && data.moves >= 0 && data.moves <= 10000 &&
+        // maxCombo: 非負整數，最多 100
+        data.maxCombo is int && data.maxCombo >= 0 && data.maxCombo <= 100 &&
+        // resultKind: 只允許指定值
+        data.resultKind in ['lucky3', 'zero-clear'] &&
+        // updatedAt: 必須是 server timestamp
+        data.updatedAt == request.time;
+    }
+  }
+}
