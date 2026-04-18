@@ -11,12 +11,11 @@ test.beforeEach(async ({ page }) => {
 
 // ── Test 1: Page loads correctly ───────────────────────────────────────────
 test('page loads with correct title and game UI', async ({ page }) => {
-    // Title is translated per locale; just verify "Lucky 3" prefix
     await expect(page).toHaveTitle(/Lucky 3/);
     await expect(page.locator('#board')).toBeVisible();
     await expect(page.locator('#deck-pile')).toBeVisible();
-    await expect(page.locator('#btn-clear')).toBeVisible();
     await expect(page.locator('#btn-undo')).toBeVisible();
+    await expect(page.locator('#discard-pile')).toBeVisible();
     await expect(page.locator('#timer')).toBeVisible();
 });
 
@@ -24,28 +23,24 @@ test('page loads with correct title and game UI', async ({ page }) => {
 test('DEAL decrements deck count and adds card to board', async ({ page }) => {
     const deckBefore = parseInt(await page.locator('#deck-num').textContent() ?? '0');
     await page.locator('#deck-pile').click();
-    // Wait for deck-num to actually change rather than a fixed timeout
     await expect(page.locator('#deck-num')).not.toHaveText(String(deckBefore), { timeout: 3000 });
     const deckAfter = parseInt(await page.locator('#deck-num').textContent() ?? '0');
     expect(deckAfter).toBe(deckBefore - 1);
     await expect(page.locator('.card').first()).toBeVisible();
 });
 
-// ── Test 3: Card selection updates MATCH 3 button state ───────────────────
-test('selecting cards changes MATCH 3 button visual state', async ({ page }) => {
-    // One deal is enough to have a card to click
+// ── Test 3: Card selection adds .selected class ───────────────────────────
+// (Lucky 3 auto-eliminates matches; there is no manual CLEAR button)
+test('clicking a card adds selected class', async ({ page }) => {
     const deckBefore = parseInt(await page.locator('#deck-num').textContent() ?? '99');
     await page.locator('#deck-pile').click();
     await expect(page.locator('#deck-num')).not.toHaveText(String(deckBefore), { timeout: 5000 });
-    // Wait for isBusy to clear (card animation done)
     await expect(page.locator('.card').first()).toBeVisible({ timeout: 5000 });
 
-    const btnClear = page.locator('#btn-clear');
-    await expect(btnClear).not.toHaveClass(/match-partial|match-ready/);
-
-    // Click first card → partial state
-    await page.locator('.card').first().click();
-    await expect(btnClear).toHaveClass(/match-partial/, { timeout: 3000 });
+    const card = page.locator('.card').first();
+    await expect(card).not.toHaveClass(/selected/);
+    await card.click();
+    await expect(card).toHaveClass(/selected/, { timeout: 3000 });
 });
 
 // ── Test 4: Undo disabled initially, enabled after DEAL ──────────────────
@@ -64,11 +59,9 @@ test('settings panel opens and language switching updates UI', async ({ page }) 
     await page.locator('.header-settings').click();
     await expect(page.locator('.settings-panel')).toBeVisible();
 
-    // Switch to English
     await page.locator('#setting-language').selectOption('en');
     await expect(page.locator('#deck-label')).toHaveText('DECK', { timeout: 3000 });
 
-    // Close: panel is taller than mobile viewport, call via JS
     await page.evaluate(() => window.toggleSettings(false));
     await expect(page.locator('.settings-panel')).not.toBeVisible({ timeout: 3000 });
 });
