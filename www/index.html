@@ -593,16 +593,16 @@
                 padding: 4px 5px;
             }
 
-            /* Board: 4 columns spread evenly, vertically centred */
+            /* Board: 4 columns spread evenly, top-aligned (fixed position regardless of card count) */
             #board {
                 justify-content: space-evenly;
-                align-items: center;
+                align-items: flex-start;
                 gap: 4px;
                 padding: 0;
                 overflow: hidden;
             }
 
-            /* Footer → fixed right sidebar */
+            /* Footer → fixed right sidebar, starts below header to keep DEAL visible */
             #footer {
                 position: fixed;
                 right: 0;
@@ -614,8 +614,9 @@
                 align-items: center;
                 border-top: none;
                 border-left: 1px solid var(--gold);
-                padding: 14px 8px calc(14px + env(safe-area-inset-bottom));
-                z-index: 200;
+                /* padding-top 44px: push DEAL pile below compact header (~36px) */
+                padding: 44px 8px calc(14px + env(safe-area-inset-bottom));
+                z-index: 500;
                 box-sizing: border-box;
             }
 
