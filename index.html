@@ -527,6 +527,106 @@
             }
         }
 
+        /* ── S Ultra / wide landscape phones ≥640px wide — sidebar layout ── */
+        /* Footer moves to a fixed right sidebar; board takes full remaining height */
+        @media (orientation: landscape) and (min-width: 640px) and (max-height: 499px) {
+            /* Reserve 160px on the right for the fixed sidebar */
+            body {
+                padding-right: 160px;
+            }
+
+            /* Ultra-compact header */
+            #header {
+                padding: 3px 8px;
+                gap: 4px;
+            }
+
+            .header-stat {
+                font-size: 10px;
+                min-width: 46px;
+            }
+
+            .header-title {
+                font-size: 0.78rem;
+                letter-spacing: 0.5px;
+            }
+
+            .header-mode-tag {
+                font-size: 0.4rem;
+            }
+
+            .header-controls {
+                gap: 2px;
+            }
+
+            .timer-pill {
+                font-size: 10px;
+                min-width: 58px;
+                padding: 3px 7px;
+            }
+
+            .header-settings {
+                font-size: 14px;
+                min-height: 28px;
+                min-width: 30px;
+                padding: 4px 5px;
+            }
+
+            /* Board: compact padding, hidden overflow */
+            #board {
+                padding: 6px 8px;
+                overflow: hidden;
+            }
+
+            /* Footer → fixed right sidebar */
+            #footer {
+                position: fixed;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 160px;
+                flex-direction: column;
+                justify-content: space-around;
+                align-items: center;
+                border-top: none;
+                border-left: 1px solid var(--gold);
+                padding: 14px 10px calc(14px + env(safe-area-inset-bottom));
+                z-index: 200;
+                box-sizing: border-box;
+            }
+
+            /* Larger tap targets in sidebar */
+            #footer .pile {
+                width: 64px;
+                height: 88px;
+            }
+
+            #footer #deck-pile {
+                font-size: 30px;
+            }
+
+            #footer #btn-undo {
+                width: 58px;
+                height: 58px;
+            }
+
+            #footer #btn-undo svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            #deal-label,
+            #recycle-label {
+                font-size: 9px;
+                margin-top: 4px;
+            }
+
+            /* Hide ad banner — no vertical space in compact landscape */
+            #ad-banner {
+                display: none;
+            }
+        }
+
         .card:last-child {
             margin-bottom: 0;
         }
@@ -5947,18 +6047,27 @@
             const usable = Math.max(260, board.clientWidth - gap * 3);
             const viewportW = window.innerWidth || 360;
             const viewportH = window.innerHeight || 640;
-            const isLandscape = viewportW > viewportH && viewportH >= 500;
+            // Sidebar mode: wide compact-landscape phone (S Ultra etc.) where footer
+            // is position:fixed on the right — lower landscape threshold to 380px
+            const isSidebarMode = viewportW > viewportH && viewportH < 500 && viewportW >= 640;
+            const isLandscape = viewportW > viewportH && viewportH >= 380;
 
             const minCard = viewportW >= 1200 ? 108 : viewportW >= 900 ? 92 : 60;
             const maxCard = viewportW >= 1200 ? 154 : viewportW >= 900 ? 132 : 96;
             let cardW = Math.min(maxCard, Math.max(minCard, Math.floor(usable / 4)));
 
-            // In landscape tablet, constrain card size by available height
+            // In landscape, constrain card size by available height
             // so tall stacks (10+ cards) don't overflow
             if (isLandscape) {
                 const headerH = document.getElementById('header')?.offsetHeight || 60;
-                const footerH = document.getElementById('footer')?.offsetHeight || 90;
-                const boardH = viewportH - headerH - footerH - 30;
+                let boardH;
+                if (isSidebarMode) {
+                    // Footer is fixed sidebar — board.clientHeight is reliable
+                    boardH = board.clientHeight;
+                } else {
+                    const footerH = document.getElementById('footer')?.offsetHeight || 90;
+                    boardH = viewportH - headerH - footerH - 30;
+                }
                 // Max stack ~10 cards: 1 full card + 9 overlaps
                 const overlapRatio = 0.28; // visible portion per overlapped card
                 const maxStackCards = 10;

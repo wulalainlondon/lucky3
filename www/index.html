@@ -11,7 +11,31 @@
     <link rel="manifest" href="manifest.json">
     <title>Lucky 3 Solitaire</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cinzel+Decorative:wght@700;900&display=swap');
+        /* Cinzel - bundled locally for native app (no network dependency) */
+        @font-face { font-family: 'Cinzel'; font-style: normal; font-weight: 700; font-display: swap;
+            src: url('fonts/cinzel-700.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        @font-face { font-family: 'Cinzel'; font-style: normal; font-weight: 700; font-display: swap;
+            src: url('fonts/cinzel-700-ext.woff2') format('woff2');
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: 'Cinzel'; font-style: normal; font-weight: 900; font-display: swap;
+            src: url('fonts/cinzel-900.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        @font-face { font-family: 'Cinzel'; font-style: normal; font-weight: 900; font-display: swap;
+            src: url('fonts/cinzel-900-ext.woff2') format('woff2');
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: 'Cinzel Decorative'; font-style: normal; font-weight: 700; font-display: swap;
+            src: url('fonts/cinzel-dec-700.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        @font-face { font-family: 'Cinzel Decorative'; font-style: normal; font-weight: 700; font-display: swap;
+            src: url('fonts/cinzel-dec-700-ext.woff2') format('woff2');
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: 'Cinzel Decorative'; font-style: normal; font-weight: 900; font-display: swap;
+            src: url('fonts/cinzel-dec-900.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        @font-face { font-family: 'Cinzel Decorative'; font-style: normal; font-weight: 900; font-display: swap;
+            src: url('fonts/cinzel-dec-900-ext.woff2') format('woff2');
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 
         :root {
             --bg-green: #0a3d1d;
@@ -521,6 +545,106 @@
         @media (orientation: landscape) and (max-height: 499px) {
             body {
                 flex-direction: column;
+            }
+        }
+
+        /* ── S Ultra / wide landscape phones ≥640px wide — sidebar layout ── */
+        /* Footer moves to a fixed right sidebar; board takes full remaining height */
+        @media (orientation: landscape) and (min-width: 640px) and (max-height: 499px) {
+            /* Reserve 160px on the right for the fixed sidebar */
+            body {
+                padding-right: 160px;
+            }
+
+            /* Ultra-compact header */
+            #header {
+                padding: 3px 8px;
+                gap: 4px;
+            }
+
+            .header-stat {
+                font-size: 10px;
+                min-width: 46px;
+            }
+
+            .header-title {
+                font-size: 0.78rem;
+                letter-spacing: 0.5px;
+            }
+
+            .header-mode-tag {
+                font-size: 0.4rem;
+            }
+
+            .header-controls {
+                gap: 2px;
+            }
+
+            .timer-pill {
+                font-size: 10px;
+                min-width: 58px;
+                padding: 3px 7px;
+            }
+
+            .header-settings {
+                font-size: 14px;
+                min-height: 28px;
+                min-width: 30px;
+                padding: 4px 5px;
+            }
+
+            /* Board: compact padding, hidden overflow */
+            #board {
+                padding: 6px 8px;
+                overflow: hidden;
+            }
+
+            /* Footer → fixed right sidebar */
+            #footer {
+                position: fixed;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 160px;
+                flex-direction: column;
+                justify-content: space-around;
+                align-items: center;
+                border-top: none;
+                border-left: 1px solid var(--gold);
+                padding: 14px 10px calc(14px + env(safe-area-inset-bottom));
+                z-index: 200;
+                box-sizing: border-box;
+            }
+
+            /* Larger tap targets in sidebar */
+            #footer .pile {
+                width: 64px;
+                height: 88px;
+            }
+
+            #footer #deck-pile {
+                font-size: 30px;
+            }
+
+            #footer #btn-undo {
+                width: 58px;
+                height: 58px;
+            }
+
+            #footer #btn-undo svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            #deal-label,
+            #recycle-label {
+                font-size: 9px;
+                margin-top: 4px;
+            }
+
+            /* Hide ad banner — no vertical space in compact landscape */
+            #ad-banner {
+                display: none;
             }
         }
 
@@ -2754,6 +2878,139 @@
             cursor: pointer;
             margin-bottom: 4px;
         }
+
+        /* ═══════════════════════════════════════════════
+           NATIVE APP SOUL ELEMENTS
+           (www/ only — PWA root/index.html untouched)
+           ═══════════════════════════════════════════════ */
+
+        /* --- 1. 開局靈牌儀式 --- */
+        .omen-card-wrap {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9800;
+            pointer-events: none;
+            animation: omen-fadein 0.4s ease forwards;
+        }
+        @keyframes omen-fadein { from { opacity: 0; } to { opacity: 1; } }
+
+        .omen-scene {
+            width: 84px;
+            height: calc(84px * 1.42);
+            perspective: 600px;
+        }
+        .omen-inner {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: omen-flip 0.6s ease 0.9s forwards;
+        }
+        @keyframes omen-flip {
+            0%   { transform: rotateY(0deg); }
+            100% { transform: rotateY(180deg); }
+        }
+        .omen-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.6rem;
+            box-shadow: 0 0 32px rgba(255,215,0,0.5), 0 4px 24px rgba(0,0,0,0.5);
+        }
+        .omen-back {
+            background: linear-gradient(135deg, #0f3d1d 0%, #1a6b35 50%, #0f3d1d 100%);
+            border: 2px solid var(--gold);
+        }
+        .omen-back::before {
+            content: '🂠';
+            font-size: 3.6rem;
+            opacity: 0.9;
+        }
+        .omen-front {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 2px solid var(--gold);
+            transform: rotateY(180deg);
+            flex-direction: column;
+            gap: 4px;
+        }
+        .omen-label {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 0.52rem;
+            color: var(--gold);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            opacity: 0.85;
+        }
+        .omen-suit-char {
+            font-size: 3rem;
+            line-height: 1;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+        .omen-wrap-out {
+            animation: omen-fadeout 0.45s ease forwards;
+        }
+        @keyframes omen-fadeout { from { opacity: 1; } to { opacity: 0; } }
+
+        /* --- 2. 連擊靈獸 --- */
+        .spirit-beast {
+            position: fixed;
+            left: 50%;
+            top: 38%;
+            transform: translateX(-50%);
+            font-size: 3.8rem;
+            pointer-events: none;
+            z-index: 9700;
+            animation: spirit-rise calc(1.8s * var(--anim-scale)) ease-out forwards;
+            filter: drop-shadow(0 0 16px rgba(255,215,0,0.7));
+        }
+        @keyframes spirit-rise {
+            0%   { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.6); }
+            20%  { opacity: 1; transform: translateX(-50%) translateY(-20px) scale(1.1); }
+            60%  { opacity: 0.9; transform: translateX(-50%) translateY(-50px) scale(1.0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-90px) scale(0.8); }
+        }
+
+        /* --- 3. 深夜星空 --- */
+        body.night-sky::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                radial-gradient(1px 1px at 12% 8%,  rgba(255,255,255,0.55) 0%, transparent 100%),
+                radial-gradient(1px 1px at 35% 15%, rgba(255,255,255,0.4)  0%, transparent 100%),
+                radial-gradient(1px 1px at 58% 5%,  rgba(255,255,255,0.6)  0%, transparent 100%),
+                radial-gradient(1px 1px at 75% 22%, rgba(255,255,255,0.35) 0%, transparent 100%),
+                radial-gradient(1px 1px at 88% 10%, rgba(255,255,255,0.5)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 22% 30%, rgba(255,215,0,0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 48% 35%, rgba(255,255,255,0.45) 0%, transparent 100%),
+                radial-gradient(1px 1px at 65% 28%, rgba(255,255,255,0.3)  0%, transparent 100%),
+                radial-gradient(1px 1px at 8%  40%, rgba(255,255,255,0.4)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 90% 38%, rgba(255,215,0,0.25) 0%, transparent 100%);
+            animation: night-drift 18s ease-in-out infinite alternate;
+        }
+        @keyframes night-drift {
+            0%   { opacity: 0.4; transform: translateY(0); }
+            100% { opacity: 0.8; transform: translateY(-6px); }
+        }
+
+        /* --- 4. 選牌光圈脈衝 --- */
+        @keyframes card-select-pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(255,215,0,0.7), var(--card-shadow); }
+            60%  { box-shadow: 0 0 0 8px rgba(255,215,0,0), var(--card-shadow); }
+            100% { box-shadow: 0 0 0 0 rgba(255,215,0,0), var(--card-shadow); }
+        }
+        .card.select-pulse {
+            animation: card-select-pulse calc(0.4s * var(--anim-scale)) ease-out;
+        }
+
     </style>
 </head>
 
@@ -6481,6 +6738,7 @@
                         fly.remove();
                         render();
                         ParticleSystem.emit('dust', colRect.left + colRect.width / 2, targetTop + 10);
+                        dealRhythmHaptic(); // 發牌節奏震動
                         // 落牌彈跳動畫
                         const col = document.getElementById(`col-${slotId}`);
                         if (col) {
@@ -6508,6 +6766,97 @@
             return Math.max(40, Math.round(ms * getAnimScale()));
         }
 
+        // ═══════════════════════════════════════════════════════
+        // NATIVE SOUL — 六大靈魂元素
+        // ═══════════════════════════════════════════════════════
+
+        // --- 1. 深夜星空 ---
+        (function initNightSky() {
+            const h = new Date().getHours();
+            if (h >= 21 || h < 6) document.body.classList.add('night-sky');
+        })();
+
+        // --- 2. 開局靈牌儀式 ---
+        const SUIT_SYMBOLS = { '♠': '♠', '♥': '♥', '♦': '♦', '♣': '♣' };
+        const SUIT_COLORS  = { '♠': '#e8e8ff', '♥': '#ff4444', '♦': '#ff4444', '♣': '#88ffbb' };
+
+        function showOmenCard(guardianSuit) {
+            return new Promise((resolve) => {
+                const suit = guardianSuit || '★';
+                const color = SUIT_COLORS[suit] || '#ffd700';
+                const wrap = document.createElement('div');
+                wrap.className = 'omen-card-wrap';
+                wrap.innerHTML = `
+                    <div class="omen-scene">
+                        <div class="omen-inner">
+                            <div class="omen-face omen-back"></div>
+                            <div class="omen-face omen-front">
+                                <span class="omen-label">Lucky</span>
+                                <span class="omen-suit-char" style="color:${color}">${suit}</span>
+                                <span class="omen-label">Guide</span>
+                            </div>
+                        </div>
+                    </div>`;
+                document.body.appendChild(wrap);
+
+                // 翻牌後短暫展示，然後淡出
+                setTimeout(() => {
+                    wrap.classList.add('omen-wrap-out');
+                    setTimeout(() => { wrap.remove(); resolve(); }, 450);
+                }, getDelay(1700));
+            });
+        }
+
+        // --- 3. 連擊靈獸浮現 ---
+        const SPIRIT_BEASTS = {
+            3: '🐉',  // tier-3: dragon (combo 5-6)
+            4: '🦅',  // tier-4: phoenix (combo 7-9)
+            5: '🦄',  // tier-5: qilin (combo 10+)
+        };
+
+        function showSpiritBeast(tier) {
+            const emoji = SPIRIT_BEASTS[tier];
+            if (!emoji) return;
+            const el = document.createElement('div');
+            el.className = 'spirit-beast';
+            el.textContent = emoji;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), getDelay(1800));
+        }
+
+        // --- 4. 選牌光圈脈衝 ---
+        function pulseCardSelect(cardEl) {
+            if (!cardEl) return;
+            cardEl.classList.remove('select-pulse');
+            void cardEl.offsetWidth; // force reflow
+            cardEl.classList.add('select-pulse');
+            cardEl.addEventListener('animationend', () => cardEl.classList.remove('select-pulse'), { once: true });
+        }
+
+        // --- 5. 發牌節奏震動 (native only) ---
+        let _dealHapticCount = 0;
+        function dealRhythmHaptic() {
+            if (!window.Capacitor?.isNativePlatform?.()) return;
+            _dealHapticCount++;
+            // 每 3 張一組輕觸，讓節奏感像洗牌
+            const intensity = _dealHapticCount % 3 === 0 ? 18 : 10;
+            triggerHaptic(intensity);
+        }
+        function resetDealHapticCount() { _dealHapticCount = 0; }
+
+        // --- 6. 勝利震動儀式 (native only) ---
+        async function winHapticCeremony(isZeroClear) {
+            if (!window.Capacitor?.isNativePlatform?.()) return;
+            if (isZeroClear) {
+                // Void clear：長鳴，像鐘聲
+                await triggerHaptic([200, 80, 200, 80, 400]);
+            } else {
+                // Lucky 3：三連脈衝，節奏感強
+                await triggerHaptic([80, 40, 80, 40, 80, 40, 200]);
+            }
+        }
+        // ═══════════════════════════════════════════════════════
+
         function syncBoardScale() {
             const board = document.getElementById('board');
             if (!board) return;
@@ -6517,18 +6866,27 @@
             const usable = Math.max(260, board.clientWidth - gap * 3);
             const viewportW = window.innerWidth || 360;
             const viewportH = window.innerHeight || 640;
-            const isLandscape = viewportW > viewportH && viewportH >= 500;
+            // Sidebar mode: wide compact-landscape phone (S Ultra etc.) where footer
+            // is position:fixed on the right — lower landscape threshold to 380px
+            const isSidebarMode = viewportW > viewportH && viewportH < 500 && viewportW >= 640;
+            const isLandscape = viewportW > viewportH && viewportH >= 380;
 
             const minCard = viewportW >= 1200 ? 108 : viewportW >= 900 ? 92 : 60;
             const maxCard = viewportW >= 1200 ? 154 : viewportW >= 900 ? 132 : 96;
             let cardW = Math.min(maxCard, Math.max(minCard, Math.floor(usable / 4)));
 
-            // In landscape tablet, constrain card size by available height
+            // In landscape, constrain card size by available height
             // so tall stacks (10+ cards) don't overflow
             if (isLandscape) {
                 const headerH = document.getElementById('header')?.offsetHeight || 60;
-                const footerH = document.getElementById('footer')?.offsetHeight || 90;
-                const boardH = viewportH - headerH - footerH - 30;
+                let boardH;
+                if (isSidebarMode) {
+                    // Footer is fixed sidebar — board.clientHeight is reliable
+                    boardH = board.clientHeight;
+                } else {
+                    const footerH = document.getElementById('footer')?.offsetHeight || 90;
+                    boardH = viewportH - headerH - footerH - 30;
+                }
                 // Max stack ~10 cards: 1 full card + 9 overlaps
                 const overlapRatio = 0.28; // visible portion per overlapped card
                 const maxStackCards = 10;
@@ -8054,6 +8412,10 @@
             if (event.target && event.target.id === 'rules-overlay') closeRules();
         }
 
+        function escHtml(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
         function renderDailyLeaderboard(rows, uid, dateKey) {
             const list = document.getElementById('leaderboard-list');
             const subtitle = document.getElementById('leaderboard-subtitle');
@@ -8072,10 +8434,10 @@
                 if (mine) myRank = row.rank;
                 return `
                     <div class="leaderboard-row ${mine ? 'mine' : ''}">
-                        <div class="leaderboard-rank">#${row.rank}</div>
-                        <div class="leaderboard-user">${mine ? t('leaderboard.you') : row.name}</div>
-                        <div class="leaderboard-time">${formatMs(row.bestTimeMs)}</div>
-                        <div class="leaderboard-moves">${t('leaderboard.moves', { moves: row.moves })}</div>
+                        <div class="leaderboard-rank">#${escHtml(row.rank)}</div>
+                        <div class="leaderboard-user">${mine ? t('leaderboard.you') : escHtml(row.name)}</div>
+                        <div class="leaderboard-time">${escHtml(formatMs(row.bestTimeMs))}</div>
+                        <div class="leaderboard-moves">${t('leaderboard.moves', { moves: escHtml(row.moves) })}</div>
                     </div>
                 `;
             }).join('');
@@ -8212,7 +8574,12 @@
             render();
             updateDiscard();
             const tutorialOpeningQueue = tutorialDeckMode ? [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2] : null;
-            runOpeningDealAnimation(3, tutorialOpeningQueue).then(() => {
+            resetDealHapticCount();
+            // 靈牌儀式：非教學模式才顯示
+            const omenPromise = (!tutorialDeckMode && deck.length > 0)
+                ? showOmenCard(deck[deck.length - 1]?.suit || null)
+                : Promise.resolve();
+            omenPromise.then(() => runOpeningDealAnimation(3, tutorialOpeningQueue)).then(() => {
                 updateDiscard();
                 saveGameState();
                 if (!hasWon) checkDeadlock();
@@ -8347,6 +8714,7 @@
                             if (selected.length > 0 && selected[0].slotId !== slot.id) selected = [];
                             if (selected.length < 3) {
                                 selected.push({ slotId: slot.id, idx });
+                                pulseCardSelect(div); // 選牌光圈脈衝
                                 const newCount = selected.length;
                                 if (newCount === 3) {
                                     // 判斷第3張是否合法（位置 + 數字）
@@ -8954,6 +9322,9 @@
                 }
             }
 
+            // 勝利震動儀式
+            winHapticCeremony(isZeroClear);
+
             // === Stage 2: Card Celebration (600-1600ms) ===
             setTimeout(() => {
                 if (isLucky3) {
@@ -8969,15 +9340,22 @@
                 playSound('win');
             }, getDelay(600));
 
-            // === Stage 3: Fireworks Show (1600-3000ms) — elegant spacing ===
+            // === Stage 3: Fireworks Show (1600-3000ms) — 左中右三波 ===
+            const fwPositions = [
+                [0.2, 0.25], [0.5, 0.15], [0.8, 0.3],
+                [0.35, 0.35], [0.65, 0.2]
+            ];
             let fwCount = 0;
             const fwTimer = setInterval(() => {
-                if (fwCount >= 3) { clearInterval(fwTimer); return; }
-                const rx = window.innerWidth * (0.25 + Math.random() * 0.5);
-                const ry = window.innerHeight * (0.15 + Math.random() * 0.35);
-                ParticleSystem.emit('fireworks', rx, ry, { count: 25 });
+                if (fwCount >= fwPositions.length) { clearInterval(fwTimer); return; }
+                const [rx, ry] = fwPositions[fwCount];
+                ParticleSystem.emit('fireworks',
+                    window.innerWidth * rx,
+                    window.innerHeight * ry,
+                    { count: isZeroClear ? 40 : 28 }
+                );
                 fwCount++;
-            }, getDelay(500));
+            }, getDelay(isZeroClear ? 380 : 480));
 
             // Gentle particle rain (not overwhelming)
             winInterval = setInterval(() => {
@@ -9039,6 +9417,7 @@
                     vig.className = 'golden-vignette';
                     document.body.appendChild(vig);
                     setTimeout(() => vig.remove(), getDelay(2000));
+                    showSpiritBeast(5); // 麒麟
                 } else if (tier >= 4) {
                     SHAKE.light();
                     ParticleSystem.emit('confetti', cx, cy, { count: 25 });
@@ -9046,12 +9425,14 @@
                     warm.className = 'warm-flash';
                     document.body.appendChild(warm);
                     setTimeout(() => warm.remove(), getDelay(800));
+                    showSpiritBeast(4); // 鳳
                 } else if (tier >= 3) {
                     ParticleSystem.emit('fountain', cx, cy, { count: 18 });
                     const warm = document.createElement('div');
                     warm.className = 'warm-flash';
                     document.body.appendChild(warm);
                     setTimeout(() => warm.remove(), getDelay(800));
+                    showSpiritBeast(3); // 龍
                 } else if (tier >= 2) {
                     ParticleSystem.emit('fountain', cx, cy, { count: 10 });
                 }
@@ -9872,6 +10253,18 @@
             return `Player-${String(uid || '').slice(0, 6) || 'guest'}`;
         }
 
+        function sanitizeName(raw) {
+            if (typeof raw !== 'string') return '';
+            return raw.trim().slice(0, 12).replace(/[<>"'&]/g, '');
+        }
+
+        function isValidDateKey(s) {
+            return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
+        }
+
+        // Leaderboard read cache — keyed by dateKey, expires after 60 seconds
+        const _lbCache = {};
+
         async function submitDailyScore(payload) {
             await ready;
             const user = auth.currentUser;
@@ -9882,13 +10275,15 @@
             const moves = Number(payload.moves);
             const maxCombo = Number(payload.maxCombo);
             const resultKind = payload.resultKind === 'zero-clear' ? 'zero-clear' : 'lucky3';
-            if (!dateKey || !Number.isFinite(bestTimeMs)) throw new Error("invalid payload");
+            if (!isValidDateKey(dateKey) || !Number.isFinite(bestTimeMs)) throw new Error("invalid payload");
 
             const ref = doc(db, 'daily_leaderboards', dateKey, 'entries', user.uid);
             const snap = await getDoc(ref);
+
+            const payloadName = sanitizeName(payload.name);
             const nextData = {
                 uid: user.uid,
-                name: fallbackName(user.uid),
+                name: payloadName || fallbackName(user.uid),
                 bestTimeMs: Math.max(0, Math.round(bestTimeMs)),
                 moves: Number.isFinite(moves) ? Math.max(0, Math.round(moves)) : 0,
                 maxCombo: Number.isFinite(maxCombo) ? Math.max(0, Math.round(maxCombo)) : 0,
@@ -9897,6 +10292,7 @@
             };
 
             if (!snap.exists()) {
+                delete _lbCache[dateKey];
                 await setDoc(ref, nextData);
                 return { status: 'created' };
             }
@@ -9907,14 +10303,25 @@
                 return { status: 'skipped' };
             }
 
-            if (typeof prev.name === 'string' && prev.name.trim()) nextData.name = prev.name;
+            // Prefer existing name unless player has now set one
+            if (!payloadName && typeof prev.name === 'string' && prev.name.trim()) {
+                nextData.name = sanitizeName(prev.name) || nextData.name;
+            }
+            delete _lbCache[dateKey];
             await setDoc(ref, nextData, { merge: true });
             return { status: 'updated' };
         }
 
         async function loadDailyLeaderboard(dateKey, topN = 20) {
             await ready;
+            if (!isValidDateKey(dateKey)) throw new Error("invalid dateKey");
             const user = auth.currentUser;
+
+            const cached = _lbCache[dateKey];
+            if (cached && Date.now() - cached.ts < 60000) {
+                return { uid: user ? user.uid : '', rows: cached.rows };
+            }
+
             const col = collection(db, 'daily_leaderboards', dateKey, 'entries');
             const q = query(col, orderBy('bestTimeMs', 'asc'), limit(Math.max(1, Math.min(50, topN || 20))));
             const snap = await getDocs(q);
@@ -9924,15 +10331,14 @@
                 rows.push({
                     rank: idx + 1,
                     uid: data.uid || d.id,
-                    name: typeof data.name === 'string' && data.name ? data.name : fallbackName(data.uid || d.id),
+                    name: sanitizeName(data.name) || fallbackName(data.uid || d.id),
                     bestTimeMs: Number.isFinite(data.bestTimeMs) ? data.bestTimeMs : 0,
                     moves: Number.isFinite(data.moves) ? data.moves : 0
                 });
             });
-            return {
-                uid: user ? user.uid : '',
-                rows
-            };
+
+            _lbCache[dateKey] = { ts: Date.now(), rows };
+            return { uid: user ? user.uid : '', rows };
         }
 
         window.firebaseApp = app;
