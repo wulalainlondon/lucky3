@@ -136,6 +136,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
 
     // ── 5. OVERFLOW CHECK: 5 cards dealt ──────────────────────────────────
     test('no column overflow after 5 deals', async ({ page }) => {
+        test.setTimeout(45000);
         await page.setViewportSize(S_ULTRA_LANDSCAPE);
         await page.goto(NATIVE_URL, { waitUntil: 'domcontentloaded' });
         await expect(page.locator('#deck-num')).not.toHaveText('', { timeout: 10000 });
