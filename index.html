@@ -286,7 +286,7 @@
             z-index: 1;
         }
 
-        @media (min-width: 450px) {
+        @media (min-width: 450px) and (orientation: portrait) {
             .card {
                 margin-bottom: -85px;
             }
@@ -6042,16 +6042,16 @@
             document.documentElement.style.setProperty('--fixed-gap', `${overlap}px`);
         }
 
-        // 每欄依自身深度計算最適 gap（負值 = 重疊）
-        function calcColGap(colDepth, cardH, boardH) {
-            if (colDepth <= 1) return 0;
-            const minOverlap = -Math.round(cardH * 0.15); // 美觀最小重疊 15%
+        // 每欄依自身深度計算壓縮 gap（負值 = 重疊）
+        // standardGap = --fixed-gap 的值（正常固定間距）
+        // 回傳 null 表示用標準間距即可，回傳數值表示需要壓縮
+        function calcColGap(colDepth, cardH, standardGap, boardH) {
+            if (colDepth <= 1) return null;
             const availH = boardH - 8;
-            const uncompressedH = cardH * colDepth;
-            if (uncompressedH <= availH) return minOverlap; // 不需壓縮
-            // 算出剛好讓這欄塞進 availH 的 gap
-            // totalH = cardH + (n-1)*(cardH+gap) ≤ availH
-            // → gap = (availH - n*cardH) / (n-1)
+            // 用標準 gap 時的實際高度：totalH = n*cardH + (n-1)*standardGap
+            const standardH = colDepth * cardH + (colDepth - 1) * standardGap;
+            if (standardH <= availH) return null; // 標準間距夠用，不壓縮
+            // 超出邊界才壓縮：算出剛好塞進 availH 的 gap
             const gap = Math.floor((availH - colDepth * cardH) / (colDepth - 1));
             return Math.max(gap, -Math.round(cardH * 0.88)); // 最多重疊 88%
         }
@@ -7702,9 +7702,13 @@
                     : _vh - (document.getElementById('header')?.offsetHeight || 60)
                       - (document.getElementById('footer')?.offsetHeight || 90) - 20;
                 const COMPRESS_THRESH = Math.max(6, Math.floor((_availH - _cardH) / _stepH) + 1);
-                // 每欄依自身深度獨立計算 gap
-                const _colGap = calcColGap(slot.cards.length, _cardH, _availH);
-                col.style.setProperty('--col-gap', `${_colGap}px`);
+                // 超出螢幕才壓縮；正常發牌保持 --fixed-gap 固定間距
+                const _colGap = calcColGap(slot.cards.length, _cardH, _gap, _availH);
+                if (_colGap !== null) {
+                    col.style.setProperty('--col-gap', `${_colGap}px`);
+                } else {
+                    col.style.removeProperty('--col-gap');
+                }
                 const total = slot.cards.length;
                 // Suppress compression when 3 cards are selected (player needs to see all)
                 const doCompress = total > COMPRESS_THRESH && !threeReady;
