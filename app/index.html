@@ -3109,10 +3109,160 @@
             animation: card-select-pulse calc(0.4s * var(--anim-scale)) ease-out;
         }
 
+        /* ── Home Screen ── */
+        #home-screen {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 25% 35%, #0f4a24 0%, #051d0e 65%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        #home-screen.hiding {
+            animation: home-fade-out 0.38s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes home-fade-out {
+            to { opacity: 0; transform: scale(0.96); }
+        }
+        .home-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            max-width: 300px;
+            padding: 24px 20px;
+        }
+        .home-suits {
+            font-size: 1.05rem;
+            letter-spacing: 14px;
+            color: rgba(255, 215, 0, 0.4);
+            margin-bottom: -4px;
+        }
+        .home-title {
+            font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow: 0 0 32px rgba(255, 215, 0, 0.55), 0 4px 14px rgba(0, 0, 0, 0.8);
+            margin: 0;
+            line-height: 1;
+        }
+        .home-subtitle {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 2px 0 0;
+        }
+        .home-badge {
+            font-family: 'Cinzel Decorative', Georgia, serif;
+            font-size: 5.5rem;
+            font-weight: 900;
+            color: #ffd700;
+            line-height: 1;
+            text-shadow: 0 0 48px rgba(255, 215, 0, 0.75), 0 8px 28px rgba(0, 0, 0, 0.9);
+            margin: 4px 0 8px;
+            user-select: none;
+        }
+        .home-actions {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .home-btn {
+            width: 100%;
+            min-height: 50px;
+            border-radius: 14px;
+            border: none;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: transform 0.1s, opacity 0.1s;
+        }
+        .home-btn:active { transform: scale(0.97); opacity: 0.88; }
+        .home-btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%);
+            color: #1a0800;
+            font-size: 1.1rem;
+        }
+        .home-btn-continue {
+            background: rgba(255, 215, 0, 0.13);
+            border: 1px solid rgba(255, 215, 0, 0.45);
+            color: #ffd700;
+        }
+        .home-btn-daily {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(255, 255, 255, 0.82);
+        }
+        .home-icon-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 6px;
+        }
+        .home-icon-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 215, 0, 0.22);
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 1.35rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .home-icon-btn:active { background: rgba(255, 215, 0, 0.15); }
+        .home-ver {
+            font-size: 0.62rem;
+            color: rgba(255, 255, 255, 0.18);
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+        /* landscape 縮排 */
+        @media (orientation: landscape) and (max-height: 499px) {
+            .home-content { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px 24px; max-width: 560px; }
+            .home-badge { font-size: 3.2rem; margin: 0; }
+            .home-title { font-size: 2rem; }
+            .home-actions { max-width: 220px; gap: 8px; }
+            .home-btn { min-height: 42px; font-size: 0.9rem; }
+        }
+
     </style>
 </head>
 
 <body>
+
+    <!-- ── Home Screen ── -->
+    <div id="home-screen">
+        <div class="home-content">
+            <div class="home-suits">♣ ♥ ♦ ♠</div>
+            <h1 class="home-title">Lucky 3</h1>
+            <p class="home-subtitle">Solitaire</p>
+            <div class="home-badge">3</div>
+            <div class="home-actions">
+                <button id="home-btn-continue" class="home-btn home-btn-continue" onclick="homeContinue()" style="display:none" data-i18n="home.continue">▶ Continue</button>
+                <button class="home-btn home-btn-primary" onclick="homeNewGame()" data-i18n="home.new_game">New Game</button>
+                <button class="home-btn home-btn-daily" onclick="homeDailyChallenge()" data-i18n="home.daily">📅 Daily Challenge</button>
+            </div>
+            <div class="home-icon-row">
+                <button class="home-icon-btn" onclick="homeOpenSettings()" aria-label="Settings">⚙</button>
+                <button class="home-icon-btn" onclick="homeOpenAchievements()" aria-label="Achievements">🎖</button>
+                <button class="home-icon-btn" onclick="homeOpenLeaderboard()" aria-label="Leaderboard">🏆</button>
+            </div>
+            <div class="home-ver" id="home-ver"></div>
+        </div>
+    </div>
 
     <div id="header">
         <div class="header-main">
@@ -3803,7 +3953,10 @@
             'rules.recycle_label': 'Recycle',
             'rules.recycle_body': 'When the deck runs out, tap RECYCLE to reshuffle discarded cards back into the deck. Each recycle costs one move.',
             'rules.undo_label': 'Undo',
-            'rules.undo_body': 'Tap the ↩ button to reverse your last action (deal or clear). Use it wisely — each undo counts as a move.'
+            'rules.undo_body': 'Tap the ↩ button to reverse your last action (deal or clear). Use it wisely — each undo counts as a move.',
+            'home.continue': '▶ Continue',
+            'home.new_game': 'New Game',
+            'home.daily': '📅 Daily Challenge'
         };
         const I18N_STRINGS = {
             'zh-Hant': {
@@ -3994,7 +4147,10 @@
                 'rules.recycle_label': '回收',
                 'rules.recycle_body': '牌庫空了之後，點 RECYCLE 把棄牌堆重新洗入牌庫。每次回收算一步。',
                 'rules.undo_label': '倒轉',
-                'rules.undo_body': '點 ↩ 按鈕可倒退一個動作（發牌或消除）。每次倒轉算一步。'
+                'rules.undo_body': '點 ↩ 按鈕可倒退一個動作（發牌或消除）。每次倒轉算一步。',
+                'home.continue': '▶ 繼續遊戲',
+                'home.new_game': '新遊戲',
+                'home.daily': '📅 每日挑戰'
             },
             en: I18N_BASE_EN,
             ja: {
@@ -4164,7 +4320,10 @@
                 'rules.recycle_label': 'リサイクル',
                 'rules.recycle_body': 'デッキが空になったら、RECYCLEをタップして捨て札をデッキに戻します。1回のリサイクルで1手消費。',
                 'rules.undo_label': '元に戻す',
-                'rules.undo_body': '↩ボタンで最後のアクション（配牌またはクリア）を取り消します。1回の取り消しで1手消費。'
+                'rules.undo_body': '↩ボタンで最後のアクション（配牌またはクリア）を取り消します。1回の取り消しで1手消費。',
+                'home.continue': '▶ 続きから',
+                'home.new_game': '新しいゲーム',
+                'home.daily': '📅 デイリーチャレンジ'
             },
             ko: {
                 'meta.title': 'Lucky 3 솔리테어',
@@ -4333,7 +4492,10 @@
                 'rules.recycle_label': '재활용',
                 'rules.recycle_body': '덱이 비면 RECYCLE을 탭하여 버린 카드를 덱으로 되돌립니다. 재활용 1회＝1수.',
                 'rules.undo_label': '되돌리기',
-                'rules.undo_body': '↩ 버튼으로 마지막 행동（배분 또는 제거）을 되돌립니다. 되돌리기 1회＝1수.'
+                'rules.undo_body': '↩ 버튼으로 마지막 행동（배분 또는 제거）을 되돌립니다. 되돌리기 1회＝1수.',
+                'home.continue': '▶ 이어하기',
+                'home.new_game': '새 게임',
+                'home.daily': '📅 오늘의 도전'
             },
             es: {
     'meta.title': 'Lucky 3 Solitario',
@@ -5321,7 +5483,10 @@
     'rules.recycle_label': '回收',
     'rules.recycle_body': '牌库空了之后，点 RECYCLE 将弃牌堆重新洗入牌库。每次回收算一步。',
     'rules.undo_label': '撤销',
-    'rules.undo_body': '点击 ↩ 撤销上一步操作（发牌或消除）。每次撤销算一步。'
+    'rules.undo_body': '点击 ↩ 撤销上一步操作（发牌或消除）。每次撤销算一步。',
+    'home.continue': '▶ 继续游戏',
+    'home.new_game': '新游戏',
+    'home.daily': '📅 每日挑战'
             },
             de: {
     'meta.title': 'Lucky 3 Solitaire',
@@ -7127,6 +7292,65 @@
                 toggleSettings(false);
             }
         }
+
+        // ── Home Screen ────────────────────────────────────────────────────────
+        function showHomeScreen() {
+            const el = document.getElementById('home-screen');
+            if (!el) return;
+            // 有儲存的進度才顯示「繼續」
+            const continueBtn = document.getElementById('home-btn-continue');
+            if (continueBtn) {
+                const hasSave = !!localStorage.getItem(GAME_STATE_KEY);
+                continueBtn.style.display = hasSave ? 'block' : 'none';
+            }
+            const verEl = document.getElementById('home-ver');
+            if (verEl) verEl.textContent = `v${APP_VERSION}`;
+            el.classList.remove('hiding');
+            el.style.display = 'flex';
+        }
+
+        function hideHomeScreen(cb) {
+            const el = document.getElementById('home-screen');
+            if (!el || el.style.display === 'none') { cb?.(); return; }
+            el.classList.add('hiding');
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.classList.remove('hiding');
+                cb?.();
+            }, 390);
+        }
+
+        function homeNewGame() {
+            hideHomeScreen(() => {
+                if (!isTutorialDismissed()) {
+                    tutorialDeckMode = true;
+                    init(true, { mode: 'normal' });
+                } else {
+                    init(true, { mode: 'normal' });
+                }
+            });
+        }
+
+        function homeContinue() {
+            hideHomeScreen(() => init(false, { mode: 'normal' }));
+        }
+
+        function homeDailyChallenge() {
+            hideHomeScreen(() => init(true, { mode: 'daily' }));
+        }
+
+        function homeOpenSettings() {
+            toggleSettings(true);
+        }
+
+        function homeOpenAchievements() {
+            openAchievements();
+        }
+
+        function homeOpenLeaderboard() {
+            openDailyLeaderboard();
+        }
+        // ── End Home Screen ────────────────────────────────────────────────────
 
         async function setupDailyNotification(enabled) {
             const LN = window.Capacitor?.Plugins?.LocalNotifications;
@@ -10381,12 +10605,7 @@
         }
         // ===== END PREMIUM & ADS SYSTEM =====
 
-        if (!isTutorialDismissed()) {
-            tutorialDeckMode = true;
-            init(true);
-        } else {
-            init();
-        }
+        showHomeScreen();
         initHintLongPress();
         initAdSystem();
         preloadSounds();
