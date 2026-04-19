@@ -7766,6 +7766,7 @@
             const omenPromise = (!tutorialDeckMode && deck.length > 0)
                 ? showOmenCard(deck[deck.length - 1]?.suit || null)
                 : Promise.resolve();
+            window._gameReady = false;
             omenPromise.then(() => runOpeningDealAnimation(3, tutorialOpeningQueue)).then(() => {
                 updateDiscard();
                 saveGameState();
@@ -7776,6 +7777,7 @@
                 } else {
                     startTutorial(false);
                 }
+                window._gameReady = true;
             });
         }
 

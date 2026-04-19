@@ -6,7 +6,8 @@ test.beforeEach(async ({ page }) => {
         localStorage.setItem('lucky3-tutorial-state-v1', 'completed');
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#deck-num')).not.toHaveText('', { timeout: 10000 });
+    // Wait for opening animation (omen card + deal) to fully complete
+    await page.waitForFunction(() => window._gameReady === true, { timeout: 15000 });
 });
 
 // ── Test 1: Page loads correctly ───────────────────────────────────────────
@@ -59,6 +60,8 @@ test('settings panel opens and language switching updates UI', async ({ page }) 
     await page.locator('.header-settings').click();
     await expect(page.locator('.settings-panel')).toBeVisible();
 
+    // Language selector is in Profile tab (tab 1)
+    await page.evaluate(() => window.switchSettingsTab(1));
     await page.locator('#setting-language').selectOption('en');
     await expect(page.locator('#deck-label')).toHaveText('DECK', { timeout: 3000 });
 
