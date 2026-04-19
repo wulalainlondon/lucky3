@@ -7,8 +7,7 @@ test.beforeEach(async ({ page }) => {
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     // Wait for opening animation (omen card + deal) to fully complete
-    // Timeout 45s to accommodate headless timer throttling on some environments
-    await page.waitForFunction(() => window._gameReady === true, { timeout: 45000 });
+    await page.waitForFunction(() => window._gameReady === true, { timeout: 15000 });
 });
 
 // ── Test 1: Page loads correctly ───────────────────────────────────────────
