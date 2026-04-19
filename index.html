@@ -2695,6 +2695,36 @@
             cursor: pointer;
             margin-bottom: 4px;
         }
+
+        /* ── Settings Tabs ── */
+        .settings-tabs {
+            display: flex;
+            margin: 0 0 14px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        .settings-tab-btn {
+            flex: 1;
+            padding: 9px 4px;
+            background: transparent;
+            border: none;
+            border-left: 1px solid rgba(255,215,0,0.3);
+            color: rgba(255,255,255,0.45);
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            line-height: 1.35;
+            font-family: inherit;
+        }
+        .settings-tab-btn:first-child { border-left: none; }
+        .settings-tab-btn.active {
+            background: rgba(255,215,0,0.18);
+            color: var(--gold);
+        }
+        .settings-tab-pane { display: none; }
+        .settings-tab-pane.active { display: block; }
     </style>
 </head>
 
@@ -2721,96 +2751,100 @@
         <div class="settings-panel">
             <h3 class="settings-title" data-i18n="settings.title">Game Settings</h3>
 
-            <!-- 音效區 -->
-            <div class="settings-audio-row">
-                <div class="settings-audio-item">
-                    <span class="settings-audio-icon">🔊</span>
-                    <input id="setting-sound" class="setting-check" type="checkbox">
-                    <span class="settings-audio-label" data-i18n="settings.sound">Sound</span>
+            <!-- Tab 切換列 -->
+            <div class="settings-tabs">
+                <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(0)" data-i18n="settings.tab_audio">🔊 Audio</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(1)" data-i18n="settings.tab_profile">🌐 Profile</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(2)" data-i18n="settings.tab_play">🎮 Play</button>
+            </div>
+
+            <!-- Tab 0: 音效與顯示 -->
+            <div class="settings-tab-pane active" id="stab-0">
+                <div class="settings-audio-row">
+                    <div class="settings-audio-item">
+                        <span class="settings-audio-icon">🔊</span>
+                        <input id="setting-sound" class="setting-check" type="checkbox">
+                        <span class="settings-audio-label" data-i18n="settings.sound">Sound</span>
+                    </div>
+                    <div class="settings-audio-item">
+                        <span class="settings-audio-icon">📳</span>
+                        <input id="setting-vibration" class="setting-check" type="checkbox">
+                        <span class="settings-audio-label" data-i18n="settings.vibration">Vibration</span>
+                    </div>
+                    <div class="settings-audio-item">
+                        <span class="settings-audio-icon">🎵</span>
+                        <input id="setting-bgm" class="setting-check" type="checkbox">
+                        <span class="settings-audio-label" data-i18n="settings.bgm">BGM</span>
+                    </div>
                 </div>
-                <div class="settings-audio-item">
-                    <span class="settings-audio-icon">📳</span>
-                    <input id="setting-vibration" class="setting-check" type="checkbox">
-                    <span class="settings-audio-label" data-i18n="settings.vibration">Vibration</span>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.animation_speed">Animation Speed</div>
+                    <select id="setting-animation-speed" class="setting-control">
+                        <option value="slow" data-i18n="settings.speed_slow">Slow</option>
+                        <option value="normal" data-i18n="settings.speed_normal">Normal</option>
+                        <option value="fast" data-i18n="settings.speed_fast">Fast</option>
+                    </select>
                 </div>
-                <div class="settings-audio-item">
-                    <span class="settings-audio-icon">🎵</span>
-                    <input id="setting-bgm" class="setting-check" type="checkbox">
-                    <span class="settings-audio-label" data-i18n="settings.bgm">BGM</span>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.high_contrast">High Contrast Mode</div>
+                    <input id="setting-high-contrast" class="setting-check" type="checkbox">
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.recycle_anim">Recycle Animation</div>
+                    <input id="setting-recycle-anim" class="setting-check" type="checkbox">
                 </div>
             </div>
 
-            <!-- 調整區 -->
-            <div class="settings-section">
-                <span class="settings-section-label" data-i18n="settings.section_display">Display</span>
-                <div class="settings-section-line"></div>
-            </div>
-            <div class="setting-row">
-                <div class="setting-label" data-i18n="settings.animation_speed">Animation Speed</div>
-                <select id="setting-animation-speed" class="setting-control">
-                    <option value="slow" data-i18n="settings.speed_slow">Slow</option>
-                    <option value="normal" data-i18n="settings.speed_normal">Normal</option>
-                    <option value="fast" data-i18n="settings.speed_fast">Fast</option>
-                </select>
-            </div>
-            <div class="setting-row">
-                <div class="setting-label" data-i18n="settings.language">Language</div>
-                <select id="setting-language" class="setting-control">
-                    <option value="zh-Hant">繁體中文</option>
-                    <option value="en">English</option>
-                    <option value="ja">日本語</option>
-                    <option value="ko">한국어</option>
-                    <option value="es">Español</option>
-                    <option value="pt-BR">Português (BR)</option>
-                    <option value="th">ภาษาไทย</option>
-                    <option value="id">Bahasa Indonesia</option>
-                    <option value="fr">Français</option>
-                    <option value="zh-CN">简体中文</option>
-                    <option value="de">Deutsch</option>
-                    <option value="it">Italiano</option>
-                    <option value="pt-PT">Português (PT)</option>
-                    <option value="nl">Nederlands</option>
-                    <option value="ru">Русский</option>
-                    <option value="pl">Polski</option>
-                    <option value="tr">Türkçe</option>
-                    <option value="vi">Tiếng Việt</option>
-                </select>
-            </div>
-            <div class="setting-row">
-                <div class="setting-label" data-i18n="settings.high_contrast">High Contrast Mode</div>
-                <input id="setting-high-contrast" class="setting-check" type="checkbox">
-            </div>
-            <div class="setting-row">
-                <div class="setting-label" data-i18n="settings.mii_peek">Mii Peek</div>
-                <input id="setting-mii-peek" class="setting-check" type="checkbox">
-            </div>
-            <div class="setting-row">
-                <div class="setting-label" data-i18n="settings.recycle_anim">Recycle Animation</div>
-                <input id="setting-recycle-anim" class="setting-check" type="checkbox">
-            </div>
-            <div class="setting-row">
-                <div class="setting-label" data-i18n="settings.player_name">Player Name</div>
-                <input id="setting-player-name" class="setting-control" type="text" maxlength="12" placeholder="Lucky Player" style="width:110px;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,215,0,0.4);background:rgba(0,0,0,0.3);color:white;font-family:inherit;font-size:0.85rem;">
+            <!-- Tab 1: 個人化 -->
+            <div class="settings-tab-pane" id="stab-1">
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.language">Language</div>
+                    <select id="setting-language" class="setting-control">
+                        <option value="zh-Hant">繁體中文</option>
+                        <option value="en">English</option>
+                        <option value="ja">日本語</option>
+                        <option value="ko">한국어</option>
+                        <option value="es">Español</option>
+                        <option value="pt-BR">Português (BR)</option>
+                        <option value="th">ภาษาไทย</option>
+                        <option value="id">Bahasa Indonesia</option>
+                        <option value="fr">Français</option>
+                        <option value="zh-CN">简体中文</option>
+                        <option value="de">Deutsch</option>
+                        <option value="it">Italiano</option>
+                        <option value="pt-PT">Português (PT)</option>
+                        <option value="nl">Nederlands</option>
+                        <option value="ru">Русский</option>
+                        <option value="pl">Polski</option>
+                        <option value="tr">Türkçe</option>
+                        <option value="vi">Tiếng Việt</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.mii_peek">Mii Peek</div>
+                    <input id="setting-mii-peek" class="setting-check" type="checkbox">
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.player_name">Player Name</div>
+                    <input id="setting-player-name" class="setting-control" type="text" maxlength="12" placeholder="Lucky Player" style="width:110px;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,215,0,0.4);background:rgba(0,0,0,0.3);color:white;font-family:inherit;font-size:0.85rem;">
+                </div>
             </div>
 
-            <!-- 內容區 -->
-            <div class="settings-section">
-                <span class="settings-section-label" data-i18n="settings.section_content">Content</span>
-                <div class="settings-section-line"></div>
-            </div>
-            <button type="button" id="settings-premium-btn" class="settings-premium-btn" onclick="openPremiumFromSettings()">👑 <span data-i18n="premium.buy">立即購買 $1.99</span></button>
-            <button type="button" class="settings-daily" onclick="startDailyChallenge()" data-i18n="settings.daily_challenge">Daily Challenge</button>
-            <div class="settings-btn-row">
-                <button type="button" class="settings-achievement" onclick="openDailyLeaderboard()" data-i18n="settings.today_leaderboard">🏆 Leaderboard</button>
-                <button type="button" class="settings-achievement" onclick="openAchievementsFromSettings()" data-i18n="settings.achievements">🎖 Achievements</button>
+            <!-- Tab 2: 遊戲 -->
+            <div class="settings-tab-pane" id="stab-2">
+                <button type="button" id="settings-premium-btn" class="settings-premium-btn" onclick="openPremiumFromSettings()">👑 <span data-i18n="premium.buy">立即購買 $1.99</span></button>
+                <button type="button" class="settings-daily" onclick="startDailyChallenge()" data-i18n="settings.daily_challenge">Daily Challenge</button>
+                <div class="settings-btn-row">
+                    <button type="button" class="settings-achievement" onclick="openDailyLeaderboard()" data-i18n="settings.today_leaderboard">🏆 Leaderboard</button>
+                    <button type="button" class="settings-achievement" onclick="openAchievementsFromSettings()" data-i18n="settings.achievements">🎖 Achievements</button>
+                </div>
+                <div class="settings-footer-row">
+                    <button type="button" class="settings-secondary" onclick="replayTutorial()" data-i18n="settings.replay_tutorial">Replay Tutorial</button>
+                    <span class="settings-version-inline" id="setting-version">v-</span>
+                </div>
+                <button type="button" class="settings-restart" onclick="resetGameFromSettings()" data-i18n="settings.restart_game">Restart Game</button>
             </div>
 
-            <!-- 其他 + 危險操作 -->
-            <div class="settings-footer-row">
-                <button type="button" class="settings-secondary" onclick="replayTutorial()" data-i18n="settings.replay_tutorial">Replay Tutorial</button>
-                <span class="settings-version-inline" id="setting-version">v-</span>
-            </div>
-            <button type="button" class="settings-restart" onclick="resetGameFromSettings()" data-i18n="settings.restart_game">Restart Game</button>
             <button type="button" class="settings-close" onclick="toggleSettings(false)" data-i18n="settings.close">Close</button>
         </div>
     </div>
@@ -3220,7 +3254,7 @@
             'achievement.stat.shield_empty': 'Not Charged',
             'common.days': '{value} days',
             'mii.peeking': 'Previewing...',
-            'column.clear': 'COLUMN CLEAR!',
+            'column.clear': '直欄清除！',
             'win.subtitle': 'Outstanding! You cleared the entire board ✨',
             'win.stat.time': 'Time',
             'win.stat.moves': 'Moves',
@@ -6129,6 +6163,11 @@
             saveSettings();
         }
 
+        function switchSettingsTab(idx) {
+            document.querySelectorAll('.settings-tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+            document.querySelectorAll('.settings-tab-pane').forEach((p, i) => p.classList.toggle('active', i === idx));
+        }
+
         function toggleSettings(show) {
             const overlay = document.getElementById('settings-overlay');
             if (!overlay) return;
@@ -6146,6 +6185,7 @@
                 // 暫停計時
                 if (timerPausedAt === null) timerPausedAt = Date.now();
                 overlay.classList.add('show');
+                switchSettingsTab(0);
             }
         }
 
