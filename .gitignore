@@ -9,3 +9,7 @@ test-results/
 android/app/*.keystore
 android/app/*.jks
 tools/KEYSTORE_CREDENTIALS.md
+
+# Local scratch files
+index.html.bak
+solver.js

@@ -5761,6 +5761,7 @@
         };
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
+        let timerPausedAt = null, timerPausedMs = 0;
         let autoEliminateTimer = null;
         let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
         let settings = { ...DEFAULT_SETTINGS };
@@ -6128,12 +6129,19 @@
             const overlay = document.getElementById('settings-overlay');
             if (!overlay) return;
             if (!show && overlay.classList.contains('show')) {
+                // 恢復計時
+                if (timerPausedAt !== null) {
+                    timerPausedMs += Date.now() - timerPausedAt;
+                    timerPausedAt = null;
+                }
                 overlay.classList.add('closing');
                 setTimeout(() => {
                     overlay.classList.remove('show', 'closing');
                 }, getDelay(190));
-            } else {
-                overlay.classList.toggle('show', show);
+            } else if (show) {
+                // 暫停計時
+                if (timerPausedAt === null) timerPausedAt = Date.now();
+                overlay.classList.add('show');
             }
         }
 
@@ -7156,13 +7164,17 @@
             }
             try {
                 const playerName = (localStorage.getItem('lucky3-player-name') || '').trim();
+                if (!playerName) {
+                    lastDailyRankText = '';
+                    return '';
+                }
                 const result = await bridge.submitDailyScore({
                     dateKey: toLocalDateKey(),
                     bestTimeMs: current.elapsedSec * 1000,
                     moves: current.moveCount,
                     maxCombo: current.maxCombo,
                     resultKind: kind,
-                    ...(playerName ? { name: playerName } : {})
+                    name: playerName
                 });
 
                 if (result.status === 'created') {
@@ -7582,6 +7594,8 @@
             combo = 0;
             lastCleared = null;
             startTime = Date.now();
+            timerPausedAt = null;
+            timerPausedMs = 0;
             moveCount = 0;
             dailyUndoCount = 0;
             updateUndoCountDisplay();
@@ -7650,7 +7664,8 @@
 
         // 計時器 (只需在頁面加載時執行一次 setInterval)
         setInterval(() => {
-            const sec = Math.floor((Date.now() - startTime) / 1000);
+            const paused = timerPausedAt !== null ? (Date.now() - timerPausedAt) : 0;
+            const sec = Math.floor((Date.now() - startTime - timerPausedMs - paused) / 1000);
             const m = Math.floor(sec / 60).toString().padStart(2, '0');
             const s = (sec % 60).toString().padStart(2, '0');
             const timerEl = document.getElementById('timer');
@@ -8560,7 +8575,7 @@
             const old = document.getElementById('win-overlay');
             if (old) old.remove();
 
-            const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            const elapsedSec = Math.floor((Date.now() - startTime - timerPausedMs) / 1000);
             const prevStats = lastGameStats ? { ...lastGameStats } : null;
             const current = { elapsedSec, moveCount, maxCombo };
             const todayKey = toLocalDateKey();
@@ -8630,7 +8645,7 @@
             const old = document.getElementById('win-overlay');
             if (old) old.remove();
 
-            const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            const elapsedSec = Math.floor((Date.now() - startTime - timerPausedMs) / 1000);
             const prevStats = lastGameStats ? { ...lastGameStats } : null;
             const current = { elapsedSec, moveCount, maxCombo };
             const bestResult = updateBestStats(current);
@@ -8863,7 +8878,7 @@
         }
 
         function buildSavePayload() {
-            const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            const elapsedSec = Math.floor((Date.now() - startTime - timerPausedMs) / 1000);
             return {
                 deck,
                 slots,
@@ -9160,9 +9175,10 @@
 
             const ref = doc(db, 'daily_leaderboards', dateKey, 'entries', user.uid);
             const snap = await getDoc(ref);
+            const payloadName = typeof payload.name === 'string' ? payload.name.trim() : '';
             const nextData = {
                 uid: user.uid,
-                name: fallbackName(user.uid),
+                name: payloadName || fallbackName(user.uid),
                 bestTimeMs: Math.max(0, Math.round(bestTimeMs)),
                 moves: Number.isFinite(moves) ? Math.max(0, Math.round(moves)) : 0,
                 maxCombo: Number.isFinite(maxCombo) ? Math.max(0, Math.round(maxCombo)) : 0,
@@ -9181,7 +9197,6 @@
                 return { status: 'skipped' };
             }
 
-            if (typeof prev.name === 'string' && prev.name.trim()) nextData.name = prev.name;
             await setDoc(ref, nextData, { merge: true });
             return { status: 'updated' };
         }

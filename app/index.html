@@ -175,7 +175,10 @@
             min-height: 42px;
             min-width: 48px;
             touch-action: manipulation;
+            transition: transform calc(0.3s * var(--anim-scale)) ease;
         }
+        .header-settings:hover  { transform: rotate(28deg); }
+        .header-settings:active { transform: rotate(55deg) scale(0.93); }
 
         @media (max-width: 520px) {
             #header {
@@ -619,6 +622,30 @@
             display: none;
         }
 
+        @keyframes card-compress {
+            0%   { height: var(--card-h); margin-bottom: var(--fixed-gap); opacity: 0.85; transform: scaleX(1); }
+            60%  { opacity: 0.2; transform: scaleX(0.92); }
+            100% { height: 0; margin-bottom: 0; opacity: 0; transform: scaleX(0.88); }
+        }
+
+        .card.stack-middle-animating {
+            animation: card-compress calc(0.32s * var(--anim-scale)) ease-in forwards;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        @keyframes badge-appear {
+            0%   { opacity: 0; transform: scale(0.6); }
+            65%  { transform: scale(1.18); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .stack-count-badge.appear {
+            animation: badge-appear calc(0.3s * var(--anim-scale)) ease-out forwards;
+            animation-delay: calc(0.18s * var(--anim-scale));
+            opacity: 0;
+        }
+
         .stack-count-badge {
             align-self: center;
             background: rgba(0, 0, 0, 0.62);
@@ -1005,6 +1032,120 @@
         .deadlock-panel { animation: panel-shake-in calc(0.5s * var(--anim-scale)) ease-out both; }
         .settings-overlay.show .settings-panel { animation: settings-slide-in calc(0.3s * var(--anim-scale)) ease-out both; }
         .win-overlay { animation: overlay-fade-in calc(0.3s * var(--anim-scale)) ease-out both; }
+
+        /* Item 2/3: Achievement + Leaderboard overlay 開場動畫 */
+        .achievement-overlay.show,
+        .leaderboard-overlay.show { animation: overlay-fade-in calc(0.22s * var(--anim-scale)) ease-out; }
+        .achievement-overlay.show .achievement-panel,
+        .leaderboard-overlay.show .leaderboard-panel {
+            animation: panel-spring-in calc(0.38s * var(--anim-scale)) cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+        }
+
+        /* Item 2/3: 關閉動畫 */
+        @keyframes overlay-fade-out {
+            from { opacity: 1; }
+            to   { opacity: 0; }
+        }
+        @keyframes panel-scale-out {
+            from { transform: scale(1);   opacity: 1; }
+            to   { transform: scale(0.88); opacity: 0; }
+        }
+        .achievement-overlay.closing,
+        .leaderboard-overlay.closing {
+            display: flex !important;
+            animation: overlay-fade-out calc(0.18s * var(--anim-scale)) ease-in forwards;
+        }
+        .achievement-overlay.closing .achievement-panel,
+        .leaderboard-overlay.closing .leaderboard-panel {
+            animation: panel-scale-out calc(0.16s * var(--anim-scale)) ease-in forwards;
+        }
+
+        /* Item 4: Settings 關閉動畫 */
+        @keyframes settings-slide-out {
+            from { transform: translateY(0);    opacity: 1; }
+            to   { transform: translateY(-16px); opacity: 0; }
+        }
+        .settings-overlay.closing { display: flex !important; }
+        .settings-overlay.closing .settings-panel {
+            animation: settings-slide-out calc(0.18s * var(--anim-scale)) ease-in forwards;
+        }
+
+        /* Item 1: Combo 斷裂提示 */
+        @keyframes combo-break-anim {
+            0%   { opacity: 0;   transform: translateX(-50%) scale(0.7); }
+            30%  { opacity: 1;   transform: translateX(-50%) scale(1.05); }
+            100% { opacity: 0;   transform: translateX(-50%) translateY(-22px) scale(0.85); }
+        }
+        .combo-break-text {
+            position: fixed;
+            top: 44%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff5555;
+            font-size: 0.82rem;
+            font-weight: 900;
+            pointer-events: none;
+            z-index: 5001;
+            animation: combo-break-anim calc(0.55s * var(--anim-scale)) ease-out forwards;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        /* Item 6: 棄牌堆落入動畫 */
+        @keyframes discard-drop-in {
+            0%   { transform: translateY(-10px) rotate(-6deg) scale(0.93); opacity: 0.6; }
+            60%  { transform: translateY(2px)   rotate(1deg)  scale(1.03); }
+            100% { transform: translateY(0)     rotate(0deg)  scale(1);    opacity: 1; }
+        }
+        .pile.discard-drop-in {
+            animation: discard-drop-in calc(0.22s * var(--anim-scale)) ease-out;
+        }
+
+        /* Item 7: 取消選牌彈回動畫 */
+        @keyframes card-deselect-snap {
+            0%   { transform: translateX(40%) rotate(3deg); }
+            55%  { transform: translateX(-4%) rotate(-0.5deg); }
+            100% { transform: translateX(0)   rotate(0deg); }
+        }
+        .card.deselecting {
+            animation: card-deselect-snap calc(0.13s * var(--anim-scale)) ease-out forwards;
+            pointer-events: none;
+        }
+
+        /* Item 8: Undo 禁用動畫 */
+        @keyframes undo-disable-anim {
+            0%   { transform: scale(1.04); }
+            55%  { transform: scale(0.86); }
+            100% { transform: scale(1); }
+        }
+        .btn-undo-disabling {
+            animation: undo-disable-anim calc(0.18s * var(--anim-scale)) ease-out;
+        }
+
+        /* Item 9: 遊戲初始欄位 stagger 出現 */
+        @keyframes col-appear {
+            from { opacity: 0; transform: translateY(-14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .board-init .column {
+            opacity: 0;
+            animation: col-appear calc(0.28s * var(--anim-scale)) ease-out forwards;
+        }
+        .board-init .column:nth-child(1) { animation-delay: calc(0s   * var(--anim-scale)); }
+        .board-init .column:nth-child(2) { animation-delay: calc(0.06s * var(--anim-scale)); }
+        .board-init .column:nth-child(3) { animation-delay: calc(0.12s * var(--anim-scale)); }
+        .board-init .column:nth-child(4) { animation-delay: calc(0.18s * var(--anim-scale)); }
+
+        /* Item 10: Checkbox 勾選彈跳 */
+        @keyframes check-pop-anim {
+            0%   { transform: scale(1); }
+            45%  { transform: scale(1.38); }
+            100% { transform: scale(1); }
+        }
+        .setting-check.check-pop {
+            animation: check-pop-anim calc(0.22s * var(--anim-scale)) cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
 
         /* --- Deck Animations --- */
         @keyframes deck-shuffle {

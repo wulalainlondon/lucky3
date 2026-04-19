@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# build-native.sh — prepare www/ and sync to Capacitor native projects
+# build-native.sh — prepare app/ and sync to Capacitor native projects
 # Usage:
 #   ./tools/build-native.sh         # sync only
 #   ./tools/build-native.sh ios     # sync + open Xcode
@@ -9,7 +9,7 @@ set -e
 cd "$(dirname "$0")/.."
 
 # Verify fonts are present (P1 requirement)
-FONTS_DIR="www/fonts"
+FONTS_DIR="app/fonts"
 REQUIRED_FONTS=(
   "cinzel-700.woff2"
   "cinzel-900.woff2"
@@ -28,9 +28,9 @@ if [ $MISSING -eq 1 ]; then
   exit 1
 fi
 
-# Verify www/index.html uses local fonts (P2 check)
-if grep -q "fonts.googleapis.com" www/index.html; then
-  echo "WARNING: www/index.html still references Google Fonts CDN"
+# Verify app/index.html uses local fonts (P2 check)
+if grep -q "fonts.googleapis.com" app/index.html; then
+  echo "WARNING: app/index.html still references Google Fonts CDN"
   echo "This will fail offline on native. Replace with local @font-face."
   exit 1
 fi
