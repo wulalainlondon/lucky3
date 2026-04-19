@@ -4,20 +4,13 @@ const { test, expect } = require('@playwright/test');
 test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
         localStorage.setItem('lucky3-tutorial-state-v1', 'completed');
-        // In headless Chrome on CI, WAAPI onfinish and setTimeout are throttled.
-        // Cap all setTimeout delays and return fake animations that fire onfinish
-        // immediately via microtask — game code only reads .onfinish, not .finished.
-        const _origSetTimeout = window.setTimeout;
-        window.setTimeout = (fn, ms, ...args) => _origSetTimeout(fn, Math.min(ms ?? 0, 50), ...args);
-        Element.prototype.animate = function () {
-            const fake = { onfinish: null, cancel() {}, finished: Promise.resolve() };
-            Promise.resolve().then(() => { if (typeof fake.onfinish === 'function') fake.onfinish(); });
-            return fake;
-        };
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    // Wait for opening animation (omen card + deal) to fully complete
-    await page.waitForFunction(() => window._gameReady === true, { timeout: 15000 });
+    // Wait for the deck to be rendered (deck-num non-empty).
+    // Tests interact during the ~2s isBusy=false window before the deal animation
+    // locks the board. Avoiding waitForFunction(_gameReady) because WAAPI onfinish
+    // is unreliable in headless Chrome without a real display/vsync.
+    await expect(page.locator('#deck-num')).not.toHaveText('', { timeout: 10000 });
 });
 
 // ── Test 1: Page loads correctly ───────────────────────────────────────────
