@@ -10539,8 +10539,8 @@
             setTimeout(() => {
                 overlay.style.background = 'rgba(0,0,0,0.5)';
                 setTimeout(() => overlay.remove(), 600);
-                if (isZeroClear) showZeroClearWinPanel();
-                else showWinPanel();
+                if (isZeroClear) showZeroClearWinPanel().catch(e => console.error('[win] zeroClear panel error:', e));
+                else showWinPanel().catch(e => console.error('[win] panel error:', e));
             }, getDelay(3000));
         }
 
@@ -10998,8 +10998,8 @@
             const achievementResult = updateAchievementsOnWin(current, 'lucky3');
             const bestMessage = buildBestMessage(bestResult);
             const dailyMsg = markDailyChallengeWin();
-            const rankMsg = await submitDailyScoreIfNeeded(current, 'lucky3');
             lastGameStats = { timeStr: formatTime(elapsedSec), moves: moveCount, combo: maxCombo };
+            // 先建立並顯示面板（不等網路），確保面板一定出現
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
             overlay.id = 'win-overlay';
@@ -11015,7 +11015,7 @@
                     </div>
                     ${fortuneText ? `<p class="win-fortune">${fortuneText}</p>` : ''}
                     ${dailyMsg ? `<p class="win-daily">${dailyMsg}</p>` : ''}
-                    ${rankMsg ? `<p class="win-daily">${rankMsg}</p>` : ''}
+                    <p class="win-rank-msg" style="display:none"></p>
                     ${achievementResult.streakNotice ? `<p class="win-daily">${achievementResult.streakNotice}</p>` : ''}
                     <p class="win-best">${bestMessage}</p>
                     <button type="button" class="win-play-again" onclick="playAgain()">${t('win.play_again')}</button>
@@ -11052,6 +11052,12 @@
                     animateCountUp(el, target, 800);
                 }
             });
+            // 非同步取得排行訊息後填入（面板已顯示，不影響呈現）
+            const rankMsg = await submitDailyScoreIfNeeded(current, 'lucky3');
+            if (rankMsg) {
+                const rankEl = overlay.querySelector('.win-rank-msg');
+                if (rankEl) { rankEl.textContent = rankMsg; rankEl.style.display = ''; }
+            }
         }
 
         async function showZeroClearWinPanel() {
@@ -11069,8 +11075,8 @@
             const achievementResult = updateAchievementsOnWin(current, 'zero-clear');
             const bestMessage = buildBestMessage(bestResult);
             const dailyMsg = markDailyChallengeWin();
-            const rankMsg = await submitDailyScoreIfNeeded(current, 'zero-clear');
             lastGameStats = { timeStr: formatTime(elapsedSec), moves: moveCount, combo: maxCombo };
+            // 先建立並顯示面板（不等網路），確保面板一定出現
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
             overlay.id = 'win-overlay';
@@ -11081,7 +11087,7 @@
                     <p class="void-win-subtitle">${t('void.subtitle')}</p>
                     <p class="void-win-badge">${t('void.badge')}</p>
                     ${dailyMsg ? `<p class="win-daily">${dailyMsg}</p>` : ''}
-                    ${rankMsg ? `<p class="win-daily">${rankMsg}</p>` : ''}
+                    <p class="win-rank-msg" style="display:none"></p>
                     ${achievementResult.streakNotice ? `<p class="win-daily">${achievementResult.streakNotice}</p>` : ''}
                     <div class="win-stats">
                         <div class="win-stat-row"><span>${t('win.stat.time')}</span><strong data-countup="${elapsedSec}" data-format="time">0</strong></div>
@@ -11111,6 +11117,12 @@
                     animateCountUp(el, target, 800);
                 }
             });
+            // 非同步取得排行訊息後填入（面板已顯示，不影響呈現）
+            const rankMsg = await submitDailyScoreIfNeeded(current, 'zero-clear');
+            if (rankMsg) {
+                const rankEl = overlay.querySelector('.win-rank-msg');
+                if (rankEl) { rankEl.textContent = rankMsg; rankEl.style.display = ''; }
+            }
         }
 
         function playAgain() {
