@@ -9814,12 +9814,19 @@
                 const _cardH = parseFloat(_cs.getPropertyValue('--card-h')) || 119;
                 const _gap   = parseFloat(_cs.getPropertyValue('--fixed-gap')) || -86;
                 const _stepH = _cardH + _gap;
-                const _headerH = document.getElementById('header')?.offsetHeight || 60;
                 const _vw = window.innerWidth || 360, _vh = window.innerHeight || 640;
-                // In sidebar mode the footer is a right-side grid cell, not at the bottom
                 const _isSidebar = _vw > _vh && _vh < 500 && _vw >= 640;
-                const _footerH = _isSidebar ? 0 : (document.getElementById('footer')?.offsetHeight || 90);
-                const _availH  = _vh - _headerH - _footerH - 20;
+                // Use board.clientHeight directly so ad-banner, safe-areas and all
+                // UI chrome are automatically accounted for — no guesswork needed.
+                let _availH;
+                if (board.clientHeight > 100) {
+                    _availH = board.clientHeight - 10; // 10px safety margin
+                } else {
+                    const _headerH = document.getElementById('header')?.offsetHeight || 60;
+                    const _footerH = _isSidebar ? 0 : (document.getElementById('footer')?.offsetHeight || 90);
+                    const _adH = document.getElementById('ad-banner')?.offsetHeight || 0;
+                    _availH = _vh - _headerH - _footerH - _adH - 20;
+                }
                 const COMPRESS_THRESH = Math.max(6, Math.floor((_availH - _cardH) / _stepH) + 1);
                 const total = slot.cards.length;
                 // Suppress compression when 3 cards are selected (player needs to see all)
