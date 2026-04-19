@@ -7527,12 +7527,17 @@
             if (winInterval) clearInterval(winInterval);
 
             if (!forceNew && targetMode === 'normal' && loadGameState()) {
-                setUndoEnabled(historyStack.length > 0);
-                updateHeaderModeTag();
-                render();
-                updateDiscard();
-                if (!hasWon) checkDeadlock();
-                return;
+                if (hasWon) {
+                    // 遊戲已完成但未點「再來一局」就離開 — 清除紀錄，直接開新局
+                    try { localStorage.removeItem(GAME_STATE_KEY); } catch (_) {}
+                } else {
+                    setUndoEnabled(historyStack.length > 0);
+                    updateHeaderModeTag();
+                    render();
+                    updateDiscard();
+                    checkDeadlock();
+                    return;
+                }
             }
 
             // 重置資料
