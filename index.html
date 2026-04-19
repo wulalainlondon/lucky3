@@ -7164,13 +7164,17 @@
             }
             try {
                 const playerName = (localStorage.getItem('lucky3-player-name') || '').trim();
+                if (!playerName) {
+                    lastDailyRankText = '';
+                    return '';
+                }
                 const result = await bridge.submitDailyScore({
                     dateKey: toLocalDateKey(),
                     bestTimeMs: current.elapsedSec * 1000,
                     moves: current.moveCount,
                     maxCombo: current.maxCombo,
                     resultKind: kind,
-                    ...(playerName ? { name: playerName } : {})
+                    name: playerName
                 });
 
                 if (result.status === 'created') {
@@ -9171,9 +9175,10 @@
 
             const ref = doc(db, 'daily_leaderboards', dateKey, 'entries', user.uid);
             const snap = await getDoc(ref);
+            const payloadName = typeof payload.name === 'string' ? payload.name.trim() : '';
             const nextData = {
                 uid: user.uid,
-                name: fallbackName(user.uid),
+                name: payloadName || fallbackName(user.uid),
                 bestTimeMs: Math.max(0, Math.round(bestTimeMs)),
                 moves: Number.isFinite(moves) ? Math.max(0, Math.round(moves)) : 0,
                 maxCombo: Number.isFinite(maxCombo) ? Math.max(0, Math.round(maxCombo)) : 0,
@@ -9192,7 +9197,6 @@
                 return { status: 'skipped' };
             }
 
-            if (typeof prev.name === 'string' && prev.name.trim()) nextData.name = prev.name;
             await setDoc(ref, nextData, { merge: true });
             return { status: 'updated' };
         }
