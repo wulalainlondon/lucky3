@@ -4,11 +4,15 @@ const { test, expect } = require('@playwright/test');
 test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
         localStorage.setItem('lucky3-tutorial-state-v1', 'completed');
-        // Speed up Web Animations API so onfinish fires in ~1ms instead of
-        // 360ms per card — prevents headless-Chrome timer throttling timeouts.
-        const _origAnimate = Element.prototype.animate;
-        Element.prototype.animate = function (kf, opts) {
-            return _origAnimate.call(this, kf, { ...opts, duration: 1 });
+        // In headless Chrome on CI, WAAPI onfinish and setTimeout are throttled.
+        // Cap all setTimeout delays and return fake animations that fire onfinish
+        // immediately via microtask — game code only reads .onfinish, not .finished.
+        const _origSetTimeout = window.setTimeout;
+        window.setTimeout = (fn, ms, ...args) => _origSetTimeout(fn, Math.min(ms ?? 0, 50), ...args);
+        Element.prototype.animate = function () {
+            const fake = { onfinish: null, cancel() {}, finished: Promise.resolve() };
+            Promise.resolve().then(() => { if (typeof fake.onfinish === 'function') fake.onfinish(); });
+            return fake;
         };
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
