@@ -4,6 +4,12 @@ const { test, expect } = require('@playwright/test');
 test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
         localStorage.setItem('lucky3-tutorial-state-v1', 'completed');
+        // Speed up Web Animations API so onfinish fires in ~1ms instead of
+        // 360ms per card — prevents headless-Chrome timer throttling timeouts.
+        const _origAnimate = Element.prototype.animate;
+        Element.prototype.animate = function (kf, opts) {
+            return _origAnimate.call(this, kf, { ...opts, duration: 1 });
+        };
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     // Wait for opening animation (omen card + deal) to fully complete
