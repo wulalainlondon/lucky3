@@ -791,6 +791,83 @@
             }
         }
 
+        /* ── 幸運牌開局動畫 ── */
+        .omen-card-wrap {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9800;
+            pointer-events: none;
+            animation: omen-fadein 0.4s ease forwards;
+        }
+        @keyframes omen-fadein { from { opacity: 0; } to { opacity: 1; } }
+        .omen-scene {
+            width: 84px;
+            height: calc(84px * 1.42);
+            perspective: 600px;
+        }
+        .omen-inner {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: omen-flip 0.6s ease 0.9s forwards;
+        }
+        @keyframes omen-flip {
+            0%   { transform: rotateY(0deg); }
+            100% { transform: rotateY(180deg); }
+        }
+        .omen-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.6rem;
+            box-shadow: 0 0 32px rgba(255,215,0,0.5), 0 4px 24px rgba(0,0,0,0.5);
+        }
+        .omen-back {
+            background: linear-gradient(135deg, #0f3d1d 0%, #1a6b35 50%, #0f3d1d 100%);
+            border: 2px solid var(--gold);
+        }
+        .omen-back::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            background-image:
+                repeating-linear-gradient(45deg, rgba(255,215,0,0.15) 0px, rgba(255,215,0,0.15) 1px, transparent 1px, transparent 9px),
+                repeating-linear-gradient(-45deg, rgba(255,215,0,0.15) 0px, rgba(255,215,0,0.15) 1px, transparent 1px, transparent 9px);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 2px;
+        }
+        .omen-front {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 2px solid var(--gold);
+            transform: rotateY(180deg);
+            flex-direction: column;
+            gap: 4px;
+        }
+        .omen-label {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 0.52rem;
+            color: var(--gold);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            opacity: 0.85;
+        }
+        .omen-suit-char {
+            font-size: 3rem;
+            line-height: 1;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+        .omen-wrap-out {
+            animation: omen-fadeout 0.45s ease forwards;
+        }
+        @keyframes omen-fadeout { from { opacity: 1; } to { opacity: 0; } }
+
         .lucky-three-win {
             animation: win-glow 1s infinite alternate;
             z-index: 1000 !important;
@@ -3254,7 +3331,7 @@
             'achievement.stat.shield_empty': 'Not Charged',
             'common.days': '{value} days',
             'mii.peeking': 'Previewing...',
-            'column.clear': '直欄清除！',
+            'column.clear': 'CLEAR!',
             'win.subtitle': 'Outstanding! You cleared the entire board ✨',
             'win.stat.time': 'Time',
             'win.stat.moves': 'Moves',
@@ -3406,7 +3483,7 @@
                 'achievement.stat.shield_empty': '未充能',
                 'common.days': '{value} 天',
                 'mii.peeking': '咪牌中...',
-                'column.clear': '直欄清除！',
+                'column.clear': 'CLEAR!',
                 'win.subtitle': '超讚！你把牌局收乾淨了 ✨',
                 'win.stat.time': '用時',
                 'win.stat.moves': '總步數',
@@ -3558,7 +3635,7 @@
                 'achievement.stat.shield_empty': '未充電',
                 'common.days': '{value} 日',
                 'mii.peeking': 'プレビュー中...',
-                'column.clear': 'コラムクリア！',
+                'column.clear': 'CLEAR!',
                 'win.subtitle': '素晴らしい！ボードを完全にクリアしました ✨',
                 'win.stat.time': 'タイム',
                 'win.stat.moves': '手数',
@@ -3709,7 +3786,7 @@
                 'achievement.stat.shield_empty': '미충전',
                 'common.days': '{value}일',
                 'mii.peeking': '미리보기 중...',
-                'column.clear': '열 클리어!',
+                'column.clear': 'CLEAR!',
                 'win.subtitle': '훌륭해요! 보드를 완전히 클리어했습니다 ✨',
                 'win.stat.time': '시간',
                 'win.stat.moves': '수',
@@ -3860,7 +3937,7 @@
     'achievement.stat.shield_empty': 'Sin carga',
     'common.days': '{value} días',
     'mii.peeking': 'Previsualizando...',
-    'column.clear': '¡COLUMNA LIMPIA!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': '¡Sobresaliente! Limpiaste todo el tablero ✨',
     'win.stat.time': 'Tiempo',
     'win.stat.moves': 'Movimientos',
@@ -4010,7 +4087,7 @@
     'achievement.stat.shield_empty': 'Sem carga',
     'common.days': '{value} dias',
     'mii.peeking': 'Pré-visualizando...',
-    'column.clear': 'COLUNA LIMPA!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Excelente! Você limpou todo o tabuleiro ✨',
     'win.stat.time': 'Tempo',
     'win.stat.moves': 'Jogadas',
@@ -4160,7 +4237,7 @@
     'achievement.stat.shield_empty': 'ยังไม่ชาร์จ',
     'common.days': '{value} วัน',
     'mii.peeking': 'กำลังดูตัวอย่าง...',
-    'column.clear': 'เคลียร์คอลัมน์!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'ยอดเยี่ยม! คุณเคลียร์กระดานทั้งหมดแล้ว ✨',
     'win.stat.time': 'เวลา',
     'win.stat.moves': 'จำนวนตา',
@@ -4310,7 +4387,7 @@
     'achievement.stat.shield_empty': 'Kosong',
     'common.days': '{value} hari',
     'mii.peeking': 'Pratinjau...',
-    'column.clear': 'KOLOM BERSIH!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Luar biasa! Anda membersihkan seluruh papan ✨',
     'win.stat.time': 'Waktu',
     'win.stat.moves': 'Langkah',
@@ -4460,7 +4537,7 @@
     'achievement.stat.shield_empty': 'Non chargé',
     'common.days': '{value} jours',
     'mii.peeking': 'Aperçu en cours...',
-    'column.clear': 'COLONNE NETTOYÉE !',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Remarquable ! Vous avez vidé tout le plateau ✨',
     'win.stat.time': 'Temps',
     'win.stat.moves': 'Coups',
@@ -4611,7 +4688,7 @@
     'achievement.stat.shield_empty': '未充能',
     'common.days': '{value} 天',
     'mii.peeking': '偷看中...',
-    'column.clear': '直栏清除！',
+    'column.clear': 'CLEAR!',
     'win.subtitle': '超赞！你把牌局收干净了 ✨',
     'win.stat.time': '用时',
     'win.stat.moves': '总步数',
@@ -4745,7 +4822,7 @@
     'achievement.stat.shield_empty': 'Nicht aufgeladen',
     'common.days': '{value} Tage',
     'mii.peeking': 'Vorschau...',
-    'column.clear': 'SPALTE GELEERT!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Hervorragend! Du hast das gesamte Brett geleert ✨',
     'win.stat.time': 'Zeit',
     'win.stat.moves': 'Züge',
@@ -4879,7 +4956,7 @@
     'achievement.stat.shield_empty': 'Non caricato',
     'common.days': '{value} giorni',
     'mii.peeking': 'Anteprima...',
-    'column.clear': 'COLONNA PULITA!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Straordinario! Hai svuotato l\'intero tavolo ✨',
     'win.stat.time': 'Tempo',
     'win.stat.moves': 'Mosse',
@@ -5013,7 +5090,7 @@
     'achievement.stat.shield_empty': 'Sem carga',
     'common.days': '{value} dias',
     'mii.peeking': 'A pré-visualizar...',
-    'column.clear': 'COLUNA LIMPA!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Notável! Esvaziou todo o tabuleiro ✨',
     'win.stat.time': 'Tempo',
     'win.stat.moves': 'Jogadas',
@@ -5146,7 +5223,7 @@
     'achievement.stat.shield_empty': 'Niet opgeladen',
     'common.days': '{value} dagen',
     'mii.peeking': 'Voorbeeld...',
-    'column.clear': 'KOLOM LEEG!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Uitstekend! Je hebt het hele bord geleegd ✨',
     'win.stat.time': 'Tijd',
     'win.stat.moves': 'Zetten',
@@ -5279,7 +5356,7 @@
     'achievement.stat.shield_empty': 'Не заряжен',
     'common.days': '{value} дн.',
     'mii.peeking': 'Предпросмотр...',
-    'column.clear': 'КОЛОНКА ОЧИЩЕНА!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Превосходно! Ты очистил всё поле ✨',
     'win.stat.time': 'Время',
     'win.stat.moves': 'Ходы',
@@ -5412,7 +5489,7 @@
     'achievement.stat.shield_empty': 'Nienaładowana',
     'common.days': '{value} dni',
     'mii.peeking': 'Podgląd...',
-    'column.clear': 'KOLUMNA WYCZYSZCZONA!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Znakomicie! Wyczyściłeś całą planszę ✨',
     'win.stat.time': 'Czas',
     'win.stat.moves': 'Ruchy',
@@ -5545,7 +5622,7 @@
     'achievement.stat.shield_empty': 'Şarjsız',
     'common.days': '{value} gün',
     'mii.peeking': 'Önizleniyor...',
-    'column.clear': 'SÜTUN TEMİZLENDİ!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Mükemmel! Tüm tahtayı temizledin ✨',
     'win.stat.time': 'Süre',
     'win.stat.moves': 'Hamleler',
@@ -5678,7 +5755,7 @@
     'achievement.stat.shield_empty': 'Trống',
     'common.days': '{value} ngày',
     'mii.peeking': 'Đang xem trước...',
-    'column.clear': 'CỘT ĐÃ SẠCH!',
+    'column.clear': 'CLEAR!',
     'win.subtitle': 'Xuất sắc! Đã dọn sạch toàn bộ bàn ✨',
     'win.stat.time': 'Thời gian',
     'win.stat.moves': 'Số nước',
@@ -6024,6 +6101,33 @@
             if (settings.animationSpeed === 'slow') return 1.35;
             if (settings.animationSpeed === 'fast') return 0.75;
             return 1;
+        }
+
+        // ── 幸運牌開局動畫 ──
+        const SUIT_COLORS = { '♠': '#e8e8ff', '♥': '#ff4444', '♦': '#ff4444', '♣': '#88ffbb' };
+        function showOmenCard(guardianSuit) {
+            return new Promise((resolve) => {
+                const suit = guardianSuit || '★';
+                const color = SUIT_COLORS[suit] || '#ffd700';
+                const wrap = document.createElement('div');
+                wrap.className = 'omen-card-wrap';
+                wrap.innerHTML = `
+                    <div class="omen-scene">
+                        <div class="omen-inner">
+                            <div class="omen-face omen-back"></div>
+                            <div class="omen-face omen-front">
+                                <span class="omen-label">Lucky</span>
+                                <span class="omen-suit-char" style="color:${color}">${suit}</span>
+                                <span class="omen-label">Guide</span>
+                            </div>
+                        </div>
+                    </div>`;
+                document.body.appendChild(wrap);
+                setTimeout(() => {
+                    wrap.classList.add('omen-wrap-out');
+                    setTimeout(() => { wrap.remove(); resolve(); }, 450);
+                }, getDelay(1700));
+            });
         }
 
         function getDelay(ms) {
@@ -7659,7 +7763,10 @@
             if (_board) setTimeout(() => _board.classList.remove('board-init'), getDelay(500));
             updateDiscard();
             const tutorialOpeningQueue = tutorialDeckMode ? [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2] : null;
-            runOpeningDealAnimation(3, tutorialOpeningQueue).then(() => {
+            const omenPromise = (!tutorialDeckMode && deck.length > 0)
+                ? showOmenCard(deck[deck.length - 1]?.suit || null)
+                : Promise.resolve();
+            omenPromise.then(() => runOpeningDealAnimation(3, tutorialOpeningQueue)).then(() => {
                 updateDiscard();
                 saveGameState();
                 if (!hasWon) checkDeadlock();
