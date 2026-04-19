@@ -1,0 +1,12 @@
+{
+  "id": "003",
+  "title": "靜物",
+  "titleEn": "Still Life",
+  "orientation": "square",
+  "cols": 3,
+  "rows": 3,
+  "totalPieces": 9,
+  "frameStyle": "gold",
+  "pieceW": 234,
+  "pieceH": 234
+}

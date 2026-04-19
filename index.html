@@ -230,7 +230,8 @@
             padding: 6px;
             box-sizing: border-box;
             border: 1px solid #d4c9a8;
-            margin-bottom: var(--fixed-gap);
+            /* --col-gap 由 JS 每欄獨立設定；無設定時 fallback 到全局 --fixed-gap */
+            margin-bottom: var(--col-gap, var(--fixed-gap));
         }
 
         .card::before {
@@ -6004,39 +6005,28 @@
             const usable = Math.max(260, board.clientWidth - gap * 3);
             const viewportW = window.innerWidth || 360;
             const viewportH = window.innerHeight || 640;
-            // Sidebar mode: wide compact-landscape phone (S Ultra etc.) where footer
-            // is position:fixed on the right — lower landscape threshold to 380px
-            const isSidebarMode = viewportW > viewportH && viewportH < 500 && viewportW >= 640;
             const isLandscape = viewportW > viewportH && viewportH >= 380;
+            const isSidebarMode = isLandscape && viewportH < 500 && viewportW >= 640;
 
             const minCard = viewportW >= 1200 ? 108 : viewportW >= 900 ? 92 : 60;
             const maxCard = viewportW >= 1200 ? 154 : viewportW >= 900 ? 132 : 96;
             let cardW = Math.min(maxCard, Math.max(minCard, Math.floor(usable / 4)));
 
-            // Sidebar uses tighter overlap (78% hidden vs 72%) so cards can be
-            // larger while still fitting 10-deep stacks in limited height
             const overlapFactor = isSidebarMode ? 0.78 : 0.72;
 
-            // In landscape, constrain card size by available height
-            // so tall stacks (10+ cards) don't overflow
             if (isLandscape) {
-                const headerH = document.getElementById('header')?.offsetHeight || 60;
-                let boardH;
-                if (isSidebarMode) {
-                    // Footer is fixed sidebar — subtract board padding + safety buffer
-                    boardH = board.clientHeight - 20;
-                } else {
-                    const footerH = document.getElementById('footer')?.offsetHeight || 90;
-                    boardH = viewportH - headerH - footerH - 30;
-                }
-                // visibleRatio = fraction of each peeking card that shows above the next
+                // 所有 landscape 版型（含 tablet sidebar）一律用 board.clientHeight
+                // header/footer 在側邊欄時 offsetHeight ≈ viewport 高，不能用來算 boardH
+                const boardH = Math.max(100, board.clientHeight - 16);
                 const visibleRatio = 1 - overlapFactor;
-                const maxStackCards = 10;
+                const actualMax = typeof slots !== 'undefined'
+                    ? Math.max(...slots.filter(s => s.active).map(s => s.cards.length), 3)
+                    : 10;
+                const maxStackCards = Math.min(actualMax, 10);
                 const maxCardByHeight = Math.floor(boardH / (1 + (maxStackCards - 1) * visibleRatio) / 1.42);
                 if (isSidebarMode) {
-                    // Height is the absolute constraint — never let minCard override it
                     cardW = Math.min(cardW, maxCardByHeight);
-                    cardW = Math.max(cardW, 48); // absolute readability floor
+                    cardW = Math.max(cardW, 48);
                 } else {
                     cardW = Math.min(cardW, Math.max(minCard, maxCardByHeight));
                 }
@@ -6050,6 +6040,20 @@
             document.documentElement.style.setProperty('--max-w', `${cardW}px`);
             document.documentElement.style.setProperty('--max-h', `${cardH}px`);
             document.documentElement.style.setProperty('--fixed-gap', `${overlap}px`);
+        }
+
+        // 每欄依自身深度計算最適 gap（負值 = 重疊）
+        function calcColGap(colDepth, cardH, boardH) {
+            if (colDepth <= 1) return 0;
+            const minOverlap = -Math.round(cardH * 0.15); // 美觀最小重疊 15%
+            const availH = boardH - 8;
+            const uncompressedH = cardH * colDepth;
+            if (uncompressedH <= availH) return minOverlap; // 不需壓縮
+            // 算出剛好讓這欄塞進 availH 的 gap
+            // totalH = cardH + (n-1)*(cardH+gap) ≤ availH
+            // → gap = (availH - n*cardH) / (n-1)
+            const gap = Math.floor((availH - colDepth * cardH) / (colDepth - 1));
+            return Math.max(gap, -Math.round(cardH * 0.88)); // 最多重疊 88%
         }
 
         function loadSettings() {
@@ -7688,14 +7692,19 @@
                 const _cs = getComputedStyle(document.documentElement);
                 const _cardH = parseFloat(_cs.getPropertyValue('--card-h')) || 119;
                 const _gap   = parseFloat(_cs.getPropertyValue('--fixed-gap')) || -86;
-                const _stepH = _cardH + _gap; // visible height each stacked card adds (~28% of cardH)
-                const _headerH = document.getElementById('header')?.offsetHeight || 60;
+                const _stepH = _cardH + _gap;
                 const _vw = window.innerWidth || 360, _vh = window.innerHeight || 640;
-                // In sidebar mode the footer is a right-side grid cell, not at the bottom
-                const _isSidebar = _vw > _vh && _vh < 500 && _vw >= 640;
-                const _footerH = _isSidebar ? 0 : (document.getElementById('footer')?.offsetHeight || 90);
-                const _availH  = _vh - _headerH - _footerH - 20;
+                const _isLandscape = _vw > _vh && _vh >= 380;
+                // 所有 landscape 版型一律用 board.clientHeight 避免 sidebar header/footer 干擾
+                const _boardEl = document.getElementById('board');
+                const _availH = _isLandscape && _boardEl?.clientHeight > 80
+                    ? _boardEl.clientHeight - 16
+                    : _vh - (document.getElementById('header')?.offsetHeight || 60)
+                      - (document.getElementById('footer')?.offsetHeight || 90) - 20;
                 const COMPRESS_THRESH = Math.max(6, Math.floor((_availH - _cardH) / _stepH) + 1);
+                // 每欄依自身深度獨立計算 gap
+                const _colGap = calcColGap(slot.cards.length, _cardH, _availH);
+                col.style.setProperty('--col-gap', `${_colGap}px`);
                 const total = slot.cards.length;
                 // Suppress compression when 3 cards are selected (player needs to see all)
                 const doCompress = total > COMPRESS_THRESH && !threeReady;

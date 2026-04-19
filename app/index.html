@@ -50,8 +50,8 @@
             --board-gap: 8px;
         }
 
-        body {
-            font-family: 'Cinzel', 'Georgia', serif;
+        body, button, input, select, textarea {
+            font-family: 'Cinzel', system-ui, -apple-system, 'PingFang TC', 'Noto Sans CJK TC', sans-serif;
             background: radial-gradient(ellipse at 20% 30%, #0f4a24 0%, #051d0e 50%, #020e07 100%);
             margin: 0;
             color: white;
@@ -1186,10 +1186,173 @@
         }
 
         #deck-pile {
-            background: #1e88e5;
+            background: #1565c0;
             box-shadow: 3px 3px 0 #0d47a1;
             cursor: pointer;
-            font-size: 26px;
+            overflow: hidden;
+        }
+        /* 菱格紋牌背（純 CSS，不依賴字型） */
+        #deck-pile::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            background-image:
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0px, rgba(255,255,255,0.18) 1px, transparent 1px, transparent 8px),
+                repeating-linear-gradient(-45deg, rgba(255,255,255,0.18) 0px, rgba(255,255,255,0.18) 1px, transparent 1px, transparent 8px);
+            border-radius: 3px;
+        }
+        #deck-pile::after {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 2px;
+        }
+
+        /* ── Card Back Variants ─────────────────────────────────────────────── */
+        /* Preview thumbnail base */
+        .cb-preview::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 2px;
+        }
+        .cb-preview::after {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border-radius: 2px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Classic Blue (default, no class on deck-pile) */
+        .cb-preview-classic { background: #1565c0; }
+        .cb-preview-classic::before {
+            background-image:
+                repeating-linear-gradient(45deg,rgba(255,255,255,0.18) 0,rgba(255,255,255,0.18) 1px,transparent 1px,transparent 8px),
+                repeating-linear-gradient(-45deg,rgba(255,255,255,0.18) 0,rgba(255,255,255,0.18) 1px,transparent 1px,transparent 8px);
+        }
+
+        /* Night Gold */
+        #deck-pile.cb-nightgold,.cb-preview-nightgold { background: #120d00; }
+        #deck-pile.cb-nightgold { box-shadow: 3px 3px 0 #000, 0 0 10px rgba(218,165,32,0.25); }
+        #deck-pile.cb-nightgold::before,.cb-preview-nightgold::before {
+            background-image:
+                repeating-linear-gradient(45deg,rgba(218,165,32,0.22) 0,rgba(218,165,32,0.22) 1px,transparent 1px,transparent 8px),
+                repeating-linear-gradient(-45deg,rgba(218,165,32,0.22) 0,rgba(218,165,32,0.22) 1px,transparent 1px,transparent 8px);
+        }
+        #deck-pile.cb-nightgold::after,.cb-preview-nightgold::after { border-color: rgba(218,165,32,0.45); }
+
+        /* Deep Forest */
+        #deck-pile.cb-forest,.cb-preview-forest { background: #041504; }
+        #deck-pile.cb-forest { box-shadow: 3px 3px 0 #020802; }
+        #deck-pile.cb-forest::before,.cb-preview-forest::before {
+            background-image:
+                repeating-linear-gradient(45deg,rgba(80,200,100,0.18) 0,rgba(80,200,100,0.18) 1px,transparent 1px,transparent 8px),
+                repeating-linear-gradient(-45deg,rgba(80,200,100,0.18) 0,rgba(80,200,100,0.18) 1px,transparent 1px,transparent 8px);
+        }
+        #deck-pile.cb-forest::after,.cb-preview-forest::after { border-color: rgba(80,200,100,0.4); }
+
+        /* Crimson */
+        #deck-pile.cb-crimson,.cb-preview-crimson { background: #280404; }
+        #deck-pile.cb-crimson { box-shadow: 3px 3px 0 #180202; }
+        #deck-pile.cb-crimson::before,.cb-preview-crimson::before {
+            background-image:
+                repeating-linear-gradient(45deg,rgba(220,60,60,0.22) 0,rgba(220,60,60,0.22) 1px,transparent 1px,transparent 8px),
+                repeating-linear-gradient(-45deg,rgba(220,60,60,0.22) 0,rgba(220,60,60,0.22) 1px,transparent 1px,transparent 8px);
+        }
+        #deck-pile.cb-crimson::after,.cb-preview-crimson::after { border-color: rgba(220,60,60,0.45); }
+
+        /* Void */
+        #deck-pile.cb-void,.cb-preview-void { background: #050505; }
+        #deck-pile.cb-void { box-shadow: 3px 3px 0 #000; }
+        #deck-pile.cb-void::before,.cb-preview-void::before {
+            background-image:
+                repeating-linear-gradient(45deg,rgba(160,160,190,0.1) 0,rgba(160,160,190,0.1) 1px,transparent 1px,transparent 6px),
+                repeating-linear-gradient(-45deg,rgba(160,160,190,0.1) 0,rgba(160,160,190,0.1) 1px,transparent 1px,transparent 6px);
+        }
+        #deck-pile.cb-void::after,.cb-preview-void::after { border-color: rgba(160,160,200,0.28); }
+
+        /* Lucky */
+        #deck-pile.cb-lucky,.cb-preview-lucky { background: #06051e; }
+        #deck-pile.cb-lucky { box-shadow: 3px 3px 0 #020210, 0 0 10px rgba(218,165,32,0.18); }
+        #deck-pile.cb-lucky::before,.cb-preview-lucky::before {
+            background-image:
+                repeating-linear-gradient(45deg,rgba(218,165,32,0.1) 0,rgba(218,165,32,0.1) 1px,transparent 1px,transparent 12px),
+                repeating-linear-gradient(-45deg,rgba(218,165,32,0.1) 0,rgba(218,165,32,0.1) 1px,transparent 1px,transparent 12px);
+        }
+        #deck-pile.cb-lucky::after,.cb-preview-lucky::after {
+            content: '✦';
+            border-color: rgba(218,165,32,0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(218,165,32,0.45);
+            font-size: 14px;
+            font-family: serif;
+        }
+
+        /* ── Card Back Collection Grid UI ─── */
+        .cb-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px 8px;
+            padding: 12px 4px 4px;
+        }
+        .cb-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .cb-item.cb-locked { cursor: default; }
+        .cb-preview {
+            width: 44px;
+            height: 60px;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            box-sizing: border-box;
+            transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+        }
+        .cb-item:not(.cb-locked) .cb-preview:active { transform: scale(0.92); }
+        .cb-item.cb-selected .cb-preview {
+            border-color: var(--gold);
+            box-shadow: 0 0 8px rgba(218,165,32,0.55);
+        }
+        .cb-lock-icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.55);
+            color: rgba(255,255,255,0.65);
+            z-index: 1;
+        }
+        .cb-selected-mark {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 1;
+        }
+        .cb-name {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.85);
+            text-align: center;
+        }
+        .cb-hint {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.38);
+            text-align: center;
+            line-height: 1.3;
+            font-family: system-ui, -apple-system, sans-serif;
         }
 
         #discard-pile {
@@ -2055,6 +2218,7 @@
             flex: 1;
             min-height: 38px;
             border: none;
+            font-family: system-ui, -apple-system, "PingFang TC", sans-serif;
             border-radius: 9px;
             font-weight: 800;
             cursor: pointer;
@@ -3026,9 +3190,14 @@
             border: 2px solid var(--gold);
         }
         .omen-back::before {
-            content: '🂠';
-            font-size: 3.6rem;
-            opacity: 0.9;
+            content: '';
+            position: absolute;
+            inset: 6px;
+            background-image:
+                repeating-linear-gradient(45deg, rgba(255,215,0,0.15) 0px, rgba(255,215,0,0.15) 1px, transparent 1px, transparent 9px),
+                repeating-linear-gradient(-45deg, rgba(255,215,0,0.15) 0px, rgba(255,215,0,0.15) 1px, transparent 1px, transparent 9px);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 2px;
         }
         .omen-front {
             background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
@@ -3109,10 +3278,328 @@
             animation: card-select-pulse calc(0.4s * var(--anim-scale)) ease-out;
         }
 
+        /* ── Gallery ── */
+        #gallery-overlay, #gallery-detail-overlay {
+            position: fixed; inset: 0; z-index: 19000;
+            background: #040f08;
+            display: none; flex-direction: column;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        #gallery-overlay.show, #gallery-detail-overlay.show { display: flex; }
+
+        .gallery-header {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 18px 10px;
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            flex-shrink: 0;
+        }
+        .gallery-back {
+            background: none; border: none; color: rgba(255,215,0,0.8);
+            font-size: 1.4rem; cursor: pointer; padding: 4px 8px;
+            font-family: inherit;
+        }
+        .gallery-header-title {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 1rem; font-weight: 700;
+            color: #ffd700; letter-spacing: 1px;
+            flex: 1;
+        }
+
+        /* 列表 */
+        .gallery-list {
+            flex: 1; overflow-y: auto;
+            padding: 16px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .gallery-card {
+            border-radius: 12px;
+            border: 1px solid rgba(255,215,0,0.18);
+            background: rgba(255,255,255,0.04);
+            overflow: hidden; cursor: pointer;
+            display: flex; align-items: center; gap: 14px;
+            padding: 12px;
+            transition: background 0.15s;
+        }
+        .gallery-card:active { background: rgba(255,215,0,0.08); }
+        .gallery-card-thumb {
+            flex-shrink: 0; border-radius: 6px; overflow: hidden;
+            border: 2px solid rgba(255,215,0,0.3);
+            position: relative;
+        }
+        .gallery-card-thumb img {
+            display: block; width: 100%; height: 100%; object-fit: cover;
+        }
+        .gallery-card-thumb.portrait  { width: 54px; height: 72px; }
+        .gallery-card-thumb.landscape { width: 88px; height: 58px; }
+        .gallery-card-thumb.square    { width: 66px; height: 66px; }
+        .gallery-card-info { flex: 1; min-width: 0; }
+        .gallery-card-title {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 0.95rem; font-weight: 700; color: #ffd700;
+            margin: 0 0 6px;
+        }
+        .gallery-progress-bar {
+            height: 4px; border-radius: 2px;
+            background: rgba(255,255,255,0.1);
+            margin-bottom: 5px; overflow: hidden;
+        }
+        .gallery-progress-fill {
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, #ffd700, #ff9500);
+            transition: width 0.4s ease;
+        }
+        .gallery-progress-text {
+            font-size: 0.72rem; color: rgba(255,255,255,0.45);
+        }
+        .gallery-card-lock {
+            font-size: 1.2rem; color: rgba(255,255,255,0.2);
+        }
+        .gallery-card.completed .gallery-card-thumb {
+            border-color: #ffd700;
+            box-shadow: 0 0 12px rgba(255,215,0,0.35);
+        }
+
+        /* 詳情 — 拼圖畫面 */
+        .gallery-puzzle-wrap {
+            flex: 1; display: flex; align-items: center;
+            justify-content: center; padding: 16px; overflow: hidden;
+        }
+        .gallery-puzzle {
+            display: grid; gap: 2px;
+            max-width: min(90vw, 420px);
+        }
+        .gallery-piece {
+            border-radius: 3px; overflow: hidden;
+            position: relative; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .gallery-piece img {
+            display: block; width: 100%; height: 100%; object-fit: cover;
+        }
+        .gallery-piece.locked img { filter: brightness(0.08) blur(2px); }
+        .gallery-piece.locked::after {
+            content: '✦'; position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,215,0,0.18); font-size: 1.1rem;
+        }
+        .gallery-piece.new-unlock {
+            animation: piece-unlock 0.6s cubic-bezier(0.18,0.89,0.32,1.28) both;
+        }
+        @keyframes piece-unlock {
+            0%   { transform: scale(0.5); opacity: 0; filter: brightness(2); }
+            60%  { transform: scale(1.08); }
+            100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+        }
+
+        /* 完整畫作展示 */
+        .gallery-full-wrap {
+            flex: 1; display: flex; align-items: center;
+            justify-content: center; padding: 24px;
+        }
+        .gallery-frame {
+            position: relative; display: inline-block;
+            box-shadow:
+                0 0 0 4px #b8860b,
+                0 0 0 8px #8B6914,
+                0 0 0 12px #DAA520,
+                0 0 32px rgba(0,0,0,0.8);
+            border-radius: 3px;
+        }
+        .gallery-frame img {
+            display: block; max-width: min(80vw, 400px);
+            max-height: 60vh; object-fit: contain; border-radius: 2px;
+        }
+        .gallery-detail-footer {
+            padding: 14px 18px; flex-shrink: 0; text-align: center;
+        }
+        .gallery-completed-label {
+            font-size: 0.8rem; color: rgba(255,215,0,0.7);
+            letter-spacing: 1px; margin-bottom: 10px;
+        }
+
+        /* 碎片掉落通知 */
+        .fragment-toast {
+            position: fixed; bottom: 90px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10,30,15,0.95);
+            border: 1px solid rgba(255,215,0,0.5);
+            border-radius: 12px; padding: 10px 18px;
+            display: flex; align-items: center; gap: 10px;
+            z-index: 25000; pointer-events: none;
+            animation: fragment-toast-anim 3s ease forwards;
+        }
+        @keyframes fragment-toast-anim {
+            0%   { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+            75%  { opacity: 1; }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+        }
+        .fragment-toast-thumb {
+            width: 36px; height: 36px; border-radius: 4px;
+            overflow: hidden; border: 1px solid rgba(255,215,0,0.4);
+            flex-shrink: 0;
+        }
+        .fragment-toast-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .fragment-toast-text { font-size: 0.82rem; color: rgba(255,255,255,0.9); }
+        .fragment-toast-text strong { color: #ffd700; display: block; font-size: 0.88rem; }
+
+        /* ── Home Screen ── */
+        #home-screen {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 25% 35%, #0f4a24 0%, #051d0e 65%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        #home-screen.hiding {
+            animation: home-fade-out 0.38s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes home-fade-out {
+            to { opacity: 0; transform: scale(0.96); }
+        }
+        .home-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            max-width: 300px;
+            padding: 24px 20px;
+        }
+        .home-suits {
+            font-size: 1.05rem;
+            letter-spacing: 14px;
+            color: rgba(255, 215, 0, 0.4);
+            margin-bottom: -4px;
+        }
+        .home-title {
+            font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow: 0 0 32px rgba(255, 215, 0, 0.55), 0 4px 14px rgba(0, 0, 0, 0.8);
+            margin: 0;
+            line-height: 1;
+        }
+        .home-subtitle {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 2px 0 0;
+        }
+        .home-divider {
+            width: 48px;
+            height: 1px;
+            background: rgba(255, 215, 0, 0.35);
+            margin: 4px 0 8px;
+        }
+        .home-actions {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .home-btn {
+            width: 100%;
+            min-height: 50px;
+            border-radius: 14px;
+            border: none;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: transform 0.1s, opacity 0.1s;
+        }
+        .home-btn:active { transform: scale(0.97); opacity: 0.88; }
+        .home-btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%);
+            color: #1a0800;
+            font-size: 1.1rem;
+        }
+        .home-btn-continue {
+            background: rgba(255, 215, 0, 0.13);
+            border: 1px solid rgba(255, 215, 0, 0.45);
+            color: #ffd700;
+        }
+        .home-btn-daily {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(255, 255, 255, 0.82);
+        }
+        .home-text-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .home-text-link {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.45);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            padding: 6px 2px;
+        }
+        .home-text-link:active { color: rgba(255, 215, 0, 0.85); }
+        .home-text-sep {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.8rem;
+            user-select: none;
+        }
+        .home-ver {
+            font-size: 0.62rem;
+            color: rgba(255, 255, 255, 0.18);
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+        /* landscape 縮排 */
+        @media (orientation: landscape) and (max-height: 499px) {
+            .home-content { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px 24px; max-width: 560px; }
+            .home-title { font-size: 2rem; }
+            .home-actions { max-width: 220px; gap: 8px; }
+            .home-btn { min-height: 42px; font-size: 0.9rem; }
+        }
+
     </style>
 </head>
 
 <body>
+
+    <!-- ── Home Screen ── -->
+    <div id="home-screen">
+        <div class="home-content">
+            <div class="home-suits">♣ ♥ ♦ ♠</div>
+            <h1 class="home-title">Lucky 3</h1>
+            <p class="home-subtitle">Solitaire</p>
+            <div class="home-divider"></div>
+            <div class="home-actions">
+                <button id="home-btn-continue" class="home-btn home-btn-continue" onclick="homeContinue()" style="display:none" data-i18n="home.continue">▶ Continue</button>
+                <button class="home-btn home-btn-primary" onclick="homeNewGame()" data-i18n="home.new_game">New Game</button>
+                <button class="home-btn home-btn-daily" onclick="homeDailyChallenge()" data-i18n="home.daily">Daily Challenge</button>
+            </div>
+            <div class="home-text-links">
+                <button class="home-text-link" onclick="homeOpenSettings()" data-i18n="home.link_settings">Settings</button>
+                <span class="home-text-sep">·</span>
+                <button class="home-text-link" onclick="openGallery()" data-i18n="home.link_gallery">Gallery</button>
+                <span class="home-text-sep">·</span>
+                <button class="home-text-link" onclick="homeOpenAchievements()" data-i18n="home.link_achievements">Achievements</button>
+                <span class="home-text-sep">·</span>
+                <button class="home-text-link" onclick="homeOpenLeaderboard()" data-i18n="home.link_leaderboard">Leaderboard</button>
+            </div>
+            <div class="home-ver" id="home-ver"></div>
+        </div>
+    </div>
 
     <div id="header">
         <div class="header-main">
@@ -3126,7 +3613,9 @@
             </div>
             <div id="timer" class="timer-pill">00:00</div>
             <div class="header-controls">
-                <button type="button" class="header-settings" onclick="toggleSettings(true)" aria-label="Settings" data-i18n-attr="aria-label:header.settings_aria">⚙</button>
+                <button type="button" class="header-settings" onclick="toggleSettings(true)" aria-label="Settings" data-i18n-attr="aria-label:header.settings_aria">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.69.07-1.08s-.03-.74-.07-1.08l2.32-1.81c.21-.16.27-.45.13-.68l-2.2-3.81c-.13-.23-.42-.31-.65-.23l-2.74 1.1c-.57-.44-1.18-.8-1.85-1.07L14 2.42C13.95 2.18 13.73 2 13.5 2h-4.4c-.23 0-.45.18-.49.42l-.41 2.51c-.67.27-1.28.63-1.85 1.07L3.61 4.9c-.23-.08-.52 0-.65.23L.76 8.94c-.13.23-.07.52.13.68l2.32 1.81C3.17 11.76 3.14 12.11 3.14 12.5s.03.74.07 1.08L.89 15.39c-.2.16-.26.45-.13.68l2.2 3.81c.13.23.42.31.65.23l2.74-1.1c.57.44 1.18.8 1.85 1.07l.41 2.51c.04.24.26.42.49.42h4.4c.23 0 .45-.18.49-.42l.41-2.51c.67-.27 1.28-.63 1.85-1.07l2.74 1.1c.23.08.52 0 .65-.23l2.2-3.81c.13-.23.07-.52-.13-.68l-2.32-1.81z"/></svg>
+                </button>
             </div>
         </div>
     </div>
@@ -3140,6 +3629,7 @@
                 <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(0)" data-i18n="settings.tab_audio">🔊 Audio</button>
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(1)" data-i18n="settings.tab_profile">🌐 Profile</button>
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(2)" data-i18n="settings.tab_play">🎮 Play</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(3)" data-i18n="settings.tab_cardback">Cards</button>
             </div>
 
             <!-- Tab 0: 音效與顯示 -->
@@ -3237,6 +3727,11 @@
                     <span class="settings-version-inline" id="setting-version">v-</span>
                 </div>
                 <button type="button" class="settings-restart" onclick="resetGameFromSettings()" data-i18n="settings.restart_game">Restart Game</button>
+            </div>
+
+            <!-- Tab 3: 牌背收藏 -->
+            <div class="settings-tab-pane" id="stab-3">
+                <div class="cb-grid" id="cb-grid"></div>
             </div>
 
             <!-- 固定關閉 -->
@@ -3365,6 +3860,24 @@
     </div>
     <div id="achievement-toast-wrap" class="achievement-toast-wrap"></div>
 
+    <!-- ── Gallery List ── -->
+    <div id="gallery-overlay">
+        <div class="gallery-header">
+            <button class="gallery-back" onclick="closeGallery()">‹</button>
+            <div class="gallery-header-title" data-i18n="gallery.title">Gallery</div>
+        </div>
+        <div class="gallery-list" id="gallery-list"></div>
+    </div>
+
+    <!-- ── Gallery Detail (puzzle / full view) ── -->
+    <div id="gallery-detail-overlay">
+        <div class="gallery-header">
+            <button class="gallery-back" onclick="closeGalleryDetail()">‹</button>
+            <div class="gallery-header-title" id="gallery-detail-title"></div>
+        </div>
+        <div id="gallery-detail-body" style="flex:1;display:flex;flex-direction:column;overflow:hidden;"></div>
+    </div>
+
     <!-- Ad Banner -->
     <div id="ad-banner" class="ad-banner">
         <div class="ad-banner-inner">
@@ -3431,7 +3944,7 @@
     <div id="footer">
         <!-- 發牌 -->
         <div style="display: flex; flex-direction: column; align-items: center;">
-            <div class="pile" id="deck-pile" onclick="dealOneCard()">🂠</div>
+            <div class="pile" id="deck-pile" onclick="dealOneCard()"></div>
             <div id="deal-label" style="font-size: 10px; color: var(--gold); margin-top: 5px;" data-i18n="footer.deal">DEAL</div>
         </div>
 
@@ -3803,7 +4316,21 @@
             'rules.recycle_label': 'Recycle',
             'rules.recycle_body': 'When the deck runs out, tap RECYCLE to reshuffle discarded cards back into the deck. Each recycle costs one move.',
             'rules.undo_label': 'Undo',
-            'rules.undo_body': 'Tap the ↩ button to reverse your last action (deal or clear). Use it wisely — each undo counts as a move.'
+            'rules.undo_body': 'Tap the ↩ button to reverse your last action (deal or clear). Use it wisely — each undo counts as a move.',
+            'home.continue': '▶ Continue',
+            'home.new_game': 'New Game',
+            'home.daily': 'Daily Challenge',
+            'settings.tab_cardback': 'Cards',
+            'cardback.unlock_toast': 'Card back unlocked!',
+            'home.link_settings': 'Settings',
+            'home.link_gallery': 'Gallery',
+            'home.link_achievements': 'Achievements',
+            'home.link_leaderboard': 'Leaderboard',
+            'gallery.title': 'Gallery',
+            'gallery.pieces': 'pieces',
+            'gallery.fragment_drop': 'Fragment collected!',
+            'gallery.fragment_hint': 'Tap Gallery to view your painting.',
+            'gallery.completed': 'Complete'
         };
         const I18N_STRINGS = {
             'zh-Hant': {
@@ -3994,7 +4521,21 @@
                 'rules.recycle_label': '回收',
                 'rules.recycle_body': '牌庫空了之後，點 RECYCLE 把棄牌堆重新洗入牌庫。每次回收算一步。',
                 'rules.undo_label': '倒轉',
-                'rules.undo_body': '點 ↩ 按鈕可倒退一個動作（發牌或消除）。每次倒轉算一步。'
+                'rules.undo_body': '點 ↩ 按鈕可倒退一個動作（發牌或消除）。每次倒轉算一步。',
+                'home.continue': '▶ 繼續遊戲',
+                'home.new_game': '新遊戲',
+                'home.daily': '每日挑戰',
+                'settings.tab_cardback': '牌背',
+                'cardback.unlock_toast': '解鎖新牌背！',
+                'home.link_settings': '設定',
+                'home.link_gallery': '畫廊',
+                'home.link_achievements': '成就',
+                'home.link_leaderboard': '排行榜',
+                'gallery.title': '我的畫廊',
+                'gallery.pieces': '碎片',
+                'gallery.fragment_drop': '獲得畫作碎片！',
+                'gallery.fragment_hint': '前往畫廊查看你的收藏。',
+                'gallery.completed': '已完成'
             },
             en: I18N_BASE_EN,
             ja: {
@@ -4164,7 +4705,10 @@
                 'rules.recycle_label': 'リサイクル',
                 'rules.recycle_body': 'デッキが空になったら、RECYCLEをタップして捨て札をデッキに戻します。1回のリサイクルで1手消費。',
                 'rules.undo_label': '元に戻す',
-                'rules.undo_body': '↩ボタンで最後のアクション（配牌またはクリア）を取り消します。1回の取り消しで1手消費。'
+                'rules.undo_body': '↩ボタンで最後のアクション（配牌またはクリア）を取り消します。1回の取り消しで1手消費。',
+                'home.continue': '▶ 続きから',
+                'home.new_game': '新しいゲーム',
+                'home.daily': '📅 デイリーチャレンジ'
             },
             ko: {
                 'meta.title': 'Lucky 3 솔리테어',
@@ -4333,7 +4877,10 @@
                 'rules.recycle_label': '재활용',
                 'rules.recycle_body': '덱이 비면 RECYCLE을 탭하여 버린 카드를 덱으로 되돌립니다. 재활용 1회＝1수.',
                 'rules.undo_label': '되돌리기',
-                'rules.undo_body': '↩ 버튼으로 마지막 행동（배분 또는 제거）을 되돌립니다. 되돌리기 1회＝1수.'
+                'rules.undo_body': '↩ 버튼으로 마지막 행동（배분 또는 제거）을 되돌립니다. 되돌리기 1회＝1수.',
+                'home.continue': '▶ 이어하기',
+                'home.new_game': '새 게임',
+                'home.daily': '📅 오늘의 도전'
             },
             es: {
     'meta.title': 'Lucky 3 Solitario',
@@ -5321,7 +5868,10 @@
     'rules.recycle_label': '回收',
     'rules.recycle_body': '牌库空了之后，点 RECYCLE 将弃牌堆重新洗入牌库。每次回收算一步。',
     'rules.undo_label': '撤销',
-    'rules.undo_body': '点击 ↩ 撤销上一步操作（发牌或消除）。每次撤销算一步。'
+    'rules.undo_body': '点击 ↩ 撤销上一步操作（发牌或消除）。每次撤销算一步。',
+    'home.continue': '▶ 继续游戏',
+    'home.new_game': '新游戏',
+    'home.daily': '📅 每日挑战'
             },
             de: {
     'meta.title': 'Lucky 3 Solitaire',
@@ -6565,10 +7115,23 @@
             return 'en';
         }
 
+        // 在 Capacitor native 環境中，WKWebView 無法渲染 emoji → 自動移除
+        const IS_NATIVE = !!window.Capacitor;
+        function stripEmoji(str) {
+            if (!IS_NATIVE) return str;
+            return str
+                .replace(/[\u{1F000}-\u{1FFFF}]/gu, '')   // 主要 emoji 區段
+                .replace(/[\u2600-\u27BF]\uFE0F?/g, '')    // 雜項符號（☀️⚡🎵等）
+                .replace(/[\u{1F1E0}-\u{1F1FF}]/gu, '')    // 旗幟
+                .replace(/\uFE0F/g, '')                     // variation selector
+                .replace(/\s{2,}/g, ' ')
+                .trim();
+        }
         function t(key, params = {}) {
             const lang = I18N_STRINGS[currentLocale] || I18N_STRINGS.en;
             const template = lang[key] || I18N_STRINGS.en[key] || key;
-            return template.replace(/\{(\w+)\}/g, (_, token) => String(params[token] ?? `{${token}}`));
+            const result = template.replace(/\{(\w+)\}/g, (_, token) => String(params[token] ?? `{${token}}`));
+            return stripEmoji(result);
         }
 
         function applyI18nToDom() {
@@ -6640,6 +7203,7 @@
         let tutorial = { active: false, step: 0 };
         let tutorialDeckMode = false;
         let winCardSuit = '';
+        let lastFortuneText = '';
         let gameMode = 'normal';
         let undoUsedThisGame = false;
         let columnsCleared = 0;
@@ -7100,6 +7664,7 @@
         function switchSettingsTab(idx) {
             document.querySelectorAll('.settings-tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
             document.querySelectorAll('.settings-tab-pane').forEach((p, i) => p.classList.toggle('active', i === idx));
+            if (idx === 3) renderCardBackGrid();
         }
 
         function toggleSettings(show) {
@@ -7127,6 +7692,370 @@
                 toggleSettings(false);
             }
         }
+
+        // ── Gallery System ─────────────────────────────────────────────────────
+        const GALLERY_KEY = 'lucky3-gallery-v1';
+        const DAILY_WINS_KEY = 'lucky3-daily-wins-v1';
+
+        const PAINTINGS = [
+            { id:'001', cols:3, rows:4 },
+            { id:'002', cols:4, rows:3 },
+            { id:'003', cols:3, rows:3 }
+        ];
+
+        function loadGalleryData() {
+            try {
+                const raw = localStorage.getItem(GALLERY_KEY);
+                if (!raw) return {};
+                return JSON.parse(raw);
+            } catch (_) { return {}; }
+        }
+
+        function saveGalleryData(data) {
+            try { localStorage.setItem(GALLERY_KEY, JSON.stringify(data)); } catch (_) {}
+        }
+
+        function loadDailyWins() {
+            try {
+                const raw = localStorage.getItem(DAILY_WINS_KEY);
+                if (!raw) return { date: '', count: 0 };
+                return JSON.parse(raw);
+            } catch (_) { return { date: '', count: 0 }; }
+        }
+
+        function recordDailyWin() {
+            const today = toLocalDateKey();
+            const dw = loadDailyWins();
+            if (dw.date !== today) dw.count = 0;
+            dw.date = today;
+            dw.count += 1;
+            try { localStorage.setItem(DAILY_WINS_KEY, JSON.stringify(dw)); } catch (_) {}
+            return dw.count;
+        }
+
+        function dropFragment() {
+            const data = loadGalleryData();
+            // 收集所有尚未收集的碎片
+            const uncollected = [];
+            for (const p of PAINTINGS) {
+                const total = p.cols * p.rows;
+                const collected = new Set(data[p.id]?.collected || []);
+                for (let i = 0; i < total; i++) {
+                    if (!collected.has(i)) uncollected.push({ id: p.id, idx: i, cols: p.cols, rows: p.rows });
+                }
+            }
+            if (!uncollected.length) return null; // 全收集完
+
+            const pick = uncollected[Math.floor(Math.random() * uncollected.length)];
+            if (!data[pick.id]) data[pick.id] = { collected: [] };
+            data[pick.id].collected.push(pick.idx);
+
+            const total = pick.cols * pick.rows;
+            const nowCollected = data[pick.id].collected.length;
+            if (nowCollected >= total && !data[pick.id].completedAt) {
+                data[pick.id].completedAt = Date.now();
+            }
+            saveGalleryData(data);
+            return pick;
+        }
+
+        function showFragmentToast(piece) {
+            const row = Math.floor(piece.idx / piece.cols);
+            const col = piece.idx % piece.cols;
+            const src = `paintings/${piece.id}/pieces/r${row}c${col}.jpg`;
+            const toast = document.createElement('div');
+            toast.className = 'fragment-toast';
+            toast.innerHTML = `
+                <div class="fragment-toast-thumb"><img src="${src}" alt=""></div>
+                <div class="fragment-toast-text">
+                    <strong>${t('gallery.fragment_drop')}</strong>
+                    ${t('gallery.fragment_hint')}
+                </div>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3100);
+        }
+
+        function onWinDropFragment() {
+            const winCount = recordDailyWin();
+            if (winCount < 2) return; // 第一局不掉
+            const piece = dropFragment();
+            if (piece) showFragmentToast(piece);
+        }
+
+        // Gallery UI
+        function openGallery() {
+            const overlay = document.getElementById('gallery-overlay');
+            if (!overlay) return;
+            renderGalleryList();
+            overlay.classList.add('show');
+        }
+
+        function closeGallery() {
+            document.getElementById('gallery-overlay')?.classList.remove('show');
+        }
+
+        function closeGalleryDetail() {
+            document.getElementById('gallery-detail-overlay')?.classList.remove('show');
+        }
+
+        function renderGalleryList() {
+            const list = document.getElementById('gallery-list');
+            if (!list) return;
+            const data = loadGalleryData();
+            list.innerHTML = '';
+
+            const loadMeta = async (id) => {
+                try {
+                    const res = await fetch(`paintings/${id}/meta.json`);
+                    return await res.json();
+                } catch (_) { return null; }
+            };
+
+            (async () => {
+                for (const p of PAINTINGS) {
+                    const meta = await loadMeta(p.id);
+                    if (!meta) continue;
+                    const gd = data[p.id] || { collected: [] };
+                    const collected = gd.collected.length;
+                    const total = meta.totalPieces;
+                    const pct = Math.round(collected / total * 100);
+                    const isComplete = collected >= total;
+                    const locale = currentLocale || 'en';
+                    const title = (locale === 'en' || !meta.title) ? (meta.titleEn || meta.title) : meta.title;
+
+                    const card = document.createElement('div');
+                    card.className = `gallery-card${isComplete ? ' completed' : ''}`;
+                    card.innerHTML = `
+                        <div class="gallery-card-thumb ${meta.orientation}">
+                            <img src="paintings/${p.id}/cover.jpg" alt="${title}">
+                        </div>
+                        <div class="gallery-card-info">
+                            <div class="gallery-card-title">${title}</div>
+                            <div class="gallery-progress-bar">
+                                <div class="gallery-progress-fill" style="width:${pct}%"></div>
+                            </div>
+                            <div class="gallery-progress-text">${collected} / ${total} ${t('gallery.pieces')}</div>
+                        </div>
+                        <div class="gallery-card-lock">${isComplete ? '✦' : '○'}</div>`;
+                    card.addEventListener('click', () => openGalleryDetail(meta, gd));
+                    list.appendChild(card);
+                }
+            })();
+        }
+
+        function openGalleryDetail(meta, galleryData) {
+            const overlay = document.getElementById('gallery-detail-overlay');
+            const titleEl = document.getElementById('gallery-detail-title');
+            const body = document.getElementById('gallery-detail-body');
+            if (!overlay || !body) return;
+
+            const locale = currentLocale || 'en';
+            const title = (locale === 'en' || !meta.title) ? (meta.titleEn || meta.title) : meta.title;
+            if (titleEl) titleEl.textContent = title;
+
+            const collected = new Set(galleryData.collected || []);
+            const total = meta.cols * meta.rows;
+            const isComplete = collected.size >= total;
+
+            body.innerHTML = '';
+
+            if (isComplete) {
+                // 完整畫作 + 畫框
+                body.innerHTML = `
+                    <div class="gallery-full-wrap">
+                        <div class="gallery-frame">
+                            <img src="paintings/${meta.id}/cover.jpg" alt="${title}">
+                        </div>
+                    </div>
+                    <div class="gallery-detail-footer">
+                        <div class="gallery-completed-label">${t('gallery.completed')}</div>
+                    </div>`;
+            } else {
+                // 拼圖格
+                const puzzle = document.createElement('div');
+                puzzle.className = 'gallery-puzzle';
+                // 依版型計算格子尺寸
+                const maxW = Math.min(window.innerWidth * 0.88, 420);
+                const pieceW = Math.floor((maxW - (meta.cols - 1) * 2) / meta.cols);
+                const ratio = meta.rows / meta.cols;
+                const pieceH = Math.floor(pieceW * (meta.orientation === 'portrait' ? 1.5 :
+                                                      meta.orientation === 'landscape' ? 0.67 : 1));
+                puzzle.style.gridTemplateColumns = `repeat(${meta.cols}, ${pieceW}px)`;
+
+                for (let r = 0; r < meta.rows; r++) {
+                    for (let c = 0; c < meta.cols; c++) {
+                        const idx = r * meta.cols + c;
+                        const isUnlocked = collected.has(idx);
+                        const piece = document.createElement('div');
+                        piece.className = `gallery-piece${isUnlocked ? '' : ' locked'}`;
+                        piece.style.width = `${pieceW}px`;
+                        piece.style.height = `${pieceH}px`;
+                        piece.innerHTML = `<img src="paintings/${meta.id}/pieces/r${r}c${c}.jpg" alt="">`;
+                        puzzle.appendChild(piece);
+                    }
+                }
+                const wrap = document.createElement('div');
+                wrap.className = 'gallery-puzzle-wrap';
+                wrap.appendChild(puzzle);
+                body.appendChild(wrap);
+
+                const footer = document.createElement('div');
+                footer.className = 'gallery-detail-footer';
+                footer.innerHTML = `<div class="gallery-progress-text" style="text-align:center">${collected.size} / ${total} ${t('gallery.pieces')}</div>`;
+                body.appendChild(footer);
+            }
+            overlay.classList.add('show');
+        }
+        // ── End Gallery System ─────────────────────────────────────────────────
+
+        // ── Card Back Collection ────────────────────────────────────────────────
+        const CARD_BACK_KEY      = 'lucky3-card-back-v1';
+        const CARD_BACK_UNLOCKED = 'lucky3-card-back-unlocked-v1';
+        const CARD_BACKS = [
+            { id: 'classic',   nameEN: 'Classic Blue', nameZH: '經典藍',
+              condEN: 'Default',               condZH: '預設解鎖',         cond: null },
+            { id: 'nightgold', nameEN: 'Night Gold',   nameZH: '夜金',
+              condEN: 'Premium purchase',      condZH: 'Premium 購買解鎖', cond: 'premium' },
+            { id: 'forest',    nameEN: 'Deep Forest',  nameZH: '深林',
+              condEN: 'Win 10 games',          condZH: '累積勝 10 局',     cond: 'wins10' },
+            { id: 'crimson',   nameEN: 'Crimson',      nameZH: '赤焰',
+              condEN: '7-day win streak',      condZH: '連續 7 天勝利',    cond: 'streak7' },
+            { id: 'void',      nameEN: 'Void',         nameZH: '虛空',
+              condEN: 'Achieve Void Clear',    condZH: '完成 Void Clear',  cond: 'void' },
+            { id: 'lucky',     nameEN: 'Lucky',        nameZH: 'Lucky',
+              condEN: 'Win 50 games',          condZH: '累積勝 50 局',     cond: 'wins50' },
+        ];
+
+        function getUnlockedCardBacks() {
+            try { return JSON.parse(localStorage.getItem(CARD_BACK_UNLOCKED) || '["classic"]'); }
+            catch { return ['classic']; }
+        }
+
+        // Returns true if newly unlocked
+        function unlockCardBack(id) {
+            const list = getUnlockedCardBacks();
+            if (list.includes(id)) return false;
+            list.push(id);
+            localStorage.setItem(CARD_BACK_UNLOCKED, JSON.stringify(list));
+            return true;
+        }
+
+        function checkCardBackUnlocks() {
+            const wins   = achievements.wins || 0;
+            const streak = achievements.currentStreak || 0;
+            const toUnlock = [];
+            if (wins   >= 10 && unlockCardBack('forest'))    toUnlock.push('forest');
+            if (wins   >= 50 && unlockCardBack('lucky'))     toUnlock.push('lucky');
+            if (streak >= 7  && unlockCardBack('crimson'))   toUnlock.push('crimson');
+            if (isPremium()  && unlockCardBack('nightgold')) toUnlock.push('nightgold');
+            for (const id of toUnlock) {
+                const cb   = CARD_BACKS.find(c => c.id === id);
+                const name = currentLocale === 'zh-Hant' ? cb.nameZH : cb.nameEN;
+                showAchievementToast(t('cardback.unlock_toast'), name);
+            }
+        }
+
+        function applyCardBack(id) {
+            const pile = document.getElementById('deck-pile');
+            if (!pile) return;
+            pile.classList.forEach(cls => { if (cls.startsWith('cb-')) pile.classList.remove(cls); });
+            if (id && id !== 'classic') pile.classList.add(`cb-${id}`);
+            localStorage.setItem(CARD_BACK_KEY, id || 'classic');
+        }
+
+        function loadCardBack() {
+            applyCardBack(localStorage.getItem(CARD_BACK_KEY) || 'classic');
+        }
+
+        function selectCardBack(id) {
+            if (!getUnlockedCardBacks().includes(id)) return;
+            applyCardBack(id);
+            renderCardBackGrid();
+        }
+
+        function renderCardBackGrid() {
+            const grid = document.getElementById('cb-grid');
+            if (!grid) return;
+            const unlocked = getUnlockedCardBacks();
+            const current  = localStorage.getItem(CARD_BACK_KEY) || 'classic';
+            const isZH     = currentLocale === 'zh-Hant';
+            const LOCK_SVG = `<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>`;
+            grid.innerHTML = CARD_BACKS.map(cb => {
+                const isUnlocked = unlocked.includes(cb.id);
+                const isSelected = cb.id === current;
+                const name       = isZH ? cb.nameZH : cb.nameEN;
+                const hint       = isZH ? cb.condZH  : cb.condEN;
+                return `<div class="cb-item${isSelected ? ' cb-selected' : ''}${!isUnlocked ? ' cb-locked' : ''}"
+                             onclick="${isUnlocked ? `selectCardBack('${cb.id}')` : ''}">
+                    <div class="cb-preview cb-preview-${cb.id}">
+                        ${!isUnlocked ? `<div class="cb-lock-icon">${LOCK_SVG}</div>` : ''}
+                        ${isSelected  ? '<div class="cb-selected-mark">✓</div>' : ''}
+                    </div>
+                    <div class="cb-name">${name}</div>
+                    ${!isUnlocked ? `<div class="cb-hint">${hint}</div>` : ''}
+                </div>`;
+            }).join('');
+        }
+        // ── End Card Back Collection ────────────────────────────────────────────
+
+        // ── Home Screen ────────────────────────────────────────────────────────
+        function showHomeScreen() {
+            const el = document.getElementById('home-screen');
+            if (!el) return;
+            // 有儲存的進度才顯示「繼續」
+            const continueBtn = document.getElementById('home-btn-continue');
+            if (continueBtn) {
+                const hasSave = !!localStorage.getItem(GAME_STATE_KEY);
+                continueBtn.style.display = hasSave ? 'block' : 'none';
+            }
+            const verEl = document.getElementById('home-ver');
+            if (verEl) verEl.textContent = `v${APP_VERSION}`;
+            el.classList.remove('hiding');
+            el.style.display = 'flex';
+        }
+
+        function hideHomeScreen(cb) {
+            const el = document.getElementById('home-screen');
+            if (!el || el.style.display === 'none') { cb?.(); return; }
+            el.classList.add('hiding');
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.classList.remove('hiding');
+                cb?.();
+            }, 390);
+        }
+
+        function homeNewGame() {
+            hideHomeScreen(() => {
+                if (!isTutorialDismissed()) {
+                    tutorialDeckMode = true;
+                    init(true, { mode: 'normal' });
+                } else {
+                    init(true, { mode: 'normal' });
+                }
+            });
+        }
+
+        function homeContinue() {
+            hideHomeScreen(() => init(false, { mode: 'normal' }));
+        }
+
+        function homeDailyChallenge() {
+            hideHomeScreen(() => init(true, { mode: 'daily' }));
+        }
+
+        function homeOpenSettings() {
+            toggleSettings(true);
+        }
+
+        function homeOpenAchievements() {
+            openAchievements();
+        }
+
+        function homeOpenLeaderboard() {
+            openDailyLeaderboard();
+        }
+        // ── End Home Screen ────────────────────────────────────────────────────
 
         async function setupDailyNotification(enabled) {
             const LN = window.Capacitor?.Plugins?.LocalNotifications;
@@ -7981,7 +8910,7 @@
                 if (!Ctx) return null;
                 audioCtx = new Ctx();
             }
-            for (const ext of ['wav', 'mp3', 'ogg']) {
+            for (const ext of ['mp3', 'ogg', 'wav']) {
                 try {
                     const res = await fetch(_soundBasePath + name + '.' + ext);
                     if (!res.ok) continue;
@@ -9820,6 +10749,148 @@
             return t('win.best.summary', { time: formatTime(result.best.fastestTimeSec || 0), moves: result.best.fewestMoves || 0 });
         }
 
+        // ── Share Image (canvas) ───────────────────────────────────────────────
+        function wrapCanvasText(ctx, text, maxWidth) {
+            const lines = [];
+            let current = '';
+            for (const char of text) {
+                const test = current + char;
+                if (ctx.measureText(test).width > maxWidth && current) {
+                    lines.push(current);
+                    current = char;
+                } else {
+                    current = test;
+                }
+            }
+            if (current) lines.push(current);
+            return lines;
+        }
+
+        async function buildShareImage() {
+            try {
+                const S = 1080;
+                const canvas = document.createElement('canvas');
+                canvas.width = S; canvas.height = S;
+                const ctx = canvas.getContext('2d');
+
+                // Background radial gradient
+                const bg = ctx.createRadialGradient(S/2, S/2, 60, S/2, S/2, S * 0.75);
+                bg.addColorStop(0, '#0f3320');
+                bg.addColorStop(1, '#020c05');
+                ctx.fillStyle = bg;
+                ctx.fillRect(0, 0, S, S);
+
+                // Double gold border
+                ctx.strokeStyle = '#b8860b';
+                ctx.lineWidth = 7;
+                ctx.strokeRect(22, 22, S - 44, S - 44);
+                ctx.strokeStyle = 'rgba(218,165,32,0.45)';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(36, 36, S - 72, S - 72);
+
+                // Corner suit glyphs
+                ctx.font = '54px serif';
+                ctx.fillStyle = 'rgba(218,165,32,0.2)';
+                ctx.textAlign = 'left';  ctx.fillText('♣', 54, 108);
+                ctx.textAlign = 'right'; ctx.fillText('♠', S - 54, 108);
+                ctx.textAlign = 'left';  ctx.fillText('♥', 54, S - 52);
+                ctx.textAlign = 'right'; ctx.fillText('♦', S - 54, S - 52);
+
+                // Divider helper
+                const divider = (y) => {
+                    ctx.strokeStyle = 'rgba(218,165,32,0.28)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(90, y); ctx.lineTo(S - 90, y); ctx.stroke();
+                    ctx.save();
+                    ctx.translate(S/2, y); ctx.rotate(Math.PI / 4);
+                    ctx.fillStyle = 'rgba(218,165,32,0.45)';
+                    ctx.fillRect(-4, -4, 8, 8);
+                    ctx.restore();
+                };
+
+                // Title
+                ctx.textAlign = 'center';
+                ctx.shadowColor = 'rgba(218,165,32,0.45)';
+                ctx.shadowBlur = 20;
+                ctx.fillStyle = '#DAA520';
+                ctx.font = 'bold 80px "Cinzel","Times New Roman",serif';
+                ctx.fillText('LUCKY  3', S/2, 168);
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = 'rgba(218,165,32,0.55)';
+                ctx.font = '26px "Cinzel",serif';
+                ctx.fillText('S O L I T A I R E', S/2, 212);
+
+                divider(238);
+
+                // Date + suit + result type
+                const suitMap = { spade: '♠', heart: '♥', diamond: '♦', club: '♣' };
+                const suitSym = suitMap[winCardSuit] || '✦';
+                const isVoidCard = document.querySelector('#win-overlay .void-win-title');
+                const resultLabel = isVoidCard ? 'VOID CLEAR' : `${suitSym}  Lucky Win`;
+                ctx.fillStyle = 'rgba(218,165,32,0.7)';
+                ctx.font = '26px "Cinzel",serif';
+                ctx.fillText(`${toLocalDateKey()}  ·  ${resultLabel}`, S/2, 278);
+
+                // Fortune poem area
+                let statsY = 820;
+                if (lastFortuneText) {
+                    ctx.fillStyle = 'rgba(218,165,32,0.45)';
+                    ctx.font = '28px serif';
+                    ctx.fillText('✦     ✦     ✦', S/2, 350);
+
+                    const FSIZE = 44;
+                    ctx.font = `${FSIZE}px "PingFang TC","Noto Sans TC","Hiragino Sans GB","Microsoft JhengHei",sans-serif`;
+                    const lines = wrapCanvasText(ctx, lastFortuneText, S - 190);
+                    const lineH = FSIZE + 20;
+                    const blockH = lines.length * lineH;
+                    let ty = 530 - blockH / 2 + FSIZE;
+
+                    ctx.shadowColor = 'rgba(218,165,32,0.15)';
+                    ctx.shadowBlur = 28;
+                    ctx.fillStyle = '#f5e8c8';
+                    for (const line of lines) {
+                        ctx.fillText(line, S/2, ty);
+                        ty += lineH;
+                    }
+                    ctx.shadowBlur = 0;
+
+                    ctx.fillStyle = 'rgba(218,165,32,0.45)';
+                    ctx.font = '28px serif';
+                    ctx.fillText('✦     ✦     ✦', S/2, ty + 16);
+
+                    divider(Math.max(ty + 62, 710));
+                    statsY = Math.max(ty + 120, 780);
+                } else {
+                    // No fortune — faint large suit symbol
+                    ctx.fillStyle = 'rgba(218,165,32,0.07)';
+                    ctx.font = '360px serif';
+                    ctx.fillText(suitSym, S/2, 660);
+                    divider(730);
+                    statsY = 820;
+                }
+
+                // Stats row
+                const timeEl = document.querySelector('#win-overlay [data-format="time"]');
+                const statEls = document.querySelectorAll('#win-overlay .win-stat-row strong');
+                const timeStr = timeEl?.textContent || '';
+                const moves = statEls[1]?.textContent || '';
+                const combo = statEls[2]?.textContent || '';
+                ctx.fillStyle = 'rgba(255,255,255,0.82)';
+                ctx.font = '34px "Cinzel",serif';
+                ctx.fillText(`${timeStr}  ·  ${moves} moves  ·  ×${combo}`, S/2, statsY);
+
+                // Watermark
+                ctx.fillStyle = 'rgba(218,165,32,0.25)';
+                ctx.font = '20px "Cinzel",serif';
+                ctx.fillText('Lucky 3 Solitaire', S/2, S - 50);
+
+                return await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            } catch (_) {
+                return null;
+            }
+        }
+        // ── End Share Image ────────────────────────────────────────────────────
+
         function buildShareText() {
             const suitEmoji = { spade: '♠️', heart: '♥️', diamond: '♦️', club: '♣️' };
             const emoji = suitEmoji[winCardSuit] || '🃏';
@@ -9833,7 +10904,15 @@
             return `Lucky 3 · ${date}\n⏱ ${timeStr} · 🎯 ${moves} moves · 🔥 Combo ×${combo}\n${resultLine}`;
         }
 
-        function shareWinResult(btn, text) {
+        async function shareWinResult(btn, text) {
+            const blob = await buildShareImage();
+            if (blob) {
+                const file = new File([blob], 'lucky3.png', { type: 'image/png' });
+                if (navigator.share && navigator.canShare?.({ files: [file] })) {
+                    try { await navigator.share({ files: [file] }); return; } catch (_) {}
+                }
+            }
+            // Fallback: text share or clipboard
             if (navigator.share) {
                 navigator.share({ text }).catch(() => {});
             } else if (navigator.clipboard) {
@@ -9855,6 +10934,9 @@
             const todayKey = toLocalDateKey();
             const isFirstWinToday = achievements.lastWinDate !== todayKey;
             const fortuneText = isFirstWinToday ? fortuneBySuit(winCardSuit) : '';
+            lastFortuneText = fortuneText;
+            onWinDropFragment(); // 第二局起掉碎片（函式內部自行判斷）
+            checkCardBackUnlocks();
             const bestResult = updateBestStats(current);
             const achievementResult = updateAchievementsOnWin(current, 'lucky3');
             const bestMessage = buildBestMessage(bestResult);
@@ -9922,6 +11004,10 @@
             const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
             const prevStats = lastGameStats ? { ...lastGameStats } : null;
             const current = { elapsedSec, moveCount, maxCombo };
+            lastFortuneText = '';
+            onWinDropFragment(); // 第二局起掉碎片
+            if (unlockCardBack('void')) showAchievementToast(t('cardback.unlock_toast'), currentLocale === 'zh-Hant' ? '虛空' : 'Void');
+            checkCardBackUnlocks();
             const bestResult = updateBestStats(current);
             const achievementResult = updateAchievementsOnWin(current, 'zero-clear');
             const bestMessage = buildBestMessage(bestResult);
@@ -10228,6 +11314,7 @@
         developerMode = loadDeveloperMode();
         settings = loadSettings();
         achievements = loadAchievements();
+        loadCardBack();
         bindSettingsUI();
         setLocale(settings.locale, { persist: false });
         applySettings();
@@ -10265,6 +11352,10 @@
             updateAdVisibility();
             closePremiumModal();
             closeInterstitial();
+            if (unlockCardBack('nightgold')) {
+                const name = currentLocale === 'zh-Hant' ? '夜金' : 'Night Gold';
+                showAchievementToast(t('cardback.unlock_toast'), name);
+            }
             const title = t('premium.thanks_title');
             const body = t('premium.thanks_body');
             if (typeof showAchievementToast === 'function') showAchievementToast(title, body);
@@ -10381,12 +11472,7 @@
         }
         // ===== END PREMIUM & ADS SYSTEM =====
 
-        if (!isTutorialDismissed()) {
-            tutorialDeckMode = true;
-            init(true);
-        } else {
-            init();
-        }
+        showHomeScreen();
         initHintLongPress();
         initAdSystem();
         preloadSounds();
