@@ -7,9 +7,9 @@ test.beforeEach(async ({ page }) => {
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     // Wait for the deck to be rendered (deck-num non-empty).
-    // Tests interact during the ~2s isBusy=false window before the deal animation
-    // locks the board. Avoiding waitForFunction(_gameReady) because WAAPI onfinish
-    // is unreliable in headless Chrome without a real display/vsync.
+    // Tests interact during the ~1700ms isBusy=false window before the omen card
+    // animation locks the board. Avoiding waitForFunction(_gameReady) because
+    // WAAPI onfinish is unreliable in headless Chrome without a real display/vsync.
     await expect(page.locator('#deck-num')).not.toHaveText('', { timeout: 10000 });
 });
 
@@ -39,11 +39,12 @@ test('clicking a card adds selected class', async ({ page }) => {
     const deckBefore = parseInt(await page.locator('#deck-num').textContent() ?? '99');
     await page.locator('#deck-pile').click();
     await expect(page.locator('#deck-num')).not.toHaveText(String(deckBefore), { timeout: 5000 });
-    // Use #board .card to exclude .flying elements (pointer-events:none) that
-    // are created during the deal animation and would block locator.click().
-    await expect(page.locator('#board .card').first()).toBeVisible({ timeout: 5000 });
+    // Wait for the deal animation to fully finish: flying element disappears only
+    // after the card is placed in its slot and isBusy is set back to false.
+    // Without this wait, clicking while isBusy=true causes the game to ignore the click.
+    await expect(page.locator('.flying')).toHaveCount(0, { timeout: 2000 });
 
-    const card = page.locator('#board .card').first();
+    const card = page.locator('.card').first();
     await expect(card).not.toHaveClass(/selected/);
     await card.click();
     await expect(card).toHaveClass(/selected/, { timeout: 3000 });
@@ -55,6 +56,9 @@ test('undo button disabled initially and enabled after DEAL', async ({ page }) =
     const deckBefore = parseInt(await page.locator('#deck-num').textContent() ?? '99');
     await page.locator('#deck-pile').click();
     await expect(page.locator('#deck-num')).not.toHaveText(String(deckBefore), { timeout: 3000 });
+    // Wait for deal animation to finish before attempting undo.
+    // The game's undo() function checks isBusy and returns early if true.
+    await expect(page.locator('.flying')).toHaveCount(0, { timeout: 2000 });
     await expect(page.locator('#btn-undo')).toBeEnabled();
     await page.locator('#btn-undo').click();
     await expect(page.locator('#btn-undo')).toBeDisabled({ timeout: 3000 });
@@ -65,8 +69,9 @@ test('settings panel opens and language switching updates UI', async ({ page }) 
     await page.locator('.header-settings').click();
     await expect(page.locator('.settings-panel')).toBeVisible();
 
-    // Language selector is in Profile tab (tab 1) — click the tab button directly.
-    await page.locator('.settings-tab-btn').nth(1).click();
+    // Language selector is in Profile tab (tab 1). Use JS to switch tabs
+    // to avoid timing issues with animation-blocked element actionability.
+    await page.evaluate(() => switchSettingsTab(1));
     await page.locator('#setting-language').selectOption('en');
     await expect(page.locator('#deck-label')).toHaveText('DECK', { timeout: 3000 });
 

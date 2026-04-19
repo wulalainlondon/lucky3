@@ -6075,7 +6075,10 @@
                         }
                     );
 
-                    motion.onfinish = () => {
+                    let _stepDone = false;
+                    const _stepComplete = () => {
+                        if (_stepDone) return;
+                        _stepDone = true;
                         slot.cards.push(card);
                         fly.remove();
                         render();
@@ -6091,6 +6094,10 @@
                         }
                         setTimeout(() => step(index + 1), getDelay(85));
                     };
+                    motion.onfinish = _stepComplete;
+                    // Fallback: ensure step advances even if WAAPI onfinish never fires
+                    // (headless Chrome without vsync may skip onfinish callbacks)
+                    setTimeout(_stepComplete, flyDuration + getDelay(100));
                 };
 
                 step(0);
