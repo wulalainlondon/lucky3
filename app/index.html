@@ -7217,6 +7217,7 @@
         let undoUsedThisGame = false;
         let columnsCleared = 0;
         let comboEventsThisGame = 0;
+        let _compressedDealSlotId = -1; // 2-phase compress: show new card visible before badge update
         let lastGameStats = null; // { timeStr, moves, combo }
         let dailyUndoCount = 0;
         let currentSeed = null;
@@ -9831,6 +9832,8 @@
                 const total = slot.cards.length;
                 // Suppress compression when 3 cards are selected (player needs to see all)
                 const doCompress = total > COMPRESS_THRESH && !threeReady;
+                // 2-phase deal: newly dealt card stays visible at bottom; badge unchanged
+                const COMPRESS_BOT = (doCompress && slot.id === _compressedDealSlotId) ? 4 : 3;
                 const midStart = COMPRESS_TOP;
                 const midEnd = total - COMPRESS_BOT; // exclusive
                 slot.cards.forEach((card, idx) => {
@@ -10261,14 +10264,30 @@
                     saveGameState();
                 }, getDelay(1720));
             } else {
+                const wasCompressed = Array.from(colEl.children).some(c => c.classList.contains('stack-middle'));
                 setTimeout(() => {
                     target.cards.push(card);
                     fly.remove();
-                    render();
-                    ParticleSystem.emit('dust', rect.left + rect.width / 2, targetTop + 10);
-                    isBusy = false;
-                    checkDeadlock();
-                    saveGameState();
+                    if (wasCompressed) {
+                        // Phase 1：新牌顯示在底部，badge 不變
+                        _compressedDealSlotId = target.id;
+                        render();
+                        ParticleSystem.emit('dust', rect.left + rect.width / 2, targetTop + 10);
+                        // Phase 2：350ms 後正式壓縮，badge 更新
+                        setTimeout(() => {
+                            _compressedDealSlotId = -1;
+                            render();
+                            isBusy = false;
+                            checkDeadlock();
+                            saveGameState();
+                        }, getDelay(350));
+                    } else {
+                        render();
+                        ParticleSystem.emit('dust', rect.left + rect.width / 2, targetTop + 10);
+                        isBusy = false;
+                        checkDeadlock();
+                        saveGameState();
+                    }
                 }, getDelay(400));
             }
         }
