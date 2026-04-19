@@ -6,11 +6,14 @@ test.beforeEach(async ({ page }) => {
         localStorage.setItem('lucky3-tutorial-state-v1', 'completed');
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    // Wait for the deck to be rendered (deck-num non-empty).
-    // Tests interact during the ~1700ms isBusy=false window before the omen card
-    // animation locks the board. Avoiding waitForFunction(_gameReady) because
-    // WAAPI onfinish is unreliable in headless Chrome without a real display/vsync.
-    await expect(page.locator('#deck-num')).not.toHaveText('', { timeout: 10000 });
+    // Wait for the game to be fully initialised: omen card shown+dismissed
+    // (~2150ms) and opening deal animation complete (~6455ms more). With the
+    // WAAPI fallback added to runOpeningDealAnimation, window._gameReady is
+    // reliably set in headless CI even without vsync.
+    // This also ensures the omen card is gone before tests interact with the
+    // UI — the omen card (position:fixed; inset:0) can block Playwright's
+    // hit-target check even though it has pointer-events:none.
+    await page.waitForFunction(() => window._gameReady === true, { timeout: 15000 });
 });
 
 // ── Test 1: Page loads correctly ───────────────────────────────────────────
@@ -72,6 +75,8 @@ test('settings panel opens and language switching updates UI', async ({ page }) 
     // Language selector is in Profile tab (tab 1). Use JS to switch tabs
     // to avoid timing issues with animation-blocked element actionability.
     await page.evaluate(() => switchSettingsTab(1));
+    // Ensure the newly active tab pane is rendered before interacting.
+    await expect(page.locator('#setting-language')).toBeVisible({ timeout: 3000 });
     await page.locator('#setting-language').selectOption('en');
     await expect(page.locator('#deck-label')).toHaveText('DECK', { timeout: 3000 });
 
