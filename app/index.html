@@ -3160,6 +3160,11 @@
                         <input id="setting-bgm" class="setting-check" type="checkbox">
                         <span class="settings-audio-label" data-i18n="settings.bgm">BGM</span>
                     </div>
+                    <div class="settings-audio-item">
+                        <span class="settings-audio-icon">🔔</span>
+                        <input id="setting-daily-notif" class="setting-check" type="checkbox">
+                        <span class="settings-audio-label" data-i18n="settings.daily_notif">Daily Reminder</span>
+                    </div>
                 </div>
                 <div class="setting-row">
                     <div class="setting-label" data-i18n="settings.animation_speed">Animation Speed</div>
@@ -6607,7 +6612,7 @@
 
         const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const SUPPORTS_VIBRATE = !IS_IOS && typeof navigator.vibrate === 'function';
-        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true, bgm: false, sumHelper: false };
+        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true, bgm: false, sumHelper: false, dailyNotif: false };
         const DEFAULT_ACHIEVEMENTS = {
             wins: 0,
             zeroClearWins: 0,
@@ -7026,7 +7031,8 @@
                     miiPeek: parsed.miiPeek !== false,
                     recycleAnim: parsed.recycleAnim !== false,
                     bgm: Boolean(parsed.bgm),
-                    sumHelper: Boolean(parsed.sumHelper)
+                    sumHelper: Boolean(parsed.sumHelper),
+                    dailyNotif: Boolean(parsed.dailyNotif)
                 };
             } catch (_) {
                 return { ...DEFAULT_SETTINGS };
@@ -7077,6 +7083,8 @@
             if (recycleAnimEl) recycleAnimEl.checked = settings.recycleAnim;
             const sumHelperEl = document.getElementById('setting-sum-helper');
             if (sumHelperEl) sumHelperEl.checked = !!settings.sumHelper;
+            const dailyNotifEl = document.getElementById('setting-daily-notif');
+            if (dailyNotifEl) dailyNotifEl.checked = !!settings.dailyNotif;
             if (versionEl) versionEl.innerText = `v${APP_VERSION}`;
             const savedName = localStorage.getItem('lucky3-player-name') || '';
             const nameInput = document.getElementById('setting-player-name');
@@ -7120,6 +7128,64 @@
             }
         }
 
+        async function setupDailyNotification(enabled) {
+            const LN = window.Capacitor?.Plugins?.LocalNotifications;
+            if (!LN) return;
+            const NOTIF_ID = 1001;
+
+            // 先取消已排程的通知
+            try { await LN.cancel({ notifications: [{ id: NOTIF_ID }] }); } catch (_) {}
+            if (!enabled) return;
+
+            // 請求權限
+            let perm;
+            try { perm = await LN.requestPermissions(); } catch (_) { return; }
+            if (perm.display !== 'granted') {
+                settings.dailyNotif = false;
+                saveSettings();
+                const el = document.getElementById('setting-daily-notif');
+                if (el) el.checked = false;
+                return;
+            }
+
+            // 下一個 09:00 開始，每天重複
+            const next = new Date();
+            next.setHours(9, 0, 0, 0);
+            if (next <= new Date()) next.setDate(next.getDate() + 1);
+
+            const TITLES = {
+                'zh-Hant': '🃏 Lucky 3 每日挑戰',
+                'zh-Hans': '🃏 Lucky 3 每日挑战',
+                'ja':      '🃏 Lucky 3 デイリーチャレンジ',
+                'ko':      '🃏 Lucky 3 오늘의 도전',
+                'en':      '🃏 Lucky 3 Daily Challenge',
+            };
+            const BODIES = {
+                'zh-Hant': '今天的挑戰已出爐，快來挑戰！',
+                'zh-Hans': '今天的挑战来了，快来试试！',
+                'ja':      '本日のパズルが公開されました。挑戦しましょう！',
+                'ko':      '오늘의 퍼즐이 공개되었습니다. 도전해보세요!',
+                'en':      "Today's puzzle is ready. Can you beat it?",
+            };
+            const loc = currentLocale || 'en';
+            const title = TITLES[loc] || TITLES['en'];
+            const body  = BODIES[loc]  || BODIES['en'];
+
+            try {
+                await LN.schedule({
+                    notifications: [{
+                        id: NOTIF_ID,
+                        title,
+                        body,
+                        schedule: { at: next, repeats: true, every: 'day' },
+                        sound: null,
+                        actionTypeId: '',
+                        extra: {}
+                    }]
+                });
+            } catch (_) {}
+        }
+
         function bindSettingsUI() {
             const soundEl = document.getElementById('setting-sound');
             const vibrationEl = document.getElementById('setting-vibration');
@@ -7150,6 +7216,11 @@
             miiPeekEl.addEventListener('change', (e) => updateSetting('miiPeek', e.target.checked));
             recycleAnimEl.addEventListener('change', (e) => updateSetting('recycleAnim', e.target.checked));
             document.getElementById('setting-sum-helper')?.addEventListener('change', (e) => updateSetting('sumHelper', e.target.checked));
+            document.getElementById('setting-daily-notif')?.addEventListener('change', async (e) => {
+                settings.dailyNotif = e.target.checked;
+                saveSettings();
+                await setupDailyNotification(settings.dailyNotif);
+            });
             document.getElementById('setting-bgm')?.addEventListener('change', e => {
                 settings.bgm = e.target.checked;
                 saveSettings();
@@ -10160,6 +10231,7 @@
         bindSettingsUI();
         setLocale(settings.locale, { persist: false });
         applySettings();
+        if (settings.dailyNotif) setupDailyNotification(true);
         // iOS Audio unlock — must be triggered on first user gesture
         (function setupAudioUnlock() {
             const unlock = () => {
