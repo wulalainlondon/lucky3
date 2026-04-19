@@ -6,14 +6,9 @@ test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
         localStorage.setItem('lucky3-tutorial-state-v1', 'completed');
         localStorage.removeItem('lucky3-current-game');
-        // Mock Web Animations API — headless 不觸發 onfinish，改為 1ms 立刻完成
-        const origAnimate = Element.prototype.animate;
-        Element.prototype.animate = function(keyframes, options) {
-            return origAnimate.call(this, keyframes, { ...options, duration: 1 });
-        };
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => window._gameReady === true, { timeout: 30000 });
+    await page.waitForFunction(() => window._gameReady === true, { timeout: 45000 });
 });
 
 test('second win shows win panel and has no JS errors', async ({ page }) => {

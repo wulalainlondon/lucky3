@@ -4,7 +4,7 @@ const path = require('path');
 
 module.exports = defineConfig({
     testDir: './tests',
-    timeout: 20000,
+    timeout: 60000,
     retries: 1,
     reporter: 'list',
     use: {
@@ -12,6 +12,13 @@ module.exports = defineConfig({
         headless: true,
         viewport: { width: 390, height: 844 }, // iPhone 14 Pro
         locale: 'zh-TW',
+        launchOptions: {
+            args: [
+                '--disable-background-timer-throttling',
+                '--disable-backgrounding-occluded-windows',
+                '--disable-renderer-backgrounding',
+            ],
+        },
     },
     projects: [
         { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
