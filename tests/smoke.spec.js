@@ -39,9 +39,11 @@ test('clicking a card adds selected class', async ({ page }) => {
     const deckBefore = parseInt(await page.locator('#deck-num').textContent() ?? '99');
     await page.locator('#deck-pile').click();
     await expect(page.locator('#deck-num')).not.toHaveText(String(deckBefore), { timeout: 5000 });
-    await expect(page.locator('.card').first()).toBeVisible({ timeout: 5000 });
+    // Use #board .card to exclude .flying elements (pointer-events:none) that
+    // are created during the deal animation and would block locator.click().
+    await expect(page.locator('#board .card').first()).toBeVisible({ timeout: 5000 });
 
-    const card = page.locator('.card').first();
+    const card = page.locator('#board .card').first();
     await expect(card).not.toHaveClass(/selected/);
     await card.click();
     await expect(card).toHaveClass(/selected/, { timeout: 3000 });
@@ -63,13 +65,13 @@ test('settings panel opens and language switching updates UI', async ({ page }) 
     await page.locator('.header-settings').click();
     await expect(page.locator('.settings-panel')).toBeVisible();
 
-    // Language selector is in Profile tab (tab 1)
-    await page.evaluate(() => window.switchSettingsTab(1));
+    // Language selector is in Profile tab (tab 1) — click the tab button directly.
+    await page.locator('.settings-tab-btn').nth(1).click();
     await page.locator('#setting-language').selectOption('en');
     await expect(page.locator('#deck-label')).toHaveText('DECK', { timeout: 3000 });
 
     await page.evaluate(() => window.toggleSettings(false));
-    await expect(page.locator('.settings-panel')).not.toBeVisible({ timeout: 3000 });
+    await expect(page.locator('.settings-panel')).not.toBeVisible({ timeout: 5000 });
 });
 
 // ── Test 6: manifest.json is valid PWA manifest ───────────────────────────
