@@ -1610,9 +1610,10 @@
             background: rgba(0, 0, 0, 0.72);
             z-index: 10005;
             display: none;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             padding: 18px;
+            overflow-y: auto;
         }
 
         .settings-overlay.show {
@@ -1621,11 +1622,14 @@
 
         .settings-panel {
             width: min(430px, 92vw);
+            max-height: calc(100dvh - 36px);
+            overflow-y: auto;
             background: linear-gradient(180deg, #143021, #0d2217);
             border: 2px solid var(--gold);
             border-radius: 14px;
             padding: 16px;
             box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+            flex-shrink: 0;
         }
 
         .settings-title {
