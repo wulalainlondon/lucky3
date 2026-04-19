@@ -7217,7 +7217,7 @@
         let undoUsedThisGame = false;
         let columnsCleared = 0;
         let comboEventsThisGame = 0;
-        let _compressedDealSlotId = -1; // 2-phase compress: show new card visible before badge update
+        let _slotCompressHidden = {}; // slotId → fixed hidden count for wave-compression
         let lastGameStats = null; // { timeStr, moves, combo }
         let dailyUndoCount = 0;
         let currentSeed = null;
@@ -9628,6 +9628,7 @@
 
             // 清除 render cache，確保新遊戲完整重建
             Object.keys(_slotRenderCache).forEach(k => delete _slotRenderCache[k]);
+            _slotCompressHidden = {};
             // 清除 board DOM（新遊戲需要完整重建）
             const boardEl = document.getElementById('board');
             if (boardEl) boardEl.innerHTML = '';
@@ -9832,8 +9833,27 @@
                 const total = slot.cards.length;
                 // Suppress compression when 3 cards are selected (player needs to see all)
                 const doCompress = total > COMPRESS_THRESH && !threeReady;
-                // 2-phase deal: newly dealt card stays visible at bottom; badge unchanged
-                const COMPRESS_BOT = (doCompress && slot.id === _compressedDealSlotId) ? 4 : 3;
+
+                // Wave-compression: badge fixed at first-compression value;
+                // new cards accumulate visibly at bottom until screen fills again.
+                let COMPRESS_BOT = 3;
+                if (doCompress) {
+                    const maxBot = Math.max(3, COMPRESS_THRESH - COMPRESS_TOP);
+                    if (_slotCompressHidden[slot.id] === undefined) {
+                        // First wave: fix hidden count now
+                        _slotCompressHidden[slot.id] = total - COMPRESS_TOP - 3;
+                    }
+                    COMPRESS_BOT = total - COMPRESS_TOP - _slotCompressHidden[slot.id];
+                    if (COMPRESS_BOT > maxBot || COMPRESS_BOT < 3) {
+                        // Screen full again → start next wave
+                        _slotCompressHidden[slot.id] = total - COMPRESS_TOP - 3;
+                        COMPRESS_BOT = 3;
+                    }
+                } else {
+                    // Column no longer compressed → clear wave state
+                    delete _slotCompressHidden[slot.id];
+                }
+
                 const midStart = COMPRESS_TOP;
                 const midEnd = total - COMPRESS_BOT; // exclusive
                 slot.cards.forEach((card, idx) => {
@@ -10264,30 +10284,14 @@
                     saveGameState();
                 }, getDelay(1720));
             } else {
-                const wasCompressed = Array.from(colEl.children).some(c => c.classList.contains('stack-middle'));
                 setTimeout(() => {
                     target.cards.push(card);
                     fly.remove();
-                    if (wasCompressed) {
-                        // Phase 1：新牌顯示在底部，badge 不變
-                        _compressedDealSlotId = target.id;
-                        render();
-                        ParticleSystem.emit('dust', rect.left + rect.width / 2, targetTop + 10);
-                        // Phase 2：350ms 後正式壓縮，badge 更新
-                        setTimeout(() => {
-                            _compressedDealSlotId = -1;
-                            render();
-                            isBusy = false;
-                            checkDeadlock();
-                            saveGameState();
-                        }, getDelay(350));
-                    } else {
-                        render();
-                        ParticleSystem.emit('dust', rect.left + rect.width / 2, targetTop + 10);
-                        isBusy = false;
-                        checkDeadlock();
-                        saveGameState();
-                    }
+                    render();
+                    ParticleSystem.emit('dust', rect.left + rect.width / 2, targetTop + 10);
+                    isBusy = false;
+                    checkDeadlock();
+                    saveGameState();
                 }, getDelay(400));
             }
         }
