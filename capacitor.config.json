@@ -1,7 +1,7 @@
 {
   "appId": "com.lucky3.solitaire",
   "appName": "Lucky 3 Solitaire",
-  "webDir": "www",
+  "webDir": "app",
   "bundledWebRuntime": false,
   "server": {
     "allowNavigation": [
