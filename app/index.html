@@ -3159,15 +3159,11 @@
             text-transform: uppercase;
             margin: 2px 0 0;
         }
-        .home-badge {
-            font-family: 'Cinzel Decorative', Georgia, serif;
-            font-size: 5.5rem;
-            font-weight: 900;
-            color: #ffd700;
-            line-height: 1;
-            text-shadow: 0 0 48px rgba(255, 215, 0, 0.75), 0 8px 28px rgba(0, 0, 0, 0.9);
+        .home-divider {
+            width: 48px;
+            height: 1px;
+            background: rgba(255, 215, 0, 0.35);
             margin: 4px 0 8px;
-            user-select: none;
         }
         .home-actions {
             width: 100%;
@@ -3203,26 +3199,29 @@
             border: 1px solid rgba(255, 255, 255, 0.14);
             color: rgba(255, 255, 255, 0.82);
         }
-        .home-icon-row {
-            display: flex;
-            gap: 20px;
-            margin-top: 6px;
-        }
-        .home-icon-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 215, 0, 0.22);
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.65);
-            font-size: 1.35rem;
-            cursor: pointer;
+        .home-text-links {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: background 0.15s, border-color 0.15s;
+            gap: 10px;
+            margin-top: 6px;
         }
-        .home-icon-btn:active { background: rgba(255, 215, 0, 0.15); }
+        .home-text-link {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.45);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            padding: 6px 2px;
+        }
+        .home-text-link:active { color: rgba(255, 215, 0, 0.85); }
+        .home-text-sep {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.8rem;
+            user-select: none;
+        }
         .home-ver {
             font-size: 0.62rem;
             color: rgba(255, 255, 255, 0.18);
@@ -3232,7 +3231,6 @@
         /* landscape 縮排 */
         @media (orientation: landscape) and (max-height: 499px) {
             .home-content { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px 24px; max-width: 560px; }
-            .home-badge { font-size: 3.2rem; margin: 0; }
             .home-title { font-size: 2rem; }
             .home-actions { max-width: 220px; gap: 8px; }
             .home-btn { min-height: 42px; font-size: 0.9rem; }
@@ -3249,16 +3247,18 @@
             <div class="home-suits">♣ ♥ ♦ ♠</div>
             <h1 class="home-title">Lucky 3</h1>
             <p class="home-subtitle">Solitaire</p>
-            <div class="home-badge">3</div>
+            <div class="home-divider"></div>
             <div class="home-actions">
                 <button id="home-btn-continue" class="home-btn home-btn-continue" onclick="homeContinue()" style="display:none" data-i18n="home.continue">▶ Continue</button>
                 <button class="home-btn home-btn-primary" onclick="homeNewGame()" data-i18n="home.new_game">New Game</button>
-                <button class="home-btn home-btn-daily" onclick="homeDailyChallenge()" data-i18n="home.daily">📅 Daily Challenge</button>
+                <button class="home-btn home-btn-daily" onclick="homeDailyChallenge()" data-i18n="home.daily">Daily Challenge</button>
             </div>
-            <div class="home-icon-row">
-                <button class="home-icon-btn" onclick="homeOpenSettings()" aria-label="Settings">⚙</button>
-                <button class="home-icon-btn" onclick="homeOpenAchievements()" aria-label="Achievements">🎖</button>
-                <button class="home-icon-btn" onclick="homeOpenLeaderboard()" aria-label="Leaderboard">🏆</button>
+            <div class="home-text-links">
+                <button class="home-text-link" onclick="homeOpenSettings()" data-i18n="home.link_settings">Settings</button>
+                <span class="home-text-sep">·</span>
+                <button class="home-text-link" onclick="homeOpenAchievements()" data-i18n="home.link_achievements">Achievements</button>
+                <span class="home-text-sep">·</span>
+                <button class="home-text-link" onclick="homeOpenLeaderboard()" data-i18n="home.link_leaderboard">Leaderboard</button>
             </div>
             <div class="home-ver" id="home-ver"></div>
         </div>
@@ -3956,7 +3956,10 @@
             'rules.undo_body': 'Tap the ↩ button to reverse your last action (deal or clear). Use it wisely — each undo counts as a move.',
             'home.continue': '▶ Continue',
             'home.new_game': 'New Game',
-            'home.daily': '📅 Daily Challenge'
+            'home.daily': 'Daily Challenge',
+            'home.link_settings': 'Settings',
+            'home.link_achievements': 'Achievements',
+            'home.link_leaderboard': 'Leaderboard'
         };
         const I18N_STRINGS = {
             'zh-Hant': {
@@ -4150,7 +4153,10 @@
                 'rules.undo_body': '點 ↩ 按鈕可倒退一個動作（發牌或消除）。每次倒轉算一步。',
                 'home.continue': '▶ 繼續遊戲',
                 'home.new_game': '新遊戲',
-                'home.daily': '📅 每日挑戰'
+                'home.daily': '每日挑戰',
+                'home.link_settings': '設定',
+                'home.link_achievements': '成就',
+                'home.link_leaderboard': '排行榜'
             },
             en: I18N_BASE_EN,
             ja: {
