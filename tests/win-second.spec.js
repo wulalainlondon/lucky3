@@ -6,9 +6,17 @@ test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
         localStorage.setItem('lucky3-tutorial-state-v1', 'completed');
         localStorage.removeItem('lucky3-current-game');
+        localStorage.setItem('lucky3-premium', 'true');
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => window._gameReady === true, { timeout: 45000 });
+    const homeVisible = await page.locator('#home-screen').isVisible().catch(() => false);
+    if (homeVisible) {
+        await page.evaluate(() => {
+            if (typeof window.homeNewGame === 'function') window.homeNewGame();
+        });
+        await expect(page.locator('#home-screen')).not.toBeVisible({ timeout: 10000 });
+    }
+    await expect(page.locator('#deck-pile')).toBeVisible({ timeout: 30000 });
 });
 
 test('second win shows win panel and has no JS errors', async ({ page }) => {
@@ -30,7 +38,8 @@ test('second win shows win panel and has no JS errors', async ({ page }) => {
 
     // 點 Play Again → 第二局
     await page.locator('.win-play-again').click();
-    await page.waitForFunction(() => window._gameReady === true, { timeout: 30000 });
+    await expect(page.locator('#win-overlay')).not.toBeVisible({ timeout: 15000 });
+    await expect(page.locator('#deck-pile')).toBeVisible({ timeout: 30000 });
 
     // 第二局勝利
     await page.evaluate(() => {

@@ -57,6 +57,27 @@ Original prompt: 行動裝置操作區放大：RESTART、timer、上方文字偏
 - Large-screen scaling pass: added tablet/large-device breakpoints (`min-width: 900px` and `min-width: 1200px`) to enlarge card size, header typography, timer, settings button, footer controls, and board spacing so gameplay no longer appears too small on devices like S11 Ultra.
 - Implemented container-driven scaling (phase 1+2): `#board` now uses capped layout width, and runtime `syncBoardScale()` computes card width/height/stack overlap from board container width instead of raw viewport, with resize/orientation listeners to keep proportions stable on large devices.
 
+## 2026-04-20
+- Completed app structure split from monolithic HTML into external modules:
+  - `app/styles/base.css`
+  - `app/src/i18n.js`
+  - `app/src/main.js`
+  - `app/src/services/firebase.js`
+- Updated `app/index.html` to load modular assets and removed inline mega-blocks.
+- Added path-compat symlinks (`www -> app`, `styles -> app/styles`, `src -> app/src`) so `/www/index.html` test/runtime path resolves assets correctly.
+- Fixed landscape deep-stack overflow risk by tuning stack sizing assumption in `syncBoardScale()` (supports 30-deal distribution with 11-card worst-case stack).
+- Hardened E2E stability:
+  - `tests/layout-s-ultra.spec.js`: readiness guards, column box stabilization, deal fallback path, timeout tuning, and robust deck decrement assertion.
+  - `tests/win-second.spec.js`: reduced flakiness by switching from `_gameReady` dependency to UI-observable readiness checkpoints.
+- Refreshed visual baselines for updated sidebar/layout snapshots:
+  - `sidebar-0-cards-chromium-darwin.png`
+  - `landscape-8-cards-chromium-darwin.png`
+  - `landscape-20-cards-chromium-darwin.png`
+- QA pass results:
+  - `npx playwright test tests/layout-s-ultra.spec.js --reporter=line` → 12 passed.
+  - `npm test -- --reporter=line` → 20 passed.
+- Detailed PM/architecture report: `docs/p0-p6-refactor-qa-2026-04-20.md`.
+
 ## Notes
 - `moveCount` increments on successful deal and successful clear; decrements on undo.
 - `maxCombo` tracks peak combo reached during run.
