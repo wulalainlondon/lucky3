@@ -8358,6 +8358,13 @@
             return legal;
         }
 
+        function isSelectableCardIndex(cardsLen, idx) {
+            if (idx < 0 || idx >= cardsLen) return false;
+            const bottomMax = Math.min(cardsLen - 1, 2); // bottom 3
+            const topMin = Math.max(0, cardsLen - 2);    // top 2
+            return idx <= bottomMax || idx >= topMin;
+        }
+
         function showTutorialRuleHint() {
             const old = document.getElementById('need-three-tip');
             if (old) old.remove();
@@ -9884,6 +9891,12 @@
                             selected.splice(sIdx, 1);
                             playSound('cardDeselect');
                         } else {
+                            if (!isSelectableCardIndex(slot.cards.length, idx)) {
+                                triggerHaptic(30);
+                                div.classList.add('invalid-flash');
+                                setTimeout(() => div.classList.remove('invalid-flash'), getDelay(320));
+                                return;
+                            }
                             if (selected.length > 0 && selected[0].slotId !== slot.id) selected = [];
                             if (selected.length < 3) {
                                 selected.push({ slotId: slot.id, idx });
