@@ -1073,28 +1073,6 @@
             animation: settings-slide-out calc(0.18s * var(--anim-scale)) ease-in forwards;
         }
 
-        /* Item 1: Combo 斷裂提示 */
-        @keyframes combo-break-anim {
-            0%   { opacity: 0;   transform: translateX(-50%) scale(0.7); }
-            30%  { opacity: 1;   transform: translateX(-50%) scale(1.05); }
-            100% { opacity: 0;   transform: translateX(-50%) translateY(-22px) scale(0.85); }
-        }
-        .combo-break-text {
-            position: fixed;
-            top: 44%;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #ff5555;
-            font-size: 0.82rem;
-            font-weight: 900;
-            pointer-events: none;
-            z-index: 5001;
-            animation: combo-break-anim calc(0.55s * var(--anim-scale)) ease-out forwards;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
-            letter-spacing: 2px;
-            white-space: nowrap;
-        }
-
         /* Item 6: 棄牌堆落入動畫 */
         @keyframes discard-drop-in {
             0%   { transform: translateY(-10px) rotate(-6deg) scale(0.93); opacity: 0.6; }
@@ -7486,9 +7464,9 @@
 
         // --- 3. 連擊靈獸浮現 ---
         const SPIRIT_BEASTS = {
-            3: '🐉',  // tier-3: dragon (combo 5-6)
-            4: '🦅',  // tier-4: phoenix (combo 7-9)
-            5: '🦄',  // tier-5: qilin (combo 10+)
+            3: '🐉',  // tier-3: dragon (combo 2)
+            4: '🦅',  // tier-4: phoenix (combo 3)
+            5: '🦄',  // tier-5: qilin (combo 4+)
         };
 
         function showSpiritBeast(tier) {
@@ -10576,18 +10554,16 @@
             const capturedCombo = combo;
             comboEventsThisGame++;
             let tier;
-            if (capturedCombo >= 10) tier = 5;
-            else if (capturedCombo >= 7) tier = 4;
-            else if (capturedCombo >= 5) tier = 3;
-            else if (capturedCombo >= 3) tier = 2;
-            else tier = 1;
+            if (capturedCombo >= 4) tier = 5;
+            else if (capturedCombo >= 3) tier = 4;
+            else tier = 3;
 
             // ── 200ms 空拍：讓上一個消除特效沉澱，再砸進來 ──
             setTimeout(() => {
                 const layer = document.getElementById('fx-layer');
                 const comboDiv = document.createElement('div');
                 comboDiv.className = `combo-text tier-${tier}`;
-                comboDiv.innerHTML = `${capturedCombo} COMBO!<br><span style="font-family:'Cinzel',Georgia,serif;font-size:1.1rem;font-weight:700;letter-spacing:0.16em;color:var(--gold)">+${s} PTS</span>`;
+                comboDiv.textContent = `${capturedCombo} COMBO!`;
                 layer.appendChild(comboDiv);
                 setTimeout(() => comboDiv.remove(), getDelay(1600));
 
@@ -10635,7 +10611,7 @@
                 } else if (tier >= 2) {
                     ParticleSystem.emit('fountain', cx, cy, { count: 10 });
                 }
-                // tier 1 (combo=2): sting + slam text only — understated
+                // combo=2: starts at tier-3 by design
             }, getDelay(200));
         }
 
