@@ -8004,13 +8004,26 @@
         function getDealTargetTop(colEl, existingCount) {
             if (!colEl || existingCount <= 0) return colEl?.getBoundingClientRect().top ?? 0;
 
-            const lastCardEl = colEl.children[existingCount - 1];
+            const cardEls = Array.from(colEl.querySelectorAll('.card'));
+            const safeCount = Math.min(existingCount, cardEls.length);
+            if (safeCount <= 0) return colEl.getBoundingClientRect().top;
+
+            const lastCardEl = cardEls[safeCount - 1];
             if (!lastCardEl) return colEl.getBoundingClientRect().top;
 
             const lastRect = lastCardEl.getBoundingClientRect();
             let step = 0;
 
             const getConfiguredGapPx = () => {
+                const colGapRaw = getComputedStyle(colEl).getPropertyValue('--col-gap').trim();
+                if (colGapRaw.endsWith('px')) {
+                    const val = parseFloat(colGapRaw);
+                    if (Number.isFinite(val)) return val;
+                }
+                if (colGapRaw.endsWith('vw')) {
+                    const val = parseFloat(colGapRaw);
+                    if (Number.isFinite(val)) return (window.innerWidth * val) / 100;
+                }
                 if (window.innerWidth >= 450) return -85;
                 const raw = getComputedStyle(document.documentElement).getPropertyValue('--fixed-gap').trim();
                 if (raw.endsWith('vw')) {
@@ -8024,8 +8037,8 @@
                 return 0;
             };
 
-            if (existingCount >= 2) {
-                const prevCardEl = colEl.children[existingCount - 2];
+            if (safeCount >= 2) {
+                const prevCardEl = cardEls[safeCount - 2];
                 if (prevCardEl) {
                     const prevRect = prevCardEl.getBoundingClientRect();
                     step = lastRect.top - prevRect.top;
@@ -8034,7 +8047,7 @@
 
             // existingCount===1 時，唯一那張仍是 :last-child，margin-bottom 會是 0，
             // 會導致第二張落點算太低；改用配置間距計算，避免第二張卡頓。
-            if (!Number.isFinite(step) || step === 0 || existingCount === 1) {
+            if (!Number.isFinite(step) || step === 0 || safeCount === 1) {
                 step = lastRect.height + getConfiguredGapPx();
             }
 
