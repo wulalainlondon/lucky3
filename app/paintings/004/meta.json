@@ -1,0 +1,12 @@
+{
+  "id": "004",
+  "title": "畫作 004",
+  "titleEn": "Painting 004",
+  "orientation": "landscape",
+  "cols": 4,
+  "rows": 3,
+  "totalPieces": 12,
+  "frameStyle": "gold",
+  "pieceW": 225,
+  "pieceH": 200
+}

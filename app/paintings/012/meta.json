@@ -1,0 +1,12 @@
+{
+  "id": "012",
+  "title": "畫作 012",
+  "titleEn": "Painting 012",
+  "orientation": "portrait",
+  "cols": 3,
+  "rows": 4,
+  "totalPieces": 12,
+  "frameStyle": "gold",
+  "pieceW": 200,
+  "pieceH": 225
+}

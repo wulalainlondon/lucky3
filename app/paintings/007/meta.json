@@ -1,0 +1,12 @@
+{
+  "id": "007",
+  "title": "畫作 007",
+  "titleEn": "Painting 007",
+  "orientation": "portrait",
+  "cols": 3,
+  "rows": 4,
+  "totalPieces": 12,
+  "frameStyle": "gold",
+  "pieceW": 200,
+  "pieceH": 225
+}
