@@ -3621,6 +3621,10 @@
             }
 
             if (deck.length === 0) {
+                if (hasAnyLegalClear()) {
+                    showHintHighlight();
+                    return;
+                }
                 checkDeadlock();
                 return;
             }
