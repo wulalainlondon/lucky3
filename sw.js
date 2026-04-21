@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lucky3-v2026.04.21.8';
+const CACHE_NAME = 'lucky3-v2026.04.21.9';
 const FONTS_CACHE = 'lucky3-fonts-v1';
 const ASSETS_TO_CACHE = [
     './',
@@ -61,18 +61,43 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
+    const pathname = url.pathname || '';
+    const isCriticalAsset = pathname.endsWith('.js') || pathname.endsWith('.css') || pathname.endsWith('.html');
+    if (isCriticalAsset) {
+        event.respondWith((async () => {
+            try {
+                const networkResponse = await fetch(event.request, { cache: 'no-store' });
+                if (networkResponse && networkResponse.ok) {
+                    const copy = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)).catch(() => { });
+                }
+                return networkResponse;
+            } catch (_) {
+                const cached = await caches.match(event.request);
+                if (cached) return cached;
+                throw _;
+            }
+        })());
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request).then(async (response) => {
             if (response) {
                 fetch(event.request)
-                    .then((networkResponse) => caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse)))
+                    .then((networkResponse) => {
+                        if (!networkResponse || !networkResponse.ok) return;
+                        return caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
+                    })
                     .catch(() => { });
                 return response;
             }
 
             const networkResponse = await fetch(event.request);
-            const copy = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)).catch(() => { });
+            if (networkResponse && networkResponse.ok) {
+                const copy = networkResponse.clone();
+                caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)).catch(() => { });
+            }
             return networkResponse;
         })
     );
