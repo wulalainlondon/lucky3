@@ -19,6 +19,8 @@
             --card-h: calc(var(--card-w) * 1.42);
             --max-w: var(--card-w);
             --max-h: var(--card-h);
+            --card-rank-scale: 1;
+            --card-suit-scale: 1;
             --gold: #ffd700;
             --fixed-gap: -60px;
             --anim-scale: 1;
@@ -266,25 +268,25 @@
         }
 
         .card-rank {
-            font-size: 0.85rem;
+            font-size: calc(0.85rem * var(--card-rank-scale, 1));
             font-weight: 900;
             line-height: 1;
         }
 
         .card-suit-small {
-            font-size: 0.65rem;
+            font-size: calc(0.65rem * var(--card-suit-scale, 1));
             line-height: 1.1;
         }
 
         /* Tablet readability: make corner rank/suit easier to read */
         @media (min-width: 700px) {
-            .card-rank { font-size: 1.2rem; }
-            .card-suit-small { font-size: 0.95rem; }
+            .card-rank { font-size: calc(1.2rem * var(--card-rank-scale, 1)); }
+            .card-suit-small { font-size: calc(0.95rem * var(--card-suit-scale, 1)); }
         }
 
         @media (min-width: 1000px) {
-            .card-rank { font-size: 1.35rem; }
-            .card-suit-small { font-size: 1.05rem; }
+            .card-rank { font-size: calc(1.35rem * var(--card-rank-scale, 1)); }
+            .card-suit-small { font-size: calc(1.05rem * var(--card-suit-scale, 1)); }
         }
 
         .card-center-suit {
@@ -292,7 +294,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 1.4rem;
+            font-size: calc(1.4rem * var(--card-suit-scale, 1));
             line-height: 1;
             z-index: 1;
         }
@@ -1783,6 +1785,62 @@
             height: 20px;
             accent-color: #ffd54f;
         }
+        .setting-row.range-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+        }
+        .setting-label-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+        }
+        .setting-inline-value {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-variant-numeric: tabular-nums;
+        }
+        .setting-control-range {
+            width: 100%;
+            padding: 0;
+            border: none;
+            background: transparent;
+            accent-color: #ffd54f;
+        }
+        .visual-preview-title {
+            font-size: 0.78rem;
+            letter-spacing: 0.5px;
+            color: rgba(255, 215, 0, 0.75);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .visual-preview-grid {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 10px;
+        }
+        .visual-preview-card {
+            background: linear-gradient(160deg, #fffef7 0%, #f8f4e8 100%);
+            border-radius: 6px;
+            color: black;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+            box-sizing: border-box;
+            border: 1px solid #d4c9a8;
+            width: 70px;
+            height: calc(70px * 1.42);
+            max-width: 70px;
+            max-height: calc(70px * 1.42);
+            margin-bottom: 0;
+            flex-shrink: 0;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.8);
+        }
 
         .settings-close {
             margin-top: 14px;
@@ -3091,13 +3149,14 @@
 
             <!-- Tab 切換列 -->
             <div class="settings-tabs">
-                <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(0)" data-i18n="settings.tab_audio">🔊 Audio</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(0)" data-i18n="settings.tab_audio">🔊 Audio</button>
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(1)" data-i18n="settings.tab_profile">🌐 Profile</button>
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(2)" data-i18n="settings.tab_play">🎮 Play</button>
+                <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(3)" data-i18n="settings.tab_visual">🎴 Visual</button>
             </div>
 
             <!-- Tab 0: 音效與顯示 -->
-            <div class="settings-tab-pane active" id="stab-0">
+            <div class="settings-tab-pane" id="stab-0">
                 <div class="settings-audio-row">
                     <div class="settings-audio-item">
                         <span class="settings-audio-icon">🔊</span>
@@ -3181,6 +3240,49 @@
                     <span class="settings-version-inline" id="setting-version">v-</span>
                 </div>
                 <button type="button" class="settings-restart" onclick="resetGameFromSettings()" data-i18n="settings.restart_game">Restart Game</button>
+            </div>
+
+            <!-- Tab 3: 視覺 -->
+            <div class="settings-tab-pane active" id="stab-3">
+                <div class="visual-preview-title" data-i18n="settings.visual_preview">Live Preview</div>
+                <div class="visual-preview-grid">
+                    <div class="visual-preview-card red suit-heart">
+                        <div class="card-corner card-tl">
+                            <span class="card-rank">10</span>
+                            <span class="card-suit-small">♥</span>
+                        </div>
+                        <div class="card-center-suit">♥</div>
+                        <div class="card-corner card-br">
+                            <span class="card-rank">10</span>
+                            <span class="card-suit-small">♥</span>
+                        </div>
+                    </div>
+                    <div class="visual-preview-card suit-spade">
+                        <div class="card-corner card-tl">
+                            <span class="card-rank">A</span>
+                            <span class="card-suit-small">♠</span>
+                        </div>
+                        <div class="card-center-suit">♠</div>
+                        <div class="card-corner card-br">
+                            <span class="card-rank">A</span>
+                            <span class="card-suit-small">♠</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting-row range-row">
+                    <div class="setting-label-row">
+                        <div class="setting-label" data-i18n="settings.card_rank_scale">Card Number Size</div>
+                        <div id="setting-card-rank-scale-value" class="setting-inline-value">100%</div>
+                    </div>
+                    <input id="setting-card-rank-scale" class="setting-control-range" type="range" min="75" max="160" step="5" value="100" aria-label="Card Number Size">
+                </div>
+                <div class="setting-row range-row">
+                    <div class="setting-label-row">
+                        <div class="setting-label" data-i18n="settings.card_suit_scale">Card Suit Size</div>
+                        <div id="setting-card-suit-scale-value" class="setting-inline-value">100%</div>
+                    </div>
+                    <input id="setting-card-suit-scale" class="setting-control-range" type="range" min="75" max="160" step="5" value="100" aria-label="Card Suit Size">
+                </div>
             </div>
 
             <button type="button" class="settings-close" onclick="toggleSettings(false)" data-i18n="settings.close">Close</button>
@@ -3345,7 +3447,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.21-v3';
+        const APP_VERSION = '2026.04.21-v4';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -3451,6 +3553,7 @@
             'settings.tab_audio': '🔊 Audio',
             'settings.tab_profile': '🌐 Profile',
             'settings.tab_play': '🎮 Play',
+            'settings.tab_visual': '🎴 Visual',
             'settings.sound': 'Sound',
             'settings.bgm': 'Background Music',
             'settings.vibration': 'Vibration',
@@ -3462,6 +3565,9 @@
             'settings.high_contrast': 'High Contrast Mode',
             'settings.mii_peek': 'Card Preview',
             'settings.recycle_anim': 'Recycle Animation',
+            'settings.card_rank_scale': 'Card Number Size',
+            'settings.card_suit_scale': 'Card Suit Size',
+            'settings.visual_preview': 'Live Preview',
             'settings.player_name': 'Player Name',
             'settings.version': 'Version',
             'settings.daily_challenge': 'Daily Challenge',
@@ -3619,6 +3725,7 @@
                 'settings.tab_audio': '🔊 音效',
                 'settings.tab_profile': '🌐 個人',
                 'settings.tab_play': '🎮 遊戲',
+                'settings.tab_visual': '🎴 視覺',
                 'settings.sound': '音效',
                 'settings.bgm': '背景音樂',
                 'settings.vibration': '震動',
@@ -3630,6 +3737,9 @@
                 'settings.high_contrast': '高對比模式',
                 'settings.mii_peek': '咪牌功能',
                 'settings.recycle_anim': '回收動畫',
+                'settings.card_rank_scale': '牌面數字大小',
+                'settings.card_suit_scale': '牌面花色大小',
+                'settings.visual_preview': '即時預覽',
                 'settings.player_name': '玩家名稱',
             'settings.version': '版本號',
             'settings.daily_challenge': '每日挑戰',
@@ -6119,7 +6229,7 @@
 
         const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const SUPPORTS_VIBRATE = !IS_IOS && typeof navigator.vibrate === 'function';
-        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true, bgm: false };
+        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true, bgm: false, cardRankScale: 1, cardSuitScale: 1 };
         const DEFAULT_ACHIEVEMENTS = {
             wins: 0,
             zeroClearWins: 0,
@@ -6175,6 +6285,16 @@
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr;
+        }
+
+        function normalizeCardScale(raw) {
+            const n = Number(raw);
+            if (!Number.isFinite(n)) return 1;
+            return Math.min(1.6, Math.max(0.75, Math.round(n * 100) / 100));
+        }
+
+        function cardScalePercent(scale) {
+            return Math.round(normalizeCardScale(scale) * 100);
         }
 
         function loadDailyNormalCycleState() {
@@ -6560,7 +6680,10 @@
                     locale: normalizeLocale(parsed.locale || detectInitialLocale()),
                     highContrast: Boolean(parsed.highContrast),
                     miiPeek: parsed.miiPeek !== false,
-                    recycleAnim: parsed.recycleAnim !== false
+                    recycleAnim: parsed.recycleAnim !== false,
+                    bgm: Boolean(parsed.bgm),
+                    cardRankScale: normalizeCardScale(parsed.cardRankScale ?? parsed.cardFaceScale),
+                    cardSuitScale: normalizeCardScale(parsed.cardSuitScale ?? parsed.cardFaceScale)
                 };
             } catch (_) {
                 return { ...DEFAULT_SETTINGS };
@@ -6594,6 +6717,10 @@
             const soundEl = document.getElementById('setting-sound');
             const vibrationEl = document.getElementById('setting-vibration');
             const speedEl = document.getElementById('setting-animation-speed');
+            const cardRankScaleEl = document.getElementById('setting-card-rank-scale');
+            const cardRankScaleValueEl = document.getElementById('setting-card-rank-scale-value');
+            const cardSuitScaleEl = document.getElementById('setting-card-suit-scale');
+            const cardSuitScaleValueEl = document.getElementById('setting-card-suit-scale-value');
             const languageEl = document.getElementById('setting-language');
             const contrastEl = document.getElementById('setting-high-contrast');
             const miiPeekEl = document.getElementById('setting-mii-peek');
@@ -6605,6 +6732,14 @@
             BGM.sync(!!settings.bgm);
             if (vibrationEl) vibrationEl.checked = settings.vibration;
             if (speedEl) speedEl.value = settings.animationSpeed;
+            const rankScale = normalizeCardScale(settings.cardRankScale);
+            const suitScale = normalizeCardScale(settings.cardSuitScale);
+            document.documentElement.style.setProperty('--card-rank-scale', String(rankScale));
+            document.documentElement.style.setProperty('--card-suit-scale', String(suitScale));
+            if (cardRankScaleEl) cardRankScaleEl.value = String(cardScalePercent(rankScale));
+            if (cardRankScaleValueEl) cardRankScaleValueEl.textContent = `${cardScalePercent(rankScale)}%`;
+            if (cardSuitScaleEl) cardSuitScaleEl.value = String(cardScalePercent(suitScale));
+            if (cardSuitScaleValueEl) cardSuitScaleValueEl.textContent = `${cardScalePercent(suitScale)}%`;
             if (languageEl) languageEl.value = settings.locale || currentLocale;
             if (contrastEl) contrastEl.checked = settings.highContrast;
             if (miiPeekEl) miiPeekEl.checked = settings.miiPeek;
@@ -6616,6 +6751,7 @@
         }
 
         function updateSetting(key, value) {
+            if (key === 'cardRankScale' || key === 'cardSuitScale') value = normalizeCardScale(value);
             settings[key] = value;
             applySettings();
             saveSettings();
@@ -6643,7 +6779,7 @@
                 // 暫停計時
                 if (timerPausedAt === null) timerPausedAt = Date.now();
                 overlay.classList.add('show');
-                switchSettingsTab(0);
+                switchSettingsTab(3);
             }
         }
 
@@ -7179,6 +7315,8 @@
             const soundEl = document.getElementById('setting-sound');
             const vibrationEl = document.getElementById('setting-vibration');
             const speedEl = document.getElementById('setting-animation-speed');
+            const cardRankScaleEl = document.getElementById('setting-card-rank-scale');
+            const cardSuitScaleEl = document.getElementById('setting-card-suit-scale');
             const languageEl = document.getElementById('setting-language');
             const contrastEl = document.getElementById('setting-high-contrast');
             const miiPeekEl = document.getElementById('setting-mii-peek');
@@ -7210,6 +7348,14 @@
                 }
             }
             speedEl.addEventListener('change', (e) => updateSetting('animationSpeed', e.target.value));
+            cardRankScaleEl?.addEventListener('input', (e) => {
+                const pct = Number(e.target.value);
+                updateSetting('cardRankScale', normalizeCardScale(pct / 100));
+            });
+            cardSuitScaleEl?.addEventListener('input', (e) => {
+                const pct = Number(e.target.value);
+                updateSetting('cardSuitScale', normalizeCardScale(pct / 100));
+            });
             languageEl.addEventListener('change', (e) => setLocale(e.target.value));
             contrastEl.addEventListener('change', (e) => updateSetting('highContrast', e.target.checked));
             miiPeekEl.addEventListener('change', (e) => updateSetting('miiPeek', e.target.checked));
