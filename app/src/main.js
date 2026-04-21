@@ -199,7 +199,7 @@
         function normalizeCardScale(raw) {
             const n = Number(raw);
             if (!Number.isFinite(n)) return 1;
-            return Math.min(1.6, Math.max(0.75, Math.round(n * 100) / 100));
+            return Math.min(2, Math.max(0.75, Math.round(n * 100) / 100));
         }
 
         function cardScalePercent(scale) {
