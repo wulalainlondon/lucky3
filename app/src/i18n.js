@@ -8,6 +8,9 @@
             'settings.bgm': 'Background Music',
             'settings.vibration': 'Vibration',
             'settings.animation_speed': 'Animation Speed',
+            'settings.card_rank_scale': 'Card Number Size',
+            'settings.card_suit_scale': 'Card Suit Size',
+            'settings.visual_preview': 'Live Preview',
             'settings.speed_slow': 'Slow',
             'settings.speed_normal': 'Normal',
             'settings.speed_fast': 'Fast',
@@ -21,7 +24,9 @@
             'settings.tab_audio': '🔊 Audio',
             'settings.tab_profile': '🌐 Profile',
             'settings.tab_play': '🎮 Play',
+            'settings.tab_visual': '🎴 Visual',
             'settings.daily_challenge': 'Daily Challenge',
+            'settings.gallery': 'Gallery',
             'settings.today_leaderboard': "Today's Leaderboard",
             'settings.achievements': 'Achievements',
             'settings.replay_tutorial': 'Replay Tutorial',
@@ -72,6 +77,7 @@
             'hint.need_three_default': 'Please select 3 cards first',
             'deadlock.title': 'No legal clear available',
             'deadlock.body': 'The deck is empty and no valid 9/19/29 combination remains on the board. Undo your last move or start fresh?',
+            'deadlock.rewind': 'Rewind to Missed Clear',
             'deadlock.undo': 'Undo',
             'deadlock.new': 'New Run',
             'fortune.fallback': 'Lucky 3 fortune: a small good thing will happen today.',
@@ -200,7 +206,13 @@
             'gallery.pieces': 'pieces',
             'gallery.fragment_drop': 'Fragment collected!',
             'gallery.fragment_hint': 'Tap Gallery to view your painting.',
-            'gallery.completed': 'Complete'
+            'gallery.fragment_to_dust': 'Duplicate fragment converted to Stardust +{count}',
+            'gallery.dust_hint': 'Save Stardust and exchange missing pieces.',
+            'gallery.completed': 'Complete',
+            'gallery.dust': 'Stardust',
+            'gallery.pity': 'Pity {count}/{total}',
+            'gallery.pity_ready': 'Pity ready',
+            'gallery.exchange_one': 'Exchange 1 Piece'
         };
         const I18N_STRINGS = {
             'zh-Hant': {
@@ -213,6 +225,9 @@
                 'settings.bgm': '背景音樂',
                 'settings.vibration': '震動',
                 'settings.animation_speed': '動畫速度',
+                'settings.card_rank_scale': '牌面數字大小',
+                'settings.card_suit_scale': '牌面花色大小',
+                'settings.visual_preview': '即時預覽',
                 'settings.speed_slow': '慢',
                 'settings.speed_normal': '中',
                 'settings.speed_fast': '快',
@@ -226,7 +241,9 @@
                 'settings.tab_audio': '🔊 音效',
                 'settings.tab_profile': '🌐 個人',
                 'settings.tab_play': '🎮 遊戲',
+                'settings.tab_visual': '🎴 視覺',
                 'settings.daily_challenge': '每日挑戰',
+                'settings.gallery': '畫廊',
                 'settings.today_leaderboard': '今日排行榜',
                 'settings.achievements': '成就頁面',
                 'settings.replay_tutorial': '重播教學',
@@ -277,6 +294,7 @@
                 'hint.need_three_default': '請先選滿 3 張牌',
                 'deadlock.title': '卡住了！目前無合法消除',
                 'deadlock.body': '牌庫已空，且場上沒有可消除的 9 / 19 / 29 組合。你想要倒轉一步，還是直接開新局？',
+                'deadlock.rewind': '倒帶到漏消點',
                 'deadlock.undo': '倒轉一步',
                 'deadlock.new': '開新局',
                 'fortune.fallback': '今日幸運籤：Lucky 3。今天會有一件小好事悄悄發生。',
@@ -405,7 +423,13 @@
                 'gallery.pieces': '碎片',
                 'gallery.fragment_drop': '獲得畫作碎片！',
                 'gallery.fragment_hint': '前往畫廊查看你的收藏。',
-                'gallery.completed': '已完成'
+                'gallery.fragment_to_dust': '重複碎片轉為星塵 +{count}',
+                'gallery.dust_hint': '累積星塵可兌換缺少碎片。',
+                'gallery.completed': '已完成',
+                'gallery.dust': '星塵',
+                'gallery.pity': '保底 {count}/{total}',
+                'gallery.pity_ready': '保底已啟動',
+                'gallery.exchange_one': '兌換 1 片'
             },
             en: I18N_BASE_EN,
             ja: {
@@ -1659,6 +1683,7 @@
     'hint.need_three_default': '请先选满 3 张牌',
     'deadlock.title': '卡住了！目前无合法消除',
     'deadlock.body': '牌库已空，且场上没有可消除的 9 / 19 / 29 组合。你想要倒转一步，还是直接开新局？',
+    'deadlock.rewind': '倒带到漏消点',
     'deadlock.undo': '倒转一步',
     'deadlock.new': '开新局',
     'fortune.fallback': '今日幸运签：Lucky 3。今天会有一件小好事悄悄发生。',
@@ -3042,4 +3067,3 @@
                 .trim();
             document.body.classList.add('locale-' + currentLocale);
         }
-

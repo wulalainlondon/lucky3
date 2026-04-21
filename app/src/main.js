@@ -128,7 +128,7 @@
         const G3_SOFT_CHALLENGE_SEED_POOL = [2353817879,3594182255,4053143199,3887984436,494691903,1495536710,1325939048,2206104368,2163389408,3338339771,2536511337,2240999680,2491324812,3268641274,2703369515,1970329831,1971193188,472958176,199681448,1265498343,2723405117,3489900664,86893259,4268017386,711568660,1912217476,138282491,4148691769,1462631332,1474786143,3954131958,2612591041,4204896336,546033309,3913913508,1968401412,2886744271,2370029844,2489930304,847473229,2572841091,1015609534,131524877,1496162416,295583918,2701394234,979693542,1944954170,1723628522,2445453680,1287854390,1485609249,3196228824,2984061134,3782217166,415282518,640683824,448502816,611054937,665185543,3761700404,351449027,59783665,279580334,18373205,1255056251,421760997,2271374956,391918766,1293631545,1413810006,1500042655,1791993528,4203360861,1962421258,3798946953,62780250,209830770,1266241746,2462007535,1431542483,2984350072,798947397,1637922293,1587415368,3962282917,749539336,2779754828,3980468845,2798317201,2258207469,1476576204,1210489096,4119933918,1469188323,814821146,595787070,2890991655,3761321162,1070856726,1767175375,2703802412,3861568446,3182119216,1250299555,3966576343,2072384969,1302120342,2337462679,554181275,3249459151,499718090,1307131575,578733464,4248864912,1934214549,3638007054,2039910277,4050092559,888940780,4108933115,3791314190,526224243,2443799535,3325068923,1458862560,1503624909,3637517467,1970381566,3258050093,1708282453,1270151836,699566079,3044285107,4290102529,1275089353,1511286499,192996893,1199558464,4213824077,659477697,3228703534,2762175856,2003057048,1036786368,2354789650,693101218,352194080,132453486,3571083278,183872157,1821699092,381280836,2456875043,248542733,746380910,1479608404,2093757605,4264345842,1612436664,407291719,1188729342,2697769028,1866849297,1995191707,42764271,2146190515,2247574986,2748983668,1503939618,1738199435,2859082148,397670105,1946569687,2321422662,991337667,2086986927,2176579462,696325739,1917901509,2259026340,1828562853,4104421450,2238811899,1621284125,1790457610,407546586,1175422303,1765072528,2416180588,3279881578,3113433186,1915931839,1324950972,3018358848,1840024731,675984521,3253104689,2696207078,877654206,736586904,2082788081,1664377532,3002329879,1743462474,3980700362,2329704407,1834092316,954707169,4198696148,3832032438,3535571422,2029936108,27219081,2166499529,4209532608,4219522895,4213641172,3441016386,3343064181,3798022803,3327470445,4268381528,2718671103,1735123797,3749571275,1506187255,2366663794,2382211688,393900073,2866376358,2267492247,3262559743,3306450078,3564054836,1851465135,2054721394,3409558027,1065386766,1037832316,1247874888,1993145880,643826806,3532672722,1662968734,667811232,954386177,2661260994,2450601717,3817184612,2550366402,2064034781,2822649788,3977578840,347184393,108930477,607778900,3551138657,1380845182,2771596161,1299731352,617441100,1108645313,2628439375,2293367306,1834288260,3795587133,3250960820,3722322613,1167418596,719710634,1411700908,897613246,2765390424,722323816,2340374425,2875764526,2403999845,1047256134,87690112,1682329177,2077250541,2766665022,2585132495,156458439,1762069860,3004817917,3937283770,916116233,915366674,3238659923,3890319353,182643031,962929727,349131501,3544578300,2462649729,3851865641,3517120170,829363148,2660112244,3552740665,1963595476,3778369696,1504672834,3373487673,547720561,2498031154,3973758523,90174073,2099331449,2646836929,4183078590,993481794,2409496514,3719205428,4215868883,1561669000,55028995,4072103075,3672994290,920855788,2249337493,59142584,3378561272,2260367568,1949423741,1587494893,3175106385,2172729093,389968037,92728961,140840266,857367751,3640647429,3720419445,327109538,3484316986,3783371076,2022862812,3704279873,3423476401,2878851187,2024457566,1426793342,356399027,1782796153,651377769,749346570,508404386,2431548666,4286057948,4275721137,1273252014,1177644395,312662181,2754264738,3643761298,2560363953,2038484751,2709485811,1982694424,3762286416,3792734380,59664988,156258262,422274510,970718034,3066357808,748012392,2259838248,2491128224,144345256,4138590576,1806732084,495826904,2712034149,3068457567,1443130997,3139590514,3955088753,593172260,3075054290,2699972915,3639434861,2701192742,2071268315,4115680553,3234042811,4138859423,601469164,1615181386,3698311971,575568470,640169397,632281093,2096132407,63085106,274759473,2180309870,2285650844,1789588878,1758007502,4278022467,3970909346,3803791744,1537783322,3364141976,3106193353,288521322,537399222,244314313,3015816315,989715077,1968096837,3919382607,629371237,75537138,1953151294,905336425,1806537858,2139255689,2172789716,1842487705,318101503,203742769,3153477032,1917705303,1594555940,2750819173,1982380445,171130572,2894822107,2403418747,2327844692,1603818181,3163575818,433746925,3180798436,2500033088,2321154058,635959129,4049903939,2894157036,4034170714,133131714,1914867816,633887152,3286473390,2703230683,1577349802,2829026649,3726057340,1475226533,1430590666,3307758939,4218813199,579353514,1047722683,2086375837,1523424668,2704967451,162549208,2568688651,3681164298,382460341,1303505809,1507779479,1519460116,1230243663,1110984303,1023141093,2063157283,961147930,773931753,1070917123,49280394,2978127778,4194563397,1315824799,3445153773,2162865899,2067822647,1379260025,4193730434,274806748,3702732228,2852095986,4220870767,4019184578,1080126357,2695715065,2125463193,2604236637,2249908103,962063760,2966103390,4227041620,4235458625,3365894730];
         const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const SUPPORTS_VIBRATE = !IS_IOS && typeof navigator.vibrate === 'function';
-        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true, bgm: false, sumHelper: false, dailyNotif: false };
+        const DEFAULT_SETTINGS = { sound: true, vibration: true, animationSpeed: 'normal', locale: detectInitialLocale(), highContrast: false, miiPeek: true, recycleAnim: true, bgm: false, sumHelper: false, dailyNotif: false, cardRankScale: 1, cardSuitScale: 1 };
         const DEFAULT_ACHIEVEMENTS = {
             wins: 0,
             zeroClearWins: 0,
@@ -194,6 +194,16 @@
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr;
+        }
+
+        function normalizeCardScale(raw) {
+            const n = Number(raw);
+            if (!Number.isFinite(n)) return 1;
+            return Math.min(1.6, Math.max(0.75, Math.round(n * 100) / 100));
+        }
+
+        function cardScalePercent(scale) {
+            return Math.round(normalizeCardScale(scale) * 100);
         }
 
         function loadDailyNormalCycleState() {
@@ -623,7 +633,9 @@
                     recycleAnim: parsed.recycleAnim !== false,
                     bgm: Boolean(parsed.bgm),
                     sumHelper: Boolean(parsed.sumHelper),
-                    dailyNotif: Boolean(parsed.dailyNotif)
+                    dailyNotif: Boolean(parsed.dailyNotif),
+                    cardRankScale: normalizeCardScale(parsed.cardRankScale ?? parsed.cardFaceScale),
+                    cardSuitScale: normalizeCardScale(parsed.cardSuitScale ?? parsed.cardFaceScale)
                 };
             } catch (_) {
                 return { ...DEFAULT_SETTINGS };
@@ -657,6 +669,10 @@
             const soundEl = document.getElementById('setting-sound');
             const vibrationEl = document.getElementById('setting-vibration');
             const speedEl = document.getElementById('setting-animation-speed');
+            const cardRankScaleEl = document.getElementById('setting-card-rank-scale');
+            const cardRankScaleValueEl = document.getElementById('setting-card-rank-scale-value');
+            const cardSuitScaleEl = document.getElementById('setting-card-suit-scale');
+            const cardSuitScaleValueEl = document.getElementById('setting-card-suit-scale-value');
             const languageEl = document.getElementById('setting-language');
             const contrastEl = document.getElementById('setting-high-contrast');
             const miiPeekEl = document.getElementById('setting-mii-peek');
@@ -668,6 +684,14 @@
             BGM.sync(!!settings.bgm);
             if (vibrationEl) vibrationEl.checked = settings.vibration;
             if (speedEl) speedEl.value = settings.animationSpeed;
+            const rankScale = normalizeCardScale(settings.cardRankScale);
+            const suitScale = normalizeCardScale(settings.cardSuitScale);
+            document.documentElement.style.setProperty('--card-rank-scale', String(rankScale));
+            document.documentElement.style.setProperty('--card-suit-scale', String(suitScale));
+            if (cardRankScaleEl) cardRankScaleEl.value = String(cardScalePercent(rankScale));
+            if (cardRankScaleValueEl) cardRankScaleValueEl.textContent = `${cardScalePercent(rankScale)}%`;
+            if (cardSuitScaleEl) cardSuitScaleEl.value = String(cardScalePercent(suitScale));
+            if (cardSuitScaleValueEl) cardSuitScaleValueEl.textContent = `${cardScalePercent(suitScale)}%`;
             if (languageEl) languageEl.value = settings.locale || currentLocale;
             if (contrastEl) contrastEl.checked = settings.highContrast;
             if (miiPeekEl) miiPeekEl.checked = settings.miiPeek;
@@ -683,6 +707,7 @@
         }
 
         function updateSetting(key, value) {
+            if (key === 'cardRankScale' || key === 'cardSuitScale') value = normalizeCardScale(value);
             settings[key] = value;
             applySettings();
             saveSettings();
@@ -691,14 +716,14 @@
         function switchSettingsTab(idx) {
             document.querySelectorAll('.settings-tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
             document.querySelectorAll('.settings-tab-pane').forEach((p, i) => p.classList.toggle('active', i === idx));
-            if (idx === 3) renderCardBackGrid();
+            if (idx === 4) renderCardBackGrid();
         }
 
         function toggleSettings(show) {
             const overlay = document.getElementById('settings-overlay');
             if (!overlay) return;
             overlay.classList.toggle('show', show);
-            if (show) switchSettingsTab(0);
+            if (show) switchSettingsTab(3);
         }
 
         function updateHeaderModeTag() {
@@ -1469,6 +1494,8 @@
             const soundEl = document.getElementById('setting-sound');
             const vibrationEl = document.getElementById('setting-vibration');
             const speedEl = document.getElementById('setting-animation-speed');
+            const cardRankScaleEl = document.getElementById('setting-card-rank-scale');
+            const cardSuitScaleEl = document.getElementById('setting-card-suit-scale');
             const languageEl = document.getElementById('setting-language');
             const contrastEl = document.getElementById('setting-high-contrast');
             const miiPeekEl = document.getElementById('setting-mii-peek');
@@ -1490,6 +1517,14 @@
                 }
             }
             speedEl.addEventListener('change', (e) => updateSetting('animationSpeed', e.target.value));
+            cardRankScaleEl?.addEventListener('input', (e) => {
+                const pct = Number(e.target.value);
+                updateSetting('cardRankScale', normalizeCardScale(pct / 100));
+            });
+            cardSuitScaleEl?.addEventListener('input', (e) => {
+                const pct = Number(e.target.value);
+                updateSetting('cardSuitScale', normalizeCardScale(pct / 100));
+            });
             languageEl.addEventListener('change', (e) => setLocale(e.target.value));
             contrastEl.addEventListener('change', (e) => updateSetting('highContrast', e.target.checked));
             miiPeekEl.addEventListener('change', (e) => updateSetting('miiPeek', e.target.checked));

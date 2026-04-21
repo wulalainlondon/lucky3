@@ -62,14 +62,15 @@
 
             <!-- Tab 切換列 -->
             <div class="settings-tabs">
-                <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(0)" data-i18n="settings.tab_audio">🔊 Audio</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(0)" data-i18n="settings.tab_audio">🔊 Audio</button>
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(1)" data-i18n="settings.tab_profile">🌐 Profile</button>
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(2)" data-i18n="settings.tab_play">🎮 Play</button>
-                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(3)" data-i18n="settings.tab_cardback">Cards</button>
+                <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(3)" data-i18n="settings.tab_visual">🎴 Visual</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(4)" data-i18n="settings.tab_cardback">Cards</button>
             </div>
 
             <!-- Tab 0: 音效與顯示 -->
-            <div class="settings-tab-pane active" id="stab-0">
+            <div class="settings-tab-pane" id="stab-0">
                 <div class="settings-audio-row">
                     <div class="settings-audio-item">
                         <span class="settings-audio-icon">🔊</span>
@@ -165,8 +166,51 @@
                 <button type="button" class="settings-restart" onclick="resetGameFromSettings()" data-i18n="settings.restart_game">Restart Game</button>
             </div>
 
-            <!-- Tab 3: 牌背收藏 -->
-            <div class="settings-tab-pane" id="stab-3">
+            <!-- Tab 3: 視覺 -->
+            <div class="settings-tab-pane active" id="stab-3">
+                <div class="visual-preview-title" data-i18n="settings.visual_preview">Live Preview</div>
+                <div class="visual-preview-grid">
+                    <div class="card red suit-heart visual-preview-card">
+                        <div class="card-corner card-tl">
+                            <span class="card-rank">10</span>
+                            <span class="card-suit-small">♥</span>
+                        </div>
+                        <div class="card-center-suit">♥</div>
+                        <div class="card-corner card-br">
+                            <span class="card-rank">10</span>
+                            <span class="card-suit-small">♥</span>
+                        </div>
+                    </div>
+                    <div class="card suit-spade visual-preview-card">
+                        <div class="card-corner card-tl">
+                            <span class="card-rank">A</span>
+                            <span class="card-suit-small">♠</span>
+                        </div>
+                        <div class="card-center-suit">♠</div>
+                        <div class="card-corner card-br">
+                            <span class="card-rank">A</span>
+                            <span class="card-suit-small">♠</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting-row range-row">
+                    <div class="setting-label-row">
+                        <div class="setting-label" data-i18n="settings.card_rank_scale">Card Number Size</div>
+                        <div id="setting-card-rank-scale-value" class="setting-inline-value">100%</div>
+                    </div>
+                    <input id="setting-card-rank-scale" class="setting-control-range" type="range" min="75" max="160" step="5" value="100" aria-label="Card Number Size">
+                </div>
+                <div class="setting-row range-row">
+                    <div class="setting-label-row">
+                        <div class="setting-label" data-i18n="settings.card_suit_scale">Card Suit Size</div>
+                        <div id="setting-card-suit-scale-value" class="setting-inline-value">100%</div>
+                    </div>
+                    <input id="setting-card-suit-scale" class="setting-control-range" type="range" min="75" max="160" step="5" value="100" aria-label="Card Suit Size">
+                </div>
+            </div>
+
+            <!-- Tab 4: 牌背收藏 -->
+            <div class="settings-tab-pane" id="stab-4">
                 <div class="cb-grid" id="cb-grid"></div>
             </div>
 

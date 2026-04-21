@@ -1,11 +1,22 @@
-const CACHE_NAME = 'lucky3-v2026.04.21.5';
+const CACHE_NAME = 'lucky3-v2026.04.21.8';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
+    './styles/base.css',
+    './src/i18n.js',
+    './src/main.js',
     './manifest.json',
     './icon-192.png',
     './icon-512.png',
-    './pixi.min.js'
+    './pixi.min.js',
+    './fonts/cinzel-700.woff2',
+    './fonts/cinzel-700-ext.woff2',
+    './fonts/cinzel-900.woff2',
+    './fonts/cinzel-900-ext.woff2',
+    './fonts/cinzel-dec-700.woff2',
+    './fonts/cinzel-dec-700-ext.woff2',
+    './fonts/cinzel-dec-900.woff2',
+    './fonts/cinzel-dec-900-ext.woff2'
 ];
 
 self.addEventListener('install', (event) => {
