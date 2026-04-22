@@ -63,13 +63,14 @@
             <!-- Tab 切換列 -->
             <div class="settings-tabs">
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(0)" data-i18n="settings.tab_audio">🔊 Audio</button>
-                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(1)" data-i18n="settings.tab_profile">🌐 Profile</button>
+                <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(1)" data-i18n="settings.tab_visual">🎴 Visual</button>
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(2)" data-i18n="settings.tab_play">🎮 Play</button>
-                <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(3)" data-i18n="settings.tab_visual">🎴 Visual</button>
-                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(4)" data-i18n="settings.tab_cardback">Cards</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(3)" data-i18n="settings.tab_cardback">Cards</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(4)" data-i18n="settings.tab_profile">🌐 Profile</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(5)" data-i18n="settings.tab_about">About</button>
             </div>
 
-            <!-- Tab 0: 音效與顯示 -->
+            <!-- Tab 0: 音效 -->
             <div class="settings-tab-pane" id="stab-0">
                 <div class="settings-audio-row">
                     <div class="settings-audio-item">
@@ -93,81 +94,10 @@
                         <span class="settings-audio-label" data-i18n="settings.daily_notif">Daily Reminder</span>
                     </div>
                 </div>
-                <div class="setting-row">
-                    <div class="setting-label" data-i18n="settings.animation_speed">Animation Speed</div>
-                    <select id="setting-animation-speed" class="setting-control">
-                        <option value="slow" data-i18n="settings.speed_slow">Slow</option>
-                        <option value="normal" data-i18n="settings.speed_normal">Normal</option>
-                        <option value="fast" data-i18n="settings.speed_fast">Fast</option>
-                    </select>
-                </div>
-                <div class="setting-row">
-                    <div class="setting-label" data-i18n="settings.high_contrast">High Contrast Mode</div>
-                    <input id="setting-high-contrast" class="setting-check" type="checkbox">
-                </div>
-                <div class="setting-row">
-                    <div class="setting-label" data-i18n="settings.recycle_anim">Recycle Animation</div>
-                    <input id="setting-recycle-anim" class="setting-check" type="checkbox">
-                </div>
-                <div class="setting-row">
-                    <div class="setting-label" data-i18n="settings.sum_helper">Sum Helper</div>
-                    <input id="setting-sum-helper" class="setting-check" type="checkbox">
-                </div>
             </div>
 
-            <!-- Tab 1: 個人化 -->
-            <div class="settings-tab-pane" id="stab-1">
-                <div class="setting-row">
-                    <div class="setting-label" data-i18n="settings.language">Language</div>
-                    <select id="setting-language" class="setting-control">
-                        <option value="zh-Hant">繁體中文</option>
-                        <option value="en">English</option>
-                        <option value="ja">日本語</option>
-                        <option value="ko">한국어</option>
-                        <option value="es">Español</option>
-                        <option value="pt-BR">Português (BR)</option>
-                        <option value="th">ภาษาไทย</option>
-                        <option value="id">Bahasa Indonesia</option>
-                        <option value="fr">Français</option>
-                        <option value="zh-CN">简体中文</option>
-                        <option value="de">Deutsch</option>
-                        <option value="it">Italiano</option>
-                        <option value="pt-PT">Português (PT)</option>
-                        <option value="nl">Nederlands</option>
-                        <option value="ru">Русский</option>
-                        <option value="pl">Polski</option>
-                        <option value="tr">Türkçe</option>
-                        <option value="vi">Tiếng Việt</option>
-                    </select>
-                </div>
-                <div class="setting-row">
-                    <div class="setting-label" data-i18n="settings.mii_peek">Mii Peek</div>
-                    <input id="setting-mii-peek" class="setting-check" type="checkbox">
-                </div>
-                <div class="setting-row">
-                    <div class="setting-label" data-i18n="settings.player_name">Player Name</div>
-                    <input id="setting-player-name" class="setting-control" type="text" maxlength="12" placeholder="Lucky Player" style="width:110px;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,215,0,0.4);background:rgba(0,0,0,0.3);color:white;font-family:inherit;font-size:0.85rem;">
-                </div>
-            </div>
-
-            <!-- Tab 2: 遊戲 -->
-            <div class="settings-tab-pane" id="stab-2">
-                <button type="button" id="settings-premium-btn" class="settings-premium-btn" onclick="openPremiumFromSettings()">👑 <span data-i18n="premium.buy">立即購買 $1.99</span></button>
-                <button type="button" class="settings-daily" onclick="startDailyChallenge()" data-i18n="settings.daily_challenge">Daily Challenge</button>
-                <div class="settings-btn-row">
-                    <button type="button" class="settings-achievement" onclick="openDailyLeaderboard()" data-i18n="settings.today_leaderboard">🏆 Leaderboard</button>
-                    <button type="button" class="settings-achievement" onclick="openAchievementsFromSettings()" data-i18n="settings.achievements">🎖 Achievements</button>
-                </div>
-                <button type="button" class="settings-secondary" onclick="openRules()" data-i18n="rules.settings_btn">📖 How to Play</button>
-                <div class="settings-footer-row">
-                    <button type="button" class="settings-secondary" onclick="replayTutorial()" data-i18n="settings.replay_tutorial">Replay Tutorial</button>
-                    <span class="settings-version-inline" id="setting-version">v-</span>
-                </div>
-                <button type="button" class="settings-restart" onclick="resetGameFromSettings()" data-i18n="settings.restart_game">Restart Game</button>
-            </div>
-
-            <!-- Tab 3: 視覺 -->
-            <div class="settings-tab-pane active" id="stab-3">
+            <!-- Tab 1: 視覺 -->
+            <div class="settings-tab-pane active" id="stab-1">
                 <div class="visual-preview-title" data-i18n="settings.visual_preview">Live Preview</div>
                 <div class="visual-preview-grid">
                     <div class="card red suit-heart visual-preview-card">
@@ -207,11 +137,92 @@
                     </div>
                     <input id="setting-card-suit-scale" class="setting-control-range" type="range" min="75" max="200" step="5" value="100" aria-label="Card Suit Size">
                 </div>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.animation_speed">Animation Speed</div>
+                    <select id="setting-animation-speed" class="setting-control">
+                        <option value="slow" data-i18n="settings.speed_slow">Slow</option>
+                        <option value="normal" data-i18n="settings.speed_normal">Normal</option>
+                        <option value="fast" data-i18n="settings.speed_fast">Fast</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.high_contrast">High Contrast Mode</div>
+                    <input id="setting-high-contrast" class="setting-check" type="checkbox">
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.recycle_anim">Recycle Animation</div>
+                    <input id="setting-recycle-anim" class="setting-check" type="checkbox">
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.sum_helper">Sum Helper</div>
+                    <input id="setting-sum-helper" class="setting-check" type="checkbox">
+                </div>
             </div>
 
-            <!-- Tab 4: 牌背收藏 -->
-            <div class="settings-tab-pane" id="stab-4">
+            <!-- Tab 2: 遊戲 -->
+            <div class="settings-tab-pane" id="stab-2">
+                <button type="button" id="settings-premium-btn" class="settings-premium-btn" onclick="openPremiumFromSettings()">👑 <span data-i18n="premium.buy">立即購買 $1.99</span></button>
+                <button type="button" class="settings-daily" onclick="startDailyChallenge()" data-i18n="settings.daily_challenge">Daily Challenge</button>
+                <div class="settings-btn-row">
+                    <button type="button" class="settings-achievement" onclick="openDailyLeaderboard()" data-i18n="settings.today_leaderboard">🏆 Leaderboard</button>
+                    <button type="button" class="settings-achievement" onclick="openAchievementsFromSettings()" data-i18n="settings.achievements">🎖 Achievements</button>
+                </div>
+                <button type="button" class="settings-secondary" onclick="openRules()" data-i18n="rules.settings_btn">📖 How to Play</button>
+                <button type="button" class="settings-secondary" onclick="replayTutorial()" data-i18n="settings.replay_tutorial">Replay Tutorial</button>
+                <button type="button" class="settings-restart" onclick="resetGameFromSettings()" data-i18n="settings.restart_game">Restart Game</button>
+            </div>
+
+            <!-- Tab 3: 牌背收藏 -->
+            <div class="settings-tab-pane" id="stab-3">
                 <div class="cb-grid" id="cb-grid"></div>
+            </div>
+
+            <!-- Tab 4: 個人化 -->
+            <div class="settings-tab-pane" id="stab-4">
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.language">Language</div>
+                    <select id="setting-language" class="setting-control">
+                        <option value="zh-Hant">繁體中文</option>
+                        <option value="en">English</option>
+                        <option value="ja">日本語</option>
+                        <option value="ko">한국어</option>
+                        <option value="es">Español</option>
+                        <option value="pt-BR">Português (BR)</option>
+                        <option value="th">ภาษาไทย</option>
+                        <option value="id">Bahasa Indonesia</option>
+                        <option value="fr">Français</option>
+                        <option value="zh-CN">简体中文</option>
+                        <option value="de">Deutsch</option>
+                        <option value="it">Italiano</option>
+                        <option value="pt-PT">Português (PT)</option>
+                        <option value="nl">Nederlands</option>
+                        <option value="ru">Русский</option>
+                        <option value="pl">Polski</option>
+                        <option value="tr">Türkçe</option>
+                        <option value="vi">Tiếng Việt</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.mii_peek">Mii Peek</div>
+                    <input id="setting-mii-peek" class="setting-check" type="checkbox">
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label" data-i18n="settings.player_name">Player Name</div>
+                    <input id="setting-player-name" class="setting-control" type="text" maxlength="12" placeholder="Lucky Player" style="width:110px;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,215,0,0.4);background:rgba(0,0,0,0.3);color:white;font-family:inherit;font-size:0.85rem;">
+                </div>
+            </div>
+
+            <!-- Tab 5: 關於 -->
+            <div class="settings-tab-pane" id="stab-5">
+                <div class="about-section">
+                    <div class="about-section-title" data-i18n="about.mystery_title">The Math Secret</div>
+                    <p class="about-section-body" data-i18n="about.mystery_body"></p>
+                </div>
+                <div class="about-section">
+                    <div class="about-section-title" data-i18n="about.art_title">About the Art</div>
+                    <p class="about-section-body" data-i18n="about.art_body"></p>
+                </div>
+                <div class="about-version" id="about-version-row"></div>
             </div>
 
             <!-- 固定關閉 -->

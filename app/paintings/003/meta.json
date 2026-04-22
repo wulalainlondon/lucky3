@@ -1,0 +1,12 @@
+{
+  "id": "003",
+  "title": "畫作 003",
+  "titleEn": "Painting 003",
+  "orientation": "landscape",
+  "cols": 4,
+  "rows": 3,
+  "totalPieces": 12,
+  "frameStyle": "mediterranean-vermillion",
+  "pieceW": 225,
+  "pieceH": 200
+}

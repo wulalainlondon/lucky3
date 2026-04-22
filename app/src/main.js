@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.21-v4';
+        const APP_VERSION = '2026.04.22-v5';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -145,6 +145,12 @@
             dailyWins: 0,
             comboGameWins: 0
         };
+        const CLEAR_MOVE_PHASES = Object.freeze({
+            WINDUP: 200,
+            FLYOUT: 150,
+            IMPACT: 200,
+            SETTLE: 800
+        });
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
         const _slotRenderCache = {}; // slot.id -> fingerprint，用於 differential rendering
@@ -169,6 +175,10 @@
         let developerMode = false;
         let devTapCount = 0;
         let devTapTimer = null;
+        let rewindSequenceActive = false;
+        let rewindLockTagTimer = null;
+        let comboFocusActive = false;
+        let comboFocusTimer = null;
 
         function shuffleInPlace(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
@@ -468,6 +478,10 @@
             return Math.max(40, Math.round(ms * getAnimScale()));
         }
 
+        function shouldMinimizeMotion() {
+            return Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) || settings.animationSpeed === 'fast';
+        }
+
         // ═══════════════════════════════════════════════════════
         // NATIVE SOUL — 六大靈魂元素
         // ═══════════════════════════════════════════════════════
@@ -511,19 +525,35 @@
 
         // --- 3. 連擊靈獸浮現 ---
         const SPIRIT_BEASTS = {
-            3: '🐉',  // tier-3: dragon (combo 2)
-            4: '🦅',  // tier-4: phoenix (combo 3)
-            5: '🦄',  // tier-5: qilin (combo 4+)
+            3: { cls: 'tier-3', icon: 'comboicon/tier3.png' },
+            4: { cls: 'tier-4', icon: 'comboicon/tier4.png' },
+            5: { cls: 'tier-5', icon: 'comboicon/tier5.png' },
         };
+        Object.values(SPIRIT_BEASTS).forEach((meta) => {
+            const preload = new Image();
+            preload.src = meta.icon;
+        });
 
         function showSpiritBeast(tier) {
-            const emoji = SPIRIT_BEASTS[tier];
-            if (!emoji) return;
+            const meta = SPIRIT_BEASTS[tier];
+            if (!meta) return;
             const el = document.createElement('div');
-            el.className = 'spirit-beast';
-            el.textContent = emoji;
+            el.className = `spirit-beast ${meta.cls}`;
+            const discardEl = document.getElementById('discard-pile');
+            if (discardEl) {
+                const rect = discardEl.getBoundingClientRect();
+                const iconSize = Math.max(64, Math.min(84, window.innerWidth * 0.15));
+                const anchorX = rect.left + rect.width / 2;
+                const anchorY = Math.max(iconSize * 0.55 + 8, rect.top - Math.max(18, iconSize * 0.34));
+                el.style.left = `${Math.round(anchorX)}px`;
+                el.style.top = `${Math.round(anchorY)}px`;
+            }
+            el.innerHTML = `
+                <div class="spirit-beast-core">
+                    <img class="spirit-beast-icon" src="${meta.icon}" alt="" />
+                </div>`;
             document.body.appendChild(el);
-            setTimeout(() => el.remove(), getDelay(1800));
+            setTimeout(() => el.remove(), getDelay(1120));
         }
 
         // --- 4. 選牌光圈脈衝 ---
@@ -701,6 +731,8 @@
             const dailyNotifEl = document.getElementById('setting-daily-notif');
             if (dailyNotifEl) dailyNotifEl.checked = !!settings.dailyNotif;
             if (versionEl) versionEl.innerText = `v${APP_VERSION}`;
+            const aboutVerEl = document.getElementById('about-version-row');
+            if (aboutVerEl) aboutVerEl.textContent = `v${APP_VERSION}`;
             const savedName = localStorage.getItem('lucky3-player-name') || '';
             const nameInput = document.getElementById('setting-player-name');
             if (nameInput) nameInput.value = savedName;
@@ -723,7 +755,7 @@
             const overlay = document.getElementById('settings-overlay');
             if (!overlay) return;
             overlay.classList.toggle('show', show);
-            if (show) switchSettingsTab(3);
+            if (show) switchSettingsTab(1);
         }
 
         function updateHeaderModeTag() {
@@ -752,18 +784,18 @@
         const DROP_PITY_LIMIT = 2;
 
         const PAINTINGS = [
-            { id: '004', cols: 4, rows: 3 },
+            { id: '001', cols: 4, rows: 3 },
+            { id: '002', cols: 4, rows: 3 },
+            { id: '003', cols: 4, rows: 3 },
+            { id: '004', cols: 3, rows: 4 },
             { id: '005', cols: 4, rows: 3 },
-            { id: '006', cols: 4, rows: 3 },
+            { id: '006', cols: 3, rows: 4 },
             { id: '007', cols: 3, rows: 4 },
             { id: '008', cols: 4, rows: 3 },
             { id: '009', cols: 3, rows: 4 },
-            { id: '010', cols: 3, rows: 4 },
+            { id: '010', cols: 4, rows: 3 },
             { id: '011', cols: 4, rows: 3 },
             { id: '012', cols: 3, rows: 4 },
-            { id: '013', cols: 4, rows: 3 },
-            { id: '014', cols: 4, rows: 3 },
-            { id: '015', cols: 3, rows: 4 },
         ];
 
         let paintingBasePathCache = (location.pathname && location.pathname.includes('/app/')) ? 'paintings' : 'app/paintings';
@@ -1213,7 +1245,7 @@
             if (isComplete) {
                 body.innerHTML = `
                     <div class="gallery-full-wrap">
-                        <div class="gallery-frame${shouldPlayFrameReveal ? ' just-completed' : ''}">
+                        <div class="gallery-frame${meta.frameStyle ? ` frame-${meta.frameStyle}` : ''}${shouldPlayFrameReveal ? ' just-completed' : ''}">
                             <img src="${paintingCoverSrc(meta.id)}" alt="${title}">
                         </div>
                     </div>
@@ -1267,9 +1299,12 @@
         // ── Card Back Collection ────────────────────────────────────────────────
         const CARD_BACK_KEY      = 'lucky3-card-back-v1';
         const CARD_BACK_UNLOCKED = 'lucky3-card-back-unlocked-v1';
+        const DEFAULT_UNLOCKED_CARD_BACKS = ['classic', 'retro_gold'];
         const CARD_BACKS = [
             { id: 'classic',   nameEN: 'Classic Blue', nameZH: '經典藍',
               condEN: 'Default',               condZH: '預設解鎖',         cond: null },
+            { id: 'retro_gold', nameEN: 'Retro Gold',  nameZH: '復古鎏金',
+              condEN: 'Default style option', condZH: '預設樣式可選',      cond: null },
             { id: 'nightgold', nameEN: 'Night Gold',   nameZH: '夜金',
               condEN: 'Premium purchase',      condZH: 'Premium 購買解鎖', cond: 'premium' },
             { id: 'forest',    nameEN: 'Deep Forest',  nameZH: '深林',
@@ -1280,11 +1315,34 @@
               condEN: 'Achieve Void Clear',    condZH: '完成 Void Clear',  cond: 'void' },
             { id: 'lucky',     nameEN: 'Lucky',        nameZH: 'Lucky',
               condEN: 'Win 50 games',          condZH: '累積勝 50 局',     cond: 'wins50' },
+            { id: 'combo5',    nameEN: 'Combo Nova',   nameZH: '連擊新星',
+              condEN: 'Combo Expert (x5)',     condZH: '連擊高手（x5）',   cond: 'combo5' },
+            { id: 'speed18',   nameEN: 'Speed Crest',  nameZH: '疾速徽印',
+              condEN: 'Speed Runner (<=18)',   condZH: '快手玩家（18步內）', cond: 'speed18' },
+            { id: 'ironwill',  nameEN: 'Iron Oath',    nameZH: '鋼鐵誓約',
+              condEN: 'Iron Will (No Undo)',   condZH: '鐵血意志（無 Undo）', cond: 'ironwill' },
+            { id: 'suitcollector', nameEN: 'Four Sigils', nameZH: '四象徽記',
+              condEN: 'Suit Collector (4/4)',  condZH: '四色收集家（4/4）', cond: 'suitcollector' },
+            { id: 'luckydraw', nameEN: 'Spade Destiny', nameZH: '黑桃天命',
+              condEN: 'Lucky Draw (Final ♠3)', condZH: '幸運抽選（最後牌♠3）', cond: 'luckydraw' },
+            { id: 'fullsweep', nameEN: 'Sweep Crown',  nameZH: '全掃王冠',
+              condEN: 'Full Sweep (4 columns)', condZH: '全欄清除（4欄）', cond: 'fullsweep' },
+            { id: 'dailyregular', nameEN: 'Daily Orbit', nameZH: '每日軌跡',
+              condEN: 'Daily Regular (7 wins)', condZH: '每日常客（7 勝）', cond: 'dailyregular' },
+            { id: 'chainreaction', nameEN: 'Chain Flux', nameZH: '連鎖脈衝',
+              condEN: 'Chain Reaction (3+ combos)', condZH: '連鎖反應（同局 3+ combo）', cond: 'chainreaction' },
         ];
 
         function getUnlockedCardBacks() {
-            try { return JSON.parse(localStorage.getItem(CARD_BACK_UNLOCKED) || '["classic"]'); }
-            catch { return ['classic']; }
+            const defaults = [...DEFAULT_UNLOCKED_CARD_BACKS];
+            try {
+                const saved = JSON.parse(localStorage.getItem(CARD_BACK_UNLOCKED) || '[]');
+                const list = Array.isArray(saved) ? saved : [];
+                const merged = [...new Set([...defaults, ...list])];
+                return merged;
+            } catch {
+                return defaults;
+            }
         }
 
         // Returns true if newly unlocked
@@ -1296,16 +1354,41 @@
             return true;
         }
 
-        function checkCardBackUnlocks() {
-            const wins   = achievements.wins || 0;
+        function syncCardBackUnlocks({ showToast = false } = {}) {
+            const wins = achievements.wins || 0;
             const streak = achievements.currentStreak || 0;
-            const toUnlock = [];
-            if (wins   >= 10 && unlockCardBack('forest'))    toUnlock.push('forest');
-            if (wins   >= 50 && unlockCardBack('lucky'))     toUnlock.push('lucky');
-            if (streak >= 7  && unlockCardBack('crimson'))   toUnlock.push('crimson');
-            if (isPremium()  && unlockCardBack('nightgold')) toUnlock.push('nightgold');
-            for (const id of toUnlock) {
-                const cb   = CARD_BACKS.find(c => c.id === id);
+            const zeroClearWins = achievements.zeroClearWins || 0;
+            const maxCombo = achievements.maxCombo || 0;
+            const bestMoves = achievements.bestMoves;
+            const noUndoWins = achievements.noUndoWins || 0;
+            const suitWins = achievements.suitWins || {};
+            const fullSweepWins = achievements.fullSweepWins || 0;
+            const dailyWins = achievements.dailyWins || 0;
+            const comboGameWins = achievements.comboGameWins || 0;
+
+            // Card back unlocks are driven by achievement/progression state.
+            const targets = [
+                { id: 'forest', ok: wins >= 10 },         // Veteran Player milestone
+                { id: 'lucky', ok: wins >= 50 },          // Grandmaster milestone
+                { id: 'crimson', ok: streak >= 7 },       // Extended streak milestone
+                { id: 'void', ok: zeroClearWins >= 1 },   // Void Convergence
+                { id: 'nightgold', ok: isPremium() },     // Premium entitlement
+                { id: 'combo5', ok: maxCombo >= 5 },      // Combo Expert
+                { id: 'speed18', ok: bestMoves != null && bestMoves <= 18 }, // Speed Runner
+                { id: 'ironwill', ok: noUndoWins >= 1 },  // Iron Will
+                { id: 'suitcollector', ok: Object.values(suitWins).every(Boolean) }, // Suit Collector
+                { id: 'luckydraw', ok: suitWins.spade === true }, // Lucky Draw
+                { id: 'fullsweep', ok: fullSweepWins >= 1 }, // Full Sweep
+                { id: 'dailyregular', ok: dailyWins >= 7 }, // Daily Regular
+                { id: 'chainreaction', ok: comboGameWins >= 1 } // Chain Reaction
+            ];
+
+            for (const target of targets) {
+                if (!target.ok) continue;
+                if (!unlockCardBack(target.id)) continue;
+                if (!showToast) continue;
+                const cb = CARD_BACKS.find((c) => c.id === target.id);
+                if (!cb) continue;
                 const name = currentLocale === 'zh-Hant' ? cb.nameZH : cb.nameEN;
                 showAchievementToast(t('cardback.unlock_toast'), name);
             }
@@ -1722,6 +1805,51 @@
             return idx <= topMax || idx >= bottomMin;
         }
 
+        function isSelectionCandidateCard(slot, idx, selectedIndices = []) {
+            if (!slot || selectedIndices.length < 1 || selectedIndices.length > 2) return false;
+            if (selectedIndices.includes(idx)) return false;
+            return getLegalClearIndices(slot.cards).some((indices) => {
+                if (!indices.includes(idx)) return false;
+                return selectedIndices.every((selectedIdx) => indices.includes(selectedIdx));
+            });
+        }
+
+        function getSelectionFeedback(slot) {
+            const selectedIndices = selected
+                .filter((s) => s.slotId === slot.id)
+                .map((s) => s.idx)
+                .sort((a, b) => a - b);
+            const isComplete = selectedIndices.length === 3;
+            const sum = isComplete
+                ? selectedIndices.reduce((acc, idx) => acc + (slot.cards[idx]?.val ?? 0), 0)
+                : 0;
+            const isValidComplete = isComplete &&
+                isLegalSelectionPosition(slot.cards.length, selectedIndices) &&
+                [9, 19, 29].includes(sum);
+            const candidateIndices = new Set();
+
+            if (selectedIndices.length === 1 || selectedIndices.length === 2) {
+                slot.cards.forEach((_, idx) => {
+                    if (isSelectionCandidateCard(slot, idx, selectedIndices)) {
+                        candidateIndices.add(idx);
+                    }
+                });
+            }
+
+            return { selectedIndices, isComplete, isValidComplete, sum, candidateIndices };
+        }
+
+        function setMajorComboFocusLock(durationMs) {
+            comboFocusActive = true;
+            document.body.classList.add('major-combo-active');
+            if (comboFocusTimer) clearTimeout(comboFocusTimer);
+            comboFocusTimer = setTimeout(() => {
+                comboFocusActive = false;
+                comboFocusTimer = null;
+                document.body.classList.remove('major-combo-active');
+            }, durationMs);
+        }
+
         function showTutorialRuleHint() {
             const old = document.getElementById('need-three-tip');
             if (old) old.remove();
@@ -1832,6 +1960,38 @@
                     const count = opts.count || 4;
                     for (let i = 0; i < count; i++) {
                         add({ x: x + (Math.random() - 0.5) * 16, y, vx: (Math.random() - 0.5) * 1, vy: -0.3 - Math.random() * 1, gravity: 0.03, friction: 0.96, life: 200 + Math.random() * 150, size: 1 + Math.random() * 1.5, sizeDecay: 0.93, colorStart: '#ffe8b0', colorEnd: '#aa885544', shape: 'circle', rotation: 0, rotSpeed: 0 });
+                    }
+                },
+                discardTrail: (x, y, opts = {}) => {
+                    const tx = Number.isFinite(opts.tx) ? opts.tx : x + 80;
+                    const ty = Number.isFinite(opts.ty) ? opts.ty : y;
+                    const count = opts.count || 3;
+                    const dx = tx - x;
+                    const dy = ty - y;
+                    const dist = Math.max(1, Math.hypot(dx, dy));
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+                    const px = -ny;
+                    const py = nx;
+                    for (let i = 0; i < count; i++) {
+                        const spread = (i - (count - 1) / 2) * 0.35;
+                        const speed = 2.3 + Math.random() * 1.6;
+                        add({
+                            x: x + nx * i * 4,
+                            y: y + ny * i * 4,
+                            vx: nx * speed + px * spread + (Math.random() - 0.5) * 0.35,
+                            vy: ny * speed + py * spread + (Math.random() - 0.5) * 0.35,
+                            gravity: 0.02,
+                            friction: 0.98,
+                            life: 220 + Math.random() * 120,
+                            size: 1.5 + Math.random() * 1.3,
+                            sizeDecay: 0.955,
+                            colorStart: opts.colorStart || '#fff2b0',
+                            colorEnd: opts.colorEnd || '#ffcc6680',
+                            shape: 'circle',
+                            rotation: 0,
+                            rotSpeed: 0
+                        });
                     }
                 },
                 shatter: (x, y, opts = {}) => {
@@ -2469,18 +2629,19 @@
                     playTone(880, 100, 0.045, 0.08);
                 } else if (name === 'cardSelect1') {
                     if (playRealSound('cardSelect1', 0.7)) return;
-                    playTone(520, 45, 0.04, 0, 'sine');
+                    playTone(420, 45, 0.04, 0, 'sine');
                 } else if (name === 'cardSelect2') {
                     if (playRealSound('cardSelect2', 0.75)) return;
-                    playTone(700, 45, 0.044, 0, 'sine');
+                    playTone(620, 45, 0.044, 0, 'sine');
                 } else if (name === 'cardSelect3OK') {
-                    if (playRealSound('cardSelect3', 0.8)) return;
-                    playTone(900, 50, 0.048, 0, 'sine');
-                    playTone(1100, 60, 0.042, 0.05, 'sine');
+                    // 第三張可消除時，使用專用高音成功音色
+                    if (playRealSound('cardSelectOK', 0.8)) return;
+                    playTone(920, 50, 0.048, 0, 'sine');
+                    playTone(1180, 60, 0.042, 0.05, 'sine');
                 } else if (name === 'cardSelect3Fail') {
                     if (playRealSound('cardSelectFail', 0.75)) return;
-                    playTone(480, 55, 0.044, 0, 'sine');
-                    playTone(360, 70, 0.04, 0.06, 'sine');
+                    playTone(360, 55, 0.044, 0, 'sine');
+                    playTone(260, 70, 0.04, 0.06, 'sine');
                 } else if (name === 'cardDeselect') {
                     playTone(420, 35, 0.03, 0, 'sine');
                 }
@@ -2685,6 +2846,7 @@
             }
 
             saveAchievements();
+            syncCardBackUnlocks({ showToast: true });
             return { streakNotice };
         }
 
@@ -2711,9 +2873,9 @@
                 {
                     icon: '🔥',
                     title: t('achievement.badge.streak.title'),
-                    ok: achievements.longestStreak >= 3,
+                    ok: achievements.longestStreak >= 7,
                     text: t('achievement.badge.streak.progress', { value: achievements.longestStreak }),
-                    progress: Math.min(1, achievements.longestStreak / 3)
+                    progress: Math.min(1, achievements.longestStreak / 7)
                 },
                 {
                     icon: '🏆',
@@ -3011,6 +3173,14 @@
             const rewindOverlay = document.getElementById('rewind-overlay');
             if (rewindOverlay) rewindOverlay.remove();
             clearRewindFocus();
+            clearRewindLockTag();
+            clearAutoEliminateTimer();
+            if (comboFocusTimer) {
+                clearTimeout(comboFocusTimer);
+                comboFocusTimer = null;
+            }
+            comboFocusActive = false;
+            document.body.classList.remove('major-combo-active');
             if (winInterval) clearInterval(winInterval);
 
             if (!forceNew && targetMode === 'normal' && loadGameState()) {
@@ -3229,12 +3399,19 @@
 
                 const midStart = COMPRESS_TOP;
                 const midEnd = total - COMPRESS_BOT; // exclusive
+                const selectionFeedback = getSelectionFeedback(slot);
                 slot.cards.forEach((card, idx) => {
                     const div = document.createElement('div');
                     const selObj = selected.find(s => s.slotId === slot.id && s.idx === idx);
-                    const readyClass = selObj && threeReady ? ' selected-ready' : '';
+                    const readyClass = selObj && selectionFeedback.isComplete ? ' selected-ready' : '';
+                    const stateClass = selObj && selectionFeedback.isComplete
+                        ? (selectionFeedback.isValidComplete ? ' selected-magnetic' : ' selected-invalid-pending')
+                        : (!selObj && selectionFeedback.candidateIndices.has(idx) ? ' candidate-soft' : '');
                     const suitClass = card.suit === '♥' ? 'suit-heart' : card.suit === '♦' ? 'suit-diamond' : card.suit === '♠' ? 'suit-spade' : 'suit-club';
-                    div.className = `card ${card.color} ${suitClass} ${selObj ? 'selected' : ''}${readyClass}`;
+                    div.className = `card ${card.color} ${suitClass} ${selObj ? 'selected' : ''}${readyClass}${stateClass}`;
+                    div.dataset.cardKey = `${card.rank}${card.suit}`;
+                    div.dataset.slotId = String(slot.id);
+                    div.dataset.cardIdx = String(idx);
                     if (doCompress && idx >= midStart && idx < midEnd) {
                         div.className += ' stack-middle';
                     }
@@ -3493,14 +3670,18 @@
             historyStack.push({ type: 'clear', slotId, cards: clearedObjects, prevLast: lastCleared, comboBefore: combo });
             setUndoEnabled(true);
             const destRect = document.getElementById('discard-pile').getBoundingClientRect();
+            const discardCx = destRect.left + destRect.width / 2;
+            const discardCy = destRect.top + destRect.height / 2;
+            const reducedMotion = shouldMinimizeMotion();
             lastCleared = currentCards[sortedIndices[sortedIndices.length - 1]];
 
-            // --- Stage 1: Flash (0-200ms) — intensity scales with sum ---
+            // --- Phase 1: Windup ---
             if (colEl) {
                 sortedIndices.forEach(idx => {
                     const cardEl = colEl.children[idx];
                     if (cardEl) {
-                        cardEl.style.transition = `all ${getDelay(200)}ms ease`;
+                        cardEl.classList.add('clear-phase-windup');
+                        cardEl.style.transition = `all ${getDelay(CLEAR_MOVE_PHASES.WINDUP)}ms ease`;
                         if (sum >= 19) {
                             cardEl.style.transform = 'scale(1.12)';
                             cardEl.style.filter = 'brightness(1.6)';
@@ -3511,33 +3692,41 @@
                     }
                 });
             }
+
             // Flash + shake: restrained for sum=9, dramatic for 19/29
             if (sum >= 29) {
                 showClearFlash({ orange: true, intensity: 0.2 });
                 SHAKE.medium();
                 showGoldFlash();
-                triggerHaptic([80, 30, 80, 30, 80]);
             } else if (sum >= 19) {
                 showClearFlash({ intensity: 0.1 });
                 SHAKE.light();
-                triggerHaptic([50, 30, 50]);
             } else {
                 // sum=9: subtle — no shake, no flash, gentle haptic
-                triggerHaptic(30);
+                // keep the phase quiet; impact haptic comes with the actual clear
             }
 
-            // --- Stage 2: Number flyout (150-550ms) ---
+            // --- Phase 2: Number flyout ---
             setTimeout(() => {
                 showNumberFlyout(clearedObjects, colEl, sum);
-            }, getDelay(150));
+            }, getDelay(CLEAR_MOVE_PHASES.FLYOUT));
 
-            // --- Stage 3: Arc fly to discard (200-600ms) ---
+            // --- Phase 3: Impact + discard arc ---
             return new Promise((resolve) => {
                 setTimeout(() => {
+                    const comboAfterClear = combo + 1;
+                    const impactHaptic = sum >= 29 ? [80, 30, 80, 30, 80] : sum >= 19 ? [50, 30, 50] : 30;
+                    triggerHaptic(impactHaptic);
+                    playSound('clear', { sum, combo: comboAfterClear });
+
                     if (colEl) {
                         sortedIndices.forEach(idx => {
                             const cardEl = colEl.children[idx];
-                            if (cardEl) cardEl.classList.add('is-fading');
+                            if (cardEl) {
+                                cardEl.classList.remove('clear-phase-windup');
+                                cardEl.classList.add('clear-phase-impact');
+                                cardEl.classList.add('is-fading');
+                            }
                         });
                     }
 
@@ -3548,10 +3737,17 @@
                             const fly = createFly(currentCards[idx], cardEl.getBoundingClientRect());
                             // Shatter particles at takeoff
                             const r = cardEl.getBoundingClientRect();
-                            ParticleSystem.emit('shatter', r.left + r.width / 2, r.top + r.height / 2, { count: sum >= 29 ? 12 : sum >= 19 ? 8 : 5 });
+                            ParticleSystem.emit('shatter', r.left + r.width / 2, r.top + r.height / 2, {
+                                count: reducedMotion ? 2 : (sum >= 29 ? 12 : sum >= 19 ? 8 : 5)
+                            });
+                            ParticleSystem.emit('discardTrail', r.left + r.width / 2, r.top + r.height / 2, {
+                                tx: discardCx,
+                                ty: discardCy,
+                                count: reducedMotion ? 2 : 4
+                            });
 
                             const arcAnim = animateCardArc(fly, r, destRect, {
-                                duration: getDelay(400),
+                                duration: getDelay(CLEAR_MOVE_PHASES.WINDUP * 2),
                                 arcHeight: 50 + Math.random() * 30,
                                 rotate: 15 + Math.random() * 15,
                                 scale: 0.4
@@ -3574,11 +3770,10 @@
                     discardPile.push(...recycled);
                     clearedGroups.push([...recycled]);
                     sortedIndices.slice().sort((a, b) => b - a).forEach(i => slot.cards.splice(i, 1));
-                    combo++;
+                    combo = comboAfterClear;
                     selected = [];
                     maxCombo = Math.max(maxCombo, combo);
                     moveCount++;
-                    playSound('clear', { sum, combo });
                     let colCleared = false;
                     if (slot.cards.length === 0) {
                         colCleared = true;
@@ -3589,6 +3784,13 @@
                     setTimeout(() => {
                         if (colCleared) slot.active = false;
                         render();
+                        const nextColEl = document.getElementById(`col-${slotId}`);
+                        if (nextColEl) {
+                            nextColEl.querySelectorAll('.card').forEach((cardEl) => {
+                                cardEl.classList.add('clear-phase-settle');
+                                setTimeout(() => cardEl.classList.remove('clear-phase-settle'), getDelay(CLEAR_MOVE_PHASES.SETTLE));
+                            });
+                        }
                         updateDiscard(true);
                         showCombo(sum);
                         checkVictory();
@@ -3596,8 +3798,8 @@
                         if (!hasWon) checkDeadlock();
                         saveGameState();
                         resolve(true);
-                    }, colCleared ? getDelay(800) : 0);
-                }, getDelay(200));
+                    }, colCleared ? getDelay(CLEAR_MOVE_PHASES.SETTLE) : 0);
+                }, getDelay(CLEAR_MOVE_PHASES.IMPACT));
             });
         }
 
@@ -3744,7 +3946,9 @@
         function scheduleAutoEliminate() {
             if (autoEliminateTimer !== null) return; // already scheduled
             if (selected.length !== 3 || isBusy) return;
-            const delay = 0;
+            const slot = slots.find((s) => s.id === selected[0]?.slotId);
+            const feedback = slot ? getSelectionFeedback(slot) : null;
+            const delay = shouldMinimizeMotion() ? 0 : getDelay(feedback?.isValidComplete ? 90 : 120);
             autoEliminateTimer = setTimeout(() => {
                 autoEliminateTimer = null;
                 attemptClear();
@@ -3766,19 +3970,18 @@
                 return;
             }
             const slotId = selected[0].slotId; const slot = slots.find(s => s.id === slotId);
-            const currentCards = [...slot.cards]; const sum = selected.reduce((a, c) => a + currentCards[c.idx].val, 0);
+            if (!slot) return;
+            const currentCards = [...slot.cards];
             const sortedIndices = selected.map(s => s.idx).sort((a, b) => a - b);
-            const len = currentCards.length;
-            const isPos = JSON.stringify(sortedIndices) === JSON.stringify([len - 3, len - 2, len - 1]) ||
-                JSON.stringify(sortedIndices) === JSON.stringify([0, len - 2, len - 1]) ||
-                JSON.stringify(sortedIndices) === JSON.stringify([0, 1, len - 1]);
+            const selectionFeedback = getSelectionFeedback(slot);
 
-            if ([9, 19, 29].includes(sum) && isPos) {
+            if (selectionFeedback.isValidComplete) {
                 onTutorialEvent('attempt_clear_success');
-                await performClearMove(slotId, sortedIndices, sum);
+                await performClearMove(slotId, sortedIndices, selectionFeedback.sum);
             } else {
                 combo = 0; triggerHaptic(100);
                 playSound('error');
+                const sum = selectionFeedback.sum;
 
                 const errSlotId = selected[0]?.slotId;
                 const colEl = errSlotId != null ? document.getElementById(`col-${errSlotId}`) : null;
@@ -3803,6 +4006,7 @@
         function performUndoStep({ animateButton = true, runDeadlockCheck = true, persistState = true, force = false } = {}) {
             if (historyStack.length === 0) return false;
             if (isBusy && !force) return false;
+            const beforeRects = rewindSequenceActive ? captureCardRects() : null;
 
             // 按鈕旋轉動畫
             const btn = document.getElementById('btn-undo');
@@ -3828,33 +4032,36 @@
                 lastCleared = last.prevLast;
             }
             selected = []; render(); updateDiscard();
+            if (rewindSequenceActive && beforeRects) animateRewindCardMotion(beforeRects);
 
             // post-render 動畫
-            if (last.type === 'deal') {
-                // 牌堆數字 bump
-                const deckNum = document.getElementById('deck-num');
-                if (deckNum) {
-                    deckNum.classList.remove('undo-bump');
-                    void deckNum.offsetWidth;
-                    deckNum.classList.add('undo-bump');
-                    setTimeout(() => deckNum.classList.remove('undo-bump'), 360);
-                }
-            } else if (last.type === 'clear') {
-                // 復原的三張牌依序落入
-                const colEl = document.getElementById(`col-${last.slotId}`);
-                if (colEl) {
-                    const restoredIdxs = last.cards.map(c => c.idx).sort((a, b) => a - b);
-                    const cardEls = [...colEl.querySelectorAll('.card')];
-                    restoredIdxs.forEach((ci, i) => {
-                        const el = cardEls[ci];
-                        if (!el) return;
-                        el.style.animationDelay = `${i * 45}ms`;
-                        el.classList.add('undo-card-return');
-                        setTimeout(() => {
-                            el.classList.remove('undo-card-return');
-                            el.style.animationDelay = '';
-                        }, 380 + i * 45);
-                    });
+            if (!rewindSequenceActive) {
+                if (last.type === 'deal') {
+                    // 牌堆數字 bump
+                    const deckNum = document.getElementById('deck-num');
+                    if (deckNum) {
+                        deckNum.classList.remove('undo-bump');
+                        void deckNum.offsetWidth;
+                        deckNum.classList.add('undo-bump');
+                        setTimeout(() => deckNum.classList.remove('undo-bump'), 360);
+                    }
+                } else if (last.type === 'clear') {
+                    // 復原的三張牌依序落入
+                    const colEl = document.getElementById(`col-${last.slotId}`);
+                    if (colEl) {
+                        const restoredIdxs = last.cards.map(c => c.idx).sort((a, b) => a - b);
+                        const cardEls = [...colEl.querySelectorAll('.card')];
+                        restoredIdxs.forEach((ci, i) => {
+                            const el = cardEls[ci];
+                            if (!el) return;
+                            el.style.animationDelay = `${i * 45}ms`;
+                            el.classList.add('undo-card-return');
+                            setTimeout(() => {
+                                el.classList.remove('undo-card-return');
+                                el.style.animationDelay = '';
+                            }, 380 + i * 45);
+                        });
+                    }
                 }
             }
 
@@ -3874,27 +4081,40 @@
 
             clearHintHighlight();
             clearRewindFocus();
+            clearRewindLockTag();
             isBusy = true;
+            rewindSequenceActive = true;
+            setTimerRewinding(true);
             const overlay = createRewindOverlay();
-            const rewindSteps = historyStack.length - rewindIndex;
-            for (let i = 0; i < rewindSteps; i++) {
-                const didUndo = performUndoStep({
-                    animateButton: true,
-                    runDeadlockCheck: false,
-                    persistState: false,
-                    force: true
-                });
-                if (!didUndo) break;
-                if (i % 2 === 0) triggerHaptic(18);
-                await waitMs(getDelay(230));
+            try {
+                const rewindSteps = historyStack.length - rewindIndex;
+                const maxDuration = getDelay(1800);
+                const baseStep = getDelay(190);
+                const stepDelay = Math.max(getDelay(120), Math.min(baseStep, Math.floor(maxDuration / Math.max(1, rewindSteps))));
+
+                for (let i = 0; i < rewindSteps; i++) {
+                    const didUndo = performUndoStep({
+                        animateButton: true,
+                        runDeadlockCheck: false,
+                        persistState: false,
+                        force: true
+                    });
+                    if (!didUndo) break;
+                    if (i % 2 === 0) triggerHaptic(18);
+                    await waitMs(stepDelay);
+                }
+                triggerHaptic([65, 35, 65]);
+                const missedMove = findFirstLegalClearMove();
+                showRewindFocus(missedMove);
+                showRewindLockTag(missedMove);
+                checkDeadlock();
+                saveGameState();
+            } finally {
+                removeRewindOverlay(overlay);
+                setTimerRewinding(false);
+                rewindSequenceActive = false;
+                isBusy = false;
             }
-            triggerHaptic([65, 35, 65]);
-            removeRewindOverlay(overlay);
-            isBusy = false;
-            const missedMove = findFirstLegalClearMove();
-            showRewindFocus(missedMove);
-            checkDeadlock();
-            saveGameState();
         }
 
         function undo() {
@@ -3989,12 +4209,17 @@
             if (capturedCombo >= 4) tier = 5;
             else if (capturedCombo >= 3) tier = 4;
             else tier = 3;
+            const majorComboAllowed = tier >= 4 && !comboFocusActive && !shouldMinimizeMotion();
+            const useLiteVariant = tier >= 4 && !majorComboAllowed;
+            if (majorComboAllowed) {
+                setMajorComboFocusLock(getDelay(1800));
+            }
 
             // ── 200ms 空拍：讓上一個消除特效沉澱，再砸進來 ──
             setTimeout(() => {
                 const layer = document.getElementById('fx-layer');
                 const comboDiv = document.createElement('div');
-                comboDiv.className = `combo-text tier-${tier}`;
+                comboDiv.className = `combo-text tier-${tier}${useLiteVariant ? ' combo-lite' : ''}`;
                 comboDiv.textContent = `${capturedCombo} COMBO!`;
                 layer.appendChild(comboDiv);
                 setTimeout(() => comboDiv.remove(), getDelay(1600));
@@ -4009,7 +4234,7 @@
                 const cx = window.innerWidth / 2, cy = window.innerHeight * 0.45;
 
                 // ── 金邊邊框閃（tier ≥ 2）──
-                if (tier >= 2) {
+                if (tier >= 2 && !useLiteVariant) {
                     const borderEl = document.createElement('div');
                     borderEl.className = 'combo-border-flash';
                     document.body.appendChild(borderEl);
@@ -4017,29 +4242,27 @@
                 }
 
                 // ── Tier-based 特效 ──
-                if (tier >= 5) {
+                if (useLiteVariant) {
+                    ParticleSystem.emit('fountain', cx, cy, { count: 6 });
+                } else if (tier >= 5) {
                     SHAKE.medium();
-                    ParticleSystem.emit('fireworks', cx, cy, { count: 35 });
+                    ParticleSystem.emit('fireworks', cx, cy, { count: 24 });
                     const vig = document.createElement('div');
                     vig.className = 'golden-vignette';
                     document.body.appendChild(vig);
-                    setTimeout(() => vig.remove(), getDelay(2000));
-                    showSpiritBeast(5); // 麒麟
+                    setTimeout(() => vig.remove(), getDelay(1400));
+                    showSpiritBeast(5);
                 } else if (tier >= 4) {
                     SHAKE.light();
-                    ParticleSystem.emit('confetti', cx, cy, { count: 25 });
+                    ParticleSystem.emit('confetti', cx, cy, { count: 16 });
                     const warm = document.createElement('div');
                     warm.className = 'warm-flash';
                     document.body.appendChild(warm);
-                    setTimeout(() => warm.remove(), getDelay(800));
-                    showSpiritBeast(4); // 鳳
+                    setTimeout(() => warm.remove(), getDelay(560));
+                    showSpiritBeast(4);
                 } else if (tier >= 3) {
-                    ParticleSystem.emit('fountain', cx, cy, { count: 18 });
-                    const warm = document.createElement('div');
-                    warm.className = 'warm-flash';
-                    document.body.appendChild(warm);
-                    setTimeout(() => warm.remove(), getDelay(800));
-                    showSpiritBeast(3); // 龍
+                    ParticleSystem.emit('fountain', cx, cy, { count: 10 });
+                    showSpiritBeast(3);
                 } else if (tier >= 2) {
                     ParticleSystem.emit('fountain', cx, cy, { count: 10 });
                 }
@@ -4103,6 +4326,17 @@
             if (options.hidden) {
                 f.classList.add('face-down');
                 f.innerHTML = '';
+                const deckPile = document.getElementById('deck-pile');
+                if (deckPile) {
+                    const deckBg = window.getComputedStyle(deckPile).backgroundImage;
+                    if (deckBg && deckBg !== 'none') {
+                        f.classList.add('use-cardback');
+                        f.style.backgroundImage = deckBg;
+                        f.style.backgroundSize = 'cover';
+                        f.style.backgroundPosition = 'center';
+                        f.style.backgroundRepeat = 'no-repeat';
+                    }
+                }
             } else {
                 setFlyFace(f, data);
             }
@@ -4427,7 +4661,6 @@
             const fortuneText = isFirstWinToday ? fortuneBySuit(winCardSuit) : '';
             lastFortuneText = fortuneText;
             onWinDropFragment(); // 第二局起掉碎片（函式內部自行判斷）
-            checkCardBackUnlocks();
             const bestResult = updateBestStats(current);
             const achievementResult = updateAchievementsOnWin(current, 'lucky3');
             const bestMessage = buildBestMessage(bestResult);
@@ -4448,6 +4681,10 @@
                         <div class="win-stat-row"><span>${t('win.stat.max_combo')}</span><strong data-countup="${maxCombo}">0</strong></div>
                     </div>
                     ${fortuneText ? `<p class="win-fortune">${fortuneText}</p>` : ''}
+                    <details class="win-mystery">
+                        <summary class="win-mystery-toggle">${t('win.mystery.toggle')}</summary>
+                        <p class="win-mystery-body">${t('win.mystery.body')}</p>
+                    </details>
                     ${dailyMsg ? `<p class="win-daily">${dailyMsg}</p>` : ''}
                     <p class="win-rank-msg" style="display:none"></p>
                     ${achievementResult.streakNotice ? `<p class="win-daily">${achievementResult.streakNotice}</p>` : ''}
@@ -4503,8 +4740,6 @@
             const current = { elapsedSec, moveCount, maxCombo };
             lastFortuneText = '';
             onWinDropFragment(); // 第二局起掉碎片
-            if (unlockCardBack('void')) showAchievementToast(t('cardback.unlock_toast'), currentLocale === 'zh-Hant' ? '虛空' : 'Void');
-            checkCardBackUnlocks();
             const bestResult = updateBestStats(current);
             const achievementResult = updateAchievementsOnWin(current, 'zero-clear');
             const bestMessage = buildBestMessage(bestResult);
@@ -4602,7 +4837,6 @@
             const old = document.getElementById('deadlock-overlay');
             if (old) old.remove();
 
-            const canUndo = historyStack.length > 0;
             const canRewind = findFirstMissedClearHistoryIndex() >= 0;
             const overlay = document.createElement('div');
             overlay.className = 'deadlock-overlay';
@@ -4613,7 +4847,6 @@
                     <p class="deadlock-text">${t('deadlock.body')}</p>
                     <div class="deadlock-actions">
                         <button type="button" class="deadlock-btn undo" onclick="resolveDeadlock('rewind')" ${canRewind ? '' : 'disabled'}>${t('deadlock.rewind')}</button>
-                        <button type="button" class="deadlock-btn undo" onclick="resolveDeadlock('undo')" ${canUndo ? '' : 'disabled'}>${t('deadlock.undo')}</button>
                         <button type="button" class="deadlock-btn new" onclick="resolveDeadlock('new')">${t('deadlock.new')}</button>
                     </div>
                 </div>
@@ -4628,10 +4861,6 @@
             hideDeadlockOverlay();
             if (action === 'rewind') {
                 rewindToFirstMissedClear();
-                return;
-            }
-            if (action === 'undo') {
-                undo();
                 return;
             }
             if (action === 'new') {
@@ -4680,6 +4909,15 @@
             }
         }
 
+        function clearRewindLockTag() {
+            const old = document.getElementById('rewind-lock-tag');
+            if (old) old.remove();
+            if (rewindLockTagTimer) {
+                clearTimeout(rewindLockTagTimer);
+                rewindLockTagTimer = null;
+            }
+        }
+
         function showRewindFocus(move) {
             clearRewindFocus();
             if (!move) return;
@@ -4692,10 +4930,30 @@
             rewindFocusTimer = setTimeout(clearRewindFocus, getDelay(3400));
         }
 
+        function showRewindLockTag(move) {
+            clearRewindLockTag();
+            if (!move) return;
+            const colEl = document.getElementById(`col-${move.slotId}`);
+            if (!colEl) return;
+            const cardEls = colEl.querySelectorAll('.card');
+            const anchor = cardEls[move.indices[0]];
+            if (!anchor) return;
+            const rect = anchor.getBoundingClientRect();
+            const tag = document.createElement('div');
+            tag.className = 'rewind-lock-tag';
+            tag.id = 'rewind-lock-tag';
+            tag.textContent = `${t('deadlock.rewind')} ✓`;
+            tag.style.left = `${Math.round(rect.left + rect.width / 2)}px`;
+            tag.style.top = `${Math.round(Math.max(42, rect.top - 18))}px`;
+            document.body.appendChild(tag);
+            rewindLockTagTimer = setTimeout(clearRewindLockTag, getDelay(1700));
+        }
+
         function createRewindOverlay() {
             const overlay = document.createElement('div');
             overlay.className = 'rewind-overlay';
             overlay.id = 'rewind-overlay';
+            document.body.classList.add('rewind-active');
             document.body.appendChild(overlay);
             requestAnimationFrame(() => overlay.classList.add('show'));
             return overlay;
@@ -4707,10 +4965,71 @@
             setTimeout(() => {
                 if (overlay.parentNode) overlay.remove();
             }, getDelay(220));
+            document.body.classList.remove('rewind-active');
         }
 
         function waitMs(ms) {
             return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        function setTimerRewinding(active) {
+            const timerEl = document.getElementById('timer');
+            if (!timerEl) return;
+            timerEl.classList.toggle('rewinding', !!active);
+        }
+
+        function captureCardRects() {
+            const map = new Map();
+            document.querySelectorAll('.card[data-card-key]').forEach((el) => {
+                const key = el.dataset.cardKey;
+                if (!key) return;
+                map.set(key, el.getBoundingClientRect());
+            });
+            return map;
+        }
+
+        function animateRewindCardMotion(beforeRects) {
+            if (!beforeRects || beforeRects.size === 0) return;
+            document.querySelectorAll('.card[data-card-key]').forEach((el) => {
+                const key = el.dataset.cardKey;
+                if (!key) return;
+                const before = beforeRects.get(key);
+                if (!before) return;
+                const after = el.getBoundingClientRect();
+                const dx = before.left - after.left;
+                const dy = before.top - after.top;
+                if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+
+                el.animate(
+                    [
+                        { transform: `translate(${dx}px, ${dy}px) scale(0.985)`, filter: 'brightness(0.95)' },
+                        { transform: 'translate(0px, 0px) scale(1)', filter: 'brightness(1)' }
+                    ],
+                    {
+                        duration: getDelay(170),
+                        easing: 'cubic-bezier(0.2, 0.85, 0.25, 1)',
+                        fill: 'none'
+                    }
+                );
+                if (Math.abs(dx) + Math.abs(dy) > 24) createRewindMotionTrail(before, after);
+            });
+        }
+
+        function createRewindMotionTrail(before, after) {
+            const trail = document.createElement('div');
+            trail.className = 'rewind-trail';
+            const x1 = before.left + before.width / 2;
+            const y1 = before.top + before.height / 2;
+            const x2 = after.left + after.width / 2;
+            const y2 = after.top + after.height / 2;
+            const dist = Math.hypot(x2 - x1, y2 - y1);
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            trail.style.width = `${Math.max(12, dist)}px`;
+            trail.style.left = `${x1}px`;
+            trail.style.top = `${y1}px`;
+            trail.style.transform = `translateY(-50%) rotate(${angle}deg)`;
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), getDelay(180));
         }
 
         function initHintLongPress() {
@@ -4869,6 +5188,7 @@
         developerMode = loadDeveloperMode();
         settings = loadSettings();
         achievements = loadAchievements();
+        syncCardBackUnlocks({ showToast: false });
         loadCardBack();
         bindSettingsUI();
         setLocale(settings.locale, { persist: false });
@@ -4907,10 +5227,7 @@
             updateAdVisibility();
             closePremiumModal();
             closeInterstitial();
-            if (unlockCardBack('nightgold')) {
-                const name = currentLocale === 'zh-Hant' ? '夜金' : 'Night Gold';
-                showAchievementToast(t('cardback.unlock_toast'), name);
-            }
+            syncCardBackUnlocks({ showToast: true });
             const title = t('premium.thanks_title');
             const body = t('premium.thanks_body');
             if (typeof showAchievementToast === 'function') showAchievementToast(title, body);

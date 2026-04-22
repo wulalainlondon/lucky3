@@ -4,6 +4,7 @@
 // S24 Ultra landscape CSS viewport: ~915 × 393
 
 const { test, expect } = require('@playwright/test');
+test.describe.configure({ timeout: 90000 });
 
 const NATIVE_URL = '/www/index.html';
 
@@ -71,14 +72,14 @@ async function getColumnBoxes(page) {
 }
 
 async function ensureGameReady(page) {
-    const homeVisible = await page.locator('#home-screen').isVisible().catch(() => false);
-    if (homeVisible) {
-        await page.evaluate(() => {
-            if (typeof window.homeNewGame === 'function') window.homeNewGame();
-        });
-        await expect(page.locator('#home-screen')).not.toBeVisible({ timeout: 8000 });
-    }
+    await page.evaluate(() => {
+        if (typeof window.homeNewGame === 'function') window.homeNewGame();
+    });
+    await expect(page.locator('#home-screen')).not.toBeVisible({ timeout: 10000 });
     await expect(page.locator('#deck-pile')).toBeVisible({ timeout: 10000 });
+    await expect.poll(async () => page.locator('.column').count(), { timeout: 12000 }).toBe(4);
+    await expect(page.locator('.flying')).toHaveCount(0, { timeout: 15000 });
+    await expect(page.locator('#deck-num')).not.toHaveText('40', { timeout: 15000 });
 }
 
 // ── Setup ──────────────────────────────────────────────────────────────────

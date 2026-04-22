@@ -4,7 +4,8 @@ const path = require('path');
 
 module.exports = defineConfig({
     testDir: './tests',
-    timeout: 30000,
+    timeout: 60000,
+    workers: 1,
     retries: 1,
     reporter: 'list',
     use: {

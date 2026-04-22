@@ -139,6 +139,16 @@
             min-width: 84px;
             text-align: center;
         }
+        .timer-pill.rewinding {
+            color: #ffe7a8;
+            border-color: rgba(255, 208, 88, 0.72);
+            box-shadow: 0 0 0 2px rgba(255, 208, 88, 0.2), 0 0 14px rgba(255, 192, 91, 0.35);
+            animation: timer-rewind-pulse calc(0.24s * var(--anim-scale)) ease-in-out infinite alternate;
+        }
+        @keyframes timer-rewind-pulse {
+            from { transform: translateX(0); filter: brightness(0.94); }
+            to { transform: translateX(-1px); filter: brightness(1.14); }
+        }
 
         .header-settings {
             font-size: 19px;
@@ -885,18 +895,70 @@
             position: fixed;
             left: 50%;
             top: 38%;
-            transform: translateX(-50%);
-            font-size: 3.8rem;
+            width: clamp(64px, 15vw, 84px);
+            height: clamp(64px, 15vw, 84px);
             pointer-events: none;
             z-index: 9700;
-            animation: spirit-rise calc(1.8s * var(--anim-scale)) ease-out forwards;
-            filter: drop-shadow(0 0 16px rgba(255,215,0,0.7));
+            transform: translate(-50%, -50%) translateY(8px) scale(0.9);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 215, 120, 0.55);
+            background: radial-gradient(circle at 50% 50%, rgba(255, 225, 160, 0.2) 0%, rgba(255, 225, 160, 0.04) 58%, transparent 80%);
+            box-shadow: 0 0 16px rgba(255, 215, 120, 0.25), inset 0 0 14px rgba(255, 225, 170, 0.14);
+            animation: spirit-mark-rise calc(1.1s * var(--anim-scale)) cubic-bezier(0.24, 0.82, 0.31, 1) forwards;
+            will-change: transform, opacity;
         }
-        @keyframes spirit-rise {
-            0%   { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.6); }
-            20%  { opacity: 1; transform: translateX(-50%) translateY(-20px) scale(1.1); }
-            60%  { opacity: 0.9; transform: translateX(-50%) translateY(-50px) scale(1.0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-90px) scale(0.8); }
+        .spirit-beast::before,
+        .spirit-beast::after {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 215, 120, 0.28);
+        }
+        .spirit-beast::after {
+            inset: 18px;
+            border-color: rgba(255, 235, 180, 0.22);
+        }
+        .spirit-beast-core {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spirit-beast-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 12px rgba(255, 220, 145, 0.3));
+        }
+        .spirit-beast.tier-4 { border-color: rgba(198, 228, 255, 0.58); }
+        .spirit-beast.tier-4 .spirit-beast-icon {
+            filter: drop-shadow(0 0 13px rgba(170, 220, 255, 0.35));
+        }
+        .spirit-beast.tier-5 { border-color: rgba(255, 230, 156, 0.65); }
+        .spirit-beast.tier-5 {
+            box-shadow: 0 0 21px rgba(255, 224, 130, 0.36), inset 0 0 16px rgba(255, 235, 165, 0.18);
+        }
+        .spirit-beast.tier-5::after {
+            animation: spirit-mark-pulse calc(0.42s * var(--anim-scale)) ease-out 1;
+        }
+        .spirit-beast.tier-5 .spirit-beast-icon {
+            filter: drop-shadow(0 0 16px rgba(255, 232, 164, 0.45));
+        }
+        @keyframes spirit-mark-rise {
+            0%   { opacity: 0; transform: translate(-50%, -50%) translateY(8px) scale(0.9); }
+            18%  { opacity: 1; transform: translate(-50%, -50%) translateY(-2px) scale(1.04); }
+            65%  { opacity: 0.94; transform: translate(-50%, -50%) translateY(-14px) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) translateY(-28px) scale(0.96); }
+        }
+        @keyframes spirit-mark-pulse {
+            from { transform: scale(0.9); opacity: 0.45; }
+            to   { transform: scale(1.18); opacity: 0; }
         }
 
         .lucky-three-win {
@@ -1051,10 +1113,10 @@
         .warm-flash {
             position: fixed;
             inset: 0;
-            background: radial-gradient(ellipse at 50% 45%, rgba(255,200,80,0.12) 0%, transparent 55%);
+            background: radial-gradient(ellipse at 50% 45%, rgba(255,200,80,0.08) 0%, transparent 58%);
             pointer-events: none;
             z-index: 9996;
-            animation: warm-glow calc(0.8s * var(--anim-scale)) ease-out forwards;
+            animation: warm-glow calc(0.56s * var(--anim-scale)) ease-out forwards;
         }
 
         @keyframes warm-glow {
@@ -1068,8 +1130,8 @@
             inset: 0;
             pointer-events: none;
             z-index: 9996;
-            background: radial-gradient(ellipse at center, transparent 35%, rgba(255,200,60,0.15) 100%);
-            animation: vignette-fade calc(2s * var(--anim-scale)) ease-out forwards;
+            background: radial-gradient(ellipse at center, transparent 38%, rgba(255,200,60,0.11) 100%);
+            animation: vignette-fade calc(1.4s * var(--anim-scale)) ease-out forwards;
         }
 
         @keyframes vignette-fade {
@@ -1677,6 +1739,34 @@
             backdrop-filter: blur(2px);
             transition: opacity calc(0.22s * var(--anim-scale)) ease;
         }
+        .rewind-overlay::before,
+        .rewind-overlay::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .rewind-overlay::before {
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 246, 210, 0.065) 0px,
+                    rgba(255, 246, 210, 0.065) 1px,
+                    transparent 1px,
+                    transparent 4px
+                );
+            opacity: 0.35;
+            animation: rewind-scanline calc(0.56s * var(--anim-scale)) linear infinite;
+        }
+        .rewind-overlay::after {
+            background:
+                radial-gradient(circle at 15% 22%, rgba(255, 224, 145, 0.2) 0 1.5px, transparent 2px),
+                radial-gradient(circle at 72% 40%, rgba(255, 224, 145, 0.18) 0 1.4px, transparent 2px),
+                radial-gradient(circle at 43% 74%, rgba(255, 224, 145, 0.15) 0 1.3px, transparent 2px);
+            animation: rewind-noise-drift calc(0.85s * var(--anim-scale)) steps(2) infinite;
+            mix-blend-mode: screen;
+            opacity: 0.24;
+        }
 
         .rewind-overlay.show {
             opacity: 1;
@@ -1686,6 +1776,50 @@
         @keyframes rewind-overlay-breath {
             0%, 100% { filter: saturate(1); }
             50% { filter: saturate(1.18); }
+        }
+        @keyframes rewind-scanline {
+            from { transform: translateY(0); }
+            to { transform: translateY(4px); }
+        }
+        @keyframes rewind-noise-drift {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(1px, -1px); }
+            100% { transform: translate(-1px, 1px); }
+        }
+        .rewind-trail {
+            position: fixed;
+            height: 2px;
+            border-radius: 999px;
+            transform-origin: left center;
+            background: linear-gradient(90deg, rgba(255, 230, 165, 0.65) 0%, rgba(255, 230, 165, 0.05) 100%);
+            box-shadow: 0 0 10px rgba(255, 222, 145, 0.38);
+            z-index: 10003;
+            pointer-events: none;
+            animation: rewind-trail-fade calc(0.18s * var(--anim-scale)) ease-out forwards;
+        }
+        @keyframes rewind-trail-fade {
+            from { opacity: 0.78; }
+            to { opacity: 0; }
+        }
+        .rewind-lock-tag {
+            position: fixed;
+            transform: translate(-50%, -100%);
+            z-index: 10004;
+            pointer-events: none;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            color: #f9ffec;
+            background: linear-gradient(180deg, rgba(30, 124, 88, 0.92), rgba(19, 88, 64, 0.9));
+            border: 1px solid rgba(179, 255, 221, 0.74);
+            border-radius: 999px;
+            padding: 4px 10px;
+            box-shadow: 0 0 0 2px rgba(83, 221, 160, 0.25), 0 0 18px rgba(76, 210, 150, 0.38);
+            animation: rewind-lock-in calc(0.24s * var(--anim-scale)) ease-out;
+        }
+        @keyframes rewind-lock-in {
+            from { opacity: 0; transform: translate(-50%, -80%) scale(0.86); }
+            to { opacity: 1; transform: translate(-50%, -100%) scale(1); }
         }
 
         .need-three-tip {
@@ -3023,12 +3157,142 @@
         }
         .gallery-frame {
             position: relative; display: inline-block;
+            border-radius: 3px;
+            /* default fallback frame */
             box-shadow:
                 0 0 0 4px #b8860b,
                 0 0 0 8px #8B6914,
                 0 0 0 12px #DAA520,
                 0 0 32px rgba(0,0,0,0.8);
-            border-radius: 3px;
+        }
+        /* ── per-painting frame styles ── */
+        .gallery-frame.frame-cherry-gold-spring {
+            border: 6px solid #c9a84c; border-radius: 2px;
+            box-shadow:
+                inset 0 0 0 3px #f5e6a3,
+                inset 0 0 0 6px #b8892a,
+                0 0 0 10px #c9a84c,
+                0 0 0 14px #8a5e1a,
+                0 6px 18px 14px rgba(100,60,10,0.45),
+                0 12px 36px 14px rgba(60,30,5,0.25);
+        }
+        .gallery-frame.frame-iron-cliff-rust {
+            border: 8px solid #7a3b1e; border-radius: 1px;
+            box-shadow:
+                inset 0 0 0 3px #4a1e0a,
+                inset 0 0 0 6px #a05030,
+                0 0 0 12px #6b3018,
+                0 0 0 18px #2e1208,
+                0 8px 24px 18px rgba(40,15,5,0.55),
+                0 16px 40px 18px rgba(20,8,2,0.3);
+        }
+        .gallery-frame.frame-mediterranean-vermillion {
+            border: 7px solid #c0392b; border-radius: 2px;
+            box-shadow:
+                inset 0 0 0 2px #f4d03f,
+                inset 0 0 0 5px #922b21,
+                0 0 0 8px #c0392b,
+                0 0 0 13px #922b21,
+                0 0 0 16px #f4d03f,
+                0 8px 28px 16px rgba(100,20,10,0.5),
+                0 0 50px 10px rgba(192,57,43,0.2);
+        }
+        .gallery-frame.frame-taiwan-temple-lacquer {
+            border: 8px solid #9b1b1b; border-radius: 1px;
+            box-shadow:
+                inset 0 0 0 2px #d4a017,
+                inset 0 0 0 5px #5a0e0e,
+                inset 0 0 0 8px #1a0a0a,
+                0 0 0 12px #7a1515,
+                0 0 0 16px #1a0a0a,
+                0 0 0 20px #d4a017,
+                0 10px 30px 20px rgba(30,5,5,0.6),
+                0 0 40px 8px rgba(155,27,27,0.25);
+        }
+        .gallery-frame.frame-oak-grove-timber {
+            border: 7px solid #5c3317; border-radius: 2px;
+            box-shadow:
+                inset 0 0 0 3px #8b5a2b,
+                inset 0 0 0 6px #3e2009,
+                0 0 0 10px #6b4020,
+                0 0 0 16px #2e1508,
+                0 8px 20px 16px rgba(40,20,5,0.5),
+                0 16px 40px 16px rgba(20,10,2,0.3);
+        }
+        .gallery-frame.frame-bronze-green-botanical {
+            border: 6px solid #4a6741; border-radius: 2px;
+            box-shadow:
+                inset 0 0 0 2px #c8a84b,
+                inset 0 0 0 5px #2e4a28,
+                0 0 0 9px #4a6741,
+                0 0 0 14px #8a7530,
+                0 0 0 18px #2e4a28,
+                0 8px 24px 18px rgba(20,35,15,0.5),
+                0 0 35px 6px rgba(74,103,65,0.2);
+        }
+        .gallery-frame.frame-matte-black-contemporary {
+            border: 5px solid #0d0d0d; border-radius: 0px;
+            box-shadow:
+                inset 0 0 0 2px #2a2a2a,
+                inset 0 0 0 4px #c0c0c0,
+                0 0 0 8px #111111,
+                0 0 0 14px #1e1e1e,
+                0 10px 30px 14px rgba(0,0,0,0.7),
+                0 20px 50px 14px rgba(0,0,0,0.4);
+        }
+        .gallery-frame.frame-exhibit-walnut-mat {
+            border: 10px solid #3a1f0d; border-radius: 1px;
+            box-shadow:
+                inset 0 0 0 4px #f0e8d8,
+                inset 0 0 0 8px #d4c9b0,
+                inset 0 0 0 12px #3a1f0d,
+                0 0 0 16px #2a1508,
+                0 10px 28px 16px rgba(30,15,5,0.55),
+                0 20px 50px 16px rgba(15,8,2,0.35);
+        }
+        .gallery-frame.frame-provence-sky-blue {
+            border: 5px solid #5b8fa8; border-radius: 3px;
+            box-shadow:
+                inset 0 0 0 3px #d6eaf8,
+                inset 0 0 0 6px #85b8d0,
+                0 0 0 10px #5b8fa8,
+                0 0 0 15px #2e6e8a,
+                0 8px 24px 15px rgba(30,80,110,0.4),
+                0 0 45px 8px rgba(91,143,168,0.3);
+        }
+        .gallery-frame.frame-cosmic-black-yellow {
+            border: 6px solid #1a1a1a; border-radius: 0px;
+            box-shadow:
+                inset 0 0 0 2px #f0c010,
+                inset 0 0 0 5px #1a1a1a,
+                0 0 0 9px #1a1a1a,
+                0 0 0 12px #f0c010,
+                0 0 0 16px #1a1a1a,
+                0 10px 30px 16px rgba(0,0,0,0.65),
+                0 0 50px 10px rgba(240,192,16,0.2);
+        }
+        .gallery-frame.frame-cosmic-violet-gold {
+            border: 6px solid #3d1a6b; border-radius: 0px;
+            box-shadow:
+                inset 0 0 0 2px #d4a017,
+                inset 0 0 0 5px #2a0e50,
+                0 0 0 9px #4b2080,
+                0 0 0 13px #1a0a30,
+                0 0 0 17px #d4a017,
+                0 10px 32px 17px rgba(40,10,80,0.65),
+                0 0 55px 12px rgba(100,40,180,0.25);
+        }
+        .gallery-frame.frame-pop-art-neon-pink {
+            border: 7px solid #e91e8c; border-radius: 3px;
+            box-shadow:
+                inset 0 0 0 2px #ffe066,
+                inset 0 0 0 5px #c2185b,
+                0 0 0 9px #e91e8c,
+                0 0 0 13px #7b1fa2,
+                0 0 0 17px #ffe066,
+                0 8px 28px 17px rgba(150,20,100,0.5),
+                0 0 55px 12px rgba(233,30,140,0.35),
+                0 0 90px 20px rgba(123,31,162,0.2);
         }
         .gallery-frame img {
             display: block; max-width: min(80vw, 400px);
@@ -3447,7 +3711,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.21-v4';
+        const APP_VERSION = '2026.04.22-v5';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -3632,7 +3896,7 @@
             'hint.need_three_two': '1 more card needed before MATCH 3',
             'hint.need_three_default': 'Please select 3 cards first',
             'deadlock.title': 'No legal clear available',
-            'deadlock.body': 'The deck is empty and no valid 9/19/29 combination remains on the board. Undo your last move or start fresh?',
+            'deadlock.body': 'The deck is empty and no valid 9/19/29 combination remains on the board. Rewind to a missed clear or start a new run?',
             'deadlock.rewind': 'Rewind to Missed Clear',
             'deadlock.undo': 'Undo',
             'deadlock.new': 'New Run',
@@ -3804,8 +4068,8 @@
                 'hint.need_three_two': '還差 1 張，才能消三張',
                 'hint.need_three_default': '請先選滿 3 張牌',
                 'deadlock.title': '卡住了！目前無合法消除',
-                'deadlock.body': '牌庫已空，且場上沒有可消除的 9 / 19 / 29 組合。你想要倒轉一步，還是直接開新局？',
-                'deadlock.rewind': '倒帶到漏消點',
+                'deadlock.body': '牌庫已空，且場上沒有可消除的 9 / 19 / 29 組合。你想要倒帶到錯過消除點，還是直接開新局？',
+                'deadlock.rewind': '倒帶',
                 'deadlock.undo': '倒轉一步',
                 'deadlock.new': '開新局',
                 'fortune.fallback': '今日幸運籤：Lucky 3。今天會有一件小好事悄悄發生。',
@@ -3957,7 +4221,8 @@
                 'hint.need_three_two': 'あと1枚選んでからMATCH 3できます',
                 'hint.need_three_default': 'まず3枚選んでください',
                 'deadlock.title': '詰まりました！合法な消去がありません',
-                'deadlock.body': 'デッキが空で、場に9・19・29の組み合わせがありません。1手戻るか、新しいゲームを始めますか？',
+                'deadlock.body': 'デッキが空で、場に9・19・29の組み合わせがありません。見逃した消去ポイントまで巻き戻すか、新しいゲームを始めますか？',
+                'deadlock.rewind': '巻き戻し',
                 'deadlock.undo': '1手戻る',
                 'deadlock.new': '新しいゲーム',
                 'fortune.fallback': 'Lucky 3おみくじ：今日は小さな幸運が静かに訪れます。',
@@ -4108,7 +4373,8 @@
                 'hint.need_three_two': '카드 1장이 더 필요합니다',
                 'hint.need_three_default': '먼저 카드 3장을 선택해 주세요',
                 'deadlock.title': '막혔습니다! 유효한 제거가 없습니다',
-                'deadlock.body': '덱이 비어 있고 필드에 9/19/29 조합이 없습니다. 한 수 되돌리거나 새 게임을 시작할까요?',
+                'deadlock.body': '덱이 비어 있고 필드에 9/19/29 조합이 없습니다. 놓친 제거 지점으로 되감거나 새 게임을 시작할까요?',
+                'deadlock.rewind': '되감기',
                 'deadlock.undo': '한 수 되돌리기',
                 'deadlock.new': '새 게임',
                 'fortune.fallback': 'Lucky 3 오늘의 운세: 오늘 작은 행운이 조용히 찾아옵니다.',
@@ -4259,7 +4525,8 @@
     'hint.need_three_two': 'Necesitas 1 carta más antes de MATCH 3',
     'hint.need_three_default': 'Primero selecciona 3 cartas',
     'deadlock.title': '¡Sin movimientos válidos!',
-    'deadlock.body': 'El mazo está vacío y no hay combinaciones de 9/19/29 en el tablero. ¿Deshacer el último movimiento o empezar de nuevo?',
+    'deadlock.body': 'El mazo está vacío y no hay combinaciones de 9/19/29 en el tablero. ¿Rebobinar al punto de eliminación omitida o empezar una nueva partida?',
+    'deadlock.rewind': 'Rebobinar',
     'deadlock.undo': 'Deshacer',
     'deadlock.new': 'Nueva partida',
     'fortune.fallback': 'Fortuna Lucky 3: algo pequeño y bueno ocurrirá hoy.',
@@ -4409,7 +4676,8 @@
     'hint.need_three_two': 'Falta 1 carta para o MATCH 3',
     'hint.need_three_default': 'Selecione 3 cartas primeiro',
     'deadlock.title': 'Sem jogadas válidas!',
-    'deadlock.body': 'O baralho está vazio e não há combinação de 9/19/29 no tabuleiro. Desfazer a última jogada ou começar do zero?',
+    'deadlock.body': 'O baralho está vazio e não há combinação de 9/19/29 no tabuleiro. Rebobinar para o ponto de eliminação perdido ou começar uma nova partida?',
+    'deadlock.rewind': 'Rebobinar',
     'deadlock.undo': 'Desfazer',
     'deadlock.new': 'Nova partida',
     'fortune.fallback': 'Fortuna Lucky 3: algo pequeno e bom acontecerá hoje.',
@@ -4559,7 +4827,8 @@
     'hint.need_three_two': 'ต้องการอีก 1 ใบก่อน MATCH 3',
     'hint.need_three_default': 'กรุณาเลือกไพ่ 3 ใบก่อน',
     'deadlock.title': 'ติดอยู่! ไม่มีการเล่นที่ถูกต้อง',
-    'deadlock.body': 'สำรับหมดแล้วและไม่มีชุดผลรวม 9/19/29 บนกระดาน ย้อนกลับหนึ่งตาหรือเริ่มใหม่?',
+    'deadlock.body': 'สำรับหมดแล้วและไม่มีชุดผลรวม 9/19/29 บนกระดาน ต้องการย้อนกลับไปยังจุดที่พลาดการกำจัด หรือเริ่มเกมใหม่?',
+    'deadlock.rewind': 'ย้อนกลับ',
     'deadlock.undo': 'ย้อนกลับ',
     'deadlock.new': 'เกมใหม่',
     'fortune.fallback': 'ดวงชะตา Lucky 3: วันนี้จะมีเรื่องดีเล็กๆ เกิดขึ้น',
@@ -4709,7 +4978,8 @@
     'hint.need_three_two': 'Butuh 1 kartu lagi sebelum MATCH 3',
     'hint.need_three_default': 'Pilih 3 kartu terlebih dahulu',
     'deadlock.title': 'Terjebak! Tidak ada langkah valid',
-    'deadlock.body': 'Dek habis dan tidak ada kombinasi 9/19/29 di papan. Batalkan langkah terakhir atau mulai permainan baru?',
+    'deadlock.body': 'Dek habis dan tidak ada kombinasi 9/19/29 di papan. Putar ulang ke titik eliminasi yang terlewat atau mulai permainan baru?',
+    'deadlock.rewind': 'Putar ulang',
     'deadlock.undo': 'Batalkan',
     'deadlock.new': 'Permainan baru',
     'fortune.fallback': 'Ramalan Lucky 3: sesuatu yang kecil dan baik akan terjadi hari ini.',
@@ -4859,7 +5129,8 @@
     'hint.need_three_two': 'Il manque 1 carte avant MATCH 3',
     'hint.need_three_default': 'Sélectionnez d\'abord 3 cartes',
     'deadlock.title': 'Bloqué ! Aucun coup valide disponible',
-    'deadlock.body': 'La pioche est vide et il n\'y a aucune combinaison 9/19/29 sur le plateau. Annuler le dernier coup ou recommencer ?',
+    'deadlock.body': 'La pioche est vide et il n\'y a aucune combinaison 9/19/29 sur le plateau. Revenir au point d\'élimination manqué ou commencer une nouvelle partie ?',
+    'deadlock.rewind': 'Rembobiner',
     'deadlock.undo': 'Annuler',
     'deadlock.new': 'Nouvelle partie',
     'fortune.fallback': 'Fortune Lucky 3 : quelque chose de petit et de bon arrivera aujourd\'hui.',
@@ -5010,8 +5281,8 @@
     'hint.need_three_two': '还差 1 张，才能消三张',
     'hint.need_three_default': '请先选满 3 张牌',
     'deadlock.title': '卡住了！目前无合法消除',
-    'deadlock.body': '牌库已空，且场上没有可消除的 9 / 19 / 29 组合。你想要倒转一步，还是直接开新局？',
-    'deadlock.rewind': '倒带到漏消点',
+    'deadlock.body': '牌库已空，且场上没有可消除的 9 / 19 / 29 组合。你想要倒带到错过消除点，还是直接开新局？',
+    'deadlock.rewind': '倒带',
     'deadlock.undo': '倒转一步',
     'deadlock.new': '开新局',
     'fortune.fallback': '今日幸运签：Lucky 3。今天会有一件小好事悄悄发生。',
@@ -5145,7 +5416,8 @@
     'hint.need_three_two': 'Noch 1 Karte nötig für MATCH 3',
     'hint.need_three_default': 'Bitte zuerst 3 Karten auswählen',
     'deadlock.title': 'Blockiert! Kein gültiger Zug verfügbar',
-    'deadlock.body': 'Der Stapel ist leer und es gibt keine 9/19/29-Kombination auf dem Spielfeld. Letzten Zug rückgängig machen oder neu starten?',
+    'deadlock.body': 'Der Stapel ist leer und es gibt keine 9/19/29-Kombination auf dem Spielfeld. Zum verpassten Eliminierungspunkt zurückspulen oder ein neues Spiel starten?',
+    'deadlock.rewind': 'Zurückspulen',
     'deadlock.undo': 'Rückgängig',
     'deadlock.new': 'Neues Spiel',
     'fortune.fallback': 'Lucky 3 Glücksspruch: Heute wird etwas Kleines und Gutes passieren.',
@@ -5279,7 +5551,8 @@
     'hint.need_three_two': 'Manca 1 carta per MATCH 3',
     'hint.need_three_default': 'Prima seleziona 3 carte',
     'deadlock.title': 'Bloccato! Nessuna mossa valida',
-    'deadlock.body': 'Il mazzo è vuoto e non ci sono combinazioni 9/19/29 sul tavolo. Annullare l\'ultima mossa o ricominciare?',
+    'deadlock.body': 'Il mazzo è vuoto e non ci sono combinazioni 9/19/29 sul tavolo. Riavvolgere al punto di eliminazione mancato o iniziare una nuova partita?',
+    'deadlock.rewind': 'Riavvolgi',
     'deadlock.undo': 'Annulla',
     'deadlock.new': 'Nuova partita',
     'fortune.fallback': 'Fortuna Lucky 3: oggi accadrà qualcosa di piccolo e buono.',
@@ -5413,7 +5686,8 @@
     'hint.need_three_two': 'Falta 1 carta para o MATCH 3',
     'hint.need_three_default': 'Seleccione primeiro 3 cartas',
     'deadlock.title': 'Bloqueado! Sem jogadas válidas',
-    'deadlock.body': 'O baralho está vazio e não há combinação de 9/19/29 no tabuleiro. Anular a última jogada ou recomeçar?',
+    'deadlock.body': 'O baralho está vazio e não há combinação de 9/19/29 no tabuleiro. Rebobinar para o ponto de eliminação falhado ou começar uma nova partida?',
+    'deadlock.rewind': 'Rebobinar',
     'deadlock.undo': 'Anular',
     'deadlock.new': 'Nova partida',
     'fortune.fallback': 'Fortuna Lucky 3: algo pequeno e bom acontecerá hoje.',
@@ -5546,7 +5820,8 @@
     'hint.need_three_two': 'Nog 1 kaart nodig voor MATCH 3',
     'hint.need_three_default': 'Selecteer eerst 3 kaarten',
     'deadlock.title': 'Geblokkeerd! Geen geldige zet beschikbaar',
-    'deadlock.body': 'De stapel is leeg en er zijn geen 9/19/29-combinaties op het bord. Laatste zet ongedaan maken of opnieuw starten?',
+    'deadlock.body': 'De stapel is leeg en er zijn geen 9/19/29-combinaties op het bord. Terugspoelen naar het gemiste eliminatiepunt of een nieuw spel starten?',
+    'deadlock.rewind': 'Terugspoelen',
     'deadlock.undo': 'Ongedaan maken',
     'deadlock.new': 'Nieuw spel',
     'fortune.fallback': 'Lucky 3 geluk: vandaag gebeurt er iets kleins en goeds.',
@@ -5679,7 +5954,8 @@
     'hint.need_three_two': 'Нужна ещё 1 карта для MATCH 3',
     'hint.need_three_default': 'Сначала выбери 3 карты',
     'deadlock.title': 'Тупик! Нет допустимых ходов',
-    'deadlock.body': 'Колода пуста и на поле нет комбинаций 9/19/29. Отменить последний ход или начать заново?',
+    'deadlock.body': 'Колода пуста, и на поле нет комбинаций 9/19/29. Перемотать к пропущенному моменту удаления или начать новую игру?',
+    'deadlock.rewind': 'Перемотать',
     'deadlock.undo': 'Отменить',
     'deadlock.new': 'Новая игра',
     'fortune.fallback': 'Предсказание Lucky 3: сегодня произойдёт что-то маленькое и хорошее.',
@@ -5812,7 +6088,8 @@
     'hint.need_three_two': 'Potrzeba jeszcze 1 karty do MATCH 3',
     'hint.need_three_default': 'Najpierw wybierz 3 karty',
     'deadlock.title': 'Zablokowany! Brak prawidłowych ruchów',
-    'deadlock.body': 'Talia jest pusta i nie ma kombinacji 9/19/29 na planszy. Cofnąć ostatni ruch czy zacząć od nowa?',
+    'deadlock.body': 'Talia jest pusta i nie ma kombinacji 9/19/29 na planszy. Przewinąć do pominiętego momentu usunięcia czy rozpocząć nową grę?',
+    'deadlock.rewind': 'Przewiń',
     'deadlock.undo': 'Cofnij',
     'deadlock.new': 'Nowa gra',
     'fortune.fallback': 'Przepowiednia Lucky 3: dziś wydarzy się coś małego i dobrego.',
@@ -5945,7 +6222,8 @@
     'hint.need_three_two': 'MATCH 3 için 1 kart daha gerekli',
     'hint.need_three_default': 'Önce 3 kart seç',
     'deadlock.title': 'Tıkandı! Geçerli hamle yok',
-    'deadlock.body': 'Deste boş ve tahtada 9/19/29 kombinasyonu yok. Son hamleyi geri al ya da yeniden başla?',
+    'deadlock.body': 'Deste boş ve tahtada 9/19/29 kombinasyonu yok. Kaçırılan temizleme noktasına geri sar veya yeni oyuna başla?',
+    'deadlock.rewind': 'Geri sar',
     'deadlock.undo': 'Geri Al',
     'deadlock.new': 'Yeni Oyun',
     'fortune.fallback': 'Lucky 3 falı: bugün küçük ama güzel bir şey olacak.',
@@ -6078,7 +6356,8 @@
     'hint.need_three_two': 'Cần thêm 1 lá nữa để MATCH 3',
     'hint.need_three_default': 'Chọn 3 lá trước',
     'deadlock.title': 'Bế tắc! Không còn nước đi hợp lệ',
-    'deadlock.body': 'Bộ bài rỗng và không có tổ hợp 9/19/29 nào trên bàn. Hoàn tác nước cuối hoặc bắt đầu lại?',
+    'deadlock.body': 'Bộ bài rỗng và không có tổ hợp 9/19/29 nào trên bàn. Tua lại về điểm bỏ lỡ lượt loại bỏ hay bắt đầu ván mới?',
+    'deadlock.rewind': 'Tua lại',
     'deadlock.undo': 'Hoàn tác',
     'deadlock.new': 'Ván mới',
     'fortune.fallback': 'Quẻ Lucky 3: hôm nay sẽ có điều nhỏ bé nhưng tốt đẹp.',
@@ -6260,6 +6539,8 @@
         let developerMode = false;
         let devTapCount = 0;
         let devTapTimer = null;
+        let rewindSequenceActive = false;
+        let rewindLockTagTimer = null;
 
         function shuffleInPlace(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
@@ -6589,19 +6870,35 @@
         }
 
         const SPIRIT_BEASTS = {
-            3: '🐉',
-            4: '🦅',
-            5: '🦄',
+            3: { cls: 'tier-3', icon: 'comboicon/tier3.png' },
+            4: { cls: 'tier-4', icon: 'comboicon/tier4.png' },
+            5: { cls: 'tier-5', icon: 'comboicon/tier5.png' },
         };
+        Object.values(SPIRIT_BEASTS).forEach((meta) => {
+            const preload = new Image();
+            preload.src = meta.icon;
+        });
 
         function showSpiritBeast(tier) {
-            const emoji = SPIRIT_BEASTS[tier];
-            if (!emoji) return;
+            const meta = SPIRIT_BEASTS[tier];
+            if (!meta) return;
             const el = document.createElement('div');
-            el.className = 'spirit-beast';
-            el.textContent = emoji;
+            el.className = `spirit-beast ${meta.cls}`;
+            const discardEl = document.getElementById('discard-pile');
+            if (discardEl) {
+                const rect = discardEl.getBoundingClientRect();
+                const iconSize = Math.max(64, Math.min(84, window.innerWidth * 0.15));
+                const anchorX = rect.left + rect.width / 2;
+                const anchorY = Math.max(iconSize * 0.55 + 8, rect.top - Math.max(18, iconSize * 0.34));
+                el.style.left = `${Math.round(anchorX)}px`;
+                el.style.top = `${Math.round(anchorY)}px`;
+            }
+            el.innerHTML = `
+                <div class="spirit-beast-core">
+                    <img class="spirit-beast-icon" src="${meta.icon}" alt="" />
+                </div>`;
             document.body.appendChild(el);
-            setTimeout(() => el.remove(), getDelay(1800));
+            setTimeout(() => el.remove(), getDelay(1120));
         }
 
         function getDelay(ms) {
@@ -6809,9 +7106,18 @@
         const DROP_PITY_LIMIT = 2;
 
         const PAINTINGS = [
-            { id: '001', cols: 3, rows: 4 },
+            { id: '001', cols: 4, rows: 3 },
             { id: '002', cols: 4, rows: 3 },
-            { id: '003', cols: 3, rows: 3 },
+            { id: '003', cols: 4, rows: 3 },
+            { id: '004', cols: 3, rows: 4 },
+            { id: '005', cols: 4, rows: 3 },
+            { id: '006', cols: 3, rows: 4 },
+            { id: '007', cols: 3, rows: 4 },
+            { id: '008', cols: 4, rows: 3 },
+            { id: '009', cols: 3, rows: 4 },
+            { id: '010', cols: 4, rows: 3 },
+            { id: '011', cols: 4, rows: 3 },
+            { id: '012', cols: 3, rows: 4 },
         ];
 
         let paintingBasePathCache = (location.pathname && location.pathname.includes('/app/')) ? 'paintings' : 'app/paintings';
@@ -7259,7 +7565,7 @@
             if (isComplete) {
                 body.innerHTML = `
                     <div class="gallery-full-wrap">
-                        <div class="gallery-frame${shouldPlayFrameReveal ? ' just-completed' : ''}">
+                        <div class="gallery-frame${meta.frameStyle ? ` frame-${meta.frameStyle}` : ''}${shouldPlayFrameReveal ? ' just-completed' : ''}">
                             <img src="${paintingCoverSrc(meta.id)}" alt="${title}">
                         </div>
                     </div>
@@ -8707,6 +9013,7 @@
             const rewindOverlay = document.getElementById('rewind-overlay');
             if (rewindOverlay) rewindOverlay.remove();
             clearRewindFocus();
+            clearRewindLockTag();
             if (winInterval) clearInterval(winInterval);
 
             if (!forceNew && targetMode === 'normal' && loadGameState()) {
@@ -8899,6 +9206,9 @@
                     const readyClass = selObj && threeReady ? ' selected-ready' : '';
                     const suitClass = card.suit === '♥' ? 'suit-heart' : card.suit === '♦' ? 'suit-diamond' : card.suit === '♠' ? 'suit-spade' : 'suit-club';
                     div.className = `card ${card.color} ${suitClass} ${selObj ? 'selected' : ''}${readyClass}`;
+                    div.dataset.cardKey = `${card.rank}${card.suit}`;
+                    div.dataset.slotId = String(slot.id);
+                    div.dataset.cardIdx = String(idx);
                     if (doCompress && idx >= midStart && idx < midEnd) {
                         div.className += isNewlyCompressed ? ' stack-middle-animating' : ' stack-middle';
                     }
@@ -9427,6 +9737,7 @@
         function performUndoStep({ runDeadlockCheck = true, persistState = true, force = false } = {}) {
             if (historyStack.length === 0) return false;
             if (isBusy && !force) return false;
+            const beforeRects = rewindSequenceActive ? captureCardRects() : null;
             const last = historyStack.pop(); combo = last.comboBefore || 0;
             moveCount = Math.max(0, moveCount - 1);
             if (gameMode === 'daily') { dailyUndoCount++; updateUndoCountDisplay(); }
@@ -9441,6 +9752,7 @@
                 lastCleared = last.prevLast;
             }
             selected = []; render(); updateDiscard();
+            if (rewindSequenceActive && beforeRects) animateRewindCardMotion(beforeRects);
             if (historyStack.length === 0) setUndoEnabled(false);
             if (runDeadlockCheck) checkDeadlock();
             if (persistState) saveGameState();
@@ -9457,26 +9769,39 @@
 
             clearHintHighlight();
             clearRewindFocus();
+            clearRewindLockTag();
             isBusy = true;
+            rewindSequenceActive = true;
+            setTimerRewinding(true);
             const overlay = createRewindOverlay();
-            const rewindSteps = historyStack.length - rewindIndex;
-            for (let i = 0; i < rewindSteps; i++) {
-                const didUndo = performUndoStep({
-                    runDeadlockCheck: false,
-                    persistState: false,
-                    force: true
-                });
-                if (!didUndo) break;
-                if (i % 2 === 0) triggerHaptic(18);
-                await waitMs(getDelay(230));
+            try {
+                const rewindSteps = historyStack.length - rewindIndex;
+                const maxDuration = getDelay(1800);
+                const baseStep = getDelay(190);
+                const stepDelay = Math.max(getDelay(120), Math.min(baseStep, Math.floor(maxDuration / Math.max(1, rewindSteps))));
+
+                for (let i = 0; i < rewindSteps; i++) {
+                    const didUndo = performUndoStep({
+                        runDeadlockCheck: false,
+                        persistState: false,
+                        force: true
+                    });
+                    if (!didUndo) break;
+                    if (i % 2 === 0) triggerHaptic(18);
+                    await waitMs(stepDelay);
+                }
+                triggerHaptic([65, 35, 65]);
+                const missedMove = findFirstLegalClearMove();
+                showRewindFocus(missedMove);
+                showRewindLockTag(missedMove);
+                checkDeadlock();
+                saveGameState();
+            } finally {
+                removeRewindOverlay(overlay);
+                setTimerRewinding(false);
+                rewindSequenceActive = false;
+                isBusy = false;
             }
-            triggerHaptic([65, 35, 65]);
-            removeRewindOverlay(overlay);
-            isBusy = false;
-            const missedMove = findFirstLegalClearMove();
-            showRewindFocus(missedMove);
-            checkDeadlock();
-            saveGameState();
         }
 
         function undo() {
@@ -9569,26 +9894,22 @@
             // Tier-based effects — restrained escalation
             if (tier >= 5) {
                 SHAKE.medium();
-                ParticleSystem.emit('fireworks', cx, cy, { count: 35 });
+                ParticleSystem.emit('fireworks', cx, cy, { count: 24 });
                 const vig = document.createElement('div');
                 vig.className = 'golden-vignette';
                 document.body.appendChild(vig);
-                setTimeout(() => vig.remove(), getDelay(2000));
+                setTimeout(() => vig.remove(), getDelay(1400));
                 showSpiritBeast(5);
             } else if (tier >= 4) {
                 SHAKE.light();
-                ParticleSystem.emit('confetti', cx, cy, { count: 25 });
+                ParticleSystem.emit('confetti', cx, cy, { count: 16 });
                 const warm = document.createElement('div');
                 warm.className = 'warm-flash';
                 document.body.appendChild(warm);
-                setTimeout(() => warm.remove(), getDelay(800));
+                setTimeout(() => warm.remove(), getDelay(560));
                 showSpiritBeast(4);
             } else if (tier >= 3) {
-                ParticleSystem.emit('fountain', cx, cy, { count: 18 });
-                const warm = document.createElement('div');
-                warm.className = 'warm-flash';
-                document.body.appendChild(warm);
-                setTimeout(() => warm.remove(), getDelay(800));
+                ParticleSystem.emit('fountain', cx, cy, { count: 10 });
                 showSpiritBeast(3);
             } else if (tier >= 2) {
                 ParticleSystem.emit('fountain', cx, cy, { count: 10 });
@@ -9981,7 +10302,6 @@
             const old = document.getElementById('deadlock-overlay');
             if (old) old.remove();
 
-            const canUndo = historyStack.length > 0;
             const canRewind = findFirstMissedClearHistoryIndex() >= 0;
             const overlay = document.createElement('div');
             overlay.className = 'deadlock-overlay';
@@ -9992,7 +10312,6 @@
                     <p class="deadlock-text">${t('deadlock.body')}</p>
                     <div class="deadlock-actions">
                         <button type="button" class="deadlock-btn undo" onclick="resolveDeadlock('rewind')" ${canRewind ? '' : 'disabled'}>${t('deadlock.rewind')}</button>
-                        <button type="button" class="deadlock-btn undo" onclick="resolveDeadlock('undo')" ${canUndo ? '' : 'disabled'}>${t('deadlock.undo')}</button>
                         <button type="button" class="deadlock-btn new" onclick="resolveDeadlock('new')">${t('deadlock.new')}</button>
                     </div>
                 </div>
@@ -10007,10 +10326,6 @@
             hideDeadlockOverlay();
             if (action === 'rewind') {
                 rewindToFirstMissedClear();
-                return;
-            }
-            if (action === 'undo') {
-                undo();
                 return;
             }
             if (action === 'new') {
@@ -10059,6 +10374,15 @@
             }
         }
 
+        function clearRewindLockTag() {
+            const old = document.getElementById('rewind-lock-tag');
+            if (old) old.remove();
+            if (rewindLockTagTimer) {
+                clearTimeout(rewindLockTagTimer);
+                rewindLockTagTimer = null;
+            }
+        }
+
         function showRewindFocus(move) {
             clearRewindFocus();
             if (!move) return;
@@ -10071,10 +10395,30 @@
             rewindFocusTimer = setTimeout(clearRewindFocus, getDelay(3400));
         }
 
+        function showRewindLockTag(move) {
+            clearRewindLockTag();
+            if (!move) return;
+            const colEl = document.getElementById(`col-${move.slotId}`);
+            if (!colEl) return;
+            const cardEls = colEl.querySelectorAll('.card');
+            const anchor = cardEls[move.indices[0]];
+            if (!anchor) return;
+            const rect = anchor.getBoundingClientRect();
+            const tag = document.createElement('div');
+            tag.className = 'rewind-lock-tag';
+            tag.id = 'rewind-lock-tag';
+            tag.textContent = `${t('deadlock.rewind')} ✓`;
+            tag.style.left = `${Math.round(rect.left + rect.width / 2)}px`;
+            tag.style.top = `${Math.round(Math.max(42, rect.top - 18))}px`;
+            document.body.appendChild(tag);
+            rewindLockTagTimer = setTimeout(clearRewindLockTag, getDelay(1700));
+        }
+
         function createRewindOverlay() {
             const overlay = document.createElement('div');
             overlay.className = 'rewind-overlay';
             overlay.id = 'rewind-overlay';
+            document.body.classList.add('rewind-active');
             document.body.appendChild(overlay);
             requestAnimationFrame(() => overlay.classList.add('show'));
             return overlay;
@@ -10086,10 +10430,71 @@
             setTimeout(() => {
                 if (overlay.parentNode) overlay.remove();
             }, getDelay(220));
+            document.body.classList.remove('rewind-active');
         }
 
         function waitMs(ms) {
             return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        function setTimerRewinding(active) {
+            const timerEl = document.getElementById('timer');
+            if (!timerEl) return;
+            timerEl.classList.toggle('rewinding', !!active);
+        }
+
+        function captureCardRects() {
+            const map = new Map();
+            document.querySelectorAll('.card[data-card-key]').forEach((el) => {
+                const key = el.dataset.cardKey;
+                if (!key) return;
+                map.set(key, el.getBoundingClientRect());
+            });
+            return map;
+        }
+
+        function animateRewindCardMotion(beforeRects) {
+            if (!beforeRects || beforeRects.size === 0) return;
+            document.querySelectorAll('.card[data-card-key]').forEach((el) => {
+                const key = el.dataset.cardKey;
+                if (!key) return;
+                const before = beforeRects.get(key);
+                if (!before) return;
+                const after = el.getBoundingClientRect();
+                const dx = before.left - after.left;
+                const dy = before.top - after.top;
+                if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+
+                el.animate(
+                    [
+                        { transform: `translate(${dx}px, ${dy}px) scale(0.985)`, filter: 'brightness(0.95)' },
+                        { transform: 'translate(0px, 0px) scale(1)', filter: 'brightness(1)' }
+                    ],
+                    {
+                        duration: getDelay(170),
+                        easing: 'cubic-bezier(0.2, 0.85, 0.25, 1)',
+                        fill: 'none'
+                    }
+                );
+                if (Math.abs(dx) + Math.abs(dy) > 24) createRewindMotionTrail(before, after);
+            });
+        }
+
+        function createRewindMotionTrail(before, after) {
+            const trail = document.createElement('div');
+            trail.className = 'rewind-trail';
+            const x1 = before.left + before.width / 2;
+            const y1 = before.top + before.height / 2;
+            const x2 = after.left + after.width / 2;
+            const y2 = after.top + after.height / 2;
+            const dist = Math.hypot(x2 - x1, y2 - y1);
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            trail.style.width = `${Math.max(12, dist)}px`;
+            trail.style.left = `${x1}px`;
+            trail.style.top = `${y1}px`;
+            trail.style.transform = `translateY(-50%) rotate(${angle}deg)`;
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), getDelay(180));
         }
 
         function initHintLongPress() {

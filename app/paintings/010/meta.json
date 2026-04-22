@@ -2,11 +2,11 @@
   "id": "010",
   "title": "畫作 010",
   "titleEn": "Painting 010",
-  "orientation": "portrait",
-  "cols": 3,
-  "rows": 4,
+  "orientation": "landscape",
+  "cols": 4,
+  "rows": 3,
   "totalPieces": 12,
-  "frameStyle": "gold",
-  "pieceW": 200,
-  "pieceH": 225
+  "frameStyle": "cosmic-black-yellow",
+  "pieceW": 225,
+  "pieceH": 200
 }

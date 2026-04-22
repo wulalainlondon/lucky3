@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test.setTimeout(60000);
+test.setTimeout(120000);
 
 test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {

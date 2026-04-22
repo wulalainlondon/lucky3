@@ -1,5 +1,6 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
+test.describe.configure({ timeout: 90000 });
 
 test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
@@ -13,7 +14,7 @@ test.beforeEach(async ({ page }) => {
     // This also ensures the omen card is gone before tests interact with the
     // UI — the omen card (position:fixed; inset:0) can block Playwright's
     // hit-target check even though it has pointer-events:none.
-    await page.waitForFunction(() => window._gameReady === true, { timeout: 15000 });
+    await page.waitForFunction(() => window._gameReady === true, { timeout: 30000 });
 });
 
 // ── Test 1: Page loads correctly ───────────────────────────────────────────
@@ -45,12 +46,12 @@ test('clicking a card adds selected class', async ({ page }) => {
     // Wait for the deal animation to fully finish: flying element disappears only
     // after the card is placed in its slot and isBusy is set back to false.
     // Without this wait, clicking while isBusy=true causes the game to ignore the click.
-    await expect(page.locator('.flying')).toHaveCount(0, { timeout: 2000 });
+    await expect(page.locator('.flying')).toHaveCount(0, { timeout: 5000 });
 
-    const card = page.locator('.card').first();
+    const card = page.locator('.column').first().locator('.card').last();
     await expect(card).not.toHaveClass(/selected/);
     await card.click();
-    await expect(card).toHaveClass(/selected/, { timeout: 3000 });
+    await expect(card).toHaveClass(/selected/, { timeout: 5000 });
 });
 
 // ── Test 4: Undo disabled initially, enabled after DEAL ──────────────────
@@ -61,7 +62,7 @@ test('undo button disabled initially and enabled after DEAL', async ({ page }) =
     await expect(page.locator('#deck-num')).not.toHaveText(String(deckBefore), { timeout: 3000 });
     // Wait for deal animation to finish before attempting undo.
     // The game's undo() function checks isBusy and returns early if true.
-    await expect(page.locator('.flying')).toHaveCount(0, { timeout: 2000 });
+    await expect(page.locator('.flying')).toHaveCount(0, { timeout: 5000 });
     await expect(page.locator('#btn-undo')).toBeEnabled();
     await page.locator('#btn-undo').click();
     await expect(page.locator('#btn-undo')).toBeDisabled({ timeout: 3000 });

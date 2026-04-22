@@ -1,0 +1,12 @@
+{
+  "id": "001",
+  "title": "畫作 001",
+  "titleEn": "Painting 001",
+  "orientation": "landscape",
+  "cols": 4,
+  "rows": 3,
+  "totalPieces": 12,
+  "frameStyle": "cherry-gold-spring",
+  "pieceW": 225,
+  "pieceH": 200
+}

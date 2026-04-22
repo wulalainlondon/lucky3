@@ -2,11 +2,11 @@
   "id": "006",
   "title": "畫作 006",
   "titleEn": "Painting 006",
-  "orientation": "landscape",
-  "cols": 4,
-  "rows": 3,
+  "orientation": "portrait",
+  "cols": 3,
+  "rows": 4,
   "totalPieces": 12,
-  "frameStyle": "gold",
-  "pieceW": 225,
-  "pieceH": 200
+  "frameStyle": "bronze-green-botanical",
+  "pieceW": 200,
+  "pieceH": 225
 }

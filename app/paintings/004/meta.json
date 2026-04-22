@@ -2,11 +2,11 @@
   "id": "004",
   "title": "畫作 004",
   "titleEn": "Painting 004",
-  "orientation": "landscape",
-  "cols": 4,
-  "rows": 3,
+  "orientation": "portrait",
+  "cols": 3,
+  "rows": 4,
   "totalPieces": 12,
-  "frameStyle": "gold",
-  "pieceW": 225,
-  "pieceH": 200
+  "frameStyle": "taiwan-temple-lacquer",
+  "pieceW": 200,
+  "pieceH": 225
 }
