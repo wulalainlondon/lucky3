@@ -239,6 +239,7 @@
             position: relative;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 6px;
+            transition: box-shadow 0.4s ease-out;
         }
 
         .card {
@@ -804,8 +805,9 @@
             width: 100%;
             height: 200vh;
             top: -50vh;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
-            box-shadow: 0 0 30px white;
+            --cb-beam-color: rgba(255, 255, 255, 0.8);
+            background: linear-gradient(to right, transparent, var(--cb-beam-color), transparent);
+            box-shadow: 0 0 30px var(--cb-beam-color);
             animation: beam-out calc(0.8s * var(--anim-scale)) ease-out forwards;
         }
 
@@ -1203,13 +1205,14 @@
 
         /* --- Column Cleared Glow --- */
         .column.column-cleared-glow {
-            box-shadow: 0 0 20px var(--gold), 0 0 40px rgba(255,215,0,0.3);
+            --cb-glow-color: rgba(255,215,0,0.3);
+            box-shadow: 0 0 20px var(--cb-glow-color), 0 0 40px var(--cb-glow-color);
             transition: box-shadow 0.6s ease-out;
         }
 
         /* --- Column Mii Tension (咪牌欄位背光) --- */
         .column.mii-tension {
-            box-shadow: 0 0 18px var(--mii-glow-color), inset 0 0 12px rgba(255, 160, 30, 0.12);
+            box-shadow: 0 0 18px var(--mii-glow-color), inset 0 0 12px color-mix(in srgb, var(--mii-glow-color) 12%, transparent);
             transition: box-shadow 0.3s ease-in;
         }
 

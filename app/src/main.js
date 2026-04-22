@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.22-v5';
+        const APP_VERSION = '2026.04.23-v1';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -1347,10 +1347,129 @@
             speed18:       'rgba(120, 190, 255, 0.9)',
             ironwill:      'rgba(200, 210, 230, 0.85)',
             suitcollector: 'rgba(255, 215,   0, 0.9)',
-            luckydraw:     'rgba(180, 100, 255, 0.9)',
+            luckydraw:     'rgba(218, 165,  32, 0.9)',
             fullsweep:     'rgba( 80, 255, 130, 0.85)',
             dailyregular:  'rgba(255, 200,  80, 0.9)',
-            chainreaction: 'rgba(255, 100,  50, 0.95)',
+            chainreaction: 'rgba(120, 190, 255, 0.95)',
+        };
+
+        // ── Card Back Effect Theme System ──────────────────────────────────────
+        const CARDBACK_THEME = {
+            classic: 'CRYSTAL', classic_blue: 'CRYSTAL', classic_red: 'CRYSTAL',
+            crimson: 'EMBER_BRIGHT', nightgold: 'EMBER_DARK',
+            retro_gold: 'FORGE_GOLD', ironwill: 'FORGE_STEEL', fullsweep: 'FORGE_ROYAL',
+            void: 'VOID_PURPLE', luckydraw: 'VOID_DARK',
+            combo5: 'ARC_CYAN', chainreaction: 'ARC_CYAN', speed18: 'ARC_GREEN',
+            forest: 'LIFE_FOREST', lucky: 'LIFE_FESTIVE',
+            suitcollector: 'LIFE_SUIT', dailyregular: 'LIFE_STELLAR',
+        };
+
+        const SUIT_THEME_COLORS = {
+            '♠': ['#263238', '#90A4AE'],
+            '♥': ['#C62828', '#FFCDD2'],
+            '♦': ['#E65100', '#FFF9C4'],
+            '♣': ['#1B5E20', '#A5D6A7'],
+        };
+
+        const THEME_CONFIGS = {
+            CRYSTAL: {
+                colors: ['#B3E5FC', '#FFFFFF'], shape: 'shard',
+                gravity: 0.12, friction: 0.978, rotSpeed: [0.04, 0.07], sizeDecay: 0.97,
+                clear:       { count: 12, speed: [2.5, 4.0], life: [600, 850] },
+                columnClear: { count: 22, speed: [2.0, 3.5], life: [700, 1000], beamColor: '#81D4FA', glowColor: 'rgba(129,212,250,0.4)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            EMBER_BRIGHT: {
+                colors: ['#FF4500', '#FFEA00'], shape: 'circle', speedDir: 'up',
+                gravity: -0.14, friction: 0.965, rotSpeed: [0, 0], sizeDecay: 0.93,
+                clear:       { count: 12, speed: [3.0, 5.5], life: [300, 450] },
+                columnClear: { count: 28, speed: [2.0, 4.5], life: [350, 600], beamColor: '#FF4500', glowColor: 'rgba(255,69,0,0.35)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            EMBER_DARK: {
+                colors: ['#B34700', '#FFD700'], shape: 'circle', speedDir: 'up',
+                gravity: -0.12, friction: 0.968, rotSpeed: [0, 0], sizeDecay: 0.94,
+                clear:       { count: 11, speed: [2.5, 4.5], life: [350, 500] },
+                columnClear: { count: 25, speed: [2.0, 4.0], life: [400, 650], beamColor: '#B34700', glowColor: 'rgba(179,71,0,0.35)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            FORGE_GOLD: {
+                colors: ['#FFD700', '#FFFFFF'], shape: 'square',
+                gravity: 0.55, friction: 0.975, rotSpeed: [0.10, 0.15], sizeDecay: 0.97,
+                clear:       { count: 9, speed: [2.8, 4.5], life: [600, 900], sparkCount: 3 },
+                columnClear: { count: 20, speed: [2.5, 4.0], life: [700, 1000], sparkCount: 8, beamColor: '#FFD700', glowColor: 'rgba(255,215,0,0.4)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            FORGE_STEEL: {
+                colors: ['#90A4AE', '#FF8C00'], shape: 'square',
+                gravity: 0.55, friction: 0.975, rotSpeed: [0.10, 0.15], sizeDecay: 0.97,
+                clear:       { count: 9, speed: [2.8, 4.5], life: [600, 900], sparkCount: 3 },
+                columnClear: { count: 20, speed: [2.5, 4.0], life: [700, 1000], sparkCount: 8, beamColor: '#90A4AE', glowColor: 'rgba(144,164,174,0.35)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            FORGE_ROYAL: {
+                colors: ['#9C27B0', '#FFD700'], shape: 'square',
+                gravity: 0.55, friction: 0.975, rotSpeed: [0.10, 0.15], sizeDecay: 0.97,
+                clear:       { count: 9, speed: [2.8, 4.5], life: [600, 900], sparkCount: 3 },
+                columnClear: { count: 20, speed: [2.5, 4.0], life: [700, 1000], sparkCount: 8, beamColor: '#9C27B0', glowColor: 'rgba(156,39,176,0.4)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            VOID_PURPLE: {
+                colors: ['#7C4DFF', '#00BFA5'], shape: 'circle',
+                gravity: -0.02, friction: 0.99, rotSpeed: [0, 0], sizeDecay: 0.985,
+                clear:       { count: 12, speed: [0.8, 2.0], life: [900, 1200] },
+                columnClear: { count: 20, speed: [0.6, 1.8], life: [1000, 1400], beamColor: '#7C4DFF', glowColor: 'rgba(124,77,255,0.35)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            VOID_DARK: {
+                colors: ['#424242', '#9E9E9E'], shape: 'circle',
+                gravity: -0.02, friction: 0.99, rotSpeed: [0, 0], sizeDecay: 0.985,
+                clear:       { count: 12, speed: [0.8, 2.0], life: [900, 1200] },
+                columnClear: { count: 20, speed: [0.6, 1.8], life: [1000, 1400], beamColor: '#37474F', glowColor: 'rgba(55,71,79,0.3)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            ARC_CYAN: {
+                colors: ['#00E5FF', '#FFFFFF'], shape: 'streak',
+                gravity: 0.0, friction: 0.94, rotSpeed: [0, 0], sizeDecay: 0.90,
+                clear:       { count: 8, speed: [7, 12], life: [80, 150] },
+                columnClear: { count: 16, speed: [6, 11], life: [100, 180], beamColor: '#00E5FF', glowColor: 'rgba(0,229,255,0.4)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5], speedBoosts: [1.0, 1.2, 1.6] },
+            },
+            ARC_GREEN: {
+                colors: ['#76FF03', '#FFFFFF'], shape: 'streak',
+                gravity: 0.0, friction: 0.94, rotSpeed: [0, 0], sizeDecay: 0.90,
+                clear:       { count: 8, speed: [7, 12], life: [80, 150] },
+                columnClear: { count: 16, speed: [6, 11], life: [100, 180], beamColor: '#76FF03', glowColor: 'rgba(118,255,3,0.4)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5], speedBoosts: [1.0, 1.2, 1.6] },
+            },
+            LIFE_FOREST: {
+                colors: ['#4CAF50', '#8D6E63'], shape: 'square', airDrift: 0.015,
+                gravity: 0.06, friction: 0.988, rotSpeed: [0.05, 0.15], sizeDecay: 0.984,
+                clear:       { count: 11, speed: [2.0, 3.5], life: [800, 1100] },
+                columnClear: { count: 24, speed: [1.5, 3.0], life: [900, 1300], beamColor: '#4CAF50', glowColor: 'rgba(76,175,80,0.35)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            LIFE_FESTIVE: {
+                colors: ['#FFD700', '#FF7043'], shape: 'square', airDrift: 0.015,
+                gravity: 0.06, friction: 0.988, rotSpeed: [0.05, 0.15], sizeDecay: 0.984,
+                clear:       { count: 11, speed: [2.0, 3.5], life: [800, 1100] },
+                columnClear: { count: 24, speed: [1.5, 3.0], life: [900, 1300], beamColor: '#FFD700', glowColor: 'rgba(255,215,0,0.4)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            LIFE_SUIT: {
+                colors: ['#FFD700', '#FFFFFF'], shape: 'square', airDrift: 0.012,
+                gravity: 0.06, friction: 0.988, rotSpeed: [0.05, 0.15], sizeDecay: 0.984,
+                clear:       { count: 11, speed: [2.0, 3.5], life: [800, 1100] },
+                columnClear: { count: 24, speed: [1.5, 3.0], life: [900, 1300], beamColor: '#FFD700', glowColor: 'rgba(255,215,0,0.35)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
+            LIFE_STELLAR: {
+                colors: ['#1565C0', '#E3F2FD'], shape: 'star', airDrift: 0.008,
+                gravity: 0.04, friction: 0.990, rotSpeed: [0.02, 0.06], sizeDecay: 0.986,
+                clear:       { count: 10, speed: [1.5, 3.0], life: [900, 1200] },
+                columnClear: { count: 22, speed: [1.2, 2.8], life: [1000, 1400], beamColor: '#1565C0', glowColor: 'rgba(21,101,192,0.35)' },
+                combo:       { multipliers: [1.3, 1.8, 2.5] },
+            },
         };
 
         function getUnlockedCardBacks() {
@@ -2148,6 +2267,27 @@
                             ctx.fillStyle = p.colorStart;
                             ctx.fillRect(-p.size * 3.5, -p.size * 0.35, p.size * 7, p.size * 0.7);
                             ctx.restore();
+                        } else if (p.shape === 'shard') {
+                            ctx.save();
+                            ctx.translate(p.x, p.y);
+                            ctx.rotate(p.rotation);
+                            ctx.beginPath();
+                            ctx.moveTo(0, -p.size * 1.8);
+                            ctx.lineTo(p.size * 0.5, 0);
+                            ctx.lineTo(p.size * 0.3, p.size);
+                            ctx.lineTo(-p.size * 0.3, p.size);
+                            ctx.lineTo(-p.size * 0.5, 0);
+                            ctx.closePath();
+                            ctx.fill();
+                            ctx.restore();
+                        } else if (p.shape === 'streak') {
+                            const sLen = Math.sqrt(p.vx * p.vx + p.vy * p.vy) * 3;
+                            const sAngle = Math.atan2(p.vy, p.vx);
+                            ctx.save();
+                            ctx.translate(p.x, p.y);
+                            ctx.rotate(sAngle);
+                            ctx.fillRect(-sLen, -p.size * 0.4, sLen, p.size * 0.8);
+                            ctx.restore();
                         } else {
                             ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
                         }
@@ -2171,7 +2311,7 @@
                 if (document.hidden) { running = false; particles.length = 0; }
             });
 
-            return { emit, clear, resize };
+            return { emit, clear, resize, spawnRaw: add };
         })();
 
         // === PIXI.js WebGL Ambient Layer ===
@@ -3567,11 +3707,134 @@
             text.innerText = t('column.clear'); colEl.appendChild(text);
             const rect = colEl.getBoundingClientRect();
             const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-            ParticleSystem.emit('confetti', cx, cy, { count: 25 });
+            const _colTheme = getCurrentTheme();
+            const _colTCfg = _colTheme ? THEME_CONFIGS[_colTheme] : null;
+            if (_colTheme && _colTCfg) {
+                spawnThemeParticles(_colTheme, 'columnClear', cx, cy);
+                playThemeSound(_colTheme, 'columnClear');
+                const beamColor = _colTCfg.columnClear?.beamColor || 'rgba(255,255,255,0.8)';
+                const glowColor = _colTCfg.columnClear?.glowColor || 'rgba(255,215,0,0.3)';
+                beam.style.setProperty('--cb-beam-color', beamColor);
+                colEl.style.setProperty('--cb-glow-color', glowColor);
+            } else {
+                ParticleSystem.emit('confetti', cx, cy, { count: 25 });
+            }
             showWinRing(cx, cy);
             colEl.classList.add('column-cleared-glow');
             setTimeout(() => colEl.classList.remove('column-cleared-glow'), getDelay(1500));
             setTimeout(() => { if (beam.parentNode) beam.remove(); if (text.parentNode) text.remove(); }, getDelay(1200));
+        }
+
+        function getCurrentTheme() {
+            const id = localStorage.getItem(CARD_BACK_KEY) || 'classic';
+            return CARDBACK_THEME[id] || null;
+        }
+
+        function spawnThemeParticles(theme, trigger, x, y, opts = {}) {
+            if (shouldMinimizeMotion()) return;
+            const cfg = THEME_CONFIGS[theme];
+            if (!cfg) return;
+            const tCfg = cfg[trigger] || cfg.clear || {};
+            const multiplier = opts.multiplier || 1.0;
+            const speedBoost = opts.speedBoost || 1.0;
+
+            let colorStart = cfg.colors[0];
+            let colorEnd   = cfg.colors[1];
+            if (theme === 'LIFE_SUIT' && opts.suitColors) {
+                colorStart = opts.suitColors[0];
+                colorEnd   = opts.suitColors[1];
+            }
+
+            const count   = Math.round((tCfg.count || 12) * multiplier);
+            const speedArr = tCfg.speed  || [2.0, 4.0];
+            const lifeArr  = tCfg.life   || [600, 900];
+            const [rsMin, rsMax] = cfg.rotSpeed || [0, 0];
+            const airDrift = cfg.airDrift || 0;
+            const isUpward = cfg.speedDir === 'up';
+            const sizeDecay = cfg.sizeDecay || 0.97;
+
+            for (let i = 0; i < count; i++) {
+                const speed = (speedArr[0] + Math.random() * (speedArr[1] - speedArr[0])) * speedBoost;
+                let vx, vy;
+                if (isUpward) {
+                    const a = -Math.PI / 2 + (Math.random() - 0.5) * (Math.PI * 0.7);
+                    vx = Math.cos(a) * speed + (Math.random() - 0.5) * airDrift * 20;
+                    vy = Math.sin(a) * speed;
+                } else {
+                    const a = Math.random() * Math.PI * 2;
+                    vx = Math.cos(a) * speed + (Math.random() - 0.5) * airDrift * 20;
+                    vy = Math.sin(a) * speed;
+                }
+                const life = lifeArr[0] + Math.random() * (lifeArr[1] - lifeArr[0]);
+                ParticleSystem.spawnRaw({
+                    x, y, vx, vy,
+                    gravity: cfg.gravity,
+                    friction: cfg.friction,
+                    life, maxLife: life,
+                    size: 2.5 + Math.random() * 2.5,
+                    sizeDecay,
+                    colorStart, colorEnd,
+                    shape: cfg.shape,
+                    rotation: Math.random() * Math.PI * 2,
+                    rotSpeed: rsMin + Math.random() * (rsMax - rsMin),
+                    alpha: 1, trail: []
+                });
+            }
+
+            // FORGE accent sparks
+            if (theme.startsWith('FORGE')) {
+                const sparkCount = tCfg.sparkCount || 0;
+                for (let s = 0; s < sparkCount; s++) {
+                    const a = Math.random() * Math.PI * 2;
+                    const sp = 3 + Math.random() * 4;
+                    const sLife = 100 + Math.random() * 80;
+                    ParticleSystem.spawnRaw({
+                        x, y,
+                        vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+                        gravity: 0.35, friction: 0.95,
+                        life: sLife, maxLife: sLife,
+                        size: 1.5, sizeDecay: 0.88,
+                        colorStart: '#FFFFFF', colorEnd: '#FF8C00',
+                        shape: 'star',
+                        rotation: 0, rotSpeed: 0,
+                        alpha: 1, trail: []
+                    });
+                }
+            }
+        }
+
+        function playThemeSound(theme, trigger) {
+            if (!settings.sound) return;
+            const isCol = (trigger === 'columnClear');
+            const vM = isCol ? 1.4 : 1.0;
+            const dM = isCol ? 1.8 : 1.0;
+            if (theme === 'CRYSTAL') {
+                playTone(1500, Math.round(80 * dM), 0.03 * vM, 0, 'sine');
+                if (isCol) playTone(1800, 60, 0.018, 0.06, 'sine');
+            } else if (theme === 'EMBER_BRIGHT') {
+                playTone(600, Math.round(30 * dM), 0.05 * vM, 0, 'sawtooth');
+            } else if (theme === 'EMBER_DARK') {
+                playTone(400, Math.round(40 * dM), 0.05 * vM, 0, 'sawtooth');
+            } else if (theme.startsWith('FORGE')) {
+                playTone(180, Math.round(50 * dM), 0.07 * vM, 0, 'triangle');
+                if (isCol) playTone(120, 80, 0.04, 0.05, 'triangle');
+            } else if (theme.startsWith('VOID')) {
+                playTone(200, Math.round(200 * dM), 0.02 * vM, 0, 'sine');
+            } else if (theme.startsWith('ARC')) {
+                playTone(2000, Math.round(20 * dM), 0.04 * vM, 0, 'square');
+                playTone(800, Math.round(15 * dM), 0.02 * vM, 0.02, 'square');
+            } else if (theme === 'LIFE_FOREST') {
+                playTone(800, Math.round(60 * dM), 0.025 * vM, 0, 'sine');
+                playTone(1000, Math.round(50 * dM), 0.018 * vM, 0.04, 'sine');
+            } else if (theme === 'LIFE_FESTIVE') {
+                playTone(900, Math.round(70 * dM), 0.025 * vM, 0, 'sine');
+                playTone(1200, Math.round(60 * dM), 0.018 * vM, 0.05, 'sine');
+            } else if (theme === 'LIFE_SUIT') {
+                playTone(850, Math.round(80 * dM), 0.028 * vM, 0, 'triangle');
+            } else if (theme === 'LIFE_STELLAR') {
+                playTone(1100, Math.round(100 * dM), 0.02 * vM, 0, 'sine');
+                playTone(1400, Math.round(80 * dM), 0.014 * vM, 0.08, 'sine');
+            }
         }
 
         function showMiiFX(colEl, incomingCard, existingCards) {
@@ -3791,13 +4054,46 @@
                         });
                     }
 
-                    // Sum-specific burst particles — escalating drama
+                    // Sum-specific burst particles — theme-aware
                     const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-                    if (sum >= 29) {
-                        ParticleSystem.emit('fireworks', cx, cy, { count: 35 });
-                        showClearFlash({ orange: true, intensity: 0.15 });
-                    } else if (sum >= 19) {
-                        ParticleSystem.emit('burst', cx, cy, { count: 18, colorStart: '#ffd700', colorEnd: '#cc8800' });
+                    const _clearTheme = getCurrentTheme();
+                    if (_clearTheme) {
+                        // Get suit colors for LIFE_SUIT theme
+                        let _suitColors = null;
+                        if (_clearTheme === 'LIFE_SUIT') {
+                            const _firstCard = slot.cards[sortedIndices[0]];
+                            _suitColors = SUIT_THEME_COLORS[_firstCard?.suit] || null;
+                        }
+                        // Scale particle count by sum tier
+                        const _sumMult = sum >= 29 ? 1.5 : sum >= 19 ? 1.0 : 0.65;
+                        const _cxArr = sortedIndices.map(idx => {
+                            const el = colEl?.children[idx];
+                            if (!el) return cx;
+                            const r = el.getBoundingClientRect();
+                            return r.left + r.width / 2;
+                        });
+                        const _cy2 = (() => {
+                            const el = colEl?.children[sortedIndices[0]];
+                            if (!el) return cy;
+                            const r = el.getBoundingClientRect();
+                            return r.top + r.height / 2;
+                        })();
+                        // Emit from each card position
+                        _cxArr.forEach(_cx2 => {
+                            spawnThemeParticles(_clearTheme, 'clear', _cx2, _cy2, {
+                                multiplier: _sumMult,
+                                suitColors: _suitColors
+                            });
+                        });
+                        playThemeSound(_clearTheme, 'clear');
+                        if (sum >= 29) showClearFlash({ orange: true, intensity: 0.12 });
+                    } else {
+                        if (sum >= 29) {
+                            ParticleSystem.emit('fireworks', cx, cy, { count: 35 });
+                            showClearFlash({ orange: true, intensity: 0.15 });
+                        } else if (sum >= 19) {
+                            ParticleSystem.emit('burst', cx, cy, { count: 18, colorStart: '#ffd700', colorEnd: '#cc8800' });
+                        }
                     }
                     // sum=9: no center burst — only shatter at card position (already emitted above)
 
@@ -3919,6 +4215,7 @@
 
                 // 階段四：落牌，依能否消除選擇粒子
                 setTimeout(() => {
+                    colEl.querySelector('.mii-text')?.remove();
                     colEl.classList.remove('mii-tension');
                     target.cards.push(card);
                     fly.remove();
@@ -4285,6 +4582,19 @@
                 }
 
                 const cx = window.innerWidth / 2, cy = window.innerHeight * 0.45;
+
+                // Theme particles for combo
+                const _comboTheme = getCurrentTheme();
+                if (_comboTheme && !shouldMinimizeMotion()) {
+                    const _tierIdx = tier >= 5 ? 2 : tier >= 4 ? 1 : 0;
+                    const _comboMult = (THEME_CONFIGS[_comboTheme]?.combo?.multipliers || [1.3, 1.8, 2.5])[_tierIdx];
+                    const _speedBoosts = THEME_CONFIGS[_comboTheme]?.combo?.speedBoosts;
+                    const _sBoost = _speedBoosts ? _speedBoosts[_tierIdx] : 1.0;
+                    spawnThemeParticles(_comboTheme, 'clear', cx, cy, {
+                        multiplier: _comboMult,
+                        speedBoost: _sBoost
+                    });
+                }
 
                 // ── 金邊邊框閃（tier ≥ 2）──
                 if (tier >= 2 && !useLiteVariant) {
