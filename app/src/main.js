@@ -36,6 +36,7 @@
         const DAILY_NORMAL_CYCLE_KEY = 'lucky3-daily-normal-cycle-v1';
         const ACHIEVEMENTS_KEY = 'lucky3-achievements-v1';
         const WIN_HISTORY_KEY = 'lucky3-win-history-v1';
+        const PREMIUM_KEY = 'lucky3-premium';
 
         function loadWinHistory() {
             try { return JSON.parse(localStorage.getItem(WIN_HISTORY_KEY) || '{}'); }
@@ -1333,6 +1334,25 @@
               condEN: 'Chain Reaction (3+ combos)', condZH: '連鎖反應（同局 3+ combo）', cond: 'chainreaction' },
         ];
 
+        // 咪牌光暈顏色對應表（依牌背主色調）
+        const CARDBACK_GLOW_MAP = {
+            classic:       'rgba(255, 215,   0, 0.9)',
+            retro_gold:    'rgba(218, 165,  32, 1.0)',
+            nightgold:     'rgba(218, 165,  32, 0.95)',
+            forest:        'rgba( 60, 220,  80, 0.85)',
+            crimson:       'rgba(255,  60,  40, 0.9)',
+            void:          'rgba(180, 120, 255, 0.9)',
+            lucky:         'rgba(255, 215,   0, 0.9)',
+            combo5:        'rgba( 40, 220, 255, 0.95)',
+            speed18:       'rgba(120, 190, 255, 0.9)',
+            ironwill:      'rgba(200, 210, 230, 0.85)',
+            suitcollector: 'rgba(255, 215,   0, 0.9)',
+            luckydraw:     'rgba(180, 100, 255, 0.9)',
+            fullsweep:     'rgba( 80, 255, 130, 0.85)',
+            dailyregular:  'rgba(255, 200,  80, 0.9)',
+            chainreaction: 'rgba(255, 100,  50, 0.95)',
+        };
+
         function getUnlockedCardBacks() {
             const defaults = [...DEFAULT_UNLOCKED_CARD_BACKS];
             try {
@@ -1400,6 +1420,9 @@
             pile.classList.forEach(cls => { if (cls.startsWith('cb-')) pile.classList.remove(cls); });
             if (id && id !== 'classic') pile.classList.add(`cb-${id}`);
             localStorage.setItem(CARD_BACK_KEY, id || 'classic');
+            // 同步咪牌光暈顏色至 CSS 變數
+            const glow = CARDBACK_GLOW_MAP[id] || CARDBACK_GLOW_MAP.classic;
+            document.documentElement.style.setProperty('--mii-glow-color', glow);
         }
 
         function loadCardBack() {
@@ -3551,20 +3574,32 @@
             setTimeout(() => { if (beam.parentNode) beam.remove(); if (text.parentNode) text.remove(); }, getDelay(1200));
         }
 
-        function showMiiFX(colEl) {
+        function showMiiFX(colEl, incomingCard, existingCards) {
             if (!colEl) return;
             const existing = colEl.querySelector('.mii-text');
             if (existing) existing.remove();
 
+            // 判斷落下後是否能湊出有效消除
+            const canClear = Array.isArray(existingCards) && incomingCard
+                ? getLegalClearIndices([...existingCards, incomingCard]).length > 0
+                : false;
+
             const text = document.createElement('div');
             text.className = 'mii-text';
-            text.innerText = t('mii.peeking');
-            colEl.appendChild(text);
-            triggerHaptic([25, 30, 25]);
 
-            setTimeout(() => {
-                if (text.parentNode) text.remove();
-            }, getDelay(900));
+            if (canClear) {
+                text.innerText = '✦ ' + t('mii.chance');
+                text.style.setProperty('--mii-text-color', '#4eff91');
+                text.style.setProperty('--mii-text-border', 'rgba(0, 255, 120, 0.55)');
+                text.style.setProperty('--mii-text-bg', 'rgba(0, 30, 12, 0.92)');
+                triggerHaptic([20, 20, 60]);
+            } else {
+                text.innerText = t('mii.peeking');
+                triggerHaptic([25, 30, 25]);
+            }
+
+            colEl.appendChild(text);
+            setTimeout(() => { if (text.parentNode) text.remove(); }, getDelay(1100));
         }
 
         function getDealTargetTop(colEl, existingCount) {
@@ -3866,22 +3901,40 @@
             });
 
             if (isMiiMoment) {
+                // 階段一：牌到位後，欄位亮起張力背光
+                setTimeout(() => {
+                    colEl.classList.add('mii-tension');
+                }, getDelay(420));
+
+                // 階段二：翻牌（face-down → 正面）
                 setTimeout(() => {
                     revealFlyCard(fly, card);
-                    fly.classList.add('mii-peek');
-                    showMiiFX(colEl);
-                }, getDelay(760));
+                }, getDelay(820));
 
+                // 階段三：翻完後才開始 hover 呼吸 + 顯示提示
                 setTimeout(() => {
+                    fly.classList.add('mii-peek');
+                    showMiiFX(colEl, card, target.cards);
+                }, getDelay(1160));
+
+                // 階段四：落牌，依能否消除選擇粒子
+                setTimeout(() => {
+                    colEl.classList.remove('mii-tension');
                     target.cards.push(card);
                     fly.remove();
                     render();
                     popNewlyDealtCard(target.id);
-                    ParticleSystem.emit('dust', rect.left + rect.width / 2, targetTop + 10);
+                    const canClear = getLegalClearIndices([...target.cards]).length > 0;
+                    ParticleSystem.emit(
+                        canClear ? 'burst' : 'dust',
+                        rect.left + rect.width / 2,
+                        targetTop + 10,
+                        canClear ? { count: 10, colorStart: '#4eff91', colorEnd: '#ffd700' } : {}
+                    );
                     isBusy = false;
                     checkDeadlock();
                     saveGameState();
-                }, getDelay(1720));
+                }, getDelay(2200));
             } else {
                 setTimeout(() => {
                     target.cards.push(card);
@@ -5212,7 +5265,6 @@
             document.addEventListener('click', unlock, { once: true, capture: true });
         })();
         // ===== PREMIUM & ADS SYSTEM =====
-        const PREMIUM_KEY = 'lucky3-premium';
 
         function isNativeApp() {
             return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());

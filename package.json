@@ -9,6 +9,12 @@
     "build": "bash tools/build-native.sh",
     "build:aab": "cd android && ./gradlew bundleRelease && echo 'AAB: android/app/build/outputs/bundle/release/app-release.aab'",
     "test": "playwright test",
+    "test:cardback:selection": "playwright test tests/cardback-selection.spec.js",
+    "test:cardback:unlock": "playwright test tests/cardback-unlock.spec.js",
+    "test:pwa:update": "playwright test tests/pwa-update.spec.js",
+    "test:cardback:manifest": "node tools/check-cardback-manifest.mjs",
+    "test:cardback:png": "python3 tools/check-cardback-png.py",
+    "test:hardening": "npm run test:cardback:selection && npm run test:cardback:unlock && npm run test:pwa:update && npm run test:cardback:manifest && npm run test:cardback:png",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report"
   },

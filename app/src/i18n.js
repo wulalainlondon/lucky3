@@ -142,6 +142,8 @@
             'achievement.stat.shield_empty': 'Not Charged',
             'common.days': '{value} days',
             'mii.peeking': 'Previewing...',
+
+            'mii.chance': 'Can clear!',
             'column.clear': 'CLEAR!',
             'win.subtitle': 'Outstanding! You cleared the entire board ✨',
             'win.stat.time': 'Time',
@@ -366,6 +368,8 @@
                 'achievement.stat.shield_empty': '未充能',
                 'common.days': '{value} 天',
                 'mii.peeking': '咪牌中...',
+
+                'mii.chance': '可消除！',
                 'column.clear': 'CLEAR!',
                 'win.subtitle': '超讚！你把牌局收乾淨了 ✨',
                 'win.stat.time': '用時',
@@ -564,6 +568,8 @@
                 'achievement.stat.shield_empty': '未充電',
                 'common.days': '{value} 日',
                 'mii.peeking': 'プレビュー中...',
+
+                'mii.chance': '消せる！',
                 'column.clear': 'CLEAR!',
                 'win.subtitle': '素晴らしい！ボードを完全にクリアしました ✨',
                 'win.stat.time': 'タイム',
@@ -737,6 +743,8 @@
                 'achievement.stat.shield_empty': '미충전',
                 'common.days': '{value}일',
                 'mii.peeking': '미리보기 중...',
+
+                'mii.chance': '클리어 가능!',
                 'column.clear': 'CLEAR!',
                 'win.subtitle': '훌륭해요! 보드를 완전히 클리어했습니다 ✨',
                 'win.stat.time': '시간',
@@ -909,6 +917,8 @@
     'achievement.stat.shield_empty': 'Sin carga',
     'common.days': '{value} días',
     'mii.peeking': 'Previsualizando...',
+
+    'mii.chance': '¡Se puede eliminar!',
     'column.clear': 'CLEAR!',
     'win.subtitle': '¡Sobresaliente! Limpiaste todo el tablero ✨',
     'win.stat.time': 'Tiempo',
@@ -1077,6 +1087,8 @@
     'achievement.stat.shield_empty': 'Sem carga',
     'common.days': '{value} dias',
     'mii.peeking': 'Pré-visualizando...',
+
+    'mii.chance': 'Pode eliminar!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Excelente! Você limpou todo o tabuleiro ✨',
     'win.stat.time': 'Tempo',
@@ -1245,6 +1257,8 @@
     'achievement.stat.shield_empty': 'ยังไม่ชาร์จ',
     'common.days': '{value} วัน',
     'mii.peeking': 'กำลังดูตัวอย่าง...',
+
+    'mii.chance': 'กำจัดได้!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'ยอดเยี่ยม! คุณเคลียร์กระดานทั้งหมดแล้ว ✨',
     'win.stat.time': 'เวลา',
@@ -1413,6 +1427,8 @@
     'achievement.stat.shield_empty': 'Kosong',
     'common.days': '{value} hari',
     'mii.peeking': 'Pratinjau...',
+
+    'mii.chance': 'Bisa dihapus!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Luar biasa! Anda membersihkan seluruh papan ✨',
     'win.stat.time': 'Waktu',
@@ -1581,6 +1597,8 @@
     'achievement.stat.shield_empty': 'Non chargé',
     'common.days': '{value} jours',
     'mii.peeking': 'Aperçu en cours...',
+
+    'mii.chance': 'Effaçable!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Remarquable ! Vous avez vidé tout le plateau ✨',
     'win.stat.time': 'Temps',
@@ -1751,6 +1769,8 @@
     'achievement.stat.shield_empty': '未充能',
     'common.days': '{value} 天',
     'mii.peeking': '偷看中...',
+
+    'mii.chance': '可消除！',
     'column.clear': 'CLEAR!',
     'win.subtitle': '超赞！你把牌局收干净了 ✨',
     'win.stat.time': '用时',
@@ -1906,6 +1926,8 @@
     'achievement.stat.shield_empty': 'Nicht aufgeladen',
     'common.days': '{value} Tage',
     'mii.peeking': 'Vorschau...',
+
+    'mii.chance': 'Abräumen!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Hervorragend! Du hast das gesamte Brett geleert ✨',
     'win.stat.time': 'Zeit',
@@ -2058,6 +2080,8 @@
     'achievement.stat.shield_empty': 'Non caricato',
     'common.days': '{value} giorni',
     'mii.peeking': 'Anteprima...',
+
+    'mii.chance': 'Eliminabile!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Straordinario! Hai svuotato l\'intero tavolo ✨',
     'win.stat.time': 'Tempo',
@@ -2210,6 +2234,8 @@
     'achievement.stat.shield_empty': 'Sem carga',
     'common.days': '{value} dias',
     'mii.peeking': 'A pré-visualizar...',
+
+    'mii.chance': 'Pode eliminar!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Notável! Esvaziou todo o tabuleiro ✨',
     'win.stat.time': 'Tempo',
@@ -2361,6 +2387,8 @@
     'achievement.stat.shield_empty': 'Niet opgeladen',
     'common.days': '{value} dagen',
     'mii.peeking': 'Voorbeeld...',
+
+    'mii.chance': 'Kan opruimen!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Uitstekend! Je hebt het hele bord geleegd ✨',
     'win.stat.time': 'Tijd',
@@ -2512,6 +2540,8 @@
     'achievement.stat.shield_empty': 'Не заряжен',
     'common.days': '{value} дн.',
     'mii.peeking': 'Предпросмотр...',
+
+    'mii.chance': 'Можно убрать!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Превосходно! Ты очистил всё поле ✨',
     'win.stat.time': 'Время',
@@ -2663,6 +2693,8 @@
     'achievement.stat.shield_empty': 'Nienaładowana',
     'common.days': '{value} dni',
     'mii.peeking': 'Podgląd...',
+
+    'mii.chance': 'Można zabrać!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Znakomicie! Wyczyściłeś całą planszę ✨',
     'win.stat.time': 'Czas',
@@ -2814,6 +2846,8 @@
     'achievement.stat.shield_empty': 'Şarjsız',
     'common.days': '{value} gün',
     'mii.peeking': 'Önizleniyor...',
+
+    'mii.chance': 'Silinebilir!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Mükemmel! Tüm tahtayı temizledin ✨',
     'win.stat.time': 'Süre',
@@ -2965,6 +2999,8 @@
     'achievement.stat.shield_empty': 'Trống',
     'common.days': '{value} ngày',
     'mii.peeking': 'Đang xem trước...',
+
+    'mii.chance': 'Có thể xóa!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Xuất sắc! Đã dọn sạch toàn bộ bàn ✨',
     'win.stat.time': 'Thời gian',
