@@ -1484,7 +1484,10 @@
             position: fixed;
             z-index: 9999;
             pointer-events: none;
-            transition: all calc(0.5s * var(--anim-scale)) cubic-bezier(0.4, 0, 0.2, 1);
+            /* 只 transition 位置屬性，把 transform/filter 留給 mii-peek 等 animation 控制 */
+            transition:
+                left calc(0.5s * var(--anim-scale)) cubic-bezier(0.4, 0, 0.2, 1),
+                top  calc(0.5s * var(--anim-scale)) cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .card.face-down {
