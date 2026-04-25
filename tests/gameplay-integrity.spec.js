@@ -584,3 +584,176 @@ test('自動遊玩一局：無重複牌，正常結束', async ({ page }) => {
         page.locator('#win-overlay, #deadlock-overlay').first()
     ).toBeVisible({ timeout: 15000 });
 });
+
+// ══════════════════════════════════════════════════════════════════════════
+// 18. 再玩一次後狀態完全重置
+// ══════════════════════════════════════════════════════════════════════════
+
+test('再玩一次後：40 張無重複、historyStack 清空、undo disabled', async ({ page }) => {
+    // 注入已完成的 dirty state（hasWon、combo、history 全有值）
+    await page.evaluate(() => {
+        combo = 5;
+        historyStack = [{ type: 'deal', slotId: 0, prevIdx: 0, skippedLegalClear: false }];
+        hasWon = true;
+        // 手動塞一個 win overlay 驗證 init 會清除它
+        if (!document.getElementById('win-overlay')) {
+            const el = document.createElement('div');
+            el.id = 'win-overlay';
+            document.body.appendChild(el);
+        }
+    });
+
+    // init(true) 在動畫啟動前即同步重置所有資料，可立即讀取
+    const state = await page.evaluate(() => {
+        init(true, { mode: 'normal' });
+        const all = [...deck, ...slots.flatMap(s => s.cards)];
+        const seen = {};
+        const dupes = all.reduce((acc, c) => {
+            const k = c.rank + c.suit;
+            if (seen[k]) acc.push(k);
+            seen[k] = true;
+            return acc;
+        }, []);
+        return {
+            total: all.length,
+            hasWon,
+            combo,
+            historyLen: historyStack.length,
+            winGone: !document.getElementById('win-overlay'),
+            dupes,
+        };
+    });
+
+    expect(state.total).toBe(40);
+    expect(state.dupes).toHaveLength(0);
+    expect(state.hasWon).toBe(false);
+    expect(state.combo).toBe(0);
+    expect(state.historyLen).toBe(0);
+    expect(state.winGone).toBe(true);
+    await expect(page.locator('#btn-undo')).toBeDisabled({ timeout: 3000 });
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// 19. 存檔讀取：重開頁面後恢復局面
+// ══════════════════════════════════════════════════════════════════════════
+
+test('存檔讀取：重開頁面後牌堆與欄位完全一致', async ({ page }) => {
+    // beforeEach 已完成開局動畫；明確儲存當前狀態
+    const before = await page.evaluate(() => {
+        saveGameState();
+        return {
+            deckLen: deck.length,
+            slotCards: slots.filter(s => s.active).map(s => s.cards.map(c => c.rank + c.suit)),
+            historyLen: historyStack.length,
+        };
+    });
+
+    // 重載頁面（不清除 localStorage → loadGameState 生效）
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await waitReady(page);
+
+    const after = await page.evaluate(() => ({
+        deckLen: deck.length,
+        slotCards: slots.filter(s => s.active).map(s => s.cards.map(c => c.rank + c.suit)),
+        historyLen: historyStack.length,
+    }));
+
+    expect(after.deckLen).toBe(before.deckLen);
+    expect(after.slotCards).toEqual(before.slotCards);
+    expect(after.historyLen).toBe(before.historyLen);
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// 20. 設定持久化：語言切換後重開頁面仍保留
+// ══════════════════════════════════════════════════════════════════════════
+
+test('設定持久化：語言切換重開後保留', async ({ page }) => {
+    // 切換為英文（setLocale 會呼叫 saveSettings）
+    await page.evaluate(() => setLocale('en'));
+    await expect(page.locator('#deck-label')).toHaveText('DECK', { timeout: 3000 });
+
+    // 重載頁面
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await waitReady(page);
+
+    expect(await page.evaluate(() => settings.locale)).toBe('en');
+    await expect(page.locator('#deck-label')).toHaveText('DECK', { timeout: 3000 });
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// 21. 牌背解鎖：zeroClearWins ≥ 1 解鎖 void
+// ══════════════════════════════════════════════════════════════════════════
+
+test('牌背解鎖：zeroClearWins ≥ 1 後 void 解鎖', async ({ page }) => {
+    const isUnlocked = await page.evaluate(() => {
+        localStorage.removeItem('lucky3-card-back-unlocked-v1');
+        achievements.zeroClearWins = 1;
+        syncCardBackUnlocks();
+        return getUnlockedCardBacks().includes('void');
+    });
+    expect(isUnlocked).toBe(true);
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// 22. 成就統計：未使用 undo 勝利後 noUndoWins +1
+// ══════════════════════════════════════════════════════════════════════════
+
+test('成就：勝利後 wins 遞增、maxCombo 更新', async ({ page }) => {
+    const result = await page.evaluate(() => {
+        achievements.wins = 0;
+        achievements.maxCombo = 0;
+        updateAchievementsOnWin({ maxCombo: 7, moveCount: 12, elapsedSec: 90 });
+        return { wins: achievements.wins, maxCombo: achievements.maxCombo };
+    });
+    expect(result.wins).toBe(1);
+    expect(result.maxCombo).toBe(7);
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// 23. Mii peek：欄位恰好 2 張時發牌出現提示文字
+// ══════════════════════════════════════════════════════════════════════════
+
+test('Mii peek：欄位 2 張發牌出現 .mii-text', async ({ page }) => {
+    await page.evaluate(() => {
+        settings.miiPeek = true;
+        settings.animationSpeed = 'fast';
+        isBusy = false;
+        // 牌堆只剩 3♣；slot[0] 有 [3♠, 3♥]（恰 2 張），合計 9 → canClear = true
+        deck = [{ rank: '3', suit: '♣', val: 3, color: 'black' }];
+        slots[0].cards = [
+            { rank: '3', suit: '♠', val: 3, color: 'black' },
+            { rank: '3', suit: '♥', val: 3, color: 'red' },
+        ];
+        slots[0].active = true;
+        slots[1].cards = []; slots[1].active = false;
+        slots[2].cards = []; slots[2].active = false;
+        slots[3].cards = []; slots[3].active = false;
+        nextSlotIndex = 0;
+        render();
+        updateDiscard();
+    });
+
+    await page.locator('#deck-pile').click();
+    // mii-text 在 getDelay(1160) ≈ 870ms (fast mode) 後出現
+    await expect(page.locator('.mii-text')).toBeVisible({ timeout: 5000 });
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// 24. Fortune Pool：四個花色各有幸運籤文字
+// ══════════════════════════════════════════════════════════════════════════
+
+test('Fortune Pool：四個花色各有非空幸運籤', async ({ page }) => {
+    const fortunes = await page.evaluate(() => {
+        const prev = currentLocale;
+        currentLocale = 'zh-Hant';  // FORTUNE_POOL 路徑
+        const result = ['♠', '♥', '♦', '♣'].map(s => fortuneBySuit(s));
+        currentLocale = prev;
+        return result;
+    });
+    expect(fortunes).toHaveLength(4);
+    fortunes.forEach(f => {
+        expect(typeof f).toBe('string');
+        expect(f.length).toBeGreaterThan(10);
+        expect(f).toContain('幸運籤');
+    });
+});
