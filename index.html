@@ -3575,6 +3575,139 @@
             min-width: 36px;
             text-align: right;
         }
+        /* ── Feature 1: Fragment Fly Animation ── */
+        .fragment-fly {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            transform-origin: center;
+        }
+        .fragment-fly img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        @keyframes fragment-appear {
+            0%   { transform: scale(0); }
+            80%  { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .fragment-fly.appear {
+            animation: fragment-appear 0.3s ease-out forwards;
+        }
+        @keyframes widget-pulse {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        .widget-pulse {
+            animation: widget-pulse 0.4s ease-out;
+        }
+        /* ── Feature 2: Painting Reveal Overlay ── */
+        .painting-reveal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .reveal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+        }
+        .reveal-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: #fff;
+            padding: 2rem 1.5rem;
+        }
+        .reveal-frame {
+            max-width: 280px;
+            margin: 0 auto 1rem;
+        }
+        .reveal-frame img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(255,215,0,0.4);
+            animation: reveal-zoom 1s ease-out both;
+        }
+        @keyframes reveal-zoom {
+            from { transform: scale(0.3); opacity: 0; }
+            to   { transform: scale(1);   opacity: 1; }
+        }
+        .reveal-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            animation: fade-in-up 0.6s 0.5s both;
+        }
+        .reveal-badge {
+            font-size: 1rem;
+            color: #ffd700;
+            animation: fade-in-up 0.6s 0.7s both;
+        }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .reveal-continue-btn {
+            margin-top: 2rem;
+            padding: 0.7rem 2.5rem;
+            background: #ffd700;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            animation: fade-in-up 0.6s 1s both;
+        }
+        /* ── Feature 3: Streak Flame ── */
+        .streak-flame {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 0.75rem;
+            margin-top: 2px;
+        }
+        .streak-flame.cool .flame-icon {
+            filter: grayscale(0.7);
+            opacity: 0.6;
+        }
+        .streak-flame.warm .flame-icon {
+            filter: none;
+        }
+        @keyframes flame-blink {
+            from { filter: none; }
+            to   { filter: drop-shadow(0 0 6px #ffd700) brightness(1.3); }
+        }
+        .streak-flame.hot .flame-icon {
+            animation: flame-blink 0.8s ease-in-out infinite alternate;
+        }
+        .flame-count {
+            font-weight: bold;
+            color: #ffa500;
+            font-size: 0.7rem;
+        }
+        .streak-flame.hot .flame-count {
+            color: #ffd700;
+        }
+        /* ── Feature 3 & 4: Win panel additions ── */
+        .win-streak-line {
+            font-size: 0.85rem;
+            color: #ffa500;
+            margin: 0.3rem 0;
+        }
+        .win-task-hint {
+            font-size: 0.82rem;
+            color: #a0e0ff;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
     </style>
 </head>
 
@@ -3585,6 +3718,7 @@
             <div class="header-stat">
                 <div><span id="deck-label" data-i18n="header.deck_label">DECK</span>: <b id="deck-num">40</b></div>
                 <div id="undo-count-row" style="display:none;font-size:0.78em;opacity:0.75;margin-top:1px;">↩ ×<span id="undo-count-num">0</span></div>
+                <div id="streak-flame" class="streak-flame" style="display:none"></div>
             </div>
             <div class="header-title">
                 <span class="header-title-main">LUCKY 3</span>
@@ -7835,18 +7969,67 @@
             const row = Math.floor(piece.idx / piece.cols);
             const col = piece.idx % piece.cols;
             const src = paintingPieceSrc(piece.id, row, col);
-            const title = result.type === 'piece' ? t('gallery.fragment_drop') : t('gallery.fragment_to_dust', { count: result.dustGain || 1 });
-            const hint = result.type === 'piece' ? t('gallery.fragment_hint') : t('gallery.dust_hint');
-            const toast = document.createElement('div');
-            toast.className = 'fragment-toast';
-            toast.innerHTML = `
-                <div class="fragment-toast-thumb"><img src="${src}" alt=""></div>
-                <div class="fragment-toast-text">
-                    <strong>${title}</strong>
-                    ${hint}
-                </div>`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3100);
+
+            // Check if focus-widget is visible; if not, fall back to simple toast
+            const widget = document.getElementById('focus-widget');
+            const widgetRect = widget ? widget.getBoundingClientRect() : null;
+            const widgetVisible = widget && widget.style.display !== 'none' && widgetRect && widgetRect.width > 0;
+
+            if (!widgetVisible) {
+                // Fallback: simple toast
+                const title = result.type === 'piece' ? t('gallery.fragment_drop') : t('gallery.fragment_to_dust', { count: result.dustGain || 1 });
+                const hint = result.type === 'piece' ? t('gallery.fragment_hint') : t('gallery.dust_hint');
+                const toast = document.createElement('div');
+                toast.className = 'fragment-toast';
+                toast.innerHTML = `
+                    <div class="fragment-toast-thumb"><img src="${src}" alt=""></div>
+                    <div class="fragment-toast-text">
+                        <strong>${title}</strong>
+                        ${hint}
+                    </div>`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3100);
+                return;
+            }
+
+            // Fly animation
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const startX = vw / 2 - 40;
+            const startY = vh / 2 - 40;
+
+            const fly = document.createElement('div');
+            fly.className = 'fragment-fly';
+            fly.style.left = startX + 'px';
+            fly.style.top  = startY + 'px';
+            fly.innerHTML = `<img src="${src}" alt="">`;
+            document.body.appendChild(fly);
+
+            // Step 1: appear animation (scale 0 → 1.2 → 1, 0.3s)
+            requestAnimationFrame(() => {
+                fly.classList.add('appear');
+            });
+
+            // Step 2: after appear (0.3s) + pause (0.4s) = 0.7s, fly to widget
+            setTimeout(() => {
+                const targetRect = widget.getBoundingClientRect();
+                const targetX = targetRect.left + targetRect.width / 2 - 40;
+                const targetY = targetRect.top  + targetRect.height / 2 - 40;
+
+                fly.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 1, 1), left 0.5s cubic-bezier(0.4, 0, 1, 1), top 0.5s cubic-bezier(0.4, 0, 1, 1)';
+                fly.style.left = targetX + 'px';
+                fly.style.top  = targetY + 'px';
+                fly.style.transform = 'scale(0.3)';
+
+                // Step 3: after flight ends, pulse widget
+                setTimeout(() => {
+                    fly.remove();
+                    widget.classList.remove('widget-pulse');
+                    void widget.offsetWidth; // reflow to restart animation
+                    widget.classList.add('widget-pulse');
+                    setTimeout(() => widget.classList.remove('widget-pulse'), 500);
+                }, 520);
+            }, 700);
         }
 
         function onWinDropFragment() {
@@ -7875,6 +8058,87 @@
             saveGalleryState(state);
             showFragmentToast(result);
             updateFocusWidget();
+            // Trigger painting reveal if a painting was just completed
+            if (galleryUiState.frameRevealPaintingId) {
+                const revealId = galleryUiState.frameRevealPaintingId;
+                galleryUiState.frameRevealPaintingId = null;
+                setTimeout(() => showPaintingReveal(revealId), 1500);
+            }
+        }
+
+        async function showPaintingReveal(paintingId) {
+            const meta = PAINTINGS.find(p => p.id === paintingId);
+            if (!meta) return;
+
+            // Fetch painting title from meta.json
+            let titleText = `#${paintingId}`;
+            try {
+                await resolvePaintingBasePath();
+                const res = await fetch(paintingMetaSrc(paintingId));
+                if (res.ok) {
+                    const metaJson = await res.json();
+                    const locale = currentLocale || 'en';
+                    titleText = (locale === 'en' || !metaJson.title)
+                        ? (metaJson.titleEn || metaJson.title || titleText)
+                        : metaJson.title;
+                }
+            } catch (_) { }
+
+            // Count completed paintings
+            const state = loadGalleryState();
+            let completedCount = 0;
+            for (const p of PAINTINGS) {
+                const entry = state.paintings && state.paintings[p.id];
+                if (entry && entry.completedAt) completedCount++;
+            }
+
+            // Build overlay
+            const existing = document.getElementById('painting-reveal-overlay');
+            if (existing) existing.remove();
+
+            const overlay = document.createElement('div');
+            overlay.id = 'painting-reveal-overlay';
+            overlay.className = 'painting-reveal-overlay';
+            overlay.innerHTML = `
+                <div class="reveal-backdrop"></div>
+                <div class="reveal-content">
+                    <div class="reveal-frame">
+                        <img src="${paintingCoverSrc(paintingId)}" alt="">
+                    </div>
+                    <div class="reveal-title">${titleText}</div>
+                    <div class="reveal-badge">第 ${completedCount} 幅收藏完成</div>
+                    <button type="button" class="reveal-continue-btn" onclick="document.getElementById('painting-reveal-overlay').remove()">繼續</button>
+                </div>`;
+            document.body.appendChild(overlay);
+
+            // Click backdrop to close
+            const backdrop = overlay.querySelector('.reveal-backdrop');
+            if (backdrop) backdrop.addEventListener('click', () => overlay.remove());
+
+            // Particle effects
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            setTimeout(() => {
+                ParticleSystem.emit('confetti', cx - 80, cy - 50, { count: 30 });
+                ParticleSystem.emit('confetti', cx + 80, cy - 50, { count: 30 });
+                ParticleSystem.emit('fireworks', cx, cy + 30, { count: 20 });
+            }, 200);
+        }
+
+        function updateStreakFlame() {
+            const el = document.getElementById('streak-flame');
+            if (!el) return;
+            const ach = loadAchievements();
+            const streak = ach.currentStreak || 0;
+            if (streak < 1) { el.style.display = 'none'; return; }
+            let cls = 'streak-flame';
+            const icon = '🔥';
+            if (streak >= 7) cls += ' hot';
+            else if (streak >= 3) cls += ' warm';
+            else cls += ' cool';
+            el.className = cls;
+            el.style.display = 'block';
+            el.innerHTML = `<span class="flame-icon">${icon}</span><span class="flame-count">${streak}</span>`;
         }
 
         async function updateFocusWidget() {
@@ -10821,12 +11085,14 @@
             onWinDropFragment();
             const bestResult = updateBestStats(current);
             const achievementResult = updateAchievementsOnWin(current, 'lucky3');
+            updateStreakFlame();
             const bestMessage = buildBestMessage(bestResult);
             const dailyMsg = markDailyChallengeWin();
             const rankMsg = await submitDailyScoreIfNeeded(current, 'lucky3');
             lastGameStats = { timeStr: formatTime(elapsedSec), moves: moveCount, combo: maxCombo };
             const _dw = loadDailyWins();
             const _winCount = _dw.count;
+            const _streak = (loadAchievements().currentStreak || 0);
             const _gs = loadGalleryState();
             const _nextSpec = computeDropSpec(_winCount + 1, _gs.pityNoDrop || 0);
             const _dots = [1,2,3].map(i => `<span class="today-dot${i <= _winCount ? ' filled' : ''}"></span>`).join('');
@@ -10836,7 +11102,12 @@
             } else if (_winCount >= 3) {
                 _hint = '今日碎片任務完成 ✦';
             }
-            const _progressHtml = `<div class="win-today-progress"><div class="win-today-dots">${_dots}</div>${_hint ? `<div class="win-today-hint">${_hint}</div>` : ''}</div>`;
+            // 今日任務輕量提示
+            let _taskHint = '';
+            if (_winCount === 1) _taskHint = '明日連勝 +1 🔥';
+            else if (_winCount === 2 && maxCombo >= 3) _taskHint = '組合技大師！';
+            else if (_winCount >= 3) _taskHint = '今日收藏任務完成 ✦';
+            const _progressHtml = `<div class="win-today-progress"><div class="win-today-dots">${_dots}</div>${_hint ? `<div class="win-today-hint">${_hint}</div>` : ''}${_taskHint ? `<div class="win-task-hint">${_taskHint}</div>` : ''}</div>`;
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
             overlay.id = 'win-overlay';
@@ -10846,6 +11117,7 @@
                     <h2 class="win-title shimmer-text">LUCKY 3 JACKPOT</h2>
                     <p class="win-subtitle">${t('win.subtitle')}</p>
                     ${_progressHtml}
+                    ${_streak >= 1 ? `<div class="win-streak-line">🔥 連勝 ${_streak} 天</div>` : ''}
                     <div class="win-stats">
                         <div class="win-stat-row"><span>${t('win.stat.time')}</span><strong data-countup="${elapsedSec}" data-format="time">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.moves')}</span><strong data-countup="${moveCount}">0</strong></div>
@@ -10902,12 +11174,14 @@
             onWinDropFragment();
             const bestResult = updateBestStats(current);
             const achievementResult = updateAchievementsOnWin(current, 'zero-clear');
+            updateStreakFlame();
             const bestMessage = buildBestMessage(bestResult);
             const dailyMsg = markDailyChallengeWin();
             const rankMsg = await submitDailyScoreIfNeeded(current, 'zero-clear');
             lastGameStats = { timeStr: formatTime(elapsedSec), moves: moveCount, combo: maxCombo };
             const _dw = loadDailyWins();
             const _winCount = _dw.count;
+            const _streak = (loadAchievements().currentStreak || 0);
             const _gs = loadGalleryState();
             const _nextSpec = computeDropSpec(_winCount + 1, _gs.pityNoDrop || 0);
             const _dots = [1,2,3].map(i => `<span class="today-dot${i <= _winCount ? ' filled' : ''}"></span>`).join('');
@@ -10917,7 +11191,9 @@
             } else if (_winCount >= 3) {
                 _hint = '今日碎片任務完成 ✦';
             }
-            const _progressHtml = `<div class="win-today-progress"><div class="win-today-dots">${_dots}</div>${_hint ? `<div class="win-today-hint">${_hint}</div>` : ''}</div>`;
+            // 今日任務輕量提示（零清：固定顯示傳奇清空）
+            const _taskHint = '傳奇清空！你是今日最強判官';
+            const _progressHtml = `<div class="win-today-progress"><div class="win-today-dots">${_dots}</div>${_hint ? `<div class="win-today-hint">${_hint}</div>` : ''}<div class="win-task-hint">${_taskHint}</div></div>`;
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
             overlay.id = 'win-overlay';
@@ -10927,6 +11203,7 @@
                     <h2 class="void-win-title">VOID CLEAR</h2>
                     <p class="void-win-subtitle">${t('void.subtitle')}</p>
                     ${_progressHtml}
+                    ${_streak >= 1 ? `<div class="win-streak-line">🔥 連勝 ${_streak} 天</div>` : ''}
                     <p class="void-win-badge">${t('void.badge')}</p>
                     ${dailyMsg ? `<p class="win-daily">${dailyMsg}</p>` : ''}
                     ${rankMsg ? `<p class="win-daily">${rankMsg}</p>` : ''}
@@ -11522,6 +11799,7 @@
         initAdSystem();
         preloadSounds();
         updateFocusWidget();
+        updateStreakFlame();
     </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
