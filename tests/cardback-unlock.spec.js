@@ -41,17 +41,16 @@ async function boot(page) {
 }
 
 async function runUnlockScenario(page, patch) {
-    await page.evaluate(({ ACH_KEY, UNLOCK_KEY, ACH_DEFAULTS, patch }) => {
+    return page.evaluate(({ ACH_KEY, UNLOCK_KEY, ACH_DEFAULTS, patch }) => {
         localStorage.removeItem(UNLOCK_KEY);
         localStorage.setItem(ACH_KEY, JSON.stringify({ ...ACH_DEFAULTS, ...patch }));
-    }, { ACH_KEY, UNLOCK_KEY, ACH_DEFAULTS, patch });
-
-    await page.reload({ waitUntil: 'domcontentloaded' });
-    await boot(page);
-    return page.evaluate((UNLOCK_KEY) => {
+        // Reload in-memory achievements from localStorage before checking unlocks
+        if (typeof loadAchievements === 'function') {
+            achievements = loadAchievements();
+        }
         window.syncCardBackUnlocks({ showToast: false });
         return JSON.parse(localStorage.getItem(UNLOCK_KEY) || '[]');
-    }, UNLOCK_KEY);
+    }, { ACH_KEY, UNLOCK_KEY, ACH_DEFAULTS, patch });
 }
 
 test.beforeEach(async ({ page }) => {
