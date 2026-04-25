@@ -12,8 +12,8 @@
 - Team: [填入你的 Apple Developer Team]
 
 ### App Icons
-- 需提供 1024x1024 App Store icon（從 icon-512.png 放大輸出）
-- 執行: `npx @capacitor/assets generate --ios` 自動生成所有尺寸
+- ✅ icon-1024.png 已生成：app/icon-1024.png
+- resources/icon.png 已就位，執行 `npx @capacitor/assets generate --ios` 可自動填滿 iOS 所有尺寸
 
 ## App Store Connect 設定
 
@@ -22,7 +22,7 @@
 - 副標題: 三張一組的紙牌挑戰
 - 類別: 遊戲 > 紙牌遊戲
 - 年齡分級: 4+（無不當內容、無真實賭博）
-- 隱私權政策: 需提供 URL
+- 隱私權政策 URL: https://wulalainlondon.github.io/lucky3/app/privacy-policy.html
 
 ### 截圖規格
 - 6.7" iPhone（1290 × 2796）
