@@ -24,7 +24,7 @@ const ACH_DEFAULTS = {
 };
 
 async function boot(page) {
-    await page.goto('/app/index.html', { waitUntil: 'domcontentloaded' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
     const homeVisible = await page.locator('#home-screen').isVisible().catch(() => false);
     if (homeVisible) {
         await page.evaluate(() => {
