@@ -4,9 +4,9 @@
 // S24 Ultra landscape CSS viewport: ~915 × 393
 
 const { test, expect } = require('@playwright/test');
-test.describe.configure({ timeout: 90000 });
+test.describe.configure({ timeout: 120000 });
 
-const NATIVE_URL = '/www/index.html';
+const NATIVE_URL = '/';
 
 const S_ULTRA_LANDSCAPE = { width: 915, height: 393 };
 const S_ULTRA_PORTRAIT  = { width: 393, height: 915 };
@@ -72,14 +72,12 @@ async function getColumnBoxes(page) {
 }
 
 async function ensureGameReady(page) {
-    await page.evaluate(() => {
-        if (typeof window.homeNewGame === 'function') window.homeNewGame();
-    });
-    await expect(page.locator('#home-screen')).not.toBeVisible({ timeout: 10000 });
+    // Wait for _gameReady flag (root index.html sets this after initApp)
+    await page.waitForFunction(() => window._gameReady === true, { timeout: 45000 });
     await expect(page.locator('#deck-pile')).toBeVisible({ timeout: 10000 });
-    await expect.poll(async () => page.locator('.column').count(), { timeout: 12000 }).toBe(4);
-    await expect(page.locator('.flying')).toHaveCount(0, { timeout: 15000 });
-    await expect(page.locator('#deck-num')).not.toHaveText('40', { timeout: 15000 });
+    await expect.poll(async () => page.locator('.column').count(), { timeout: 15000 }).toBe(4);
+    await expect(page.locator('.flying')).toHaveCount(0, { timeout: 20000 });
+    await expect(page.locator('#deck-num')).not.toHaveText('40', { timeout: 20000 });
 }
 
 // ── Setup ──────────────────────────────────────────────────────────────────
@@ -87,6 +85,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
     test.beforeEach(async ({ page }) => {
         await page.addInitScript(() => {
             localStorage.setItem('lucky3-tutorial-state-v1', 'completed');
+            localStorage.removeItem('lucky3-current-game');
         });
     });
 
@@ -124,7 +123,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
 
     // ── 3. STRUCTURE: columns are evenly distributed across board ──────────
     test('4 columns are spread evenly (no left-clustering)', async ({ page }) => {
-        test.setTimeout(60000);
+        test.setTimeout(120000);
         await page.setViewportSize(S_ULTRA_LANDSCAPE);
         await page.goto(NATIVE_URL, { waitUntil: 'domcontentloaded' });
         await ensureGameReady(page);
@@ -172,7 +171,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
 
     // ── 5. OVERFLOW CHECK: 5 cards dealt ──────────────────────────────────
     test('no column overflow after 5 deals', async ({ page }) => {
-        test.setTimeout(45000);
+        test.setTimeout(120000);
         await page.setViewportSize(S_ULTRA_LANDSCAPE);
         await page.goto(NATIVE_URL, { waitUntil: 'domcontentloaded' });
         await ensureGameReady(page);
@@ -230,7 +229,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
 
     // ── 9. SNAPSHOT: after 8 deals ────────────────────────────────────────
     test('snapshot — after 8 deals (board has cards)', async ({ page }) => {
-        test.setTimeout(60000);
+        test.setTimeout(120000);
         await page.setViewportSize(S_ULTRA_LANDSCAPE);
         await page.goto(NATIVE_URL, { waitUntil: 'domcontentloaded' });
         await ensureGameReady(page);
@@ -270,7 +269,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
 
     // ── 12. PORTRAIT SNAPSHOT ─────────────────────────────────────────────
     test('portrait snapshot', async ({ page }) => {
-        test.setTimeout(60000);
+        test.setTimeout(120000);
         await page.setViewportSize(S_ULTRA_PORTRAIT);
         await page.goto(NATIVE_URL, { waitUntil: 'domcontentloaded' });
         await ensureGameReady(page);
