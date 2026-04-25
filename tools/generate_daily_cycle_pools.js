@@ -14,46 +14,57 @@ function mulberry32(a) {
     };
 }
 
+const TARGET_G1 = 500;
 const TARGET_G2 = 500;
 const TARGET_G3 = 500;
-const TARGET_G3_LUCKY3 = 425;
-const TARGET_G3_ZERO_CLEAR = 75;
-const MAX_TRIES = 2500000;
+const MAX_TRIES = 1000000;
 const RNG_SEED = 0x20260421;
 
-function passesG2Hard(s) {
+// G1: 每日第一局，輕鬆爽快 ~2分鐘
+function passesG1(s) {
     return (
         s.won === true &&
-        s.winType === 'lucky3' &&
-        s.longestColumnLen <= 12 &&
-        s.recycleCount >= 2 && s.recycleCount <= 4 &&
-        s.maxCombo >= 3 && s.maxCombo <= 4 &&
-        s.dealCount >= 95 && s.dealCount <= 140
+        s.dealCount >= 30 && s.dealCount <= 60 &&
+        s.recycleCount === 1 &&
+        s.maxCombo >= 2 &&
+        s.firstElimAt <= 1 &&
+        s.longestColumnLen <= 11
     );
 }
 
-function passesG3Hard(s) {
+// G2: 舒適局 ~4分鐘
+function passesG2(s) {
     return (
         s.won === true &&
-        s.longestColumnLen <= 14 &&
-        s.recycleCount >= 3 && s.recycleCount <= 5 &&
-        s.maxCombo >= 3 && s.maxCombo <= 5 &&
-        s.dealCount >= 110 && s.dealCount <= 165
+        s.dealCount >= 80 && s.dealCount <= 100 &&
+        s.recycleCount >= 2 && s.recycleCount <= 3 &&
+        s.maxCombo >= 3 &&
+        s.firstElimAt <= 2 &&
+        s.longestColumnLen <= 12
+    );
+}
+
+// G3: 有挑戰局 ~5分鐘
+function passesG3(s) {
+    return (
+        s.won === true &&
+        s.dealCount >= 101 && s.dealCount <= 120 &&
+        s.recycleCount >= 3 && s.recycleCount <= 6 &&
+        s.maxCombo >= 3 &&
+        s.firstElimAt <= 4 &&
+        s.longestColumnLen <= 13
     );
 }
 
 function generate() {
     const rng = mulberry32(RNG_SEED);
     const seen = new Set();
+    const g1 = [];
     const g2 = [];
-    const g3Lucky3 = [];
-    const g3ZeroClear = [];
+    const g3 = [];
     let tries = 0;
 
-    while (
-        tries < MAX_TRIES &&
-        (g2.length < TARGET_G2 || g3Lucky3.length < TARGET_G3_LUCKY3 || g3ZeroClear.length < TARGET_G3_ZERO_CLEAR)
-    ) {
+    while (tries < MAX_TRIES && (g1.length < TARGET_G1 || g2.length < TARGET_G2 || g3.length < TARGET_G3)) {
         tries++;
         const seed = (rng() * 0x100000000) >>> 0;
         if (seen.has(seed)) continue;
@@ -61,26 +72,12 @@ function generate() {
 
         const s = simulate(seed);
 
-        if (g2.length < TARGET_G2 && passesG2Hard(s)) {
-            g2.push(seed);
-        }
-        if (passesG3Hard(s)) {
-            if (s.winType === 'lucky3' && g3Lucky3.length < TARGET_G3_LUCKY3) {
-                g3Lucky3.push(seed);
-            } else if (s.winType === 'zero-clear' && g3ZeroClear.length < TARGET_G3_ZERO_CLEAR) {
-                g3ZeroClear.push(seed);
-            }
-        }
+        if (g1.length < TARGET_G1 && passesG1(s)) g1.push(seed);
+        if (g2.length < TARGET_G2 && passesG2(s)) g2.push(seed);
+        if (g3.length < TARGET_G3 && passesG3(s)) g3.push(seed);
     }
 
-    const g3 = g3Lucky3.concat(g3ZeroClear);
-    return {
-        tries,
-        g2,
-        g3,
-        g3Lucky3: g3Lucky3.length,
-        g3ZeroClear: g3ZeroClear.length,
-    };
+    return { tries, g1, g2, g3 };
 }
 
 function writeJson(filePath, data) {
@@ -88,14 +85,31 @@ function writeJson(filePath, data) {
 }
 
 function main() {
-    const outG2 = path.resolve(__dirname, 'seed_pool_g2_flow_500.json');
-    const outG3 = path.resolve(__dirname, 'seed_pool_g3_soft_challenge_500.json');
+    const outG1     = path.resolve(__dirname, 'seed_pool_ez_first_500.json');
+    const outG2     = path.resolve(__dirname, 'seed_pool_g2_flow_500.json');
+    const outG3     = path.resolve(__dirname, 'seed_pool_g3_soft_challenge_500.json');
     const outMerged = path.resolve(__dirname, 'seed_pool_daily_cycle_v1_1500.json');
-    const ezFile = path.resolve(__dirname, 'seed_pool_ez_first_500.json');
 
     const startAt = new Date().toISOString();
-    const result = generate();
-    const doneAt = new Date().toISOString();
+    const result  = generate();
+    const doneAt  = new Date().toISOString();
+
+    const g1Meta = {
+        generatedAt: doneAt,
+        startedAt: startAt,
+        tries: result.tries,
+        found: result.g1.length,
+        target: TARGET_G1,
+        criteria: {
+            won: true,
+            dealCountMin: 30,
+            dealCountMax: 60,
+            recycleCount: 1,
+            maxComboMin: 2,
+            firstElimAtMax: 1,
+            longestColumnLenMax: 11,
+        },
+    };
 
     const g2Meta = {
         generatedAt: doneAt,
@@ -105,14 +119,13 @@ function main() {
         target: TARGET_G2,
         criteria: {
             won: true,
-            winType: 'lucky3',
-            longestColumnLenMax: 12,
+            dealCountMin: 80,
+            dealCountMax: 100,
             recycleCountMin: 2,
-            recycleCountMax: 4,
+            recycleCountMax: 3,
             maxComboMin: 3,
-            maxComboMax: 4,
-            dealCountMin: 95,
-            dealCountMax: 140,
+            firstElimAtMax: 2,
+            longestColumnLenMax: 12,
         },
     };
 
@@ -122,42 +135,28 @@ function main() {
         tries: result.tries,
         found: result.g3.length,
         target: TARGET_G3,
-        split: {
-            lucky3: TARGET_G3_LUCKY3,
-            zeroClear: TARGET_G3_ZERO_CLEAR,
-            actualLucky3: result.g3Lucky3,
-            actualZeroClear: result.g3ZeroClear,
-        },
         criteria: {
             won: true,
-            longestColumnLenMax: 14,
+            dealCountMin: 101,
+            dealCountMax: 120,
             recycleCountMin: 3,
-            recycleCountMax: 5,
+            recycleCountMax: 6,
             maxComboMin: 3,
-            maxComboMax: 5,
-            dealCountMin: 110,
-            dealCountMax: 165,
+            firstElimAtMax: 4,
+            longestColumnLenMax: 13,
         },
     };
 
+    writeJson(outG1, { meta: g1Meta, seeds: result.g1 });
     writeJson(outG2, { meta: g2Meta, seeds: result.g2 });
     writeJson(outG3, { meta: g3Meta, seeds: result.g3 });
 
-    let ezSeeds = [];
-    if (fs.existsSync(ezFile)) {
-        try {
-            const ez = JSON.parse(fs.readFileSync(ezFile, 'utf8'));
-            if (Array.isArray(ez.seeds)) ezSeeds = ez.seeds.map((x) => x >>> 0);
-        } catch (_) {
-            ezSeeds = [];
-        }
-    }
-    const merged = ezSeeds.concat(result.g2, result.g3);
+    const merged = result.g1.concat(result.g2, result.g3);
     writeJson(outMerged, {
         meta: {
             generatedAt: doneAt,
             from: {
-                g1EasyFirst: ezSeeds.length,
+                g1EasyFirst: result.g1.length,
                 g2Flow: result.g2.length,
                 g3SoftChallenge: result.g3.length,
             },
@@ -167,14 +166,14 @@ function main() {
         seeds: merged,
     });
 
-    const ok = result.g2.length === TARGET_G2 && result.g3.length === TARGET_G3;
+    const ok = result.g1.length === TARGET_G1 && result.g2.length === TARGET_G2 && result.g3.length === TARGET_G3;
     console.log(JSON.stringify({
         ok,
         tries: result.tries,
+        g1: result.g1.length,
         g2: result.g2.length,
         g3: result.g3.length,
-        g3Lucky3: result.g3Lucky3,
-        g3ZeroClear: result.g3ZeroClear,
+        outG1,
         outG2,
         outG3,
         outMerged,
@@ -185,4 +184,3 @@ function main() {
 if (require.main === module) {
     main();
 }
-

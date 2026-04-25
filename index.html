@@ -3498,6 +3498,83 @@
         .fragment-toast-thumb img { width: 100%; height: 100%; object-fit: cover; }
         .fragment-toast-text { font-size: 0.82rem; color: rgba(255,255,255,0.9); }
         .fragment-toast-text strong { color: #ffd700; display: block; font-size: 0.88rem; }
+        .win-today-progress {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin: 10px 0 4px;
+        }
+        .win-today-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .today-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            border: 1.5px solid rgba(255,255,255,0.4);
+        }
+        .today-dot.filled {
+            background: #ffd700;
+            border-color: #ffd700;
+            box-shadow: 0 0 6px #ffd700aa;
+        }
+        .win-today-hint {
+            font-size: 12px;
+            color: rgba(255,255,255,0.75);
+            letter-spacing: 0.3px;
+        }
+        .focus-widget {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px;
+            background: rgba(0,0,0,0.35);
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            cursor: pointer;
+            min-height: 44px;
+        }
+        .focus-widget-thumb {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid rgba(255,215,0,0.4);
+            flex-shrink: 0;
+        }
+        .focus-widget-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .focus-widget-title {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 3px;
+        }
+        .focus-widget-bar-wrap {
+            background: rgba(255,255,255,0.15);
+            border-radius: 3px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .focus-widget-bar-fill {
+            height: 100%;
+            background: #ffd700;
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+        .focus-widget-count {
+            font-size: 10px;
+            color: rgba(255,215,0,0.8);
+            flex-shrink: 0;
+            min-width: 36px;
+            text-align: right;
+        }
     </style>
 </head>
 
@@ -3519,6 +3596,8 @@
             </div>
         </div>
     </div>
+
+    <div id="focus-widget" class="focus-widget" style="display:none" onclick="openGallery()"></div>
 
     <div id="settings-overlay" class="settings-overlay" onclick="onSettingsOverlayClick(event)">
         <div class="settings-panel">
@@ -7784,6 +7863,38 @@
             const result = applyDropToState(state, candidate);
             saveGalleryState(state);
             showFragmentToast(result);
+            updateFocusWidget();
+        }
+
+        async function updateFocusWidget() {
+            const el = document.getElementById('focus-widget');
+            if (!el) return;
+            const state = loadGalleryState();
+            const focusId = state.focusPaintingId;
+            const painting = PAINTINGS.find(p => p.id === focusId);
+            if (!painting) { el.style.display = 'none'; return; }
+            const total = painting.cols * painting.rows;
+            const collected = getCollectedSet(state, focusId).size;
+            if (collected >= total) { el.style.display = 'none'; return; }
+            await resolvePaintingBasePath();
+            const pct = total > 0 ? Math.round(collected / total * 100) : 0;
+            el.style.display = 'flex';
+            el.innerHTML = `
+                <img class="focus-widget-thumb" src="${paintingCoverSrc(focusId)}" alt="">
+                <div class="focus-widget-info">
+                    <div class="focus-widget-title" id="focus-widget-title">...</div>
+                    <div class="focus-widget-bar-wrap">
+                        <div class="focus-widget-bar-fill" style="width:${pct}%"></div>
+                    </div>
+                </div>
+                <div class="focus-widget-count">${collected}/${total}</div>`;
+            fetch(paintingMetaSrc(focusId))
+                .then(r => r.json())
+                .then(meta => {
+                    const t = document.getElementById('focus-widget-title');
+                    if (t) t.textContent = meta.title || focusId;
+                })
+                .catch(() => {});
         }
 
         function renderGalleryStats(state) {
@@ -10698,6 +10809,18 @@
             const dailyMsg = markDailyChallengeWin();
             const rankMsg = await submitDailyScoreIfNeeded(current, 'lucky3');
             lastGameStats = { timeStr: formatTime(elapsedSec), moves: moveCount, combo: maxCombo };
+            const _dw = loadDailyWins();
+            const _winCount = _dw.count;
+            const _gs = loadGalleryState();
+            const _nextSpec = computeDropSpec(_winCount + 1, _gs.pityNoDrop || 0);
+            const _dots = [1,2,3].map(i => `<span class="today-dot${i <= _winCount ? ' filled' : ''}"></span>`).join('');
+            let _hint = '';
+            if (_winCount < 3 && _nextSpec.canDrop) {
+                _hint = `再贏一局 → ${Math.round(_nextSpec.rate * 100)}% 獲得碎片`;
+            } else if (_winCount >= 3) {
+                _hint = '今日碎片任務完成 ✦';
+            }
+            const _progressHtml = `<div class="win-today-progress"><div class="win-today-dots">${_dots}</div>${_hint ? `<div class="win-today-hint">${_hint}</div>` : ''}</div>`;
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
             overlay.id = 'win-overlay';
@@ -10706,6 +10829,7 @@
                     ${prevStats ? `<div class="win-prev-stats">上局 ${prevStats.timeStr} · ${prevStats.moves}步 · ×${prevStats.combo}</div>` : ''}
                     <h2 class="win-title shimmer-text">LUCKY 3 JACKPOT</h2>
                     <p class="win-subtitle">${t('win.subtitle')}</p>
+                    ${_progressHtml}
                     <div class="win-stats">
                         <div class="win-stat-row"><span>${t('win.stat.time')}</span><strong data-countup="${elapsedSec}" data-format="time">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.moves')}</span><strong data-countup="${moveCount}">0</strong></div>
@@ -10766,6 +10890,18 @@
             const dailyMsg = markDailyChallengeWin();
             const rankMsg = await submitDailyScoreIfNeeded(current, 'zero-clear');
             lastGameStats = { timeStr: formatTime(elapsedSec), moves: moveCount, combo: maxCombo };
+            const _dw = loadDailyWins();
+            const _winCount = _dw.count;
+            const _gs = loadGalleryState();
+            const _nextSpec = computeDropSpec(_winCount + 1, _gs.pityNoDrop || 0);
+            const _dots = [1,2,3].map(i => `<span class="today-dot${i <= _winCount ? ' filled' : ''}"></span>`).join('');
+            let _hint = '';
+            if (_winCount < 3 && _nextSpec.canDrop) {
+                _hint = `再贏一局 → ${Math.round(_nextSpec.rate * 100)}% 獲得碎片`;
+            } else if (_winCount >= 3) {
+                _hint = '今日碎片任務完成 ✦';
+            }
+            const _progressHtml = `<div class="win-today-progress"><div class="win-today-dots">${_dots}</div>${_hint ? `<div class="win-today-hint">${_hint}</div>` : ''}</div>`;
             const overlay = document.createElement('div');
             overlay.className = 'win-overlay';
             overlay.id = 'win-overlay';
@@ -10774,6 +10910,7 @@
                     ${prevStats ? `<div class="win-prev-stats">上局 ${prevStats.timeStr} · ${prevStats.moves}步 · ×${prevStats.combo}</div>` : ''}
                     <h2 class="void-win-title">VOID CLEAR</h2>
                     <p class="void-win-subtitle">${t('void.subtitle')}</p>
+                    ${_progressHtml}
                     <p class="void-win-badge">${t('void.badge')}</p>
                     ${dailyMsg ? `<p class="win-daily">${dailyMsg}</p>` : ''}
                     ${rankMsg ? `<p class="win-daily">${rankMsg}</p>` : ''}
@@ -11368,6 +11505,7 @@
         initHintLongPress();
         initAdSystem();
         preloadSounds();
+        updateFocusWidget();
     </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
