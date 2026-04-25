@@ -7415,14 +7415,25 @@
             const zeroClear = achievements.zeroClearWins || 0;
             const maxCombo  = achievements.maxCombo || 0;
             const bestMoves = achievements.bestMoves;
+            const noUndoWins    = achievements.noUndoWins    || 0;
+            const suitWins      = achievements.suitWins      || {};
+            const fullSweepWins = achievements.fullSweepWins || 0;
+            const dailyWins     = achievements.dailyWins     || 0;
+            const comboGameWins = achievements.comboGameWins || 0;
             const targets = [
-                { id: 'forest',    ok: wins >= 10 },
-                { id: 'lucky',     ok: wins >= 50 },
-                { id: 'crimson',   ok: streak >= 7 },
-                { id: 'void',      ok: zeroClear >= 1 },
-                { id: 'nightgold', ok: typeof isPremium === 'function' && isPremium() },
-                { id: 'combo5',    ok: maxCombo >= 5 },
-                { id: 'speed18',   ok: bestMoves != null && bestMoves <= 18 },
+                { id: 'forest',        ok: wins >= 10 },
+                { id: 'lucky',         ok: wins >= 50 },
+                { id: 'crimson',       ok: streak >= 7 },
+                { id: 'void',          ok: zeroClear >= 1 },
+                { id: 'nightgold',     ok: typeof isPremium === 'function' && isPremium() },
+                { id: 'combo5',        ok: maxCombo >= 5 },
+                { id: 'speed18',       ok: bestMoves != null && bestMoves <= 18 },
+                { id: 'ironwill',      ok: noUndoWins >= 1 },
+                { id: 'suitcollector', ok: suitWins.spade && suitWins.heart && suitWins.diamond && suitWins.club },
+                { id: 'luckydraw',     ok: suitWins.spade === true },
+                { id: 'fullsweep',     ok: fullSweepWins >= 1 },
+                { id: 'dailyregular',  ok: dailyWins >= 7 },
+                { id: 'chainreaction', ok: comboGameWins >= 1 },
             ];
             for (const target of targets) {
                 if (!target.ok) continue;
@@ -9159,7 +9170,12 @@
                     bestTimeSec: Number.isInteger(parsed.bestTimeSec) ? parsed.bestTimeSec : null,
                     currentStreak: Number.isInteger(parsed.currentStreak) ? parsed.currentStreak : 0,
                     longestStreak: Number.isInteger(parsed.longestStreak) ? parsed.longestStreak : 0,
-                    lastWinDate: typeof parsed.lastWinDate === 'string' ? parsed.lastWinDate : ''
+                    lastWinDate: typeof parsed.lastWinDate === 'string' ? parsed.lastWinDate : '',
+                    noUndoWins: Number.isInteger(parsed.noUndoWins) ? parsed.noUndoWins : 0,
+                    suitWins: parsed.suitWins && typeof parsed.suitWins === 'object' ? parsed.suitWins : { spade: false, heart: false, diamond: false, club: false },
+                    fullSweepWins: Number.isInteger(parsed.fullSweepWins) ? parsed.fullSweepWins : 0,
+                    dailyWins: Number.isInteger(parsed.dailyWins) ? parsed.dailyWins : 0,
+                    comboGameWins: Number.isInteger(parsed.comboGameWins) ? parsed.comboGameWins : 0,
                 };
             } catch (_) {
                 return { ...DEFAULT_ACHIEVEMENTS };
