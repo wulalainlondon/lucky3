@@ -10050,7 +10050,7 @@
         }
 
         // --- 發牌與消除 ---
-        async function dealOneCard() {
+        async function dealOneCard(isChained = false) {
             if (isBusy) return;
             clearHintHighlight();
 
@@ -10090,6 +10090,7 @@
             const target = slots[(nextSlotIndex + slots.indexOf(avail)) % 4];
             const prevIdx = nextSlotIndex;
             nextSlotIndex = (slots.indexOf(target) + 1) % 4;
+            const prevCardCount = target.cards.length;
 
             const skippedLegalClear = hasAnyLegalClear();
             historyStack.push({ type: 'deal', slotId: target.id, prevIdx, skippedLegalClear });
@@ -10136,6 +10137,9 @@
                     isBusy = false;
                     checkDeadlock();
                     saveGameState();
+                    if (!isChained && prevCardCount === 1 && deck.length > 0 && !hasWon) {
+                        setTimeout(() => dealOneCard(true), getDelay(80));
+                    }
                 }, getDelay(1720));
             } else {
                 setTimeout(() => {
@@ -10146,6 +10150,9 @@
                     isBusy = false;
                     checkDeadlock();
                     saveGameState();
+                    if (!isChained && prevCardCount === 1 && deck.length > 0 && !hasWon) {
+                        setTimeout(() => dealOneCard(true), getDelay(80));
+                    }
                 }, getDelay(400));
             }
         }
@@ -10176,6 +10183,9 @@
                 isBusy = false;
                 checkDeadlock();
                 saveGameState();
+                if (!hasWon && deck.length > 0) {
+                    setTimeout(() => dealOneCard(), getDelay(100));
+                }
             };
 
             if (settings.recycleAnim) {
