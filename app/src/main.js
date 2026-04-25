@@ -1656,18 +1656,50 @@
             const row = Math.floor(piece.idx / piece.cols);
             const col = piece.idx % piece.cols;
             const src = paintingPieceSrc(piece.id, row, col);
-            const title = result.type === 'piece' ? t('gallery.fragment_drop') : t('gallery.fragment_to_dust', { count: result.dustGain || 1 });
-            const hint = result.type === 'piece' ? t('gallery.fragment_hint') : t('gallery.dust_hint');
-            const toast = document.createElement('div');
-            toast.className = 'fragment-toast';
-            toast.innerHTML = `
-                <div class="fragment-toast-thumb"><img src="${src}" alt=""></div>
-                <div class="fragment-toast-text">
-                    <strong>${title}</strong>
-                    ${hint}
-                </div>`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3100);
+
+            // 如果 focus-widget 是隱藏的，降級為簡單 toast
+            const widget = document.getElementById('focus-widget');
+            if (!widget || widget.style.display === 'none' || widget.offsetParent === null) {
+                const title = result.type === 'piece' ? t('gallery.fragment_drop') : t('gallery.fragment_to_dust', { count: result.dustGain || 1 });
+                const hint = result.type === 'piece' ? t('gallery.fragment_hint') : t('gallery.dust_hint');
+                const toast = document.createElement('div');
+                toast.className = 'fragment-toast';
+                toast.innerHTML = `<div class="fragment-toast-thumb"><img src="${src}" alt=""></div><div class="fragment-toast-text"><strong>${title}</strong>${hint}</div>`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3100);
+                return;
+            }
+
+            // 飛入動畫
+            const fly = document.createElement('div');
+            fly.className = 'fragment-fly';
+            fly.innerHTML = `<img src="${src}" alt="">`;
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            fly.style.cssText = `left:${cx - 40}px; top:${cy - 40}px;`;
+            document.body.appendChild(fly);
+
+            requestAnimationFrame(() => {
+                fly.classList.add('appear');
+                setTimeout(() => {
+                    const wr = widget.getBoundingClientRect();
+                    const tx = wr.left + wr.width / 2 - cx;
+                    const ty = wr.top + wr.height / 2 - cy;
+                    fly.style.transition = 'transform 0.5s cubic-bezier(0.4,0,1,1), opacity 0.5s ease';
+                    fly.style.transform = `translate(${tx}px, ${ty}px) scale(0.3)`;
+                    fly.style.opacity = '0';
+                    setTimeout(() => {
+                        fly.remove();
+                        widget.classList.add('widget-pulse');
+                        setTimeout(() => widget.classList.remove('widget-pulse'), 500);
+                        // Haptics: light tap on landing
+                        try {
+                            const { Haptics, ImpactStyle } = window.Capacitor?.Plugins || {};
+                            if (Haptics) Haptics.impact({ style: ImpactStyle.Light });
+                        } catch (_) {}
+                    }, 520);
+                }, 700); // 0.3s appear + 0.4s pause
+            });
         }
 
         function onWinDropFragment() {
@@ -1695,6 +1727,110 @@
             const result = applyDropToState(state, candidate);
             saveGalleryState(state);
             showFragmentToast(result);
+            updateFocusWidget();
+            if (galleryUiState.frameRevealPaintingId) {
+                const revealId = galleryUiState.frameRevealPaintingId;
+                galleryUiState.frameRevealPaintingId = null;
+                setTimeout(() => showPaintingReveal(revealId), 1500);
+            }
+        }
+
+        async function updateFocusWidget() {
+            const el = document.getElementById('focus-widget');
+            if (!el) return;
+            const state = loadGalleryState();
+            const focusId = state.focusPaintingId;
+            const painting = PAINTINGS.find(p => p.id === focusId);
+            if (!painting) { el.style.display = 'none'; return; }
+            const total = painting.cols * painting.rows;
+            const collected = getCollectedSet(state, focusId).size;
+            if (collected >= total) { el.style.display = 'none'; return; }
+            await resolvePaintingBasePath();
+            const pct = total > 0 ? Math.round(collected / total * 100) : 0;
+            el.style.display = 'flex';
+            el.innerHTML = `
+                <img class="focus-widget-thumb" src="${paintingCoverSrc(focusId)}" alt="">
+                <div class="focus-widget-info">
+                    <div class="focus-widget-title" id="focus-widget-title">...</div>
+                    <div class="focus-widget-bar-wrap">
+                        <div class="focus-widget-bar-fill" style="width:${pct}%"></div>
+                    </div>
+                </div>
+                <div class="focus-widget-count">${collected}/${total}</div>`;
+            fetch(paintingMetaSrc(focusId))
+                .then(r => r.json())
+                .then(meta => {
+                    const titleEl = document.getElementById('focus-widget-title');
+                    if (titleEl) titleEl.textContent = meta.title || focusId;
+                })
+                .catch(() => {});
+        }
+
+        async function showPaintingReveal(paintingId) {
+            const meta = PAINTINGS.find(p => p.id === paintingId);
+            if (!meta) return;
+            const state = loadGalleryState();
+            const completedCount = Object.values(state.paintings || {}).filter(e => e.completedAt).length;
+            await resolvePaintingBasePath();
+
+            // Haptics: heavy + notification on painting completion
+            try {
+                const { Haptics, ImpactStyle, NotificationType } = window.Capacitor?.Plugins || {};
+                if (Haptics) {
+                    await Haptics.impact({ style: ImpactStyle.Heavy });
+                    setTimeout(async () => {
+                        try { await Haptics.notification({ type: NotificationType.Success }); } catch(_) {}
+                    }, 600);
+                }
+            } catch (_) {}
+
+            let title = meta.title || paintingId;
+            try {
+                const metaJson = await fetch(paintingMetaSrc(paintingId)).then(r => r.json());
+                const locale = typeof currentLocale !== 'undefined' ? currentLocale : 'zh-Hant';
+                title = (locale === 'en' || !metaJson.title) ? (metaJson.titleEn || metaJson.title) : metaJson.title;
+            } catch (_) {}
+
+            const overlay = document.createElement('div');
+            overlay.id = 'painting-reveal-overlay';
+            overlay.className = 'painting-reveal-overlay';
+            overlay.innerHTML = `
+                <div class="reveal-backdrop"></div>
+                <div class="reveal-content">
+                    <div class="reveal-frame">
+                        <img src="${paintingCoverSrc(paintingId)}" alt="">
+                    </div>
+                    <div class="reveal-title">${title}</div>
+                    <div class="reveal-badge">第 ${completedCount} 幅收藏完成</div>
+                    <button type="button" class="reveal-continue-btn" onclick="document.getElementById('painting-reveal-overlay').remove()">繼續</button>
+                </div>`;
+            overlay.querySelector('.reveal-backdrop').onclick = () => overlay.remove();
+            document.body.appendChild(overlay);
+
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            setTimeout(() => {
+                try {
+                    ParticleSystem.emit('confetti', cx - 80, cy - 100, { count: 30 });
+                    ParticleSystem.emit('confetti', cx + 80, cy - 100, { count: 30 });
+                    ParticleSystem.emit('fireworks', cx, cy, { count: 20 });
+                } catch (_) {}
+            }, 200);
+        }
+
+        function updateStreakFlame() {
+            const el = document.getElementById('streak-flame');
+            if (!el) return;
+            const ach = loadAchievements();
+            const streak = ach.currentStreak || 0;
+            if (streak < 1) { el.style.display = 'none'; return; }
+            let cls = 'streak-flame';
+            if (streak >= 7) cls += ' hot';
+            else if (streak >= 3) cls += ' warm';
+            else cls += ' cool';
+            el.className = cls;
+            el.style.display = 'flex';
+            el.innerHTML = `<span class="flame-icon">🔥</span><span class="flame-count">${streak}</span>`;
         }
 
         function renderGalleryStats(state) {
@@ -2192,6 +2328,7 @@
             el.style.display = 'flex';
             // margin: auto 應自動居中；JS 作為 WKWebView fallback
             requestAnimationFrame(() => setTimeout(() => centerHomeContent(), 50));
+            updateFocusWidget();
         }
 
         function hideHomeScreen(cb) {
@@ -5653,6 +5790,24 @@
             const fortuneText = isFirstWinToday ? fortuneBySuit(winCardSuit) : '';
             lastFortuneText = fortuneText;
             onWinDropFragment(); // 第二局起掉碎片（函式內部自行判斷）
+            updateStreakFlame();
+            const _dw = loadDailyWins();
+            const _winCount = _dw.count;
+            const _gs = loadGalleryState();
+            const _nextSpec = computeDropSpec(_winCount + 1, _gs.pityNoDrop || 0);
+            const _dots = [1,2,3].map(i => `<span class="today-dot${i <= _winCount ? ' filled' : ''}"></span>`).join('');
+            let _hint = '';
+            if (_winCount < 3 && _nextSpec.canDrop) {
+                _hint = `再贏一局 → ${Math.round(_nextSpec.rate * 100)}% 獲得碎片`;
+            } else if (_winCount >= 3) {
+                _hint = '今日碎片任務完成 ✦';
+            }
+            const _progressHtml = `<div class="win-today-progress"><div class="win-today-dots">${_dots}</div>${_hint ? `<div class="win-today-hint">${_hint}</div>` : ''}</div>`;
+            let _taskHint = '';
+            if (_winCount === 1) _taskHint = '明日連勝 +1 🔥';
+            else if (_winCount === 2 && maxCombo >= 3) _taskHint = '組合技大師！';
+            else if (_winCount >= 3) _taskHint = '今日收藏任務完成 ✦';
+            const _streak = (loadAchievements().currentStreak || 0);
             const bestResult = updateBestStats(current);
             const achievementResult = updateAchievementsOnWin(current, 'lucky3');
             const bestMessage = buildBestMessage(bestResult);
@@ -5667,6 +5822,9 @@
                     ${prevStats ? `<div class="win-prev-stats">上局 ${prevStats.timeStr} · ${prevStats.moves}步 · ×${prevStats.combo}</div>` : ''}
                     <h2 class="win-title shimmer-text">LUCKY 3 JACKPOT</h2>
                     <p class="win-subtitle">${t('win.subtitle')}</p>
+                    ${_progressHtml}
+                    ${_taskHint ? `<div class="win-task-hint">${_taskHint}</div>` : ''}
+                    ${_streak >= 1 ? `<div class="win-streak-line">🔥 連勝 ${_streak} 天</div>` : ''}
                     <div class="win-stats">
                         <div class="win-stat-row"><span>${t('win.stat.time')}</span><strong data-countup="${elapsedSec}" data-format="time">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.moves')}</span><strong data-countup="${moveCount}">0</strong></div>
@@ -5732,6 +5890,21 @@
             const current = { elapsedSec, moveCount, maxCombo };
             lastFortuneText = '';
             onWinDropFragment(); // 第二局起掉碎片
+            updateStreakFlame();
+            const _dw = loadDailyWins();
+            const _winCount = _dw.count;
+            const _gs = loadGalleryState();
+            const _nextSpec = computeDropSpec(_winCount + 1, _gs.pityNoDrop || 0);
+            const _dots = [1,2,3].map(i => `<span class="today-dot${i <= _winCount ? ' filled' : ''}"></span>`).join('');
+            let _hint = '';
+            if (_winCount < 3 && _nextSpec.canDrop) {
+                _hint = `再贏一局 → ${Math.round(_nextSpec.rate * 100)}% 獲得碎片`;
+            } else if (_winCount >= 3) {
+                _hint = '今日碎片任務完成 ✦';
+            }
+            const _progressHtml = `<div class="win-today-progress"><div class="win-today-dots">${_dots}</div>${_hint ? `<div class="win-today-hint">${_hint}</div>` : ''}</div>`;
+            const _taskHint = '傳奇清空！你是今日最強判官';
+            const _streak = (loadAchievements().currentStreak || 0);
             const bestResult = updateBestStats(current);
             const achievementResult = updateAchievementsOnWin(current, 'zero-clear');
             const bestMessage = buildBestMessage(bestResult);
@@ -5747,6 +5920,9 @@
                     <h2 class="void-win-title">VOID CLEAR</h2>
                     <p class="void-win-subtitle">${t('void.subtitle')}</p>
                     <p class="void-win-badge">${t('void.badge')}</p>
+                    ${_progressHtml}
+                    ${_taskHint ? `<div class="win-task-hint">${_taskHint}</div>` : ''}
+                    ${_streak >= 1 ? `<div class="win-streak-line">🔥 連勝 ${_streak} 天</div>` : ''}
                     ${dailyMsg ? `<p class="win-daily">${dailyMsg}</p>` : ''}
                     <p class="win-rank-msg" style="display:none"></p>
                     ${achievementResult.streakNotice ? `<p class="win-daily">${achievementResult.streakNotice}</p>` : ''}
@@ -6181,6 +6357,8 @@
         settings = loadSettings();
         achievements = loadAchievements();
         syncCardBackUnlocks({ showToast: false });
+        updateFocusWidget();
+        updateStreakFlame();
         loadCardBack();
         bindSettingsUI();
         setLocale(settings.locale, { persist: false });

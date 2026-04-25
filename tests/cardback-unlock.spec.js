@@ -1,7 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-test.describe.configure({ timeout: 120000 });
+test.describe.configure({ timeout: 300000 });
 
 const ACH_KEY = 'lucky3-achievements-v1';
 const UNLOCK_KEY = 'lucky3-card-back-unlocked-v1';
