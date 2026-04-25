@@ -30,7 +30,7 @@
 - 可選：5.5" iPhone
 
 ### App 審查備注
-"This is a card solitaire game where players match groups of 3 cards that sum to 10, 20, or 30. 
+"This is a card solitaire game where players match groups of 3 cards that sum to 9, 19, or 29. 
 No real money gambling. No in-app purchases. No ads. 
 Uses localStorage for settings/scores only."
 
