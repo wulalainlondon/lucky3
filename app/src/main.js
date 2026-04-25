@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.24-v3';
+        const APP_VERSION = '2026.04.26-v1';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -2049,37 +2049,93 @@
               condEN: 'Chain Reaction (3+ combos)', condZH: '連鎖反應（同局 3+ combo）', cond: 'chainreaction' },
         ];
 
-        // 咪牌光暈顏色對應表（依牌背主色調）
-        const CARDBACK_GLOW_MAP = {
-            classic:       'rgba(255, 215,   0, 0.9)',
-            classic_blue:  'rgba(100, 180, 255, 0.9)',
-            classic_red:   'rgba(255, 100, 120, 0.9)',
-            retro_gold:    'rgba(218, 165,  32, 1.0)',
-            nightgold:     'rgba(218, 165,  32, 0.95)',
-            forest:        'rgba( 60, 220,  80, 0.85)',
-            crimson:       'rgba(255,  60,  40, 0.9)',
-            void:          'rgba(180, 120, 255, 0.9)',
-            lucky:         'rgba(255, 215,   0, 0.9)',
-            combo5:        'rgba( 40, 220, 255, 0.95)',
-            speed18:       'rgba(120, 190, 255, 0.9)',
-            ironwill:      'rgba(200, 210, 230, 0.85)',
-            suitcollector: 'rgba(255, 215,   0, 0.9)',
-            luckydraw:     'rgba(218, 165,  32, 0.9)',
-            fullsweep:     'rgba( 80, 255, 130, 0.85)',
-            dailyregular:  'rgba(255, 200,  80, 0.9)',
-            chainreaction: 'rgba(120, 190, 255, 0.95)',
+        // ── Card Back Registry (single source for image/theme/mii fx) ─────────
+        const MII_PROFILE_PRESETS = {
+            CRYSTAL: {
+                miiText: {
+                    default: { color: '#FFFFFF', border: 'rgba(170,220,255,0.45)', bg: 'rgba(12, 25, 42, 0.9)' },
+                    chance: { color: '#8efcff', border: 'rgba(120, 220, 255, 0.6)', bg: 'rgba(7, 32, 48, 0.94)' },
+                },
+                haptic: { peek: [20, 20, 25], chance: [20, 20, 60] },
+            },
+            FORGE: {
+                miiText: {
+                    default: { color: '#FFE7A3', border: 'rgba(255, 204, 87, 0.58)', bg: 'rgba(46, 28, 0, 0.92)' },
+                    chance: { color: '#FFF1C8', border: 'rgba(255, 215, 64, 0.72)', bg: 'rgba(65, 36, 3, 0.95)' },
+                },
+                haptic: { peek: [28, 22, 30], chance: [35, 20, 70] },
+            },
+            VOID: {
+                miiText: {
+                    default: { color: '#E5DBFF', border: 'rgba(168, 130, 255, 0.58)', bg: 'rgba(24, 12, 45, 0.92)' },
+                    chance: { color: '#D8FFFA', border: 'rgba(112, 239, 215, 0.68)', bg: 'rgba(18, 15, 48, 0.95)' },
+                },
+                haptic: { peek: [16, 26, 16], chance: [18, 18, 46, 18, 28] },
+            },
+            ARC: {
+                miiText: {
+                    default: { color: '#D8FFFF', border: 'rgba(0, 235, 255, 0.62)', bg: 'rgba(0, 37, 53, 0.9)' },
+                    chance: { color: '#EEFFFF', border: 'rgba(131, 247, 255, 0.8)', bg: 'rgba(0, 52, 74, 0.94)' },
+                },
+                haptic: { peek: [14, 12, 14, 12, 14], chance: [16, 10, 24, 10, 38] },
+            },
+            LIFE: {
+                miiText: {
+                    default: { color: '#D9FFE0', border: 'rgba(90, 226, 128, 0.52)', bg: 'rgba(7, 37, 18, 0.9)' },
+                    chance: { color: '#ECFFE6', border: 'rgba(113, 255, 168, 0.7)', bg: 'rgba(4, 46, 18, 0.95)' },
+                },
+                haptic: { peek: [18, 28, 18], chance: [24, 18, 48] },
+            },
         };
 
-        // ── Card Back Effect Theme System ──────────────────────────────────────
-        const CARDBACK_THEME = {
-            classic: 'CRYSTAL', classic_blue: 'CRYSTAL', classic_red: 'CRYSTAL',
-            crimson: 'EMBER_BRIGHT', nightgold: 'EMBER_DARK',
-            retro_gold: 'FORGE_GOLD', ironwill: 'FORGE_STEEL', fullsweep: 'FORGE_ROYAL',
-            void: 'VOID_PURPLE', luckydraw: 'VOID_DARK',
-            combo5: 'ARC_CYAN', chainreaction: 'ARC_CYAN', speed18: 'ARC_GREEN',
-            forest: 'LIFE_FOREST', lucky: 'LIFE_FESTIVE',
-            suitcollector: 'LIFE_SUIT', dailyregular: 'LIFE_STELLAR',
+        function buildCardbackConfig(imagePath, theme, glow, miiFxProfile) {
+            const preset = MII_PROFILE_PRESETS[miiFxProfile] || MII_PROFILE_PRESETS.CRYSTAL;
+            return {
+                image: `url('${imagePath}')`,
+                theme,
+                glow,
+                miiFxProfile,
+                sfxProfile: miiFxProfile,
+                miiText: preset.miiText,
+                hapticProfile: preset.haptic,
+            };
+        }
+
+        const CARDBACK_REGISTRY = {
+            classic: buildCardbackConfig('../cardback/classic.png', 'CRYSTAL', 'rgba(255, 215, 0, 0.9)', 'CRYSTAL'),
+            classic_blue: buildCardbackConfig('../cardback/classic.png', 'CRYSTAL', 'rgba(100, 180, 255, 0.9)', 'CRYSTAL'),
+            classic_red: buildCardbackConfig('../cardback/classic.png', 'CRYSTAL', 'rgba(255, 100, 120, 0.9)', 'CRYSTAL'),
+            retro_gold: buildCardbackConfig('../cardback/lucky3_retro_classic_gold.png', 'FORGE_GOLD', 'rgba(218, 165, 32, 1)', 'FORGE'),
+            nightgold: buildCardbackConfig('../cardback/nightgold.png', 'EMBER_DARK', 'rgba(218, 165, 32, 0.95)', 'FORGE'),
+            forest: buildCardbackConfig('../cardback/forest.png', 'LIFE_FOREST', 'rgba(60, 220, 80, 0.85)', 'LIFE'),
+            crimson: buildCardbackConfig('../cardback/crimson.png', 'EMBER_BRIGHT', 'rgba(255, 60, 40, 0.9)', 'FORGE'),
+            void: buildCardbackConfig('../cardback/void.png', 'VOID_PURPLE', 'rgba(180, 120, 255, 0.9)', 'VOID'),
+            lucky: buildCardbackConfig('../cardback/lucky.png', 'LIFE_FESTIVE', 'rgba(255, 215, 0, 0.9)', 'LIFE'),
+            combo5: buildCardbackConfig('../cardback/combo5.png', 'ARC_CYAN', 'rgba(40, 220, 255, 0.95)', 'ARC'),
+            speed18: buildCardbackConfig('../cardback/speed18.png', 'ARC_GREEN', 'rgba(120, 190, 255, 0.9)', 'ARC'),
+            ironwill: buildCardbackConfig('../cardback/ironwill.png', 'FORGE_STEEL', 'rgba(200, 210, 230, 0.85)', 'FORGE'),
+            suitcollector: buildCardbackConfig('../cardback/suitcollector.png', 'LIFE_SUIT', 'rgba(255, 215, 0, 0.9)', 'LIFE'),
+            luckydraw: buildCardbackConfig('../cardback/luckydraw.png', 'VOID_DARK', 'rgba(218, 165, 32, 0.9)', 'VOID'),
+            fullsweep: buildCardbackConfig('../cardback/fullsweep.png', 'FORGE_ROYAL', 'rgba(80, 255, 130, 0.85)', 'FORGE'),
+            dailyregular: buildCardbackConfig('../cardback/dailyregular.png', 'LIFE_STELLAR', 'rgba(255, 200, 80, 0.9)', 'LIFE'),
+            chainreaction: buildCardbackConfig('../cardback/chainreaction.png', 'ARC_CYAN', 'rgba(120, 190, 255, 0.95)', 'ARC'),
         };
+
+        let activeCardbackId = 'classic';
+
+        function getCardbackConfig(id) {
+            return CARDBACK_REGISTRY[id] || CARDBACK_REGISTRY.classic;
+        }
+
+        function getCurrentCardbackId() {
+            if (activeCardbackId && CARDBACK_REGISTRY[activeCardbackId]) return activeCardbackId;
+            const saved = localStorage.getItem(CARD_BACK_KEY) || 'classic';
+            return CARDBACK_REGISTRY[saved] ? saved : 'classic';
+        }
+
+        function getCurrentCardbackConfig() {
+            return getCardbackConfig(getCurrentCardbackId());
+        }
 
         const SUIT_THEME_COLORS = {
             '♠': ['#263238', '#90A4AE'],
@@ -2189,6 +2245,19 @@
             },
         };
 
+        // Ensure all themes have a dedicated miiPeek trigger config.
+        Object.values(THEME_CONFIGS).forEach((cfg) => {
+            if (cfg.miiPeek) return;
+            const base = cfg.clear || {};
+            const speed = Array.isArray(base.speed) ? base.speed : [2.0, 4.0];
+            const life = Array.isArray(base.life) ? base.life : [600, 900];
+            cfg.miiPeek = {
+                count: Math.max(6, Math.round((base.count || 12) * 0.55)),
+                speed: [speed[0] * 0.72, speed[1] * 0.78],
+                life: [Math.round(life[0] * 0.7), Math.round(life[1] * 0.82)],
+            };
+        });
+
         function getUnlockedCardBacks() {
             const defaults = [...DEFAULT_UNLOCKED_CARD_BACKS];
             try {
@@ -2253,12 +2322,20 @@
         function applyCardBack(id) {
             const pile = document.getElementById('deck-pile');
             if (!pile) return;
+            const safeId = CARDBACK_REGISTRY[id] ? id : 'classic';
+            const cfg = getCardbackConfig(safeId);
             pile.classList.forEach(cls => { if (cls.startsWith('cb-')) pile.classList.remove(cls); });
-            if (id && id !== 'classic') pile.classList.add(`cb-${id}`);
-            localStorage.setItem(CARD_BACK_KEY, id || 'classic');
-            // 同步咪牌光暈顏色至 CSS 變數
-            const glow = CARDBACK_GLOW_MAP[id] || CARDBACK_GLOW_MAP.classic;
-            document.documentElement.style.setProperty('--mii-glow-color', glow);
+            if (safeId && safeId !== 'classic') pile.classList.add(`cb-${safeId}`);
+            activeCardbackId = safeId;
+            localStorage.setItem(CARD_BACK_KEY, safeId);
+            pile.dataset.cardback = safeId;
+
+            const rootStyle = document.documentElement.style;
+            rootStyle.setProperty('--cardback-image', cfg.image);
+            rootStyle.setProperty('--mii-glow-color', cfg.glow || 'rgba(255, 215, 0, 0.9)');
+            rootStyle.setProperty('--mii-text-color', cfg.miiText?.default?.color || '#fff');
+            rootStyle.setProperty('--mii-text-border', cfg.miiText?.default?.border || 'rgba(255, 255, 255, 0.4)');
+            rootStyle.setProperty('--mii-text-bg', cfg.miiText?.default?.bg || 'rgba(16, 18, 20, 0.88)');
         }
 
         function loadCardBack() {
@@ -4465,8 +4542,7 @@
         }
 
         function getCurrentTheme() {
-            const id = localStorage.getItem(CARD_BACK_KEY) || 'classic';
-            return CARDBACK_THEME[id] || null;
+            return getCurrentCardbackConfig().theme || null;
         }
 
         function spawnThemeParticles(theme, trigger, x, y, opts = {}) {
@@ -4545,34 +4621,45 @@
         function playThemeSound(theme, trigger) {
             if (!settings.sound) return;
             const isCol = (trigger === 'columnClear');
-            const vM = isCol ? 1.4 : 1.0;
-            const dM = isCol ? 1.8 : 1.0;
+            const isMiiPeek = (trigger === 'miiPeek');
+            const vM = isCol ? 1.4 : (isMiiPeek ? 0.9 : 1.0);
+            const dM = isCol ? 1.8 : (isMiiPeek ? 0.75 : 1.0);
             if (theme === 'CRYSTAL') {
                 playTone(1500, Math.round(80 * dM), 0.03 * vM, 0, 'sine');
                 if (isCol) playTone(1800, 60, 0.018, 0.06, 'sine');
+                if (isMiiPeek) playTone(1240, 40, 0.02, 0.02, 'sine');
             } else if (theme === 'EMBER_BRIGHT') {
                 playTone(600, Math.round(30 * dM), 0.05 * vM, 0, 'sawtooth');
+                if (isMiiPeek) playTone(760, 30, 0.02, 0.02, 'triangle');
             } else if (theme === 'EMBER_DARK') {
                 playTone(400, Math.round(40 * dM), 0.05 * vM, 0, 'sawtooth');
+                if (isMiiPeek) playTone(560, 36, 0.02, 0.02, 'triangle');
             } else if (theme.startsWith('FORGE')) {
                 playTone(180, Math.round(50 * dM), 0.07 * vM, 0, 'triangle');
                 if (isCol) playTone(120, 80, 0.04, 0.05, 'triangle');
+                if (isMiiPeek) playTone(240, 34, 0.03, 0.03, 'triangle');
             } else if (theme.startsWith('VOID')) {
                 playTone(200, Math.round(200 * dM), 0.02 * vM, 0, 'sine');
+                if (isMiiPeek) playTone(320, 70, 0.012, 0.02, 'sine');
             } else if (theme.startsWith('ARC')) {
                 playTone(2000, Math.round(20 * dM), 0.04 * vM, 0, 'square');
                 playTone(800, Math.round(15 * dM), 0.02 * vM, 0.02, 'square');
+                if (isMiiPeek) playTone(2400, 12, 0.018, 0.01, 'square');
             } else if (theme === 'LIFE_FOREST') {
                 playTone(800, Math.round(60 * dM), 0.025 * vM, 0, 'sine');
                 playTone(1000, Math.round(50 * dM), 0.018 * vM, 0.04, 'sine');
+                if (isMiiPeek) playTone(680, 34, 0.012, 0.01, 'sine');
             } else if (theme === 'LIFE_FESTIVE') {
                 playTone(900, Math.round(70 * dM), 0.025 * vM, 0, 'sine');
                 playTone(1200, Math.round(60 * dM), 0.018 * vM, 0.05, 'sine');
+                if (isMiiPeek) playTone(720, 28, 0.016, 0.01, 'sine');
             } else if (theme === 'LIFE_SUIT') {
                 playTone(850, Math.round(80 * dM), 0.028 * vM, 0, 'triangle');
+                if (isMiiPeek) playTone(680, 28, 0.013, 0.01, 'triangle');
             } else if (theme === 'LIFE_STELLAR') {
                 playTone(1100, Math.round(100 * dM), 0.02 * vM, 0, 'sine');
                 playTone(1400, Math.round(80 * dM), 0.014 * vM, 0.08, 'sine');
+                if (isMiiPeek) playTone(980, 36, 0.012, 0.01, 'sine');
             }
         }
 
@@ -4580,6 +4667,10 @@
             if (!colEl) return;
             const existing = colEl.querySelector('.mii-text');
             if (existing) existing.remove();
+            const cbCfg = getCurrentCardbackConfig();
+            const defaultTextStyle = cbCfg.miiText?.default || {};
+            const chanceTextStyle = cbCfg.miiText?.chance || defaultTextStyle;
+            const haptic = cbCfg.hapticProfile || {};
 
             // 判斷落下後是否能湊出有效消除
             const canClear = Array.isArray(existingCards) && incomingCard
@@ -4588,16 +4679,20 @@
 
             const text = document.createElement('div');
             text.className = 'mii-text';
+            text.dataset.miiProfile = cbCfg.miiFxProfile || 'CRYSTAL';
 
             if (canClear) {
                 text.innerText = '✦ ' + t('mii.chance');
-                text.style.setProperty('--mii-text-color', '#4eff91');
-                text.style.setProperty('--mii-text-border', 'rgba(0, 255, 120, 0.55)');
-                text.style.setProperty('--mii-text-bg', 'rgba(0, 30, 12, 0.92)');
-                triggerHaptic([20, 20, 60]);
+                text.style.setProperty('--mii-text-color', chanceTextStyle.color || '#4eff91');
+                text.style.setProperty('--mii-text-border', chanceTextStyle.border || 'rgba(0, 255, 120, 0.55)');
+                text.style.setProperty('--mii-text-bg', chanceTextStyle.bg || 'rgba(0, 30, 12, 0.92)');
+                triggerHaptic(haptic.chance || [20, 20, 60]);
             } else {
                 text.innerText = t('mii.peeking');
-                triggerHaptic([25, 30, 25]);
+                text.style.setProperty('--mii-text-color', defaultTextStyle.color || '#fff');
+                text.style.setProperty('--mii-text-border', defaultTextStyle.border || 'rgba(255, 255, 255, 0.4)');
+                text.style.setProperty('--mii-text-bg', defaultTextStyle.bg || 'rgba(16, 18, 20, 0.88)');
+                triggerHaptic(haptic.peek || [25, 30, 25]);
             }
 
             colEl.appendChild(text);
@@ -4961,12 +5056,27 @@
                     render();
                     popNewlyDealtCard(target.id);
                     const canClear = getLegalClearIndices([...target.cards]).length > 0;
-                    ParticleSystem.emit(
-                        canClear ? 'burst' : 'dust',
-                        rect.left + rect.width / 2,
-                        targetTop + 10,
-                        canClear ? { count: 10, colorStart: '#4eff91', colorEnd: '#ffd700' } : {}
-                    );
+                    const fxX = rect.left + rect.width / 2;
+                    const fxY = targetTop + 10;
+                    const theme = getCurrentTheme();
+                    if (theme) {
+                        const suitColors = theme === 'LIFE_SUIT'
+                            ? (SUIT_THEME_COLORS[card?.suit] || null)
+                            : null;
+                        spawnThemeParticles(theme, 'miiPeek', fxX, fxY, {
+                            multiplier: canClear ? 1.08 : 0.82,
+                            speedBoost: canClear ? 1.06 : 0.94,
+                            suitColors,
+                        });
+                        playThemeSound(theme, 'miiPeek');
+                    } else {
+                        ParticleSystem.emit(
+                            canClear ? 'burst' : 'dust',
+                            fxX,
+                            fxY,
+                            canClear ? { count: 10, colorStart: '#4eff91', colorEnd: '#ffd700' } : {}
+                        );
+                    }
                     isBusy = false;
                     checkDeadlock();
                     saveGameState();
@@ -5440,32 +5550,15 @@
             if (options.hidden) {
                 f.classList.add('face-down');
                 f.innerHTML = '';
-                const deckPile = document.getElementById('deck-pile');
-                if (deckPile) {
-                    // 把 deck-pile 目前生效的 cb-* class 同步到飛牌，CSS 與 inline 雙保險
-                    deckPile.classList.forEach(cls => {
-                        if (cls.startsWith('cb-')) f.classList.add(cls);
-                    });
-                    const cs = window.getComputedStyle(deckPile);
-                    const deckBg = cs.backgroundImage;
-                    const deckBgColor = cs.backgroundColor;
-                    const hasImage = deckBg && deckBg !== 'none';
-                    const hasColor = deckBgColor &&
-                        deckBgColor !== 'rgba(0, 0, 0, 0)' &&
-                        deckBgColor !== 'transparent';
-                    if (hasImage || hasColor) {
-                        f.classList.add('use-cardback');
-                        if (hasImage) {
-                            f.style.backgroundImage = deckBg;
-                            f.style.backgroundSize = 'cover';
-                            f.style.backgroundPosition = 'center';
-                            f.style.backgroundRepeat = 'no-repeat';
-                        }
-                        if (hasColor) {
-                            f.style.backgroundColor = deckBgColor;
-                        }
-                    }
-                }
+                const cardbackId = getCurrentCardbackId();
+                const cfg = getCurrentCardbackConfig();
+                if (cardbackId && cardbackId !== 'classic') f.classList.add(`cb-${cardbackId}`);
+                f.classList.add('use-cardback');
+                f.style.backgroundImage = cfg.image || "url('../cardback/classic.png')";
+                f.style.backgroundSize = 'cover';
+                f.style.backgroundPosition = 'center';
+                f.style.backgroundRepeat = 'no-repeat';
+                f.style.backgroundColor = '';
             } else {
                 setFlyFace(f, data);
             }

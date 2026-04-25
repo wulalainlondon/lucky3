@@ -21,6 +21,11 @@ test.beforeEach(async ({ page }) => {
 
 test('second win shows win panel and has no JS errors', async ({ page }) => {
     const errors = [];
+    const ignorablePatterns = [
+        /Failed to load resource: the server responded with a status of 400/i,
+        /Anonymous auth failed:/i,
+        /auth\/too-many-requests/i,
+    ];
     page.on('console', msg => {
         if (msg.type() === 'error') errors.push(msg.text());
     });
@@ -54,6 +59,7 @@ test('second win shows win panel and has no JS errors', async ({ page }) => {
     // 第二局 win panel 必須出現
     await expect(page.locator('#win-overlay')).toBeVisible({ timeout: 10000 });
 
-    // 必須沒有 JS 錯誤
-    expect(errors, 'JS errors: ' + errors.join('; ')).toHaveLength(0);
+    // 必須沒有產品內 JS 錯誤（排除外部 Firebase 匿名登入節流噪音）
+    const productErrors = errors.filter((text) => !ignorablePatterns.some((re) => re.test(text)));
+    expect(productErrors, 'JS errors: ' + productErrors.join('; ')).toHaveLength(0);
 });

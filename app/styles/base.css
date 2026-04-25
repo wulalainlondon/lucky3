@@ -37,7 +37,11 @@
             --anim-scale: 1;
             --board-max-width: 860px;
             --board-gap: 8px;
+            --cardback-image: url('../cardback/classic.png');
             --mii-glow-color: rgba(255, 215, 0, 0.9);
+            --mii-text-color: #fff;
+            --mii-text-border: rgba(255, 255, 255, 0.4);
+            --mii-text-bg: rgba(16, 18, 20, 0.88);
         }
 
         body, button, input, select, textarea {
@@ -1410,7 +1414,7 @@
         }
 
         #deck-pile {
-            background-image: url('../cardback/classic.png');
+            background-image: var(--cardback-image, url('../cardback/classic.png'));
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -1704,6 +1708,10 @@
         }
 
         .card.face-down.use-cardback {
+            background-image: var(--cardback-image, url('../cardback/classic.png'));
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             border-color: rgba(255, 255, 255, 0.45);
         }
 

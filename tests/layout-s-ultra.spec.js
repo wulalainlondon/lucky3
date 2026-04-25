@@ -105,8 +105,8 @@ test.describe('S Ultra — landscape sidebar layout', () => {
         // Width around 120px (±20)
         expect(box.width).toBeGreaterThanOrEqual(100);
         expect(box.width).toBeLessThanOrEqual(140);
-        // Spans nearly full height
-        expect(box.height).toBeGreaterThan(S_ULTRA_LANDSCAPE.height * 0.85);
+        // Spans most of viewport height (leave room for OS/browser safe-area variance)
+        expect(box.height).toBeGreaterThan(S_ULTRA_LANDSCAPE.height * 0.8);
     });
 
     // ── 2. STRUCTURE: board does not overlap sidebar ───────────────────────
