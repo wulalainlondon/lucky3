@@ -36,7 +36,6 @@
         const DAILY_NORMAL_CYCLE_KEY = 'lucky3-daily-normal-cycle-v1';
         const ACHIEVEMENTS_KEY = 'lucky3-achievements-v1';
         const WIN_HISTORY_KEY = 'lucky3-win-history-v1';
-        const PREMIUM_KEY = 'lucky3-premium';
 
         function loadWinHistory() {
             try { return JSON.parse(localStorage.getItem(WIN_HISTORY_KEY) || '{}'); }
@@ -50,78 +49,658 @@
         const DEV_MODE_KEY = 'lucky3-dev-mode-v1';
         const TUTORIAL_FIXED_SEED = 6;
         const FORTUNE_POOL = {
-            '♠': [
-                '今日幸運籤：黑桃 3。做決定會特別果斷，工作與學習容易一次到位。',
-                '今日幸運籤：黑桃 3。你今天的行動力很強，卡關的事有機會快速突破。',
-                '今日幸運籤：黑桃 3。今天很適合處理最難的那件事，完成率偏高。',
-                '今日幸運籤：黑桃 3。專注力上升，短時間內就能把重點做完。',
-                '今日幸運籤：黑桃 3。你今天的判斷很準，適合拍板定案。',
-                '今日幸運籤：黑桃 3。勇敢往前一步，會遇到關鍵轉機。',
-                '今日幸運籤：黑桃 3。效率運亮起來，今天做事會特別俐落。',
-                '今日幸運籤：黑桃 3。今天適合清單式推進，越做越順。',
-                '今日幸運籤：黑桃 3。思路清晰，複雜問題會被你拆得很漂亮。',
-                '今日幸運籤：黑桃 3。今天是突破日，先做最難的反而最省力。',
-                '今日幸運籤：黑桃 3。你會比預期更快看到成果，放心衝刺。',
-                '今日幸運籤：黑桃 3。適合開啟新計畫，第一步就有好手感。',
-                '今日幸運籤：黑桃 3。臨場反應特別好，今天很有主導權。',
-                '今日幸運籤：黑桃 3。今天做取捨特別準，時間會被你用得很好。',
-                '今日幸運籤：黑桃 3。你今天的節奏很穩，容易連續拿下小勝利。',
-                '今日幸運籤：黑桃 3。直覺與理性同時在線，做什麼都更有把握。'
-            ],
-            '♥': [
-                '今日幸運籤：紅心 3。人際運上升，適合主動聯絡重要的人，會有好回應。',
-                '今日幸運籤：紅心 3。今天特別有溫暖緣分，合作與溝通都更順。',
-                '今日幸運籤：紅心 3。今天說出的善意會被放大，回饋會很快出現。',
-                '今日幸運籤：紅心 3。關係運走強，適合修復小誤會、拉近距離。',
-                '今日幸運籤：紅心 3。你今天很有感染力，容易得到支持。',
-                '今日幸運籤：紅心 3。今天適合表達感謝，會收穫超乎預期的善意。',
-                '今日幸運籤：紅心 3。情緒韌性高，今天能把心情照顧得很好。',
-                '今日幸運籤：紅心 3。溝通運佳，難聊的話題也能柔順落地。',
-                '今日幸運籤：紅心 3。今天容易遇到願意幫你一把的人。',
-                '今日幸運籤：紅心 3。真誠會成為你的幸運鑰匙。',
-                '今日幸運籤：紅心 3。今天適合合作，彼此加成感特別明顯。',
-                '今日幸運籤：紅心 3。把心裡想說的說出口，會有溫暖回音。',
-                '今日幸運籤：紅心 3。今天的你很有親和力，關係自然升溫。',
-                '今日幸運籤：紅心 3。柔軟但不退讓，今天會是很漂亮的平衡。',
-                '今日幸運籤：紅心 3。你今天散發安定感，容易成為團隊核心。',
-                '今日幸運籤：紅心 3。開放心態會帶來一個讓你心情很好的消息。'
-            ],
-            '♦': [
-                '今日幸運籤：方塊 3。財運與機會運偏強，小機會可能帶來大收穫。',
-                '今日幸運籤：方塊 3。今天適合談資源與效率，容易拿到超值結果。',
-                '今日幸運籤：方塊 3。今天對價格與價值的判斷特別準。',
-                '今日幸運籤：方塊 3。小小嘗試會帶來實際回報，值得主動出擊。',
-                '今日幸運籤：方塊 3。今天適合整理財務與計畫，會越理越清楚。',
-                '今日幸運籤：方塊 3。你今天很容易抓到高 CP 的選擇。',
-                '今日幸運籤：方塊 3。實用運很強，手邊工具與資源都能派上用場。',
-                '今日幸運籤：方塊 3。今天是「小投入大回報」的一天。',
-                '今日幸運籤：方塊 3。你今天會遇到提升效率的關鍵線索。',
-                '今日幸運籤：方塊 3。適合把想法落地，成果會比預期快。',
-                '今日幸運籤：方塊 3。今天的選擇題，你更容易選到對的那個。',
-                '今日幸運籤：方塊 3。把握小窗口，可能換來長期好處。',
-                '今日幸運籤：方塊 3。今天適合談條件，你會拿到漂亮平衡點。',
-                '今日幸運籤：方塊 3。偏財是資訊運，今天多看一眼就有收穫。',
-                '今日幸運籤：方塊 3。你今天的務實力很強，成效看得見。',
-                '今日幸運籤：方塊 3。好機會正在靠近，記得主動伸手接住。'
-            ],
-            '♣': [
-                '今日幸運籤：梅花 3。穩定運很強，手上的計畫可望扎實推進。',
-                '今日幸運籤：梅花 3。今天適合打基礎，持續做就會看到明顯成果。',
-                '今日幸運籤：梅花 3。累積型任務今天特別有感，越做越順。',
-                '今日幸運籤：梅花 3。你的耐心今天就是幸運，慢慢來反而最快。',
-                '今日幸運籤：梅花 3。今天適合把流程優化，後續會省很多力。',
-                '今日幸運籤：梅花 3。穩穩前進就是王道，成果正在堆高。',
-                '今日幸運籤：梅花 3。今天是「小步快跑」的好日子。',
-                '今日幸運籤：梅花 3。你今天很適合收斂與整理，品質會上升。',
-                '今日幸運籤：梅花 3。把節奏守住，今天會收穫一種踏實的好運。',
-                '今日幸運籤：梅花 3。穩定推進帶來驚喜，晚一點會看到回報。',
-                '今日幸運籤：梅花 3。今天很適合完成「差最後一步」的任務。',
-                '今日幸運籤：梅花 3。你今天的持續力很強，適合做長線布局。',
-                '今日幸運籤：梅花 3。今天把基礎打好，明天就能加速起飛。',
-                '今日幸運籤：梅花 3。你的節奏感在線，事情會一件件到位。',
-                '今日幸運籤：梅花 3。保持簡單與一致，今天會非常有收穫。',
-                '今日幸運籤：梅花 3。今天是成長日，穩定就是最強幸運。'
-            ]
+            'zh-Hant': {
+                '♠': [
+                    '今日幸運籤：黑桃 3。做決定會特別果斷，工作與學習容易一次到位。',
+                    '今日幸運籤：黑桃 3。你今天的行動力很強，卡關的事有機會快速突破。',
+                    '今日幸運籤：黑桃 3。今天很適合處理最難的那件事，完成率偏高。',
+                    '今日幸運籤：黑桃 3。專注力上升，短時間內就能把重點做完。',
+                    '今日幸運籤：黑桃 3。你今天的判斷很準，適合拍板定案。',
+                    '今日幸運籤：黑桃 3。勇敢往前一步，會遇到關鍵轉機。',
+                    '今日幸運籤：黑桃 3。效率運亮起來，今天做事會特別俐落。',
+                    '今日幸運籤：黑桃 3。今天適合清單式推進，越做越順。',
+                    '今日幸運籤：黑桃 3。思路清晰，複雜問題會被你拆得很漂亮。',
+                    '今日幸運籤：黑桃 3。今天是突破日，先做最難的反而最省力。',
+                    '今日幸運籤：黑桃 3。你會比預期更快看到成果，放心衝刺。',
+                    '今日幸運籤：黑桃 3。適合開啟新計畫，第一步就有好手感。',
+                    '今日幸運籤：黑桃 3。臨場反應特別好，今天很有主導權。',
+                    '今日幸運籤：黑桃 3。今天做取捨特別準，時間會被你用得很好。',
+                    '今日幸運籤：黑桃 3。你今天的節奏很穩，容易連續拿下小勝利。',
+                    '今日幸運籤：黑桃 3。直覺與理性同時在線，做什麼都更有把握。'
+                ],
+                '♥': [
+                    '今日幸運籤：紅心 3。人際運上升，適合主動聯絡重要的人，會有好回應。',
+                    '今日幸運籤：紅心 3。今天特別有溫暖緣分，合作與溝通都更順。',
+                    '今日幸運籤：紅心 3。今天說出的善意會被放大，回饋會很快出現。',
+                    '今日幸運籤：紅心 3。關係運走強，適合修復小誤會、拉近距離。',
+                    '今日幸運籤：紅心 3。你今天很有感染力，容易得到支持。',
+                    '今日幸運籤：紅心 3。今天適合表達感謝，會收穫超乎預期的善意。',
+                    '今日幸運籤：紅心 3。情緒韌性高，今天能把心情照顧得很好。',
+                    '今日幸運籤：紅心 3。溝通運佳，難聊的話題也能柔順落地。',
+                    '今日幸運籤：紅心 3。今天容易遇到願意幫你一把的人。',
+                    '今日幸運籤：紅心 3。真誠會成為你的幸運鑰匙。',
+                    '今日幸運籤：紅心 3。今天適合合作，彼此加成感特別明顯。',
+                    '今日幸運籤：紅心 3。把心裡想說的說出口，會有溫暖回音。',
+                    '今日幸運籤：紅心 3。今天的你很有親和力，關係自然升溫。',
+                    '今日幸運籤：紅心 3。柔軟但不退讓，今天會是很漂亮的平衡。',
+                    '今日幸運籤：紅心 3。你今天散發安定感，容易成為團隊核心。',
+                    '今日幸運籤：紅心 3。開放心態會帶來一個讓你心情很好的消息。'
+                ],
+                '♦': [
+                    '今日幸運籤：方塊 3。財運與機會運偏強，小機會可能帶來大收穫。',
+                    '今日幸運籤：方塊 3。今天適合談資源與效率，容易拿到超值結果。',
+                    '今日幸運籤：方塊 3。今天對價格與價值的判斷特別準。',
+                    '今日幸運籤：方塊 3。小小嘗試會帶來實際回報，值得主動出擊。',
+                    '今日幸運籤：方塊 3。今天適合整理財務與計畫，會越理越清楚。',
+                    '今日幸運籤：方塊 3。你今天很容易抓到高 CP 的選擇。',
+                    '今日幸運籤：方塊 3。實用運很強，手邊工具與資源都能派上用場。',
+                    '今日幸運籤：方塊 3。今天是小投入大回報的一天。',
+                    '今日幸運籤：方塊 3。你今天會遇到提升效率的關鍵線索。',
+                    '今日幸運籤：方塊 3。適合把想法落地，成果會比預期快。',
+                    '今日幸運籤：方塊 3。今天的選擇題，你更容易選到對的那個。',
+                    '今日幸運籤：方塊 3。把握小窗口，可能換來長期好處。',
+                    '今日幸運籤：方塊 3。今天適合談條件，你會拿到漂亮平衡點。',
+                    '今日幸運籤：方塊 3。偏財是資訊運，今天多看一眼就有收穫。',
+                    '今日幸運籤：方塊 3。你今天的務實力很強，成效看得見。',
+                    '今日幸運籤：方塊 3。好機會正在靠近，記得主動伸手接住。'
+                ],
+                '♣': [
+                    '今日幸運籤：梅花 3。穩定運很強，手上的計畫可望扎實推進。',
+                    '今日幸運籤：梅花 3。今天適合打基礎，持續做就會看到明顯成果。',
+                    '今日幸運籤：梅花 3。累積型任務今天特別有感，越做越順。',
+                    '今日幸運籤：梅花 3。你的耐心今天就是幸運，慢慢來反而最快。',
+                    '今日幸運籤：梅花 3。今天適合把流程優化，後續會省很多力。',
+                    '今日幸運籤：梅花 3。穩穩前進就是王道，成果正在堆高。',
+                    '今日幸運籤：梅花 3。今天是小步快跑的好日子。',
+                    '今日幸運籤：梅花 3。你今天很適合收斂與整理，品質會上升。',
+                    '今日幸運籤：梅花 3。把節奏守住，今天會收穫一種踏實的好運。',
+                    '今日幸運籤：梅花 3。穩定推進帶來驚喜，晚一點會看到回報。',
+                    '今日幸運籤：梅花 3。今天很適合完成差最後一步的任務。',
+                    '今日幸運籤：梅花 3。你今天的持續力很強，適合做長線布局。',
+                    '今日幸運籤：梅花 3。今天把基礎打好，明天就能加速起飛。',
+                    '今日幸運籤：梅花 3。你的節奏感在線，事情會一件件到位。',
+                    '今日幸運籤：梅花 3。保持簡單與一致，今天會非常有收穫。',
+                    '今日幸運籤：梅花 3。今天是成長日，穩定就是最強幸運。'
+                ]
+            },
+            'en': {
+                '♠': [
+                    "Lucky Spade 3: your focus is crystal clear today, tackle the hardest task first and win.",
+                    "Lucky Spade 3: decision-making flows effortlessly today, trust your instincts and commit.",
+                    "Lucky Spade 3: your productivity is peaking, one focused sprint will take you far.",
+                    "Lucky Spade 3: clarity arrives just when you need it, complex problems untangle easily.",
+                    "Lucky Spade 3: momentum is on your side today, start strong and keep pushing forward.",
+                    "Lucky Spade 3: sharp thinking turns obstacles into stepping stones for you today."
+                ],
+                '♥': [
+                    "Lucky Heart 3: warm connections are everywhere today, reach out and someone will respond.",
+                    "Lucky Heart 3: your words carry extra warmth today, share something kind and watch it bloom.",
+                    "Lucky Heart 3: a conversation you have today could strengthen an important relationship.",
+                    "Lucky Heart 3: emotional intelligence is your superpower today, people feel safe around you.",
+                    "Lucky Heart 3: team energy is high and collaborative, let synergy do the heavy lifting.",
+                    "Lucky Heart 3: expressing gratitude today opens a door you did not expect to find."
+                ],
+                '♦': [
+                    "Lucky Diamond 3: a small practical move today could bring surprisingly solid returns.",
+                    "Lucky Diamond 3: your eye for value is sharp today, the right choice reveals itself clearly.",
+                    "Lucky Diamond 3: resources align in your favor, a modest effort yields meaningful results.",
+                    "Lucky Diamond 3: financial clarity arrives today, a quick review unlocks a smart next step.",
+                    "Lucky Diamond 3: a hidden opportunity is nearby, a second look turns it into real gain.",
+                    "Lucky Diamond 3: practical wisdom guides you now, efficiency compounds into good fortune."
+                ],
+                '♣': [
+                    "Lucky Club 3: steady progress is your winning formula today, keep your rhythm and trust it.",
+                    "Lucky Club 3: every small step you take today is quietly stacking into something great.",
+                    "Lucky Club 3: patience is your lucky charm, consistency outperforms urgency today.",
+                    "Lucky Club 3: the task that feels almost done will cross the finish line beautifully today.",
+                    "Lucky Club 3: building solid foundations now sets you up for an effortless leap tomorrow.",
+                    "Lucky Club 3: your endurance shines today, sustained effort brings a satisfying reward."
+                ]
+            },
+            'ja': {
+                '♠': [
+                    "ラッキースペード3：今日は集中力が最高潮、難しいことから手をつけると一気に突破できる。",
+                    "ラッキースペード3：決断力が冴えわたる一日、迷わず進めば想像以上の結果が待っている。",
+                    "ラッキースペード3：思考がクリアで効率が上がる、タスクリストを一気に片付けるチャンス。",
+                    "ラッキースペード3：直感と論理が一致する日、自信を持って選択すれば必ず道が開ける。",
+                    "ラッキースペード3：行動力が高まっている今日、最初の一歩が大きな勢いを生み出す。",
+                    "ラッキースペード3：複雑な問題もシンプルに解けるとき、冷静に取り組めば答えは近い。"
+                ],
+                '♥': [
+                    "ラッキーハート3：人間関係の運が上昇中、大切な人に声をかければ温かい返事が返ってくる。",
+                    "ラッキーハート3：あなたの言葉に温もりが宿る今日、感謝を伝えると予想外の喜びが生まれる。",
+                    "ラッキーハート3：コミュニケーションがスムーズな一日、難しい話題も穏やかにまとまる。",
+                    "ラッキーハート3：共感力が高まっているとき、周りの人があなたの存在に安心感を覚える。",
+                    "ラッキーハート3：協力関係が深まる日、一緒に取り組むことで相乗効果が生まれる。",
+                    "ラッキーハート3：心を開いて接すると、思いがけないところから応援が届く。"
+                ],
+                '♦': [
+                    "ラッキーダイヤ3：金運と機会運が高まる今日、小さな行動が大きなリターンに変わる。",
+                    "ラッキーダイヤ3：価値を見抜く目が冴える日、賢い選択が実際の成果につながる。",
+                    "ラッキーダイヤ3：少ない投資で大きな効果が得られるとき、タイミングを逃さず動こう。",
+                    "ラッキーダイヤ3：財務の見直しに最適な日、整理するほど次の一手が明確になる。",
+                    "ラッキーダイヤ3：見落としていたチャンスが近くにある、もう一度よく見ると収穫がある。",
+                    "ラッキーダイヤ3：実用的な判断が光る今日、地に足ついた行動が確かな果実を生む。"
+                ],
+                '♣': [
+                    "ラッキークラブ3：着実に進む力が強まる今日、コツコツ続けることが最大の幸運になる。",
+                    "ラッキークラブ3：積み重ねの効果が出やすい日、小さな一歩が確実に未来を作っている。",
+                    "ラッキークラブ3：忍耐がラッキーチャームになるとき、焦らず進めばゴールは必ず近づく。",
+                    "ラッキークラブ3：あと一歩で完成する仕事が今日スッキリ終わる予感がする。",
+                    "ラッキークラブ3：基盤をしっかり固める今日の努力が明日の飛躍を支えてくれる。",
+                    "ラッキークラブ3：リズムを守り続ける今日、継続の力がじわじわと報われてくる。"
+                ]
+            },
+            'ko': {
+                '♠': [
+                    "행운의 스페이드 3: 오늘은 집중력이 최고조, 가장 어려운 일부터 시작하면 단번에 해결된다.",
+                    "행운의 스페이드 3: 결단력이 빛나는 하루, 망설임 없이 나아가면 기대 이상의 성과가 기다린다.",
+                    "행운의 스페이드 3: 생각이 맑고 효율이 오르는 날, 할 일 목록을 시원하게 정리할 기회다.",
+                    "행운의 스페이드 3: 직관과 논리가 일치하는 오늘, 자신감 있게 선택하면 길이 열린다.",
+                    "행운의 스페이드 3: 행동력이 넘치는 지금, 첫걸음을 내딛으면 큰 탄력이 생긴다.",
+                    "행운의 스페이드 3: 복잡한 문제도 단순하게 풀리는 날, 침착하게 접근하면 답이 보인다."
+                ],
+                '♥': [
+                    "행운의 하트 3: 인간관계 운이 상승 중, 소중한 사람에게 먼저 연락하면 따뜻한 답이 온다.",
+                    "행운의 하트 3: 오늘 당신의 말에 온기가 담겨 있어, 감사를 전하면 뜻밖의 기쁨이 찾아온다.",
+                    "행운의 하트 3: 소통이 부드러운 하루, 어려운 이야기도 차분하게 잘 마무리된다.",
+                    "행운의 하트 3: 공감 능력이 높아지는 때, 주변 사람들이 당신 곁에서 편안함을 느낀다.",
+                    "행운의 하트 3: 협력 관계가 깊어지는 날, 함께하면 시너지 효과가 배로 커진다.",
+                    "행운의 하트 3: 마음을 열고 다가가면 예상치 못한 곳에서 응원이 들려온다."
+                ],
+                '♦': [
+                    "행운의 다이아몬드 3: 재운과 기회운이 높아지는 오늘, 작은 행동이 큰 수익으로 이어진다.",
+                    "행운의 다이아몬드 3: 가치를 꿰뚫는 눈이 빛나는 날, 현명한 선택이 실질적인 성과를 만든다.",
+                    "행운의 다이아몬드 3: 적은 투자로 큰 효과를 볼 수 있을 때, 타이밍을 놓치지 말고 움직이자.",
+                    "행운의 다이아몬드 3: 재정 점검에 최적인 날, 정리할수록 다음 행동이 명확해진다.",
+                    "행운의 다이아몬드 3: 놓쳤던 기회가 가까이 있어, 다시 한번 살펴보면 수확이 있다.",
+                    "행운의 다이아몬드 3: 실용적인 판단이 빛나는 오늘, 발 딛고 선 행동이 확실한 결실을 맺는다."
+                ],
+                '♣': [
+                    "행운의 클럽 3: 꾸준히 나아가는 힘이 강해지는 오늘, 성실함이 최고의 행운이 된다.",
+                    "행운의 클럽 3: 쌓이는 효과가 나타나기 좋은 날, 작은 한 걸음이 확실히 미래를 만들어간다.",
+                    "행운의 클럽 3: 인내가 행운의 열쇠가 되는 때, 서두르지 않으면 목표는 반드시 가까워진다.",
+                    "행운의 클럽 3: 거의 완성된 일이 오늘 깔끔하게 마무리될 것 같은 예감이 든다.",
+                    "행운의 클럽 3: 오늘 탄탄히 다진 기반이 내일의 도약을 받쳐줄 것이다.",
+                    "행운의 클럽 3: 리듬을 계속 지키는 오늘, 꾸준함의 힘이 서서히 보상받기 시작한다."
+                ]
+            },
+            'es': {
+                '♠': [
+                    "Pica Afortunada 3: hoy tu concentracion es excepcional, empieza por lo mas dificil y lo lograras.",
+                    "Pica Afortunada 3: tu capacidad de decision brilla hoy, confía en tu instinto y avanza sin dudar.",
+                    "Pica Afortunada 3: la claridad mental es tu aliada, aprovecha este estado de flujo productivo.",
+                    "Pica Afortunada 3: los problemas complejos se simplifican hoy, abórdalos con calma y verás la solución.",
+                    "Pica Afortunada 3: tu energía está en su punto más alto, un arranque fuerte hoy marca la diferencia.",
+                    "Pica Afortunada 3: intuición y lógica van de la mano hoy, tus elecciones acertarán en el blanco."
+                ],
+                '♥': [
+                    "Corazon Afortunado 3: las conexiones humanas florecen hoy, da el primer paso y recibirás calidez.",
+                    "Corazon Afortunado 3: tus palabras tienen un poder especial hoy, expresa gratitud y observa el efecto.",
+                    "Corazon Afortunado 3: la comunicación fluye sin esfuerzo, hasta los temas difíciles se resuelven bien.",
+                    "Corazon Afortunado 3: tu empatía es tu superpoder hoy, la gente se siente segura a tu lado.",
+                    "Corazon Afortunado 3: la colaboración multiplica los resultados hoy, trabajar en equipo es tu ventaja.",
+                    "Corazon Afortunado 3: abrir tu corazón hoy atrae apoyo desde donde menos lo esperas."
+                ],
+                '♦': [
+                    "Diamante Afortunado 3: una pequeña accion práctica hoy puede convertirse en un gran retorno.",
+                    "Diamante Afortunado 3: tu ojo para el valor está afinado, la mejor opción se revela con claridad.",
+                    "Diamante Afortunado 3: los recursos se alinean a tu favor, un esfuerzo modesto rinde grandes frutos.",
+                    "Diamante Afortunado 3: revisar tus finanzas hoy desbloquea un paso inteligente que no habías visto.",
+                    "Diamante Afortunado 3: una oportunidad oculta está cerca, una segunda mirada la convierte en ganancia.",
+                    "Diamante Afortunado 3: la sabiduria práctica te guía ahora, la eficiencia se convierte en buena fortuna."
+                ],
+                '♣': [
+                    "Trebol Afortunado 3: el progreso constante es tu fórmula ganadora hoy, mantén el ritmo y confía.",
+                    "Trebol Afortunado 3: cada pequeño paso de hoy se acumula silenciosamente en algo extraordinario.",
+                    "Trebol Afortunado 3: la paciencia es tu amuleto de suerte, la constancia supera a la urgencia hoy.",
+                    "Trebol Afortunado 3: esa tarea casi terminada cruzará la línea de meta de forma brillante hoy.",
+                    "Trebol Afortunado 3: construir bases sólidas hoy te prepara para un salto sin esfuerzo mañana.",
+                    "Trebol Afortunado 3: tu resistencia brilla hoy, el esfuerzo sostenido trae una recompensa satisfactoria."
+                ]
+            },
+            'pt-BR': {
+                '♠': [
+                    "Espada da Sorte 3: seu foco está no ponto máximo hoje, comece pelo mais difícil e você vai vencer.",
+                    "Espada da Sorte 3: sua capacidade de decisão brilha hoje, confie no instinto e avance sem hesitar.",
+                    "Espada da Sorte 3: a clareza mental é sua aliada, aproveite esse estado de fluxo produtivo.",
+                    "Espada da Sorte 3: problemas complexos se simplificam hoje, aborde-os com calma e verá a solução.",
+                    "Espada da Sorte 3: sua energia está no auge, um começo forte hoje faz toda a diferença.",
+                    "Espada da Sorte 3: intuição e lógica caminham juntas hoje, suas escolhas vão acertar em cheio."
+                ],
+                '♥': [
+                    "Copas da Sorte 3: conexões humanas florescem hoje, dê o primeiro passo e receberá carinho.",
+                    "Copas da Sorte 3: suas palavras têm um poder especial hoje, expresse gratidão e observe o efeito.",
+                    "Copas da Sorte 3: a comunicação flui sem esforço, até os assuntos difíceis se resolvem bem.",
+                    "Copas da Sorte 3: sua empatia é seu superpoder hoje, as pessoas se sentem seguras perto de você.",
+                    "Copas da Sorte 3: a colaboração multiplica os resultados hoje, trabalhar em equipe é sua vantagem.",
+                    "Copas da Sorte 3: abrir seu coração hoje atrai apoio de onde você menos espera."
+                ],
+                '♦': [
+                    "Ouros da Sorte 3: uma pequena ação prática hoje pode se transformar em um grande retorno.",
+                    "Ouros da Sorte 3: seu olho para o valor está afinado, a melhor opção se revela com clareza.",
+                    "Ouros da Sorte 3: os recursos se alinham a seu favor, um esforço modesto rende grandes frutos.",
+                    "Ouros da Sorte 3: revisar suas finanças hoje desbloqueia um passo inteligente que você não tinha visto.",
+                    "Ouros da Sorte 3: uma oportunidade oculta está próxima, um segundo olhar a transforma em ganho.",
+                    "Ouros da Sorte 3: a sabedoria prática guia você agora, a eficiência se converte em boa fortuna."
+                ],
+                '♣': [
+                    "Paus da Sorte 3: o progresso constante é sua fórmula vencedora hoje, mantenha o ritmo e confie.",
+                    "Paus da Sorte 3: cada pequeno passo de hoje se acumula silenciosamente em algo extraordinário.",
+                    "Paus da Sorte 3: a paciência é seu amuleto da sorte, a constância supera a urgência hoje.",
+                    "Paus da Sorte 3: aquela tarefa quase concluída vai cruzar a linha de chegada lindamente hoje.",
+                    "Paus da Sorte 3: construir bases sólidas hoje te prepara para um salto sem esforço amanhã.",
+                    "Paus da Sorte 3: sua resistência brilha hoje, o esforço sustentado traz uma recompensa satisfatória."
+                ]
+            },
+            'th': {
+                '♠': [
+                    "โชคดีโพดำ 3: วันนี้สมาธิของคุณแจ่มใสสุดๆ เริ่มจากงานที่ยากที่สุดแล้วคุณจะทะลุผ่านได้",
+                    "โชคดีโพดำ 3: ความสามารถในการตัดสินใจของคุณโดดเด่นวันนี้ ไว้ใจสัญชาตญาณแล้วก้าวไปข้างหน้า",
+                    "โชคดีโพดำ 3: ความคิดชัดเจนและประสิทธิภาพสูง ใช้โอกาสนี้จัดการรายการสิ่งที่ต้องทำให้สำเร็จ",
+                    "โชคดีโพดำ 3: สัญชาตญาณและตรรกะสอดคล้องกันวันนี้ ตัดสินใจด้วยความมั่นใจแล้วทางจะเปิดออก",
+                    "โชคดีโพดำ 3: พลังงานของคุณอยู่ในจุดสูงสุด เริ่มต้นอย่างแข็งแกร่งวันนี้จะสร้างแรงโมเมนตัมอันยิ่งใหญ่",
+                    "โชคดีโพดำ 3: ปัญหาซับซ้อนก็คลี่คลายได้ง่ายวันนี้ จัดการอย่างใจเย็นแล้วคำตอบจะปรากฏ"
+                ],
+                '♥': [
+                    "โชคดีหัวใจ 3: ความสัมพันธ์รุ่งเรืองวันนี้ ติดต่อคนสำคัญก่อนแล้วจะได้รับความอบอุ่นกลับมา",
+                    "โชคดีหัวใจ 3: คำพูดของคุณมีพลังพิเศษวันนี้ แสดงความขอบคุณแล้วดูผลที่น่าประหลาดใจ",
+                    "โชคดีหัวใจ 3: การสื่อสารไหลลื่นไม่มีแรงเสียดทาน แม้แต่หัวข้อยากก็จบลงได้ดี",
+                    "โชคดีหัวใจ 3: ความเห็นอกเห็นใจคือพลังพิเศษของคุณวันนี้ คนรอบข้างรู้สึกปลอดภัยเมื่ออยู่ใกล้คุณ",
+                    "โชคดีหัวใจ 3: การร่วมมือกันทวีคูณผลลัพธ์วันนี้ การทำงานเป็นทีมคือข้อได้เปรียบของคุณ",
+                    "โชคดีหัวใจ 3: การเปิดใจวันนี้ดึงดูดการสนับสนุนจากที่ที่คุณไม่คาดคิด"
+                ],
+                '♦': [
+                    "โชคดีไพ่ข้าวหลามตัด 3: การกระทำเล็กๆ วันนี้อาจกลายเป็นผลตอบแทนที่น่าประหลาดใจ",
+                    "โชคดีไพ่ข้าวหลามตัด 3: สายตาของคุณมองเห็นคุณค่าได้คมชัดวันนี้ ตัวเลือกที่ดีที่สุดเผยตัวออกมาชัดเจน",
+                    "โชคดีไพ่ข้าวหลามตัด 3: ทรัพยากรเรียงตัวเข้าข้างคุณ ความพยายามเล็กน้อยให้ผลลัพธ์ที่มีความหมาย",
+                    "โชคดีไพ่ข้าวหลามตัด 3: ทบทวนการเงินวันนี้ปลดล็อกก้าวต่อไปที่ชาญฉลาดที่คุณยังไม่เคยเห็น",
+                    "โชคดีไพ่ข้าวหลามตัด 3: โอกาสที่ซ่อนอยู่อยู่ใกล้แค่นี้ มองอีกครั้งแล้วมันจะกลายเป็นกำไรจริงๆ",
+                    "โชคดีไพ่ข้าวหลามตัด 3: ปัญญาปฏิบัติชี้นำคุณตอนนี้ ประสิทธิภาพสะสมกลายเป็นโชคดี"
+                ],
+                '♣': [
+                    "โชคดีดอกจิก 3: ความก้าวหน้าสม่ำเสมอคือสูตรชนะของคุณวันนี้ รักษาจังหวะและไว้ใจกระบวนการ",
+                    "โชคดีดอกจิก 3: ทุกก้าวเล็กๆ ของวันนี้สะสมอย่างเงียบๆ กลายเป็นสิ่งยิ่งใหญ่",
+                    "โชคดีดอกจิก 3: ความอดทนคือเครื่องรางนำโชคของคุณ ความสม่ำเสมอดีกว่าความเร่งด่วนวันนี้",
+                    "โชคดีดอกจิก 3: งานที่เกือบเสร็จนั้นจะข้ามเส้นชัยได้อย่างสวยงามวันนี้",
+                    "โชคดีดอกจิก 3: การสร้างฐานรากที่แน่นวันนี้เตรียมคุณให้พร้อมสำหรับการก้าวกระโดดที่ง่ายดายพรุ่งนี้",
+                    "โชคดีดอกจิก 3: ความทนทานของคุณโดดเด่นวันนี้ ความพยายามที่ต่อเนื่องนำมาซึ่งรางวัลที่น่าพึงพอใจ"
+                ]
+            },
+            'id': {
+                '♠': [
+                    "Sekop Keberuntungan 3: fokusmu sangat tajam hari ini, mulailah dari yang paling sulit dan kamu akan berhasil.",
+                    "Sekop Keberuntungan 3: kemampuan pengambilan keputusanmu bersinar hari ini, percayai nalurimu dan melangkahlah.",
+                    "Sekop Keberuntungan 3: kejernihan mental adalah temanmu, manfaatkan kondisi produktif ini sebaik-baiknya.",
+                    "Sekop Keberuntungan 3: masalah rumit menjadi lebih sederhana hari ini, hadapi dengan tenang dan solusinya terlihat.",
+                    "Sekop Keberuntungan 3: energimu sedang di puncak, awal yang kuat hari ini menciptakan momentum besar.",
+                    "Sekop Keberuntungan 3: intuisi dan logika berjalan seiring hari ini, pilihanmu akan tepat sasaran."
+                ],
+                '♥': [
+                    "Hati Keberuntungan 3: koneksi manusia berkembang hari ini, ambil inisiatif dan kamu akan menerima kehangatan.",
+                    "Hati Keberuntungan 3: kata-katamu memiliki kekuatan istimewa hari ini, ungkapkan rasa syukur dan lihat hasilnya.",
+                    "Hati Keberuntungan 3: komunikasi mengalir lancar, bahkan topik sulit pun diselesaikan dengan baik.",
+                    "Hati Keberuntungan 3: empatimu adalah kekuatan supermu hari ini, orang-orang merasa aman di dekatmu.",
+                    "Hati Keberuntungan 3: kolaborasi melipatgandakan hasil hari ini, bekerja sama adalah keunggulanmu.",
+                    "Hati Keberuntungan 3: membuka hatimu hari ini menarik dukungan dari tempat yang tidak kamu duga."
+                ],
+                '♦': [
+                    "Berlian Keberuntungan 3: tindakan kecil yang praktis hari ini bisa menghasilkan keuntungan yang mengejutkan.",
+                    "Berlian Keberuntungan 3: matamu untuk menilai kualitas sangat tajam, pilihan terbaik terungkap dengan jelas.",
+                    "Berlian Keberuntungan 3: sumber daya berpihak padamu, usaha sederhana menghasilkan hasil yang bermakna.",
+                    "Berlian Keberuntungan 3: meninjau keuanganmu hari ini membuka langkah cerdas yang belum pernah kamu lihat.",
+                    "Berlian Keberuntungan 3: peluang tersembunyi ada di dekatmu, pandangan kedua mengubahnya menjadi keuntungan nyata.",
+                    "Berlian Keberuntungan 3: kebijaksanaan praktis membimbingmu sekarang, efisiensi bertumpuk menjadi keberuntungan."
+                ],
+                '♣': [
+                    "Klab Keberuntungan 3: kemajuan yang stabil adalah formula kemenanganmu hari ini, pertahankan ritme dan percayalah.",
+                    "Klab Keberuntungan 3: setiap langkah kecil hari ini diam-diam menumpuk menjadi sesuatu yang luar biasa.",
+                    "Klab Keberuntungan 3: kesabaran adalah jimat keberuntunganmu, konsistensi mengalahkan ketergesa-gesaan hari ini.",
+                    "Klab Keberuntungan 3: tugas yang hampir selesai itu akan melewati garis finish dengan indah hari ini.",
+                    "Klab Keberuntungan 3: membangun fondasi yang kokoh hari ini mempersiapkanmu untuk lompatan mudah besok.",
+                    "Klab Keberuntungan 3: ketahananmu bersinar hari ini, usaha yang berkelanjutan membawa hadiah yang memuaskan."
+                ]
+            },
+            'fr': {
+                '♠': [
+                    "Pique Chanceux 3: ta concentration est au sommet aujourd'hui, commence par le plus difficile et tu vas triompher.",
+                    "Pique Chanceux 3: ton sens des decisions brille aujourd'hui, fais confiance a ton instinct et avance sans hesiter.",
+                    "Pique Chanceux 3: la clarté mentale est ton alliée, profite de cet état de flux productif au maximum.",
+                    "Pique Chanceux 3: les problèmes complexes se simplifient aujourd'hui, aborde-les calmement et la solution apparaît.",
+                    "Pique Chanceux 3: ton énergie est à son maximum, un départ fort aujourd'hui crée un élan formidable.",
+                    "Pique Chanceux 3: intuition et logique vont de pair aujourd'hui, tes choix vont toucher juste."
+                ],
+                '♥': [
+                    "Coeur Chanceux 3: les connexions humaines s'épanouissent aujourd'hui, fais le premier pas et tu recevras de la chaleur.",
+                    "Coeur Chanceux 3: tes mots ont un pouvoir spécial aujourd'hui, exprime ta gratitude et observe l'effet.",
+                    "Coeur Chanceux 3: la communication coule sans effort, même les sujets difficiles se résolvent bien.",
+                    "Coeur Chanceux 3: ton empathie est ton superpouvoir aujourd'hui, les gens se sentent en sécurité près de toi.",
+                    "Coeur Chanceux 3: la collaboration multiplie les résultats aujourd'hui, travailler en équipe est ton avantage.",
+                    "Coeur Chanceux 3: ouvrir ton coeur aujourd'hui attire un soutien venant d'où tu t'y attends le moins."
+                ],
+                '♦': [
+                    "Carreau Chanceux 3: une petite action pratique aujourd'hui peut se transformer en un grand retour sur investissement.",
+                    "Carreau Chanceux 3: ton oeil pour la valeur est aiguisé aujourd'hui, le meilleur choix se révèle clairement.",
+                    "Carreau Chanceux 3: les ressources s'alignent en ta faveur, un effort modeste produit des résultats significatifs.",
+                    "Carreau Chanceux 3: revoir tes finances aujourd'hui débloque une étape intelligente que tu n'avais pas vue.",
+                    "Carreau Chanceux 3: une opportunité cachée est proche, un second regard la transforme en gain réel.",
+                    "Carreau Chanceux 3: la sagesse pratique te guide maintenant, l'efficacité s'accumule en bonne fortune."
+                ],
+                '♣': [
+                    "Trèfle Chanceux 3: le progrès constant est ta formule gagnante aujourd'hui, garde le rythme et fais confiance.",
+                    "Trèfle Chanceux 3: chaque petit pas d'aujourd'hui s'accumule silencieusement en quelque chose d'extraordinaire.",
+                    "Trèfle Chanceux 3: la patience est ton porte-bonheur, la constance l'emporte sur l'urgence aujourd'hui.",
+                    "Trèfle Chanceux 3: cette tâche presque terminée franchira la ligne d'arrivée brillamment aujourd'hui.",
+                    "Trèfle Chanceux 3: bâtir des bases solides aujourd'hui te prépare pour un bond sans effort demain.",
+                    "Trèfle Chanceux 3: ton endurance brille aujourd'hui, l'effort soutenu apporte une récompense satisfaisante."
+                ]
+            },
+            'zh-CN': {
+                '♠': [
+                    "今日幸运签：黑桃 3。做决定会特别果断，工作与学习容易一次到位。",
+                    "今日幸运签：黑桃 3。今天行动力很强，卡住的事情有机会快速突破。",
+                    "今日幸运签：黑桃 3。今天很适合处理最难的那件事，完成率偏高。",
+                    "今日幸运签：黑桃 3。专注力上升，短时间内就能把重点做完。",
+                    "今日幸运签：黑桃 3。你今天的判断很准，适合拍板定案。",
+                    "今日幸运签：黑桃 3。思路清晰，复杂问题会被你拆解得很漂亮。"
+                ],
+                '♥': [
+                    "今日幸运签：红心 3。人际运上升，适合主动联系重要的人，会有好回应。",
+                    "今日幸运签：红心 3。今天说出的善意会被放大，反馈会很快出现。",
+                    "今日幸运签：红心 3。关系运走强，适合修复小误会、拉近距离。",
+                    "今日幸运签：红心 3。你今天很有感染力，容易获得支持。",
+                    "今日幸运签：红心 3。今天适合合作，彼此加成感特别明显。",
+                    "今日幸运签：红心 3。开放心态会带来一个让你心情很好的消息。"
+                ],
+                '♦': [
+                    "今日幸运签：方块 3。财运与机会运偏强，小机会可能带来大收获。",
+                    "今日幸运签：方块 3。今天对价格与价值的判断特别准。",
+                    "今日幸运签：方块 3。小小尝试会带来实际回报，值得主动出击。",
+                    "今日幸运签：方块 3。今天是小投入大回报的一天。",
+                    "今日幸运签：方块 3。你今天很容易找到高性价比的选择。",
+                    "今日幸运签：方块 3。好机会正在靠近，记得主动伸手接住。"
+                ],
+                '♣': [
+                    "今日幸运签：梅花 3。稳定运很强，手上的计划有望扎实推进。",
+                    "今日幸运签：梅花 3。今天适合打基础，持续做就会看到明显成果。",
+                    "今日幸运签：梅花 3。你的耐心今天就是幸运，慢慢来反而最快。",
+                    "今日幸运签：梅花 3。稳稳前进就是王道，成果正在堆高。",
+                    "今日幸运签：梅花 3。今天很适合完成差最后一步的任务。",
+                    "今日幸运签：梅花 3。今天是成长日，稳定就是最强幸运。"
+                ]
+            },
+            'de': {
+                '♠': [
+                    "Glueckspik 3: deine Konzentration ist heute auf dem Hoehepunkt, fang mit dem Schwersten an und du wirst es meistern.",
+                    "Glueckspik 3: dein Entscheidungsvermoegen glaenzt heute, vertrau deinem Instinkt und geh ohne Zögern voran.",
+                    "Glueckspik 3: geistige Klarheit ist dein Verbuendeter, nutze diesen produktiven Zustand voll aus.",
+                    "Glueckspik 3: komplexe Probleme vereinfachen sich heute, geh ruhig ran und die Loesung zeigt sich.",
+                    "Glueckspik 3: deine Energie ist auf dem Hoechststand, ein starker Start heute erzeugt grossen Schwung.",
+                    "Glueckspik 3: Intuition und Logik gehen heute Hand in Hand, deine Entscheidungen werden ins Schwarze treffen."
+                ],
+                '♥': [
+                    "Gluecksherz 3: menschliche Verbindungen bluehen heute auf, mach den ersten Schritt und du wirst Waerme erhalten.",
+                    "Gluecksherz 3: deine Worte haben heute eine besondere Kraft, drueck Dankbarkeit aus und beobachte die Wirkung.",
+                    "Gluecksherz 3: Kommunikation fliesst muehelos, sogar schwierige Themen lassen sich gut loesen.",
+                    "Gluecksherz 3: deine Empathie ist heute dein Superpower, Menschen fuehlen sich sicher in deiner Naehe.",
+                    "Gluecksherz 3: Zusammenarbeit vervielfacht heute die Ergebnisse, Teamwork ist dein Vorteil.",
+                    "Gluecksherz 3: dein Herz heute zu oeffnen zieht Unterstuetzung aus unerwarteten Richtungen an."
+                ],
+                '♦': [
+                    "Glueckskarr 3: eine kleine praktische Tat heute kann sich in einen grossen Ertrag verwandeln.",
+                    "Glueckskarr 3: dein Gespuer fuer Wert ist heute geschaerft, die beste Option offenbart sich klar.",
+                    "Glueckskarr 3: Ressourcen reihen sich zu deinen Gunsten, ein bescheidener Aufwand bringt bedeutende Ergebnisse.",
+                    "Glueckskarr 3: deine Finanzen heute zu ueberpruefen entsperrt einen klugen naechsten Schritt.",
+                    "Glueckskarr 3: eine verborgene Chance ist in der Naehe, ein zweiter Blick verwandelt sie in echten Gewinn.",
+                    "Glueckskarr 3: praktische Weisheit leitet dich jetzt, Effizienz anhaeufen wird zu Glueck."
+                ],
+                '♣': [
+                    "Glueckskreuz 3: stetiger Fortschritt ist heute deine Erfolgsformel, behalte den Rhythmus und vertraue.",
+                    "Glueckskreuz 3: jeder kleine Schritt heute stapelt sich leise zu etwas Aussergewoehlichem.",
+                    "Glueckskreuz 3: Geduld ist dein Glueckszeichen, Bestaendigkeit uebertrifft heute die Dringlichkeit.",
+                    "Glueckskreuz 3: diese fast fertige Aufgabe wird heute glaenzend die Ziellinie ueberqueren.",
+                    "Glueckskreuz 3: heute solide Grundlagen zu legen bereitet dich auf einen muhelosen Sprung morgen vor.",
+                    "Glueckskreuz 3: deine Ausdauer glaenzt heute, anhaltende Bemuehungen bringen eine befriedigende Belohnung."
+                ]
+            },
+            'it': {
+                '♠': [
+                    "Picche Fortunate 3: la tua concentrazione è al massimo oggi, inizia dal più difficile e ce la farai.",
+                    "Picche Fortunate 3: la tua capacità decisionale brilla oggi, fidati del tuo istinto e vai avanti senza esitare.",
+                    "Picche Fortunate 3: la chiarezza mentale è tua alleata, sfrutta questo stato di flusso produttivo al meglio.",
+                    "Picche Fortunate 3: i problemi complessi si semplificano oggi, affrontali con calma e la soluzione apparirà.",
+                    "Picche Fortunate 3: la tua energia è al culmine, un inizio forte oggi crea un grande slancio.",
+                    "Picche Fortunate 3: intuizione e logica vanno di pari passo oggi, le tue scelte colpiranno nel segno."
+                ],
+                '♥': [
+                    "Cuori Fortunati 3: le connessioni umane fioriscono oggi, fai il primo passo e riceverai calore.",
+                    "Cuori Fortunati 3: le tue parole hanno un potere speciale oggi, esprimi gratitudine e osserva l'effetto.",
+                    "Cuori Fortunati 3: la comunicazione scorre senza sforzo, anche gli argomenti difficili si risolvono bene.",
+                    "Cuori Fortunati 3: la tua empatia è il tuo superpotere oggi, le persone si sentono al sicuro vicino a te.",
+                    "Cuori Fortunati 3: la collaborazione moltiplica i risultati oggi, lavorare in team è il tuo vantaggio.",
+                    "Cuori Fortunati 3: aprire il tuo cuore oggi attrae supporto da dove meno te lo aspetti."
+                ],
+                '♦': [
+                    "Quadri Fortunati 3: una piccola azione pratica oggi può trasformarsi in un grande ritorno.",
+                    "Quadri Fortunati 3: il tuo occhio per il valore è affilato oggi, la scelta migliore si rivela chiaramente.",
+                    "Quadri Fortunati 3: le risorse si allineano a tuo favore, uno sforzo modesto produce risultati significativi.",
+                    "Quadri Fortunati 3: rivedere le tue finanze oggi sblocca un passo intelligente che non avevi visto.",
+                    "Quadri Fortunati 3: una opportunità nascosta è vicina, uno sguardo in più la trasforma in guadagno reale.",
+                    "Quadri Fortunati 3: la saggezza pratica ti guida ora, l'efficienza si accumula in buona fortuna."
+                ],
+                '♣': [
+                    "Fiori Fortunati 3: il progresso costante è la tua formula vincente oggi, mantieni il ritmo e fidati.",
+                    "Fiori Fortunati 3: ogni piccolo passo di oggi si accumula silenziosamente in qualcosa di straordinario.",
+                    "Fiori Fortunati 3: la pazienza è il tuo portafortuna, la costanza supera l'urgenza oggi.",
+                    "Fiori Fortunati 3: quel compito quasi finito attraverserà magnificamente il traguardo oggi.",
+                    "Fiori Fortunati 3: costruire basi solide oggi ti prepara per un salto senza sforzo domani.",
+                    "Fiori Fortunati 3: la tua resistenza brilla oggi, lo sforzo sostenuto porta una ricompensa soddisfacente."
+                ]
+            },
+            'pt-PT': {
+                '♠': [
+                    "Espada da Sorte 3: o teu foco está no ponto máximo hoje, começa pelo mais difícil e vais conseguir.",
+                    "Espada da Sorte 3: a tua capacidade de decisão brilha hoje, confia no instinto e avança sem hesitar.",
+                    "Espada da Sorte 3: a clareza mental é tua aliada, aproveita este estado de fluxo produtivo ao máximo.",
+                    "Espada da Sorte 3: problemas complexos simplificam-se hoje, aborda-os com calma e verás a solução.",
+                    "Espada da Sorte 3: a tua energia está no auge, um começo forte hoje cria um grande impulso.",
+                    "Espada da Sorte 3: intuição e lógica andam de mãos dadas hoje, as tuas escolhas vão acertar em cheio."
+                ],
+                '♥': [
+                    "Copas da Sorte 3: as conexões humanas florescem hoje, dá o primeiro passo e receberás carinho.",
+                    "Copas da Sorte 3: as tuas palavras têm um poder especial hoje, expressa gratidão e observa o efeito.",
+                    "Copas da Sorte 3: a comunicação flui sem esforço, até os assuntos difíceis se resolvem bem.",
+                    "Copas da Sorte 3: a tua empatia é o teu superpoder hoje, as pessoas sentem-se seguras perto de ti.",
+                    "Copas da Sorte 3: a colaboração multiplica os resultados hoje, trabalhar em equipa é a tua vantagem.",
+                    "Copas da Sorte 3: abrir o teu coração hoje atrai apoio de onde menos esperavas."
+                ],
+                '♦': [
+                    "Ouros da Sorte 3: uma pequena ação prática hoje pode transformar-se num grande retorno.",
+                    "Ouros da Sorte 3: o teu olho para o valor está afiado hoje, a melhor opção revela-se claramente.",
+                    "Ouros da Sorte 3: os recursos alinham-se a teu favor, um esforço modesto produz resultados significativos.",
+                    "Ouros da Sorte 3: rever as tuas finanças hoje desbloqueia um passo inteligente que ainda não tinhas visto.",
+                    "Ouros da Sorte 3: uma oportunidade escondida está próxima, uma segunda vista transforma-a em ganho real.",
+                    "Ouros da Sorte 3: a sabedoria prática guia-te agora, a eficiência acumula-se em boa fortuna."
+                ],
+                '♣': [
+                    "Paus da Sorte 3: o progresso constante é a tua fórmula vencedora hoje, mantém o ritmo e confia.",
+                    "Paus da Sorte 3: cada pequeno passo de hoje acumula-se silenciosamente em algo extraordinário.",
+                    "Paus da Sorte 3: a paciência é o teu amuleto de sorte, a constância supera a urgência hoje.",
+                    "Paus da Sorte 3: essa tarefa quase concluída vai cruzar a linha de chegada lindamente hoje.",
+                    "Paus da Sorte 3: construir bases sólidas hoje prepara-te para um salto sem esforço amanhã.",
+                    "Paus da Sorte 3: a tua resistência brilha hoje, o esforço sustentado traz uma recompensa satisfatória."
+                ]
+            },
+            'nl': {
+                '♠': [
+                    "Gelukkige Schoppen 3: je concentratie is vandaag op zijn hoogtepunt, begin met het moeilijkste en je gaat slagen.",
+                    "Gelukkige Schoppen 3: je beslissingsvermogen schittert vandaag, vertrouw op je instinct en ga zonder aarzelen vooruit.",
+                    "Gelukkige Schoppen 3: mentale helderheid is je bondgenoot, benut deze productieve staat ten volle.",
+                    "Gelukkige Schoppen 3: complexe problemen vereenvoudigen vandaag, pak ze kalm aan en de oplossing verschijnt.",
+                    "Gelukkige Schoppen 3: je energie is op het maximum, een sterke start vandaag creëert een geweldige impuls.",
+                    "Gelukkige Schoppen 3: intuïtie en logica gaan vandaag hand in hand, je keuzes zullen raak zijn."
+                ],
+                '♥': [
+                    "Gelukkige Harten 3: menselijke verbindingen bloeien vandaag, neem het initiatief en je ontvangt warmte terug.",
+                    "Gelukkige Harten 3: je woorden hebben vandaag een speciale kracht, druk dankbaarheid uit en observeer het effect.",
+                    "Gelukkige Harten 3: communicatie stroomt moeiteloos, zelfs moeilijke onderwerpen worden goed opgelost.",
+                    "Gelukkige Harten 3: je empathie is vandaag je superkracht, mensen voelen zich veilig in jouw nabijheid.",
+                    "Gelukkige Harten 3: samenwerking vermenigvuldigt vandaag de resultaten, teamwerk is jouw voordeel.",
+                    "Gelukkige Harten 3: je hart vandaag openen trekt steun aan van waar je het minst verwacht."
+                ],
+                '♦': [
+                    "Gelukkige Ruiten 3: een kleine praktische actie vandaag kan uitgroeien tot een grote beloning.",
+                    "Gelukkige Ruiten 3: je oog voor waarde is vandaag scherp, de beste keuze openbaart zich duidelijk.",
+                    "Gelukkige Ruiten 3: middelen richten zich in jouw voordeel, een bescheiden inspanning levert betekenisvolle resultaten.",
+                    "Gelukkige Ruiten 3: je financiën vandaag herzien ontgrendelt een slimme volgende stap die je nog niet had gezien.",
+                    "Gelukkige Ruiten 3: een verborgen kans is dichtbij, een tweede blik transformeert het in echte winst.",
+                    "Gelukkige Ruiten 3: praktische wijsheid leidt je nu, efficiëntie stapelt zich op tot goed geluk."
+                ],
+                '♣': [
+                    "Gelukkige Klaveren 3: gestage vooruitgang is vandaag je winnende formule, houd het ritme vast en vertrouw.",
+                    "Gelukkige Klaveren 3: elke kleine stap van vandaag stapelt zich stilletjes op tot iets buitengewoons.",
+                    "Gelukkige Klaveren 3: geduld is je geluksbrenger, standvastigheid overtreft urgentie vandaag.",
+                    "Gelukkige Klaveren 3: die bijna voltooide taak zal vandaag schitterend de finishlijn passeren.",
+                    "Gelukkige Klaveren 3: vandaag een stevige basis bouwen bereidt je voor op een moeiteloze sprong morgen.",
+                    "Gelukkige Klaveren 3: je uithoudingsvermogen schittert vandaag, volgehouden inspanning brengt een bevredigende beloning."
+                ]
+            },
+            'ru': {
+                '♠': [
+                    "Счастливая пика 3: твоя концентрация сегодня на пике, начни с самого трудного и ты справишься.",
+                    "Счастливая пика 3: твоя способность принимать решения сияет сегодня, доверяй инстинктам и двигайся вперёд.",
+                    "Счастливая пика 3: умственная ясность твой союзник, используй это продуктивное состояние на полную.",
+                    "Счастливая пика 3: сложные проблемы упрощаются сегодня, подходи спокойно и решение появится.",
+                    "Счастливая пика 3: твоя энергия на максимуме, сильный старт сегодня создаёт огромный импульс.",
+                    "Счастливая пика 3: интуиция и логика идут рядом сегодня, твои выборы попадут точно в цель."
+                ],
+                '♥': [
+                    "Счастливое сердце 3: человеческие связи расцветают сегодня, сделай первый шаг и получишь тепло в ответ.",
+                    "Счастливое сердце 3: твои слова имеют особую силу сегодня, вырази благодарность и наблюдай за эффектом.",
+                    "Счастливое сердце 3: общение течёт без усилий, даже сложные темы решаются хорошо.",
+                    "Счастливое сердце 3: твоя эмпатия твоя суперсила сегодня, люди чувствуют себя в безопасности рядом с тобой.",
+                    "Счастливое сердце 3: сотрудничество умножает результаты сегодня, командная работа твоё преимущество.",
+                    "Счастливое сердце 3: открыть сердце сегодня притягивает поддержку оттуда, откуда не ожидаешь."
+                ],
+                '♦': [
+                    "Счастливый бубен 3: небольшое практическое действие сегодня может превратиться в большую отдачу.",
+                    "Счастливый бубен 3: твой взгляд на ценность острый сегодня, лучший выбор раскрывается ясно.",
+                    "Счастливый бубен 3: ресурсы выстраиваются в твою пользу, скромные усилия дают значимые результаты.",
+                    "Счастливый бубен 3: пересмотр финансов сегодня открывает умный следующий шаг, который ты ещё не видел.",
+                    "Счастливый бубен 3: скрытая возможность рядом, второй взгляд превращает её в реальную прибыль.",
+                    "Счастливый бубен 3: практическая мудрость ведёт тебя сейчас, эффективность накапливается в удачу."
+                ],
+                '♣': [
+                    "Счастливая трефа 3: стабильный прогресс твоя выигрышная формула сегодня, держи ритм и доверяй.",
+                    "Счастливая трефа 3: каждый маленький шаг сегодня тихо накапливается во что-то выдающееся.",
+                    "Счастливая трефа 3: терпение твой талисман удачи, постоянство превосходит срочность сегодня.",
+                    "Счастливая трефа 3: та почти завершённая задача сегодня блестяще пересечёт финишную черту.",
+                    "Счастливая трефа 3: закладывать прочный фундамент сегодня готовит тебя к лёгкому прыжку завтра.",
+                    "Счастливая трефа 3: твоя выносливость сияет сегодня, устойчивые усилия приносят удовлетворяющую награду."
+                ]
+            },
+            'pl': {
+                '♠': [
+                    "Szczesliwy pik 3: twoja koncentracja jest dziś na szczycie, zacznij od najtrudniejszego i odniesiesz sukces.",
+                    "Szczesliwy pik 3: twoja zdolność podejmowania decyzji błyszczy dziś, ufaj instynktom i idź naprzód bez wahania.",
+                    "Szczesliwy pik 3: jasność umysłu jest twoim sprzymierzeńcem, wykorzystaj ten produktywny stan w pełni.",
+                    "Szczesliwy pik 3: złożone problemy upraszczają się dziś, podejdź spokojnie i rozwiązanie się pojawi.",
+                    "Szczesliwy pik 3: twoja energia jest na maksimum, mocny start dziś tworzy ogromny impuls.",
+                    "Szczesliwy pik 3: intuicja i logika idą dziś w parze, twoje wybory trafią w sedno."
+                ],
+                '♥': [
+                    "Szczesliwe serce 3: ludzkie połączenia kwitną dziś, zrób pierwszy krok i otrzymasz ciepło w zamian.",
+                    "Szczesliwe serce 3: twoje słowa mają dziś wyjątkową moc, wyraź wdzięczność i obserwuj efekt.",
+                    "Szczesliwe serce 3: komunikacja płynie bez wysiłku, nawet trudne tematy rozwiązują się dobrze.",
+                    "Szczesliwe serce 3: twoja empatia to dziś twoja supermoc, ludzie czują się bezpiecznie w twoim pobliżu.",
+                    "Szczesliwe serce 3: współpraca mnoży dziś wyniki, praca zespołowa jest twoją przewagą.",
+                    "Szczesliwe serce 3: otwarcie serca dziś przyciąga wsparcie skąd się najmniej spodziewasz."
+                ],
+                '♦': [
+                    "Szczesliwy karo 3: małe praktyczne działanie dziś może przerodzić się w duży zwrot.",
+                    "Szczesliwy karo 3: twoje oko na wartość jest dziś wyostrzone, najlepszy wybór ujawnia się wyraźnie.",
+                    "Szczesliwy karo 3: zasoby ustawiają się na twoją korzyść, skromny wysiłek przynosi znaczące rezultaty.",
+                    "Szczesliwy karo 3: przegląd finansów dziś odblokowuje inteligentny następny krok, którego jeszcze nie widziałeś.",
+                    "Szczesliwy karo 3: ukryta szansa jest blisko, drugi rzut oka zamienia ją w realny zysk.",
+                    "Szczesliwy karo 3: praktyczna mądrość prowadzi cię teraz, efektywność kumuluje się w szczęście."
+                ],
+                '♣': [
+                    "Szczesliwy trefl 3: stały postęp to twoja formuła sukcesu dziś, utrzymaj rytm i zaufaj procesowi.",
+                    "Szczesliwy trefl 3: każdy mały krok dziś cicho kumuluje się w coś niezwykłego.",
+                    "Szczesliwy trefl 3: cierpliwość to twój talizman szczęścia, wytrwałość przewyższa pilność dziś.",
+                    "Szczesliwy trefl 3: to prawie ukończone zadanie dziś wspaniale przekroczy linię mety.",
+                    "Szczesliwy trefl 3: budowanie solidnych fundamentów dziś przygotowuje cię na łatwy skok jutro.",
+                    "Szczesliwy trefl 3: twoja wytrwałość błyszczy dziś, utrzymany wysiłek przynosi satysfakcjonującą nagrodę."
+                ]
+            },
+            'tr': {
+                '♠': [
+                    "Sansli Macalar 3: bugun konsantrasyonun zirvededir, en zor olandan basla ve basariya ulasacaksin.",
+                    "Sansli Macalar 3: karar verme becerin bugun parilamaktadir, icguduune guvenerek tereddut etmeden ilerle.",
+                    "Sansli Macalar 3: zihinsel netlik mucadele ortagindir, bu uretken durumdan tam anlamiyla yaralan.",
+                    "Sansli Macalar 3: karmasik problemler bugun basitlesir, sakin bir sekilde yaklasirsan cozum ortaya cikar.",
+                    "Sansli Macalar 3: enerijn maksimumda, bugun guclu bir baslangi buyuk bir ivme yaratir.",
+                    "Sansli Macalar 3: sezi ve mantik bugun el ele yurur, tercihlerinin hedefi bulacagini goreceksin."
+                ],
+                '♥': [
+                    "Sansli Kupa 3: insan baglarilari bugun cicek acar, ilk adimi at ve sicakligini geri alacaksin.",
+                    "Sansli Kupa 3: sozlerinin bugun ozel bir gucu var, minnetini ifade et ve etkiyi gozlemle.",
+                    "Sansli Kupa 3: iletisim zahmetsizce akar, zor konular bile iyi cozume kavusur.",
+                    "Sansli Kupa 3: empatin bugun supergucun, insanlar yaninda kendilerini guvende hisseder.",
+                    "Sansli Kupa 3: isbirligi bugun sonuclari katlar, takim calismasi avantajindir.",
+                    "Sansli Kupa 3: bugun kalbini acmak beklenmedik yerden destek cekmektedir."
+                ],
+                '♦': [
+                    "Sansli Karo 3: bugun kucuk pratik bir hareket buyuk bir getiriye donusebilir.",
+                    "Sansli Karo 3: deger icin gozun bugun keskindir, en iyi secenegin net sekilde ortaya cikiyor.",
+                    "Sansli Karo 3: kaynaklar lehinize dizilir, mevzi bir caba anlamli sonuclar dognrur.",
+                    "Sansli Karo 3: bugun finansini gozden gecirmek daha once gormedigen akilli bir adim acar.",
+                    "Sansli Karo 3: gizli bir firsat yakin, ikinci bir bakis onu gercek kazanca donusturur.",
+                    "Sansli Karo 3: pratik bilgelik seni simdi yonlendiriyor, verimlilik sans birikmesine donusur."
+                ],
+                '♣': [
+                    "Sansli Sinekler 3: istikrarli ilerleme bugun kazanma formuldur, ritinimi koru ve surece guvenerelim.",
+                    "Sansli Sinekler 3: bugunku her kucuk adim sessizce olagandisiligi biriktirir.",
+                    "Sansli Sinekler 3: sabir sans talismanidindir, tutarlilik bugun aciliyeti gecer.",
+                    "Sansli Sinekler 3: neredeyse biten o gorev bugun bitis cizgisini parlak sekilde gececek.",
+                    "Sansli Sinekler 3: bugun sag lam temeller atmak seni yarin rahat bir sicramaya hazirlar.",
+                    "Sansli Sinekler 3: dayaniklilin bugun parlior, surdurulen caba tatmin edici bir odule getiriyor."
+                ]
+            },
+            'vi': {
+                '♠': [
+                    "Bich Thu 3: su tap trung cua ban hom nay dat dinh cao, hay bat dau voi viec kho nhat va ban se thanh cong.",
+                    "Bich Thu 3: kha nang quyet dinh cua ban toa sang hom nay, hay tin vao ban nang va tien ve phia truoc.",
+                    "Bich Thu 3: su trong sang trong tu duy la dong minh cua ban, hay tan dung trang thai lam viec hieu qua nay.",
+                    "Bich Thu 3: cac van de phuc tap don gian hoa hom nay, tiep can binh tinh va giai phap se xuat hien.",
+                    "Bich Thu 3: nang luong cua ban dang o muc cao nhat, mot khoi dau manh me hom nay tao ra da lon.",
+                    "Bich Thu 3: truc giac va logic di doi hom nay, cac lua chon cua ban se trung dich."
+                ],
+                '♥': [
+                    "Co Thu 3: cac moi ket noi con nguoi no ro hom nay, hay buoc di truoc va ban se nhan lai su am ap.",
+                    "Co Thu 3: loi noi cua ban co suc manh dac biet hom nay, hay bay to long biet on va quan sat hieu qua.",
+                    "Co Thu 3: giao tiep trao doi de dang, ngay ca cac chu de kho cung duoc giai quyet tot.",
+                    "Co Thu 3: su dong cam la sieu nang luc cua ban hom nay, moi nguoi cam thay an toan ben ban.",
+                    "Co Thu 3: su hop tac nhan doi ket qua hom nay, lam viec nhom la loi the cua ban.",
+                    "Co Thu 3: mo long hom nay thu hut su ung ho tu noi ban it mong doi nhat."
+                ],
+                '♦': [
+                    "Ro Thu 3: mot hanh dong thuc te nho hom nay co the tro thanh mot phan thuong lon.",
+                    "Ro Thu 3: con mat danh gia gia tri cua ban sac ben hom nay, lua chon tot nhat lo ra ro rang.",
+                    "Ro Thu 3: cac nguon luc xep hang theo huong co loi cho ban, mot no luc vua phai dem lai ket qua co y nghia.",
+                    "Ro Thu 3: xem lai tai chinh hom nay mo khoa buoc di thong minh tiep theo ma ban chua thay.",
+                    "Ro Thu 3: mot co hoi an giau dang o gan, nhin them lan nua bien no thanh loi ich thuc su.",
+                    "Ro Thu 3: su khon ngoan thuc te dang huong dan ban bay gio, hieu qua tich luy thanh may man."
+                ],
+                '♣': [
+                    "Nhep Thu 3: tien bo on dinh la cong thuc chien thang cua ban hom nay, giu nhip va tin tuong qua trinh.",
+                    "Nhep Thu 3: moi buoc nho hom nay lang le tich luy thanh dieu gi do phi thuong.",
+                    "Nhep Thu 3: kien nhan la linh vat may man cua ban, su kien tri vuot qua su cap bach hom nay.",
+                    "Nhep Thu 3: nhiem vu gan hoan thanh do se vuot qua vach dich mot cach tuyet voi hom nay.",
+                    "Nhep Thu 3: xay dung nen mong vung chac hom nay chuan bi cho ban mot cuoc nhay vot de dang ngay mai.",
+                    "Nhep Thu 3: su ben bi cua ban toa sang hom nay, no luc bren bi mang lai phan thuong xung dang."
+                ]
+            }
         };
         const EASY_FIRST_SEED_POOL = [383627646,3536893885,3417368350,3411256307,1327229545,3861759396,4065680653,1317802929,3638239183,1727589769,2708885301,997628455,2316695882,377891594,1189152542,1970148811,901154313,3058040377,399500237,1235036154,4055963589,3505156874,3102235924,265742783,3618719720,124192034,3652149489,1089530884,2621032838,4067162869,1579775172,3787453063,1457906742,1237931111,2008719369,4033671586,69767929,1386305387,1993006230,3451061701,1257312480,7731596,2369574390,1109569054,620560365,1970393452,460945164,579766153,1113080361,3742374211,2103539498,1185238780,998047588,1953543742,860369775,2945737908,3305296756,583791888,4270889410,3436337365,4199094586,1409164098,3278758923,842716246,1185722865,1326659933,1265758990,1900126663,1509509144,967890863,248163147,4044146171,918340589,2813908439,953384323,1367274771,707818002,3260046018,2923118532,2974388946,1324195732,681615561,1556268151,2315294355,542192169,2254051483,2038213277,1205225199,2682427148,2801514268,2434421213,894076067,4015324351,980956284,728048600,693128758,3952058206,2847895157,4075824688,1202459574,4157672776,3574911868,3945470217,1195656667,3693273492,833795049,3962912255,415965449,3272532942,1374928796,3576427695,1150060820,2283553004,1441807312,1005398083,3484178162,3300925996,2145531261,3214701842,2982551286,176604541,3008105678,1505056000,528237432,3401941256,3120333942,605000056,3907304676,3159300091,2365530887,1668575694,1596240084,4240075877,578470993,2696096132,3848774097,1711643604,2657482633,3897347432,2593891789,2226400137,2191432863,1319450549,1501877489,2100031994,2464988415,2390506727,4113007992,757115910,3576953290,3562041193,1356831703,3992351263,228784644,755067704,2289902405,2494221357,606143396,2721095577,3054931256,3479997723,102187655,713406554,2120792097,292007688,363931209,3424998872,382744685,2636818171,222042464,3928550795,41274726,1233151685,3298237018,3874881084,887861107,2461056192,448884708,2357445716,1881625062,1217870049,2618867622,1490680010,3492846927,2658733336,750246115,1843982079,2173193398,1028066504,3374332207,3141325533,132513775,3368733875,154855385,3500538092,2651770461,2354102532,4119046668,4287341567,3281579688,2615164405,2996603212,435407807,3884854000,2848882963,1267013440,3194692139,3387823918,3650688832,1634651350,731531867,1164274735,2689545682,912732452,3399279062,144191766,2551484292,3836655605,752886411,832619073,243069182,224545878,3849592843,96065016,1143025395,130551933,2386330042,2300569274,412280772,3072131702,730101289,3178202067,1009479925,62138616,2216898136,1987069427,3929172215,2136458801,3382202532,1462954831,2124570829,3431950011,3423966010,3231812779,3917659358,3028447048,4077329094,3227883805,806253746,1099414560,3025564002,2012932639,2795230223,1666516059,4127801759,2335280864,3246405824,2797347180,1589757256,4093042336,261552291,3642666545,528309417,998742774,1562048428,688098947,2473473957,623372485,826828319,847901837,510766544,1198357263,978473550,1839643722,2825739033,726955432,3750310595,2732382287,3164054704,963651188,749402209,1227486017,453572186,411763734,1710808180,952876178,531551188,47922589,23891289,3385950230,306393091,1349817040,2804651721,3855057801,1865738178,1596617918,2584114176,4121124177,1528150242,2044459845,1241533801,587793376,2223127973,1503957381,597059721,2603909727,3858584809,3695440350,977746504,3612562150,1637576985,2941222573,620922113,1872749782,297336482,1302559011,4212037763,2508511369,1728823565,3686666256,2328176415,3819704447,3798617899,481097228,2097593185,346880443,1065450571,1808261719,3131346952,3209725562,2173861231,1255909032,692832357,756168622,1345324311,3175843466,238479038,311993839,145475576,2273763387,1721490139,2169095072,551537990,2704477382,891171813,1451060034,573455970,1196493918,380404348,148929797,4082235936,4035001697,1814829701,3931917712,2277028421,412444924,370006651,1804172129,2968725083,2479560306,2320551718,2732247273,1423395866,1147914706,613387075,778732411,832506495,2165991931,3279813125,3327250453,3772014422,1869175516,3482630818,2782064950,2673399727,1106436370,3958717239,1961658708,2083218364,2838462753,3905606307,867751536,1890526870,288739558,2207755464,3461114990,1870595283,2434145885,379004891,3743034674,3251518254,2644525687,209785776,255796955,374213024,1407391206,2562320738,2943748239,1618815347,2256248780,70656472,3774551236,2599357243,4250633468,3741050484,913202817,3660602787,2793426931,590950149,1182639729,1671082818,591603834,2795237564,577776514,545004270,1070403023,1645467302,1483918330,2355689533,1466365271,3999723786,2969518767,2294256011,2272861107,290628296,355827686,1053990510,4136297560,697036795,832049436,1846306861,3072161064,761047291,3665202710,1903087264,621516404,813758634,288556139,1426165619,1496658011,3414920469,3637748675,2792893684,2844676929,876962550,1107910510,952010957,1141006173,1182876263,2575455478,1782076800,3895357099,2585836560,3343210968,1131991771,692689200,3410940362,3313490197,660722300,2869585401,250783572,2010264787,518504959,2099062135,2981285608,2687547887,4076704294,1841399116,2162113249,2616357503,992758409,1289533366,3226672932,3331670339,3959331630,3216415626,4121519197,573862047,1265803086,3576193373,4022000297,4038933134,1616493591,3935953901,3608236730,1143329822,679989063,845289028,839593001,3044663469,2014202684,1526941884,1736998117,3626454355,4051309456,1100327635,3538533708,709766598,4058793987,1302543821];
         const G2_FLOW_SEED_POOL = [401817115,3594182255,2553207146,3887984436,1495536710,2206104368,310877955,2240999680,3268641274,472958176,199681448,670020983,3489900664,86893259,711568660,1912217476,1589013370,2370029844,1742680078,295583918,477730530,1723628522,3196228824,3782217166,611054937,2264145174,2144223714,2326432712,3962282917,2258207469,1210489096,4119933918,3761321162,1070856726,2258313673,2072384969,1314713716,420715784,4050092559,777481483,4108933115,1885452584,2443799535,3982174699,1503624909,1511286499,1199558464,2043070551,4213824077,2762175856,1036786368,182947932,2164061578,2159769499,2811629811,42764271,2146190515,2748983668,3026011953,2859082148,2321422662,2603951722,2176579462,2259026340,2544172142,2238811899,4084442053,1324950972,3018358848,675984521,1664377532,3002329879,4198696148,2029936108,176371892,3035296467,2718671103,841818654,2366663794,3262559743,2452562891,1040741537,2902067153,3409558027,2815810665,1420630713,954386177,2661260994,1439955509,2822649788,1907921051,2851231016,108930477,1837225729,2628439375,715788626,874378965,3007335091,1047256134,1848172641,940799498,3238659923,3890319353,962929727,269688430,1963595476,1504672834,3373487673,29122827,4072103075,59142584,4096495621,1300135737,2957687868,3175106385,92728961,140840266,1212884470,3830084122,1426793342,1782796153,4275721137,3498817706,3828372222,1982694424,3792734380,367678666,970718034,1282475107,748012392,201417827,1347228116,2790357075,3727954093,2712034149,2231615705,1443130997,736720809,2137987892,3075054290,676221526,2701192742,1615181386,3698311971,353365245,2197980933,3706454165,2180309870,3970909346,1537783322,3106193353,2617524550,244314313,3015816315,75537138,130163671,329558807,2139255689,2172789716,759935736,2071851111,3357176413,1655934365,2650925524,1082693304,647732856,1812936068,3521270250,91919556,1916242185,583204460,1745267133,3549912599,1364692558,4054746138,965122127,1367570867,2603322482,1772738264,3154783163,350883176,2838220950,2394207165,359707614,1059695,3882735579,467892475,3583516554,1044298280,732422645,3195802844,711566431,532814231,2886847740,204577118,3506723399,1585672933,2028933588,3511944425,1337557147,4191933326,1305298249,2433529531,4003467798,2081153423,1841731805,2321327426,1046046131,1240618792,3569201179,2471022331,284732611,3146917147,269249265,3721503288,3052826359,3218385271,1319098286,3510834792,678085703,2763487742,3932599704,1118446280,2980898965,580080185,1059002938,3850522225,2853763733,2784202157,3258158079,4293206316,2966560627,3757652481,2857367691,1279409879,901444302,1270842221,1762485621,2234134487,3131864339,2981179546,438541540,1828711738,3638540130,3693242867,2025260991,3742443059,1975476025,3232665324,3576007675,620700722,1197069351,960621439,1138402939,1216391841,1677109349,2416638838,655788238,1457455286,2982266587,1541424314,2642481096,3121062263,197082772,2099725044,2997063887,2893972252,752309220,1912602334,2643158966,1944505407,1101223125,147839066,1451552177,2002968181,4290526523,719915696,4216221198,2596333101,3194258186,2268180143,2861872354,1143775337,3430000502,3671692166,2399968139,2863590291,740738005,2299559202,857631169,1587070336,4175157069,2348824756,1450445185,1051675674,4035237805,1226640120,2300080452,510893907,4122520816,1656765601,2727036396,368467429,313163911,1496164139,2271297754,113938229,2440909587,3368784850,3192052184,3357984273,2216522068,2431470352,1187052904,2018210553,2713869908,1043332099,3684418472,1450678546,1608948864,3590517218,305115875,1256439357,758155950,4186926557,2581753898,369131100,1224628584,488403531,3220993753,1944150295,3363026301,1098078870,4039424950,1009098265,3218277073,2361194803,963348729,2187898955,279450650,2219079010,3311058785,2236705317,1328419026,2003235093,1676654292,1721918068,3812049915,3363512892,1097007961,4216347542,2458823378,1765760528,1524155393,1490752292,1493673151,180557260,3646539468,344129030,1914470777,2456977954,3708748403,651598552,2552163550,2355952469,3085656800,727441688,2584855120,294446927,3374872151,3149868003,775820341,2067124165,3965936488,25272532,4058773852,2276764345,977774044,337560203,1594282252,2195236040,3058700962,2053718466,3272478827,1716247830,592503412,3911662045,2140954176,2542903233,1280880750,3996887376,3189789159,2923578260,1687773789,1257434244,1323727343,4053514156,2130662103,4204530358,987903619,4262275367,2746487529,4130358299,4025112,4128518836,2986641168,1746754685,3030010394,1389026569,3231639342,3072786004,3369425092,144370825,3427219702,70643924,2637515676,2823176220,791262139,1095244895,3043738745,1233940019,3612796840,3872639319,2010989670,1681157489,3292818256,1200250541,2513712467,3098559024,726592092,949849298,2001129165,3088063331,3802266612,728665560,319933618,1800567593,3950626085,970524587,4039193715,533965056,1316586712,3402929575,997999938,488380707,1297106641,3921518117,2798412395,2282121671,2341457031,3501188689,3528714523,4131716149,3021297026,423712313,563690201,504067805,1781585772,2345514253,3544946632,959612087,2339342466,2889406186,3095804851,1306103294,3910312816,1397653579,3212009041,2001858408,2711139614,676607595,2735240553,3118233238,3945098466,2437662978,4193943279,740695817,190921383,1834610404,448166385,1303514920,45656910,254576392,2135846228,3644886196,2539142875,3229673594,2332866463,396761226,3111122491,2326863216,1302106337,3985051428,403357112,2115623752,1316313732,1821819675,531772744,2313265661,1833844447];
@@ -323,10 +902,11 @@
         }
 
         function fortuneBySuit(suit) {
-            if (currentLocale === 'zh-Hant') {
-                const list = FORTUNE_POOL[suit] || [t('fortune.fallback')];
-                return list[Math.floor(Math.random() * list.length)];
+            const pool = FORTUNE_POOL[currentLocale] || FORTUNE_POOL['en'];
+            if (pool && pool[suit] && pool[suit].length > 0) {
+                return pool[suit][Math.floor(Math.random() * pool[suit].length)];
             }
+            // fallback to i18n single string
             const bySuit = {
                 '♠': t('fortune.spade'),
                 '♥': t('fortune.heart'),
@@ -1306,7 +1886,7 @@
             { id: 'retro_gold', nameEN: 'Retro Gold',  nameZH: '復古鎏金',
               condEN: 'Default style option', condZH: '預設樣式可選',      cond: null },
             { id: 'nightgold', nameEN: 'Night Gold',   nameZH: '夜金',
-              condEN: 'Premium purchase',      condZH: 'Premium 購買解鎖', cond: 'premium' },
+              condEN: 'Win 20 games',          condZH: '累積勝利 20 場', cond: 'wins20' },
             { id: 'forest',    nameEN: 'Deep Forest',  nameZH: '深林',
               condEN: 'Win 10 games',          condZH: '累積勝 10 局',     cond: 'wins10' },
             { id: 'crimson',   nameEN: 'Crimson',      nameZH: '赤焰',
@@ -1512,7 +2092,7 @@
                 { id: 'lucky', ok: wins >= 50 },          // Grandmaster milestone
                 { id: 'crimson', ok: streak >= 7 },       // Extended streak milestone
                 { id: 'void', ok: zeroClearWins >= 1 },   // Void Convergence
-                { id: 'nightgold', ok: isPremium() },     // Premium entitlement
+                { id: 'nightgold', ok: (achievements.wins || 0) >= 20 }, // 20 wins milestone
                 { id: 'combo5', ok: maxCombo >= 5 },      // Combo Expert
                 { id: 'speed18', ok: bestMoves != null && bestMoves <= 18 }, // Speed Runner
                 { id: 'ironwill', ok: noUndoWins >= 1 },  // Iron Will
@@ -1823,9 +2403,7 @@
                 if (show) {
                     adBanner.style.display = 'none';
                 } else {
-                    if (typeof isPremium === 'function' && !isPremium()) {
-                        adBanner.style.display = '';
-                    }
+                    adBanner.style.display = 'none';
                 }
             }
         }
@@ -2967,6 +3545,17 @@
             const beforeUnlocked = new Set(getUnlockedBadgeTitles());
             let streakNotice = '';
             achievements.wins += 1;
+            // Trigger in-app review prompt after 3rd win, once only
+            if (achievements.wins === 3 && !localStorage.getItem('lucky3-review-done')) {
+                localStorage.setItem('lucky3-review-done', '1');
+                setTimeout(async () => {
+                    try {
+                        if (window.Capacitor?.isNativePlatform?.() && window.Capacitor?.Plugins?.InAppReview) {
+                            await window.Capacitor.Plugins.InAppReview.requestReview();
+                        }
+                    } catch(e) { /* silent */ }
+                }, 4500);
+            }
             if (kind === 'zero-clear') achievements.zeroClearWins += 1;
             achievements.maxCombo = Math.max(achievements.maxCombo, current.maxCombo);
             achievements.bestMoves = achievements.bestMoves == null ? current.moveCount : Math.min(achievements.bestMoves, current.moveCount);
@@ -5614,137 +6203,36 @@
             document.addEventListener('touchstart', unlock, { once: true, passive: true, capture: true });
             document.addEventListener('click', unlock, { once: true, capture: true });
         })();
-        // ===== PREMIUM & ADS SYSTEM =====
+        // ===== ADS SYSTEM (ads disabled pending post-launch implementation) =====
 
         function isNativeApp() {
             return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
         }
 
         function isPremium() {
-            return localStorage.getItem(PREMIUM_KEY) === 'true';
-        }
-
-        function unlockPremium() {
-            localStorage.setItem(PREMIUM_KEY, 'true');
-            updateAdVisibility();
-            closePremiumModal();
-            closeInterstitial();
-            syncCardBackUnlocks({ showToast: true });
-            const title = t('premium.thanks_title');
-            const body = t('premium.thanks_body');
-            if (typeof showAchievementToast === 'function') showAchievementToast(title, body);
-            else alert(title + '\n' + body);
+            return false;
         }
 
         function updateAdVisibility() {
-            const show = isNativeApp() && !isPremium();
             const banner = document.getElementById('ad-banner');
-            if (banner) banner.style.display = show ? '' : 'none';
+            if (banner) banner.style.display = 'none';
             const premiumBtn = document.getElementById('settings-premium-btn');
-            if (premiumBtn) premiumBtn.style.display = show ? '' : 'none';
+            if (premiumBtn) premiumBtn.style.display = 'none';
         }
-
-        async function purchasePremium() {
-            if (window.Capacitor && window.Capacitor.isPluginAvailable &&
-                window.Capacitor.isPluginAvailable('InAppPurchase2')) {
-                try {
-                    await window.Capacitor.Plugins.InAppPurchase2.buy({ productId: 'lucky3_premium_lifetime' });
-                } catch(e) { console.error('IAP error', e); }
-            } else {
-                // Web/dev fallback
-                unlockPremium();
-            }
-        }
-
-        async function restorePremium() {
-            if (window.Capacitor && window.Capacitor.isPluginAvailable &&
-                window.Capacitor.isPluginAvailable('InAppPurchase2')) {
-                try {
-                    await window.Capacitor.Plugins.InAppPurchase2.restore();
-                } catch(e) { console.error('Restore error', e); }
-            } else {
-                if (isPremium()) {
-                    unlockPremium();
-                } else {
-                    const msg = t('premium.restore_none');
-                    if (typeof showAchievementToast === 'function') showAchievementToast(msg, '');
-                }
-            }
-        }
-
-        function openPremiumModal(source) {
-            const overlay = document.getElementById('premium-overlay');
-            if (overlay) {
-                overlay.style.display = 'flex';
-                applyI18nToDom();
-            }
-        }
-
-        function closePremiumModal() {
-            const overlay = document.getElementById('premium-overlay');
-            if (overlay) overlay.style.display = 'none';
-        }
-
-        function onPremiumOverlayClick(e) {
-            if (e.target === e.currentTarget) closePremiumModal();
-        }
-
-        function openPremiumFromSettings() {
-            toggleSettings(false);
-            setTimeout(() => openPremiumModal('settings'), 200);
-        }
-
-        // Interstitial
-        let _interstitialCallback = null;
-        let _interstitialTimer = null;
-        let _interstitialGamesPlayed = 0;
 
         function maybeShowInterstitial(callback) {
-            if (!isNativeApp() || isPremium()) { callback(); return; }
-            _interstitialGamesPlayed++;
-            if (_interstitialGamesPlayed <= 1) { callback(); return; }
-            _interstitialCallback = callback;
-            const overlay = document.getElementById('interstitial-overlay');
-            const closeBtn = document.getElementById('interstitial-close-btn');
-            const closeLabel = document.getElementById('interstitial-close-label');
-            if (!overlay || !closeBtn || !closeLabel) { callback(); return; }
-            overlay.style.display = 'flex';
-            closeBtn.classList.remove('ready');
-            applyI18nToDom();
-            let countdown = 5;
-            function updateLabel() {
-                closeLabel.textContent = t('ad.close_in').replace('{n}', countdown);
-            }
-            updateLabel();
-            if (_interstitialTimer) clearInterval(_interstitialTimer);
-            _interstitialTimer = setInterval(() => {
-                countdown--;
-                if (countdown <= 0) {
-                    clearInterval(_interstitialTimer);
-                    _interstitialTimer = null;
-                    closeBtn.classList.add('ready');
-                    closeLabel.textContent = t('ad.close_now');
-                } else {
-                    updateLabel();
-                }
-            }, 1000);
+            if (true) { callback(); return; }
         }
 
         function closeInterstitial() {
-            const closeBtn = document.getElementById('interstitial-close-btn');
-            if (closeBtn && !closeBtn.classList.contains('ready')) return;
             const overlay = document.getElementById('interstitial-overlay');
             if (overlay) overlay.style.display = 'none';
-            if (_interstitialTimer) { clearInterval(_interstitialTimer); _interstitialTimer = null; }
-            const cb = _interstitialCallback;
-            _interstitialCallback = null;
-            if (cb) cb();
         }
 
         function initAdSystem() {
             updateAdVisibility();
         }
-        // ===== END PREMIUM & ADS SYSTEM =====
+        // ===== END ADS SYSTEM =====
 
         showHomeScreen();
         initHintLongPress();
