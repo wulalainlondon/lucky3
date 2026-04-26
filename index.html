@@ -7880,9 +7880,9 @@
         }
 
         const SPIRIT_BEASTS = {
-            3: { cls: 'tier-3', icon: 'comboicon/tier3.png' },
-            4: { cls: 'tier-4', icon: 'comboicon/tier4.png' },
-            5: { cls: 'tier-5', icon: 'comboicon/tier5.png' },
+            3: { cls: 'tier-3', icon: './app/comboicon/tier3.png' },
+            4: { cls: 'tier-4', icon: './app/comboicon/tier4.png' },
+            5: { cls: 'tier-5', icon: './app/comboicon/tier5.png' },
         };
         Object.values(SPIRIT_BEASTS).forEach((meta) => {
             const preload = new Image();
@@ -9703,7 +9703,7 @@
         const _soundCache = {};
         const _soundBasePath = (() => {
             if (window.Capacitor) return '/sounds/';
-            return './sounds/';
+            return './app/sounds/';
         })();
 
         async function _loadSound(name) {
@@ -9713,7 +9713,7 @@
                 if (!Ctx) return null;
                 audioCtx = new Ctx();
             }
-            for (const ext of ['wav', 'mp3', 'ogg']) {
+            for (const ext of ['mp3', 'ogg', 'wav']) {
                 try {
                     const res = await fetch(_soundBasePath + name + '.' + ext);
                     if (!res.ok) continue;
