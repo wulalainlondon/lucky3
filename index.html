@@ -1491,34 +1491,19 @@
         }
 
         .card.face-down {
-            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 45%, #1e88e5 100%);
-            border: 1px solid #e3f2fd;
+            background-image: var(--cardback-image, url('./app/cardback/classic.png'));
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #0d47a1;
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: transparent;
             overflow: hidden;
         }
 
-        .card.face-down::before {
-            content: '';
-            position: absolute;
-            inset: 6px;
-            border-radius: 4px;
-            border: 2px solid rgba(255, 255, 255, 0.75);
-            background:
-                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.35) 0 2px, transparent 3px),
-                radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.35) 0 2px, transparent 3px),
-                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16) 0 6px, rgba(255, 255, 255, 0.05) 6px 12px);
-        }
-
+        .card.face-down::before,
         .card.face-down::after {
-            content: 'LUCKY 3';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.62rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: rgba(255, 255, 255, 0.9);
+            display: none;
         }
 
         .card.flipping {
@@ -4159,6 +4144,26 @@
             void: 'VOID', luckydraw: 'VOID',
             combo5: 'ARC', speed18: 'ARC', chainreaction: 'ARC',
             forest: 'LIFE', lucky: 'LIFE', suitcollector: 'LIFE', dailyregular: 'LIFE',
+        };
+
+        const CARDBACK_FILE_MAP = {
+            classic:       'classic.png',
+            classic_blue:  'classic.png',
+            classic_red:   'classic.png',
+            retro_gold:    'lucky3_retro_classic_gold.png',
+            nightgold:     'nightgold.png',
+            forest:        'forest.png',
+            crimson:       'crimson.png',
+            void:          'void.png',
+            lucky:         'lucky.png',
+            combo5:        'combo5.png',
+            speed18:       'speed18.png',
+            ironwill:      'ironwill.png',
+            suitcollector: 'suitcollector.png',
+            luckydraw:     'luckydraw.png',
+            fullsweep:     'fullsweep.png',
+            dailyregular:  'dailyregular.png',
+            chainreaction: 'chainreaction.png',
         };
 
         const SUIT_THEME_COLORS = {
@@ -8124,6 +8129,8 @@
             const glow = CARDBACK_GLOW_MAP[id] || CARDBACK_GLOW_MAP.classic;
             const rootStyle = document.documentElement.style;
             rootStyle.setProperty('--mii-glow-color', glow);
+            const imgFile = CARDBACK_FILE_MAP[id] || 'classic.png';
+            rootStyle.setProperty('--cardback-image', `url('./app/cardback/${imgFile}')`);
             const profileKey = CARDBACK_MII_PROFILE[id] || 'CRYSTAL';
             const preset = MII_PROFILE_PRESETS[profileKey] || MII_PROFILE_PRESETS.CRYSTAL;
             const dt = preset.miiText.default;
