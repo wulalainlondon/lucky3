@@ -26,6 +26,7 @@
                 <button id="home-btn-continue" class="home-btn home-btn-continue" onclick="homeContinue()" style="display:none" data-i18n="home.continue">▶ Continue</button>
                 <button class="home-btn home-btn-primary" onclick="homeNewGame()" data-i18n="home.new_game">New Game</button>
                 <button class="home-btn home-btn-daily" onclick="homeDailyChallenge()" data-i18n="home.daily">Daily Challenge</button>
+                <button class="home-btn home-btn-challenge" onclick="homeOpenChallengeSelect()" data-i18n="challenge.select_title">⚔ 極限挑戰</button>
             </div>
             <div class="home-text-links">
                 <button class="home-text-link" onclick="homeOpenSettings()" data-i18n="home.link_settings">Settings</button>
@@ -53,6 +54,16 @@
                 <button type="button" class="header-settings" onclick="toggleSettings(true)" aria-label="Settings" data-i18n-attr="aria-label:header.settings_aria">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.69.07-1.08s-.03-.74-.07-1.08l2.32-1.81c.21-.16.27-.45.13-.68l-2.2-3.81c-.13-.23-.42-.31-.65-.23l-2.74 1.1c-.57-.44-1.18-.8-1.85-1.07L14 2.42C13.95 2.18 13.73 2 13.5 2h-4.4c-.23 0-.45.18-.49.42l-.41 2.51c-.67.27-1.28.63-1.85 1.07L3.61 4.9c-.23-.08-.52 0-.65.23L.76 8.94c-.13.23-.07.52.13.68l2.32 1.81C3.17 11.76 3.14 12.11 3.14 12.5s.03.74.07 1.08L.89 15.39c-.2.16-.26.45-.13.68l2.2 3.81c.13.23.42.31.65.23l2.74-1.1c.57.44 1.18.8 1.85 1.07l.41 2.51c.04.24.26.42.49.42h4.4c.23 0 .45-.18.49-.42l.41-2.51c.67-.27 1.28-.63 1.85-1.07l2.74 1.1c.23.08.52 0 .65-.23l2.2-3.81c.13-.23.07-.52-.13-.68l-2.32-1.81z"/></svg>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="challenge-hud" class="challenge-hud" style="display:none">
+        <span id="challenge-hud-name" class="challenge-hud-name"></span>
+        <div class="challenge-hud-right">
+            <span id="challenge-hud-status" class="challenge-hud-status"></span>
+            <div id="challenge-hud-bar-wrap" class="challenge-hud-bar-wrap" style="display:none">
+                <div id="challenge-hud-bar" class="challenge-hud-bar"></div>
             </div>
         </div>
     </div>
@@ -353,6 +364,52 @@
         </div>
     </div>
     <div id="achievement-toast-wrap" class="achievement-toast-wrap"></div>
+
+    <!-- ── Challenge Select Overlay ── -->
+    <div id="challenge-select-overlay" class="challenge-select-overlay" style="display:none">
+        <div class="challenge-select-panel">
+            <div class="challenge-select-header">
+                <h2 class="challenge-select-title" data-i18n="challenge.select_title">⚔ 極限挑戰</h2>
+                <button class="challenge-select-close" onclick="closeChallengeSelect()">✕</button>
+            </div>
+            <div class="challenge-card-grid" id="challenge-card-grid"></div>
+        </div>
+    </div>
+
+    <!-- ── Challenge Entry Overlay ── -->
+    <div id="challenge-entry-overlay" class="challenge-entry-overlay" style="display:none">
+        <div class="challenge-entry-panel">
+            <div class="challenge-entry-name" id="challenge-entry-name"></div>
+            <p class="challenge-entry-text" id="challenge-entry-text"></p>
+            <div class="challenge-entry-cond" id="challenge-entry-cond"></div>
+            <div class="challenge-entry-actions">
+                <button class="challenge-entry-start" onclick="startChallengeFromEntry()" data-i18n="challenge.btn_start">開始挑戰</button>
+                <button class="challenge-entry-cancel" onclick="closeChallengeEntry()" data-i18n="challenge.btn_cancel">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Challenge Fail Overlay ── -->
+    <div id="challenge-fail-overlay" class="challenge-fail-overlay" style="display:none">
+        <div class="challenge-fail-panel">
+            <div class="challenge-fail-icon">✗</div>
+            <div class="challenge-fail-title" id="challenge-fail-title" data-i18n="challenge.fail_title_default">挑戰失敗</div>
+            <div class="challenge-fail-msg" id="challenge-fail-msg"></div>
+            <button class="challenge-fail-retry" onclick="retryChallengeFromFail()" data-i18n="challenge.btn_retry">再試一次</button>
+            <button class="challenge-fail-quit" onclick="quitChallengeFromFail()" data-i18n="challenge.btn_quit">離開挑戰</button>
+        </div>
+    </div>
+
+    <!-- ── Challenge Complete Overlay ── -->
+    <div id="challenge-complete-overlay" class="challenge-complete-overlay" style="display:none">
+        <div class="challenge-complete-panel">
+            <div class="challenge-complete-icon">✦</div>
+            <div class="challenge-complete-title" id="challenge-complete-title"></div>
+            <div class="challenge-complete-sub" data-i18n="challenge.complete_sub">挑戰完成！</div>
+            <div class="challenge-complete-cardback" data-i18n="challenge.complete_cardback">牌背已加入收藏（即將推出）</div>
+            <button class="challenge-complete-ok" onclick="closeChallengeComplete()" data-i18n="challenge.btn_continue">繼續</button>
+        </div>
+    </div>
 
     <!-- ── Gallery List ── -->
     <div id="gallery-overlay">
