@@ -1596,9 +1596,9 @@
             font-size: 0.82rem;
             font-weight: 900;
             letter-spacing: 0.5px;
-            color: #fff;
-            background: rgba(16, 18, 20, 0.88);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: var(--mii-text-color, #fff);
+            background: var(--mii-text-bg, rgba(16, 18, 20, 0.88));
+            border: 1px solid var(--mii-text-border, rgba(255, 255, 255, 0.4));
             border-radius: 999px;
             padding: 4px 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
@@ -4114,6 +4114,53 @@
             suitcollector: 'LIFE_SUIT', dailyregular: 'LIFE_STELLAR',
         };
 
+        const MII_PROFILE_PRESETS = {
+            CRYSTAL: {
+                miiText: {
+                    default: { color: '#FFFFFF', border: 'rgba(170,220,255,0.45)', bg: 'rgba(12, 25, 42, 0.9)' },
+                    chance:  { color: '#8efcff', border: 'rgba(120, 220, 255, 0.6)', bg: 'rgba(7, 32, 48, 0.94)' },
+                },
+                haptic: { peek: [20, 20, 25], chance: [20, 20, 60] },
+            },
+            FORGE: {
+                miiText: {
+                    default: { color: '#FFE7A3', border: 'rgba(255, 204, 87, 0.58)', bg: 'rgba(46, 28, 0, 0.92)' },
+                    chance:  { color: '#FFF1C8', border: 'rgba(255, 215, 64, 0.72)', bg: 'rgba(65, 36, 3, 0.95)' },
+                },
+                haptic: { peek: [28, 22, 30], chance: [35, 20, 70] },
+            },
+            VOID: {
+                miiText: {
+                    default: { color: '#E5DBFF', border: 'rgba(168, 130, 255, 0.58)', bg: 'rgba(24, 12, 45, 0.92)' },
+                    chance:  { color: '#D8FFFA', border: 'rgba(112, 239, 215, 0.68)', bg: 'rgba(18, 15, 48, 0.95)' },
+                },
+                haptic: { peek: [16, 26, 16], chance: [18, 18, 46, 18, 28] },
+            },
+            ARC: {
+                miiText: {
+                    default: { color: '#D8FFFF', border: 'rgba(0, 235, 255, 0.62)', bg: 'rgba(0, 37, 53, 0.9)' },
+                    chance:  { color: '#EEFFFF', border: 'rgba(131, 247, 255, 0.8)', bg: 'rgba(0, 52, 74, 0.94)' },
+                },
+                haptic: { peek: [14, 12, 14, 12, 14], chance: [16, 10, 24, 10, 38] },
+            },
+            LIFE: {
+                miiText: {
+                    default: { color: '#D9FFE0', border: 'rgba(90, 226, 128, 0.52)', bg: 'rgba(7, 37, 18, 0.9)' },
+                    chance:  { color: '#ECFFE6', border: 'rgba(113, 255, 168, 0.7)', bg: 'rgba(4, 46, 18, 0.95)' },
+                },
+                haptic: { peek: [18, 28, 18], chance: [24, 18, 48] },
+            },
+        };
+
+        const CARDBACK_MII_PROFILE = {
+            classic: 'CRYSTAL', classic_blue: 'CRYSTAL', classic_red: 'CRYSTAL',
+            retro_gold: 'FORGE', nightgold: 'FORGE', crimson: 'FORGE',
+            ironwill: 'FORGE', fullsweep: 'FORGE',
+            void: 'VOID', luckydraw: 'VOID',
+            combo5: 'ARC', speed18: 'ARC', chainreaction: 'ARC',
+            forest: 'LIFE', lucky: 'LIFE', suitcollector: 'LIFE', dailyregular: 'LIFE',
+        };
+
         const SUIT_THEME_COLORS = {
             '♠': ['#263238', '#90A4AE'],
             '♥': ['#C62828', '#FFCDD2'],
@@ -4435,6 +4482,7 @@
             'achievement.stat.shield_empty': 'Not Charged',
             'common.days': '{value} days',
             'mii.peeking': 'Previewing...',
+            'mii.chance': 'Can clear!',
             'column.clear': 'CLEAR!',
             'win.subtitle': 'Outstanding! You cleared the entire board ✨',
             'win.stat.time': 'Time',
@@ -4607,6 +4655,7 @@
                 'achievement.stat.shield_empty': '未充能',
                 'common.days': '{value} 天',
                 'mii.peeking': '咪牌中...',
+                'mii.chance': '可消除！',
                 'column.clear': 'CLEAR!',
                 'win.subtitle': '超讚！你把牌局收乾淨了 ✨',
                 'win.stat.time': '用時',
@@ -4760,6 +4809,7 @@
                 'achievement.stat.shield_empty': '未充電',
                 'common.days': '{value} 日',
                 'mii.peeking': 'プレビュー中...',
+                'mii.chance': '消せる！',
                 'column.clear': 'CLEAR!',
                 'win.subtitle': '素晴らしい！ボードを完全にクリアしました ✨',
                 'win.stat.time': 'タイム',
@@ -4931,6 +4981,7 @@
                 'achievement.stat.shield_empty': '미충전',
                 'common.days': '{value}일',
                 'mii.peeking': '미리보기 중...',
+                'mii.chance': '클리어 가능!',
                 'column.clear': 'CLEAR!',
                 'win.subtitle': '훌륭해요! 보드를 완전히 클리어했습니다 ✨',
                 'win.stat.time': '시간',
@@ -5102,6 +5153,7 @@
     'achievement.stat.shield_empty': 'Sin carga',
     'common.days': '{value} días',
     'mii.peeking': 'Previsualizando...',
+    'mii.chance': '¡Se puede eliminar!',
     'column.clear': 'CLEAR!',
     'win.subtitle': '¡Sobresaliente! Limpiaste todo el tablero ✨',
     'win.stat.time': 'Tiempo',
@@ -5273,6 +5325,7 @@
     'achievement.stat.shield_empty': 'Sem carga',
     'common.days': '{value} dias',
     'mii.peeking': 'Pré-visualizando...',
+    'mii.chance': 'Pode eliminar!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Excelente! Você limpou todo o tabuleiro ✨',
     'win.stat.time': 'Tempo',
@@ -5444,6 +5497,7 @@
     'achievement.stat.shield_empty': 'ยังไม่ชาร์จ',
     'common.days': '{value} วัน',
     'mii.peeking': 'กำลังดูตัวอย่าง...',
+    'mii.chance': 'กำจัดได้!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'ยอดเยี่ยม! คุณเคลียร์กระดานทั้งหมดแล้ว ✨',
     'win.stat.time': 'เวลา',
@@ -5615,6 +5669,7 @@
     'achievement.stat.shield_empty': 'Kosong',
     'common.days': '{value} hari',
     'mii.peeking': 'Pratinjau...',
+    'mii.chance': 'Bisa dihapus!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Luar biasa! Anda membersihkan seluruh papan ✨',
     'win.stat.time': 'Waktu',
@@ -5786,6 +5841,7 @@
     'achievement.stat.shield_empty': 'Non chargé',
     'common.days': '{value} jours',
     'mii.peeking': 'Aperçu en cours...',
+    'mii.chance': 'Effaçable!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Remarquable ! Vous avez vidé tout le plateau ✨',
     'win.stat.time': 'Temps',
@@ -5958,6 +6014,7 @@
     'achievement.stat.shield_empty': '未充能',
     'common.days': '{value} 天',
     'mii.peeking': '偷看中...',
+    'mii.chance': '可消除！',
     'column.clear': 'CLEAR!',
     'win.subtitle': '超赞！你把牌局收干净了 ✨',
     'win.stat.time': '用时',
@@ -6129,6 +6186,7 @@
     'achievement.stat.shield_empty': 'Nicht aufgeladen',
     'common.days': '{value} Tage',
     'mii.peeking': 'Vorschau...',
+    'mii.chance': 'Abräumen!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Hervorragend! Du hast das gesamte Brett geleert ✨',
     'win.stat.time': 'Zeit',
@@ -6300,6 +6358,7 @@
     'achievement.stat.shield_empty': 'Non caricato',
     'common.days': '{value} giorni',
     'mii.peeking': 'Anteprima...',
+    'mii.chance': 'Eliminabile!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Straordinario! Hai svuotato l\'intero tavolo ✨',
     'win.stat.time': 'Tempo',
@@ -6471,6 +6530,7 @@
     'achievement.stat.shield_empty': 'Sem carga',
     'common.days': '{value} dias',
     'mii.peeking': 'A pré-visualizar...',
+    'mii.chance': 'Pode eliminar!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Notável! Esvaziou todo o tabuleiro ✨',
     'win.stat.time': 'Tempo',
@@ -6642,6 +6702,7 @@
     'achievement.stat.shield_empty': 'Niet opgeladen',
     'common.days': '{value} dagen',
     'mii.peeking': 'Voorbeeld...',
+    'mii.chance': 'Kan opruimen!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Uitstekend! Je hebt het hele bord geleegd ✨',
     'win.stat.time': 'Tijd',
@@ -6813,6 +6874,7 @@
     'achievement.stat.shield_empty': 'Не заряжен',
     'common.days': '{value} дн.',
     'mii.peeking': 'Предпросмотр...',
+    'mii.chance': 'Можно убрать!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Превосходно! Ты очистил всё поле ✨',
     'win.stat.time': 'Время',
@@ -6984,6 +7046,7 @@
     'achievement.stat.shield_empty': 'Nienaładowana',
     'common.days': '{value} dni',
     'mii.peeking': 'Podgląd...',
+    'mii.chance': 'Można zabrać!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Znakomicie! Wyczyściłeś całą planszę ✨',
     'win.stat.time': 'Czas',
@@ -7155,6 +7218,7 @@
     'achievement.stat.shield_empty': 'Şarjsız',
     'common.days': '{value} gün',
     'mii.peeking': 'Önizleniyor...',
+    'mii.chance': 'Silinebilir!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Mükemmel! Tüm tahtayı temizledin ✨',
     'win.stat.time': 'Süre',
@@ -7326,6 +7390,7 @@
     'achievement.stat.shield_empty': 'Trống',
     'common.days': '{value} ngày',
     'mii.peeking': 'Đang xem trước...',
+    'mii.chance': 'Có thể xóa!',
     'column.clear': 'CLEAR!',
     'win.subtitle': 'Xuất sắc! Đã dọn sạch toàn bộ bàn ✨',
     'win.stat.time': 'Thời gian',
@@ -8057,7 +8122,14 @@
             pile.classList.add('has-cardback');
             localStorage.setItem(CARD_BACK_KEY, id || 'classic');
             const glow = CARDBACK_GLOW_MAP[id] || CARDBACK_GLOW_MAP.classic;
-            document.documentElement.style.setProperty('--mii-glow-color', glow);
+            const rootStyle = document.documentElement.style;
+            rootStyle.setProperty('--mii-glow-color', glow);
+            const profileKey = CARDBACK_MII_PROFILE[id] || 'CRYSTAL';
+            const preset = MII_PROFILE_PRESETS[profileKey] || MII_PROFILE_PRESETS.CRYSTAL;
+            const dt = preset.miiText.default;
+            rootStyle.setProperty('--mii-text-color', dt.color);
+            rootStyle.setProperty('--mii-text-border', dt.border);
+            rootStyle.setProperty('--mii-text-bg', dt.bg);
         }
 
         function loadCardBack() {
@@ -10652,20 +10724,41 @@
             }
         }
 
-        function showMiiFX(colEl) {
+        function showMiiFX(colEl, incomingCard, existingCards) {
             if (!colEl) return;
             const existing = colEl.querySelector('.mii-text');
             if (existing) existing.remove();
 
+            const cbId = localStorage.getItem(CARD_BACK_KEY) || 'classic';
+            const profileKey = CARDBACK_MII_PROFILE[cbId] || 'CRYSTAL';
+            const preset = MII_PROFILE_PRESETS[profileKey] || MII_PROFILE_PRESETS.CRYSTAL;
+            const haptic = preset.haptic;
+
+            const canClear = Array.isArray(existingCards) && incomingCard
+                ? getLegalClearIndices([...existingCards, incomingCard]).length > 0
+                : false;
+
             const text = document.createElement('div');
             text.className = 'mii-text';
-            text.innerText = t('mii.peeking');
-            colEl.appendChild(text);
-            triggerHaptic([25, 30, 25]);
 
-            setTimeout(() => {
-                if (text.parentNode) text.remove();
-            }, getDelay(900));
+            if (canClear) {
+                const ct = preset.miiText.chance;
+                text.innerText = '✦ ' + t('mii.chance');
+                text.style.setProperty('--mii-text-color', ct.color);
+                text.style.setProperty('--mii-text-border', ct.border);
+                text.style.setProperty('--mii-text-bg', ct.bg);
+                triggerHaptic(haptic.chance || [20, 20, 60]);
+            } else {
+                const dt = preset.miiText.default;
+                text.innerText = t('mii.peeking');
+                text.style.setProperty('--mii-text-color', dt.color);
+                text.style.setProperty('--mii-text-border', dt.border);
+                text.style.setProperty('--mii-text-bg', dt.bg);
+                triggerHaptic(haptic.peek || [25, 30, 25]);
+            }
+
+            colEl.appendChild(text);
+            setTimeout(() => { if (text.parentNode) text.remove(); }, getDelay(1100));
         }
 
         function getDealTargetTop(colEl, existingCount) {
@@ -10984,7 +11077,7 @@
                 setTimeout(() => {
                     revealFlyCard(fly, card);
                     fly.classList.add('mii-peek');
-                    showMiiFX(colEl);
+                    showMiiFX(colEl, card, target.cards);
                 }, getDelay(760));
 
                 setTimeout(() => {
