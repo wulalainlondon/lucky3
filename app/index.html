@@ -26,7 +26,7 @@
                 <button id="home-btn-continue" class="home-btn home-btn-continue" onclick="homeContinue()" style="display:none" data-i18n="home.continue">▶ Continue</button>
                 <button class="home-btn home-btn-primary" onclick="homeNewGame()" data-i18n="home.new_game">New Game</button>
                 <button class="home-btn home-btn-daily" onclick="homeDailyChallenge()" data-i18n="home.daily">Daily Challenge</button>
-                <button class="home-btn home-btn-challenge" onclick="homeOpenChallengeSelect()">⚔ 極限挑戰</button>
+                <button class="home-btn home-btn-challenge" onclick="homeOpenChallengeSelect()" data-i18n="challenge.select_title">⚔ 極限挑戰</button>
             </div>
             <div class="home-text-links">
                 <button class="home-text-link" onclick="homeOpenSettings()" data-i18n="home.link_settings">Settings</button>
@@ -369,7 +369,7 @@
     <div id="challenge-select-overlay" class="challenge-select-overlay" style="display:none">
         <div class="challenge-select-panel">
             <div class="challenge-select-header">
-                <h2 class="challenge-select-title">⚔ 極限挑戰</h2>
+                <h2 class="challenge-select-title" data-i18n="challenge.select_title">⚔ 極限挑戰</h2>
                 <button class="challenge-select-close" onclick="closeChallengeSelect()">✕</button>
             </div>
             <div class="challenge-card-grid" id="challenge-card-grid"></div>
@@ -383,8 +383,8 @@
             <p class="challenge-entry-text" id="challenge-entry-text"></p>
             <div class="challenge-entry-cond" id="challenge-entry-cond"></div>
             <div class="challenge-entry-actions">
-                <button class="challenge-entry-start" onclick="startChallengeFromEntry()">開始挑戰</button>
-                <button class="challenge-entry-cancel" onclick="closeChallengeEntry()">取消</button>
+                <button class="challenge-entry-start" onclick="startChallengeFromEntry()" data-i18n="challenge.btn_start">開始挑戰</button>
+                <button class="challenge-entry-cancel" onclick="closeChallengeEntry()" data-i18n="challenge.btn_cancel">取消</button>
             </div>
         </div>
     </div>
@@ -393,10 +393,10 @@
     <div id="challenge-fail-overlay" class="challenge-fail-overlay" style="display:none">
         <div class="challenge-fail-panel">
             <div class="challenge-fail-icon">✗</div>
-            <div class="challenge-fail-title" id="challenge-fail-title">挑戰失敗</div>
+            <div class="challenge-fail-title" id="challenge-fail-title" data-i18n="challenge.fail_title_default">挑戰失敗</div>
             <div class="challenge-fail-msg" id="challenge-fail-msg"></div>
-            <button class="challenge-fail-retry" onclick="retryChallengeFromFail()">再試一次</button>
-            <button class="challenge-fail-quit" onclick="quitChallengeFromFail()">離開挑戰</button>
+            <button class="challenge-fail-retry" onclick="retryChallengeFromFail()" data-i18n="challenge.btn_retry">再試一次</button>
+            <button class="challenge-fail-quit" onclick="quitChallengeFromFail()" data-i18n="challenge.btn_quit">離開挑戰</button>
         </div>
     </div>
 
@@ -405,9 +405,9 @@
         <div class="challenge-complete-panel">
             <div class="challenge-complete-icon">✦</div>
             <div class="challenge-complete-title" id="challenge-complete-title"></div>
-            <div class="challenge-complete-sub">挑戰完成！</div>
-            <div class="challenge-complete-cardback">牌背已加入收藏（即將推出）</div>
-            <button class="challenge-complete-ok" onclick="closeChallengeComplete()">繼續</button>
+            <div class="challenge-complete-sub" data-i18n="challenge.complete_sub">挑戰完成！</div>
+            <div class="challenge-complete-cardback" data-i18n="challenge.complete_cardback">牌背已加入收藏（即將推出）</div>
+            <button class="challenge-complete-ok" onclick="closeChallengeComplete()" data-i18n="challenge.btn_continue">繼續</button>
         </div>
     </div>
 

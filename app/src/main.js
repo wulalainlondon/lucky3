@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.26-v7';
+        const APP_VERSION = '2026.04.26-v8';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -838,11 +838,11 @@
                 let hint = '';
                 if (!unlocked) {
                     const cond = lvl.unlockCond;
-                    if (cond.type === 'wins') hint = `需 ${cond.value} 勝`;
+                    if (cond.type === 'wins') hint = t('challenge.unlock_wins', { value: cond.value });
                     else if (cond.type === 'challenge') {
                         const prev = CHALLENGE_LEVELS.find(c => c.id === cond.value);
-                        hint = `需完成「${prev?.name || cond.value}」`;
-                    } else if (cond.type === 'all-others') hint = '需完成其餘所有關卡';
+                        hint = t('challenge.unlock_stage', { name: t('challenge.' + cond.value + '.name') });
+                    } else if (cond.type === 'all-others') hint = t('challenge.unlock_all');
                 }
                 const stateClass = done ? ' completed' : (!unlocked ? ' locked' : '');
                 const icon = done
@@ -850,14 +850,14 @@
                     : (!unlocked
                         ? `<span class="challenge-card-lock-icon">🔒</span>`
                         : `<span class="challenge-card-lock-icon">⚔</span>`);
-                const badge = done ? `<span class="challenge-card-badge">牌背解鎖（即將推出）</span>` : '';
+                const badge = done ? `<span class="challenge-card-badge">${t('challenge.badge_coming')}</span>` : '';
                 const hintEl = !unlocked ? `<div class="challenge-card-hint">${hint}</div>` : '';
                 const click = unlocked ? `onclick="openChallengeEntry('${lvl.id}')"` : '';
                 return `<div class="challenge-card${stateClass}" ${click}>
                     ${icon}
-                    <div class="challenge-card-num">STAGE ${i + 1}</div>
-                    <div class="challenge-card-name">${lvl.name}</div>
-                    <div class="challenge-card-cond">${lvl.condText}</div>
+                    <div class="challenge-card-num">${t('challenge.stage', { n: i + 1 })}</div>
+                    <div class="challenge-card-name">${t('challenge.' + lvl.id + '.name')}</div>
+                    <div class="challenge-card-cond">${t('challenge.' + lvl.id + '.cond')}</div>
                     ${hintEl}${badge}
                 </div>`;
             }).join('');
@@ -871,9 +871,9 @@
             const nameEl = document.getElementById('challenge-entry-name');
             const textEl = document.getElementById('challenge-entry-text');
             const condEl = document.getElementById('challenge-entry-cond');
-            if (nameEl) nameEl.textContent = lvl.name;
-            if (textEl) textEl.textContent = lvl.entryText;
-            if (condEl) condEl.textContent = '通關條件：' + lvl.condText;
+            if (nameEl) nameEl.textContent = t('challenge.' + lvl.id + '.name');
+            if (textEl) textEl.textContent = t('challenge.' + lvl.id + '.entry');
+            if (condEl) condEl.textContent = t('challenge.cond_prefix') + t('challenge.' + lvl.id + '.cond');
             const overlay = document.getElementById('challenge-entry-overlay');
             if (overlay) overlay.style.display = 'flex';
         }
@@ -979,28 +979,28 @@
             const statusEl = document.getElementById('challenge-hud-status');
             const barWrap = document.getElementById('challenge-hud-bar-wrap');
             const bar = document.getElementById('challenge-hud-bar');
-            if (nameEl) nameEl.textContent = lvl.name;
+            if (nameEl) nameEl.textContent = t('challenge.' + lvl.id + '.name');
             let statusText = '';
             let barPct = 0;
             let showBar = false;
             if (lvl.condition === 'no-undo') {
-                statusText = '🔒 禁止撤銷';
+                statusText = t('challenge.hud_no_undo');
             } else if (lvl.condition === 'min-combo') {
                 const val = Math.min(maxCombo, lvl.target);
-                statusText = `Combo: ${val} / ${lvl.target}`;
+                statusText = t('challenge.hud_combo', { val, target: lvl.target });
                 barPct = (val / lvl.target) * 100;
                 showBar = true;
             } else if (lvl.condition === 'min-combo-triggers') {
                 const val = Math.min(comboEventsThisGame, lvl.target);
-                statusText = `觸發: ${val} / ${lvl.target}`;
+                statusText = t('challenge.hud_triggers', { val, target: lvl.target });
                 barPct = (val / lvl.target) * 100;
                 showBar = true;
             } else if (lvl.condition === 'max-deals') {
-                statusText = `發牌: ${challengeDealCount} / ${lvl.target}`;
+                statusText = t('challenge.hud_deals', { val: challengeDealCount, target: lvl.target });
                 barPct = (challengeDealCount / lvl.target) * 100;
                 showBar = true;
             } else if (lvl.condition === 'none') {
-                statusText = `發牌: ${challengeDealCount}`;
+                statusText = t('challenge.hud_deals_open', { val: challengeDealCount });
                 showBar = false;
             }
             if (statusEl) statusEl.textContent = statusText;
@@ -1029,17 +1029,17 @@
                 data[currentChallengeId].completedAt = new Date().toISOString();
                 saveChallengesData(data);
                 const lvl = CHALLENGE_LEVELS.find(c => c.id === currentChallengeId);
-                setTimeout(() => showChallengeCompleteOverlay(lvl?.name || ''), 3600);
+                setTimeout(() => showChallengeCompleteOverlay(currentChallengeId), 3600);
             } else {
                 const lvl = CHALLENGE_LEVELS.find(c => c.id === currentChallengeId);
-                setTimeout(() => showChallengeFailOverlay('條件未達成，再試一次', lvl?.condText || ''), 3600);
+                setTimeout(() => showChallengeFailOverlay(t('challenge.fail_title_cond'), lvl ? t('challenge.' + lvl.id + '.cond') : ''), 3600);
             }
             return true;
         }
 
-        function showChallengeCompleteOverlay(name) {
+        function showChallengeCompleteOverlay(id) {
             const titleEl = document.getElementById('challenge-complete-title');
-            if (titleEl) titleEl.textContent = name;
+            if (titleEl) titleEl.textContent = t('challenge.' + id + '.name');
             const overlay = document.getElementById('challenge-complete-overlay');
             if (overlay) overlay.style.display = 'flex';
         }
@@ -1053,7 +1053,7 @@
             const titleEl = document.getElementById('challenge-fail-title');
             const msgEl = document.getElementById('challenge-fail-msg');
             if (titleEl) titleEl.textContent = title;
-            if (msgEl) msgEl.textContent = msg ? '未達成條件：' + msg : '';
+            if (msgEl) msgEl.textContent = msg ? t('challenge.fail_cond_prefix') + msg : '';
             const overlay = document.getElementById('challenge-fail-overlay');
             if (overlay) overlay.style.display = 'flex';
         }
@@ -1095,7 +1095,7 @@
             const toast = document.createElement('div');
             toast.id = 'challenge-undo-toast';
             toast.className = 'challenge-undo-blocked';
-            toast.textContent = '此關卡禁止撤銷';
+            toast.textContent = t('challenge.undo_forbidden_toast');
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 1800);
         }
