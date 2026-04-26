@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.26-v6';
+        const APP_VERSION = '2026.04.26-v7';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -775,7 +775,7 @@
               condText: '發牌 ≤ 300',
               unlockCond: { type: 'challenge', value: 'shilian' } },
             { id: 'xingbao', name: '星爆', seed: 1267428763, condition: 'min-combo', target: 5,
-              entryText: '這副牌藏著 8 連消的可能。找到它。達成 5 連消以上才算通關。',
+              entryText: '這副牌藏著 8 連消的可能。找到它。達成 5 連消以上才算通關。但記住——每一次選牌都在改寫命運，選錯一張，前路盡斷。',
               condText: 'Combo ≥ 5',
               unlockCond: { type: 'challenge', value: 'tianzhu' } },
             { id: 'lunhui', name: '輪迴', seed: 895200815, condition: 'no-undo', target: null,
