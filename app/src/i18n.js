@@ -221,7 +221,7 @@
             'about.mystery_title': 'The Math Secret',
             'about.mystery_body': '40 cards ÷ 3 = 13 groups, 1 card left over. Every valid clear (9, 19, or 29) leaves remainder 9 when divided by 10. 13 × 9 = 117, remainder 7. Total of all 40 cards = 220, remainder 0. So the last card ≡ 0 − 7 ≡ 3 (mod 10). It\'s not a coincidence — the math locks it in every single time.',
             'about.art_title': 'About the Art',
-            'about.art_body': 'Every painting in Lucky3 is an original hand-painted work. Winning unlocks a fragment — piece them together to reveal a complete painting. Not a museum replica. Something real.'
+            'about.art_body': 'Every painting in Lucky3 is an original hand-painted work. Winning unlocks a fragment — piece them together to reveal a complete painting. Not a museum replica. Something real.',
             'challenge.select_title': '⚔ Extreme Challenge',
             'challenge.btn_start': 'Start Challenge',
             'challenge.btn_cancel': 'Cancel',
@@ -488,7 +488,7 @@
                 'about.mystery_title': '數學小秘密',
                 'about.mystery_body': '40 張牌 ÷ 3 = 13 組，固定餘 1 張。所有合法消除（9、19、29）對 10 取餘數都是 9。13 × 9 = 117，餘 7。全牌總和（A 到 10，四花色）= 220，餘 0。所以餘下 0 − 7 ≡ 3（mod 10）。這不是巧合，是數學每次都算死的結果。',
                 'about.art_title': '關於畫作',
-                'about.art_body': '遊戲中所有的畫，皆為原創手繪作品。每一局勝利解鎖一片碎片，拼回一幅完整的畫。不是美術館的複製品，是真實存在的東西。'
+                'about.art_body': '遊戲中所有的畫，皆為原創手繪作品。每一局勝利解鎖一片碎片，拼回一幅完整的畫。不是美術館的複製品，是真實存在的東西。',
                 'challenge.select_title': '⚔ 極限挑戰',
                 'challenge.btn_start': '開始挑戰',
                 'challenge.btn_cancel': '取消',
@@ -705,7 +705,7 @@
                 'rules.undo_body': '↩ボタンで最後のアクション（配牌またはクリア）を取り消します。1回の取り消しで1手消費。',
                 'home.continue': '▶ 続きから',
                 'home.new_game': '新しいゲーム',
-                'home.daily': '📅 デイリーチャレンジ'
+                'home.daily': '📅 デイリーチャレンジ',
                 'challenge.select_title': '⚔ 極限チャレンジ',
                 'challenge.btn_start': 'チャレンジ開始',
                 'challenge.btn_cancel': 'キャンセル',
@@ -921,7 +921,7 @@
                 'rules.undo_body': '↩ 버튼으로 마지막 행동（배분 또는 제거）을 되돌립니다. 되돌리기 1회＝1수.',
                 'home.continue': '▶ 이어하기',
                 'home.new_game': '새 게임',
-                'home.daily': '📅 오늘의 도전'
+                'home.daily': '📅 오늘의 도전',
                 'challenge.select_title': '⚔ 극한 도전',
                 'challenge.btn_start': '도전 시작',
                 'challenge.btn_cancel': '취소',
@@ -938,7 +938,7 @@
                 'challenge.badge_coming': '카드 뒷면 (출시 예정)',
                 'challenge.stage': 'STAGE {n}',
                 'challenge.unlock_wins': '{value}회 승리 필요',
-                'challenge.unlock_stage': ''{name}' 클리어 필요',
+                'challenge.unlock_stage': '「{name}」 클리어 필요',
                 'challenge.unlock_all': '나머지 모든 스테이지 완료',
                 'challenge.hud_no_undo': '🔒 되돌리기 금지',
                 'challenge.hud_combo': '콤보: {val} / {target}',
@@ -1132,7 +1132,7 @@
                 'rules.recycle_label': 'Reciclar',
                 'rules.recycle_body': 'Cuando el mazo se agote, pulsa RECYCLE para volver a barajar las cartas descartadas. Cada reciclaje cuenta como un movimiento.',
                 'rules.undo_label': 'Deshacer',
-                'rules.undo_body': 'Pulsa ↩ para revertir tu última acción（repartir o eliminar）. Cada deshacer cuenta como un movimiento.'
+                'rules.undo_body': 'Pulsa ↩ para revertir tu última acción（repartir o eliminar）. Cada deshacer cuenta como un movimiento.',
                 'challenge.select_title': '⚔ Desafío Extremo',
                 'challenge.btn_start': 'Comenzar Desafío',
                 'challenge.btn_cancel': 'Cancelar',
@@ -1343,7 +1343,7 @@
                 'rules.recycle_label': 'Reciclar',
                 'rules.recycle_body': 'Quando o baralho acabar, toque RECYCLE para embaralhar as cartas descartadas de volta. Cada reciclagem conta como um movimento.',
                 'rules.undo_label': 'Desfazer',
-                'rules.undo_body': 'Toque ↩ para reverter sua última ação（distribuir ou eliminar）. Cada desfazer conta como um movimento.'
+                'rules.undo_body': 'Toque ↩ para reverter sua última ação（distribuir ou eliminar）. Cada desfazer conta como um movimento.',
                 'challenge.select_title': '⚔ Desafio Extremo',
                 'challenge.btn_start': 'Iniciar Desafio',
                 'challenge.btn_cancel': 'Cancelar',
@@ -1554,7 +1554,7 @@
                 'rules.recycle_label': 'รีไซเคิล',
                 'rules.recycle_body': 'เมื่อสำรับไพ่หมด แตะ RECYCLE เพื่อสับไพ่ที่ทิ้งแล้วกลับเข้าสำรับ การรีไซเคิลแต่ละครั้งนับเป็น 1 ตา',
                 'rules.undo_label': 'ย้อนกลับ',
-                'rules.undo_body': 'แตะ ↩ เพื่อยกเลิกการกระทำล่าสุด（แจกหรือกำจัด） การย้อนกลับแต่ละครั้งนับเป็น 1 ตา'
+                'rules.undo_body': 'แตะ ↩ เพื่อยกเลิกการกระทำล่าสุด（แจกหรือกำจัด） การย้อนกลับแต่ละครั้งนับเป็น 1 ตา',
                 'challenge.select_title': '⚔ ด่านสุดขีด',
                 'challenge.btn_start': 'เริ่มด่าน',
                 'challenge.btn_cancel': 'ยกเลิก',
@@ -1765,7 +1765,7 @@
                 'rules.recycle_label': 'Daur Ulang',
                 'rules.recycle_body': 'Saat dek habis, ketuk RECYCLE untuk mengocok kartu buangan kembali ke dek. Setiap daur ulang menghitung satu langkah.',
                 'rules.undo_label': 'Urungkan',
-                'rules.undo_body': 'Ketuk ↩ untuk membatalkan tindakan terakhir（bagikan atau eliminasi）. Setiap urungkan menghitung satu langkah.'
+                'rules.undo_body': 'Ketuk ↩ untuk membatalkan tindakan terakhir（bagikan atau eliminasi）. Setiap urungkan menghitung satu langkah.',
                 'challenge.select_title': '⚔ Tantangan Ekstrem',
                 'challenge.btn_start': 'Mulai Tantangan',
                 'challenge.btn_cancel': 'Batal',
@@ -1977,7 +1977,7 @@
                 'rules.recycle_label': 'Recycler',
                 'rules.recycle_body': 'Quand le paquet est vide, appuyez sur RECYCLE pour remettre les cartes défaussées dans le paquet. Chaque recyclage compte comme un mouvement.',
                 'rules.undo_label': 'Annuler',
-                'rules.undo_body': 'Appuyez sur ↩ pour annuler votre dernière action（distribuer ou éliminer）. Chaque annulation compte comme un mouvement.'
+                'rules.undo_body': 'Appuyez sur ↩ pour annuler votre dernière action（distribuer ou éliminer）. Chaque annulation compte comme un mouvement.',
                 'challenge.select_title': '⚔ Défi Extrême',
                 'challenge.btn_start': 'Commencer le défi',
                 'challenge.btn_cancel': 'Annuler',
@@ -1994,7 +1994,7 @@
                 'challenge.badge_coming': 'Dos de carte (bientôt)',
                 'challenge.stage': 'NIVEAU {n}',
                 'challenge.unlock_wins': 'Gagnez {value} fois',
-                'challenge.unlock_stage': 'Terminez « {name} » d'abord',
+                'challenge.unlock_stage': 'Terminez « {name} » en premier',
                 'challenge.unlock_all': 'Terminez tous les autres niveaux',
                 'challenge.hud_no_undo': '🔒 Sans annulation',
                 'challenge.hud_combo': 'Combo : {val} / {target}',
@@ -2007,12 +2007,12 @@
                 'challenge.lunhui.name': 'Réincarnation',
                 'challenge.jufeng.name': 'Ouragan',
                 'challenge.yongheng.name': 'Éternité',
-                'challenge.shilian.entry': 'Les 27 premières cartes n'offrent aucune élimination possible. Vous ne pouvez qu'attendre. Annuler interdit.',
-                'challenge.tianzhu.entry': 'Une colonne s'empilera jusqu'à 38 cartes. Vous devez tenir en 300 distributions ou moins.',
+                'challenge.shilian.entry': 'Les 27 premières cartes n\'offrent aucune élimination possible. Vous ne pouvez qu\'attendre. Annuler interdit.',
+                'challenge.tianzhu.entry': 'Une colonne s\'empilera jusqu\'à 38 cartes. Vous devez tenir en 300 distributions ou moins.',
                 'challenge.xingbao.entry': 'Ce jeu cache un combo de 8. Trouvez-le. Atteignez un combo de 5 ou plus pour gagner. Mais souvenez-vous : chaque choix de carte réécrit le destin. Une erreur et le chemin se ferme.',
-                'challenge.lunhui.entry': 'Ce paquet se recyclera 77 fois. Les cartes reviennent toujours. Annuler interdit. Tenez jusqu'à la fin.',
-                'challenge.jufeng.entry': 'Ce jeu déclenchera 62 explosions de combo. Vous devez en être témoin d'au moins la moitié. Atteignez 30 déclenchements pour gagner.',
-                'challenge.yongheng.entry': '1387 distributions. 466 éliminations. Il ne reste qu'un 3. Aucune condition supplémentaire — survivre, c'est vaincre.',
+                'challenge.lunhui.entry': 'Ce paquet se recyclera 77 fois. Les cartes reviennent toujours. Annuler interdit. Tenez jusqu\'à la fin.',
+                'challenge.jufeng.entry': 'Ce jeu déclenchera 62 explosions de combo. Vous devez en être témoin d\'au moins la moitié. Atteignez 30 déclenchements pour gagner.',
+                'challenge.yongheng.entry': '1387 distributions. 466 éliminations. Il ne reste qu\'un 3. Aucune condition supplémentaire — survivre, c\'est vaincre.',
                 'challenge.shilian.cond': 'Sans annulation',
                 'challenge.tianzhu.cond': 'Distributions ≤ 300',
                 'challenge.xingbao.cond': 'Combo ≥ 5',
@@ -2176,7 +2176,7 @@
     'rules.undo_body': '点击 ↩ 撤销上一步操作（发牌或消除）。每次撤销算一步。',
     'home.continue': '▶ 继续游戏',
     'home.new_game': '新游戏',
-    'home.daily': '📅 每日挑战'
+    'home.daily': '📅 每日挑战',
                 'challenge.select_title': '⚔ 极限挑战',
                 'challenge.btn_start': '开始挑战',
                 'challenge.btn_cancel': '取消',
@@ -2371,7 +2371,7 @@
     'rules.recycle_label': 'Recyceln',
     'rules.recycle_body': 'Wenn der Stapel leer ist, tippe RECYCLE, um die abgeworfenen Karten zurückzumischen. Jedes Recyceln kostet einen Zug.',
     'rules.undo_label': 'Rückgängig',
-    'rules.undo_body': 'Tippe ↩, um deine letzte Aktion（Karte ziehen oder eliminieren）rückgängig zu machen. Jedes Rückgängig kostet einen Zug.'
+    'rules.undo_body': 'Tippe ↩, um deine letzte Aktion（Karte ziehen oder eliminieren）rückgängig zu machen. Jedes Rückgängig kostet einen Zug.',
                 'challenge.select_title': '⚔ Extremherausforderung',
                 'challenge.btn_start': 'Herausforderung starten',
                 'challenge.btn_cancel': 'Abbrechen',
@@ -2566,7 +2566,7 @@
     'rules.recycle_label': 'Riciclare',
     'rules.recycle_body': 'Quando il mazzo è esaurito, tocca RECYCLE per rimescolare le carte scartate nel mazzo. Ogni riciclo conta come una mossa.',
     'rules.undo_label': 'Annulla',
-    'rules.undo_body': "Tocca ↩ per annullare l'ultima azione（distribuire o eliminare）. Ogni annullamento conta come una mossa."
+    'rules.undo_body': "Tocca ↩ per annullare l'ultima azione（distribuire o eliminare）. Ogni annullamento conta come una mossa.",
                 'challenge.select_title': '⚔ Sfida Estrema',
                 'challenge.btn_start': 'Inizia Sfida',
                 'challenge.btn_cancel': 'Annulla',
@@ -2760,7 +2760,7 @@
     'rules.recycle_label': 'Reciclar',
     'rules.recycle_body': 'Quando o baralho acabar, toque RECYCLE para baralhar as cartas descartadas de volta. Cada reciclagem conta como um movimento.',
     'rules.undo_label': 'Desfazer',
-    'rules.undo_body': 'Toque ↩ para reverter a sua última ação（distribuir ou eliminar）. Cada desfazer conta como um movimento.'
+    'rules.undo_body': 'Toque ↩ para reverter a sua última ação（distribuir ou eliminar）. Cada desfazer conta como um movimento.',
                 'challenge.select_title': '⚔ Desafio Extremo',
                 'challenge.btn_start': 'Iniciar Desafio',
                 'challenge.btn_cancel': 'Cancelar',
@@ -2954,7 +2954,7 @@
     'rules.recycle_label': 'Recyclen',
     'rules.recycle_body': 'Als het deck leeg is, tik op RECYCLE om de afgeworpen kaarten terug in het deck te schudden. Elke recycling telt als één zet.',
     'rules.undo_label': 'Ongedaan maken',
-    'rules.undo_body': 'Tik op ↩ om je laatste actie（delen of elimineren）ongedaan te maken. Elke ongedaan making telt als één zet.'
+    'rules.undo_body': 'Tik op ↩ om je laatste actie（delen of elimineren）ongedaan te maken. Elke ongedaan making telt als één zet.',
                 'challenge.select_title': '⚔ Extreme Uitdaging',
                 'challenge.btn_start': 'Uitdaging starten',
                 'challenge.btn_cancel': 'Annuleren',
@@ -3148,7 +3148,7 @@
     'rules.recycle_label': 'Переработка',
     'rules.recycle_body': 'Когда колода кончится, нажмите RECYCLE, чтобы перетасовать сброшенные карты обратно. Каждая переработка стоит один ход.',
     'rules.undo_label': 'Отменить',
-    'rules.undo_body': 'Нажмите ↩, чтобы отменить последнее действие（раздача или удаление）. Каждая отмена стоит один ход.'
+    'rules.undo_body': 'Нажмите ↩, чтобы отменить последнее действие（раздача или удаление）. Каждая отмена стоит один ход.',
                 'challenge.select_title': '⚔ Экстрим-вызов',
                 'challenge.btn_start': 'Начать вызов',
                 'challenge.btn_cancel': 'Отмена',
@@ -3342,7 +3342,7 @@
     'rules.recycle_label': 'Recykling',
     'rules.recycle_body': 'Gdy talia się skończy, dotknij RECYCLE, aby przetasować odrzucone karty z powrotem. Każdy recykling kosztuje jeden ruch.',
     'rules.undo_label': 'Cofnij',
-    'rules.undo_body': 'Dotknij ↩, aby cofnąć ostatnią czynność（rozdanie lub eliminację）. Każde cofnięcie kosztuje jeden ruch.'
+    'rules.undo_body': 'Dotknij ↩, aby cofnąć ostatnią czynność（rozdanie lub eliminację）. Każde cofnięcie kosztuje jeden ruch.',
                 'challenge.select_title': '⚔ Wyzwanie Ekstremalne',
                 'challenge.btn_start': 'Rozpocznij wyzwanie',
                 'challenge.btn_cancel': 'Anuluj',
@@ -3536,7 +3536,7 @@
     'rules.recycle_label': 'Geri Dönüşüm',
     'rules.recycle_body': "Deste bitince RECYCLE'a dokunarak atılan kartları geri karıştır. Her geri dönüşüm bir hamle sayılır.",
     'rules.undo_label': 'Geri Al',
-    'rules.undo_body': '↩ düğmesine dokunarak son işlemi（dağıtma veya eleme）geri al. Her geri alma bir hamle sayılır.'
+    'rules.undo_body': '↩ düğmesine dokunarak son işlemi（dağıtma veya eleme）geri al. Her geri alma bir hamle sayılır.',
                 'challenge.select_title': '⚔ Aşırı Görev',
                 'challenge.btn_start': 'Göreve Başla',
                 'challenge.btn_cancel': 'İptal',
@@ -3730,7 +3730,7 @@
     'rules.recycle_label': 'Tái chế',
     'rules.recycle_body': 'Khi bộ bài cạn, nhấn RECYCLE để xáo lại các lá đã bỏ vào bộ. Mỗi lần tái chế tính một nước.',
     'rules.undo_label': 'Hoàn tác',
-    'rules.undo_body': 'Nhấn ↩ để hoàn tác hành động cuối（phát hoặc xóa）. Mỗi lần hoàn tác tính một nước.'
+    'rules.undo_body': 'Nhấn ↩ để hoàn tác hành động cuối（phát hoặc xóa）. Mỗi lần hoàn tác tính một nước.',
     'challenge.select_title': '⚔ Thử Thách Cực Hạn',
     'challenge.btn_start': 'Bắt đầu thử thách',
     'challenge.btn_cancel': 'Hủy',
