@@ -2935,18 +2935,24 @@
             margin-bottom: 6px;
             text-align: center;
         }
-        /* ===== AD BANNER ===== */
+        /* ===== AD BANNER =====
+           Default hidden so PWA/web users never see a flash of the banner before
+           updateAdVisibility() runs. Only the Capacitor native app shows it. */
         .ad-banner {
             width: 100%;
             background: rgba(0,0,0,0.7);
             border-top: 1px solid rgba(255,215,0,0.2);
             padding: 6px 10px;
-            display: flex;
+            display: none;
             align-items: center;
             flex-shrink: 0;
             min-height: 50px;
             z-index: 10;
         }
+        /* Native-app body class (set by isNativeApp() at boot) re-shows the banner. */
+        body.is-native-app .ad-banner { display: flex; }
+        body.is-native-app.is-premium .ad-banner { display: none; }
+        body.is-tutorial-active .ad-banner { display: none; }
         .ad-banner-inner {
             display: flex;
             align-items: center;
@@ -4498,7 +4504,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.27-v1';
+        const APP_VERSION = '2026.04.27-v2';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -10592,17 +10598,8 @@
             const overlay = document.getElementById('tutorial-overlay');
             if (!overlay) return;
             overlay.classList.toggle('show', show);
-            // Hide ad banner during tutorial, restore after
-            const adBanner = document.getElementById('ad-banner');
-            if (adBanner) {
-                if (show) {
-                    adBanner.style.display = 'none';
-                } else {
-                    if (typeof isPremium === 'function' && !isPremium()) {
-                        adBanner.style.display = '';
-                    }
-                }
-            }
+            // Hide ad banner during tutorial; CSS restores it after via body classes.
+            document.body.classList.toggle('is-tutorial-active', show);
         }
 
         function startTutorial(force = false) {
@@ -13851,11 +13848,12 @@
         }
 
         function updateAdVisibility() {
-            const show = isNativeApp() && !isPremium();
-            const banner = document.getElementById('ad-banner');
-            if (banner) banner.style.display = show ? '' : 'none';
+            // Drive visibility via body classes — CSS handles the actual show/hide.
+            // This way a JS error AFTER this call can't leave the banner stuck visible.
+            document.body.classList.toggle('is-native-app', isNativeApp());
+            document.body.classList.toggle('is-premium', isPremium());
             const premiumBtn = document.getElementById('settings-premium-btn');
-            if (premiumBtn) premiumBtn.style.display = show ? '' : 'none';
+            if (premiumBtn) premiumBtn.style.display = (isNativeApp() && !isPremium()) ? '' : 'none';
         }
 
         async function purchasePremium() {
