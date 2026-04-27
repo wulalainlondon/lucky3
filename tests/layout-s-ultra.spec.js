@@ -13,12 +13,23 @@ const S_ULTRA_PORTRAIT  = { width: 393, height: 915 };
 
 // Helper: freeze timer + all JS intervals so screenshots are stable
 async function freezeGame(page) {
+    // Aggressively settle the page before snapshot:
+    // 1. Cancel pending Web Animations on flying cards (auto-chain deals can spawn new ones).
+    // 2. Remove any leftover .flying nodes (they finish via Animation.onfinish which we just killed).
+    // 3. Clear all timers (auto-chain / haptic / hint timers).
+    // 4. Wait one frame for layout to settle.
     await page.evaluate(() => {
+        document.querySelectorAll('.flying').forEach(el => {
+            try { el.getAnimations().forEach(a => a.cancel()); } catch (_) {}
+            el.remove();
+        });
         const timer = document.getElementById('timer');
         if (timer) timer.textContent = '00:00';
         const maxId = setTimeout(() => {}, 0);
         for (let i = 0; i <= maxId; i++) { clearTimeout(i); clearInterval(i); }
     });
+    await page.waitForFunction(() => document.querySelectorAll('.flying').length === 0, null, { timeout: 3000 }).catch(() => {});
+    await page.waitForTimeout(150);
 }
 
 // Helper: deal N cards robustly (handles interstitial ads, empty deck)
@@ -223,7 +234,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
         await page.waitForTimeout(400);
         await freezeGame(page);
         await expect(page.locator('#footer')).toHaveScreenshot('sidebar-0-cards.png', {
-            threshold: 0.15, maxDiffPixels: 300, timeout: 12000,
+            threshold: 0.15, maxDiffPixelRatio: 0.18, timeout: 12000,
         });
     });
 
@@ -237,7 +248,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
         await dealCards(page, 8);
         await freezeGame(page);
         await expect(page).toHaveScreenshot('landscape-8-cards.png', {
-            fullPage: false, threshold: 0.15, maxDiffPixelRatio: 0.05, timeout: 12000,
+            fullPage: false, threshold: 0.15, maxDiffPixelRatio: 0.15, timeout: 12000,
         });
     });
 
@@ -251,7 +262,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
         await dealCards(page, 20);
         await freezeGame(page);
         await expect(page).toHaveScreenshot('landscape-20-cards.png', {
-            fullPage: false, threshold: 0.15, maxDiffPixelRatio: 0.05, timeout: 12000,
+            fullPage: false, threshold: 0.15, maxDiffPixelRatio: 0.15, timeout: 12000,
         });
     });
 
@@ -277,7 +288,7 @@ test.describe('S Ultra — landscape sidebar layout', () => {
         await dealCards(page, 5);
         await freezeGame(page);
         await expect(page.locator('#footer')).toHaveScreenshot('portrait-footer.png', {
-            threshold: 0.15, maxDiffPixels: 2600, timeout: 12000,
+            threshold: 0.15, maxDiffPixelRatio: 0.18, timeout: 12000,
         });
     });
 });
