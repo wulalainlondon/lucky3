@@ -1028,6 +1028,8 @@
                 data[currentChallengeId].completed = true;
                 data[currentChallengeId].completedAt = new Date().toISOString();
                 saveChallengesData(data);
+                // Unlock the matching cardback
+                unlockCardBack(currentChallengeId);
                 const lvl = CHALLENGE_LEVELS.find(c => c.id === currentChallengeId);
                 setTimeout(() => showChallengeCompleteOverlay(currentChallengeId), 3600);
             } else {
@@ -1040,6 +1042,10 @@
         function showChallengeCompleteOverlay(id) {
             const titleEl = document.getElementById('challenge-complete-title');
             if (titleEl) titleEl.textContent = t('challenge.' + id + '.name');
+            const cb = CARD_BACKS.find(c => c.id === id);
+            const cbName = cb ? (currentLocale === 'zh-Hant' ? cb.nameZH : cb.nameEN) : '';
+            const cbEl = document.querySelector('.challenge-complete-cardback');
+            if (cbEl) cbEl.textContent = t('challenge.complete_cardback', { name: cbName });
             const overlay = document.getElementById('challenge-complete-overlay');
             if (overlay) overlay.style.display = 'flex';
         }
@@ -2395,6 +2401,19 @@
               condEN: 'Daily Regular (7 wins)', condZH: '每日常客（7 勝）', cond: 'dailyregular' },
             { id: 'chainreaction', nameEN: 'Chain Flux', nameZH: '連鎖脈衝',
               condEN: 'Chain Reaction (3+ combos)', condZH: '連鎖反應（同局 3+ combo）', cond: 'chainreaction' },
+            // Extreme Challenge rewards
+            { id: 'shilian',  nameEN: 'Trial',         nameZH: '試煉',
+              condEN: 'Complete the Trial challenge',         condZH: '完成「試煉」挑戰', cond: 'challenge_shilian' },
+            { id: 'tianzhu',  nameEN: 'Sky Pillar',    nameZH: '天柱',
+              condEN: 'Complete the Sky Pillar challenge',    condZH: '完成「天柱」挑戰', cond: 'challenge_tianzhu' },
+            { id: 'xingbao',  nameEN: 'Star Burst',    nameZH: '星爆',
+              condEN: 'Complete the Star Burst challenge',    condZH: '完成「星爆」挑戰', cond: 'challenge_xingbao' },
+            { id: 'lunhui',   nameEN: 'Reincarnation', nameZH: '輪迴',
+              condEN: 'Complete the Reincarnation challenge', condZH: '完成「輪迴」挑戰', cond: 'challenge_lunhui' },
+            { id: 'jufeng',   nameEN: 'Hurricane',     nameZH: '颶風',
+              condEN: 'Complete the Hurricane challenge',     condZH: '完成「颶風」挑戰', cond: 'challenge_jufeng' },
+            { id: 'yongheng', nameEN: 'Eternity',      nameZH: '永恆',
+              condEN: 'Complete the Eternity challenge',      condZH: '完成「永恆」挑戰', cond: 'challenge_yongheng' },
         ];
 
         // ── Card Back Registry (single source for image/theme/mii fx) ─────────
@@ -2653,7 +2672,14 @@
                 { id: 'luckydraw', ok: suitWins.spade === true }, // Lucky Draw
                 { id: 'fullsweep', ok: fullSweepWins >= 1 }, // Full Sweep
                 { id: 'dailyregular', ok: dailyWins >= 7 }, // Daily Regular
-                { id: 'chainreaction', ok: comboGameWins >= 1 } // Chain Reaction
+                { id: 'chainreaction', ok: comboGameWins >= 1 }, // Chain Reaction
+                // Extreme Challenge rewards
+                { id: 'shilian',  ok: !!loadChallengesData()['shilian']?.completed },
+                { id: 'tianzhu',  ok: !!loadChallengesData()['tianzhu']?.completed },
+                { id: 'xingbao',  ok: !!loadChallengesData()['xingbao']?.completed },
+                { id: 'lunhui',   ok: !!loadChallengesData()['lunhui']?.completed },
+                { id: 'jufeng',   ok: !!loadChallengesData()['jufeng']?.completed },
+                { id: 'yongheng', ok: !!loadChallengesData()['yongheng']?.completed },
             ];
 
             for (const target of targets) {

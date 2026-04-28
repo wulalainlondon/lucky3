@@ -1334,6 +1334,12 @@
         #deck-pile.has-cardback.cb-fullsweep     { background-image: url('./app/cardback/fullsweep.png'); box-shadow: 3px 3px 0 #143020; }
         #deck-pile.has-cardback.cb-dailyregular  { background-image: url('./app/cardback/dailyregular.png'); box-shadow: 3px 3px 0 #16314a, 0 0 10px rgba(218,165,32,0.16); }
         #deck-pile.has-cardback.cb-chainreaction { background-image: url('./app/cardback/chainreaction.png'); box-shadow: 3px 3px 0 #1a1938, 0 0 10px rgba(120,190,255,0.2); }
+        #deck-pile.has-cardback.cb-shilian       { background-image: url('./app/cardback/shilian.png'); box-shadow: 3px 3px 0 #0a0a0a, 0 0 10px rgba(192,192,192,0.18); }
+        #deck-pile.has-cardback.cb-tianzhu       { background-image: url('./app/cardback/tianzhu.png'); box-shadow: 3px 3px 0 #0a1a2a, 0 0 10px rgba(128,180,220,0.22); }
+        #deck-pile.has-cardback.cb-xingbao       { background-image: url('./app/cardback/xingbao.png'); box-shadow: 3px 3px 0 #1a0530, 0 0 10px rgba(255,170,68,0.32); }
+        #deck-pile.has-cardback.cb-lunhui        { background-image: url('./app/cardback/lunhui.png'); box-shadow: 3px 3px 0 #050f08, 0 0 10px rgba(136,221,170,0.22); }
+        #deck-pile.has-cardback.cb-jufeng        { background-image: url('./app/cardback/jufeng.png'); box-shadow: 3px 3px 0 #050f15, 0 0 10px rgba(170,238,221,0.22); }
+        #deck-pile.has-cardback.cb-yongheng      { background-image: url('./app/cardback/yongheng.png'); box-shadow: 3px 3px 0 #1a1005, 0 0 10px rgba(255,215,0,0.32); }
 
         /* ── Card Back Preview Grid ── */
         .cb-preview {
@@ -1356,6 +1362,12 @@
         .cb-preview-fullsweep     { background-image: url('./app/cardback/fullsweep.png'); }
         .cb-preview-dailyregular  { background-image: url('./app/cardback/dailyregular.png'); }
         .cb-preview-chainreaction { background-image: url('./app/cardback/chainreaction.png'); }
+        .cb-preview-shilian       { background-image: url('./app/cardback/shilian.png'); }
+        .cb-preview-tianzhu       { background-image: url('./app/cardback/tianzhu.png'); }
+        .cb-preview-xingbao       { background-image: url('./app/cardback/xingbao.png'); }
+        .cb-preview-lunhui        { background-image: url('./app/cardback/lunhui.png'); }
+        .cb-preview-jufeng        { background-image: url('./app/cardback/jufeng.png'); }
+        .cb-preview-yongheng      { background-image: url('./app/cardback/yongheng.png'); }
 
         /* ── Card Back Collection Grid UI ── */
         .cb-grid {
@@ -4505,7 +4517,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.28-v1';
+        const APP_VERSION = '2026.04.28-v2';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -4545,6 +4557,13 @@
             { id: 'fullsweep',     nameEN: 'Sweep Crown',    nameZH: '全掃王冠',  condEN: 'Full Sweep (4 columns)', condZH: '全欄清除（4欄）', cond: 'fullsweep' },
             { id: 'dailyregular',  nameEN: 'Daily Orbit',    nameZH: '每日軌跡',  condEN: 'Daily Regular (7 wins)', condZH: '每日常客（7 勝）', cond: 'dailyregular' },
             { id: 'chainreaction', nameEN: 'Chain Flux',     nameZH: '連鎖脈衝',  condEN: 'Chain Reaction (3+ combos)', condZH: '連鎖反應（同局 3+ combo）', cond: 'chainreaction' },
+            // Extreme Challenge rewards — unlocked by completing each stage
+            { id: 'shilian',  nameEN: 'Trial',          nameZH: '試煉',  condEN: 'Complete the Trial challenge',         condZH: '完成「試煉」挑戰', cond: 'challenge_shilian' },
+            { id: 'tianzhu',  nameEN: 'Sky Pillar',     nameZH: '天柱',  condEN: 'Complete the Sky Pillar challenge',    condZH: '完成「天柱」挑戰', cond: 'challenge_tianzhu' },
+            { id: 'xingbao',  nameEN: 'Star Burst',     nameZH: '星爆',  condEN: 'Complete the Star Burst challenge',    condZH: '完成「星爆」挑戰', cond: 'challenge_xingbao' },
+            { id: 'lunhui',   nameEN: 'Reincarnation', nameZH: '輪迴',  condEN: 'Complete the Reincarnation challenge', condZH: '完成「輪迴」挑戰', cond: 'challenge_lunhui' },
+            { id: 'jufeng',   nameEN: 'Hurricane',      nameZH: '颶風',  condEN: 'Complete the Hurricane challenge',     condZH: '完成「颶風」挑戰', cond: 'challenge_jufeng' },
+            { id: 'yongheng', nameEN: 'Eternity',       nameZH: '永恆',  condEN: 'Complete the Eternity challenge',      condZH: '完成「永恆」挑戰', cond: 'challenge_yongheng' },
         ];
 
         const CARDBACK_GLOW_MAP = {
@@ -4563,6 +4582,12 @@
             fullsweep:     'rgba( 80, 255, 130, 0.85)',
             dailyregular:  'rgba(255, 200,  80, 0.9)',
             chainreaction: 'rgba(120, 190, 255, 0.95)',
+            shilian:       'rgba(192, 192, 192, 0.85)',
+            tianzhu:       'rgba(160, 200, 232, 0.9)',
+            xingbao:       'rgba(255, 170,  68, 0.95)',
+            lunhui:        'rgba(136, 221, 170, 0.9)',
+            jufeng:        'rgba(170, 238, 221, 0.9)',
+            yongheng:      'rgba(255, 215,   0, 1.0)',
         };
 
         // ── Card Back Effect Theme System ──────────────────────────────────────
@@ -5011,11 +5036,11 @@
             'challenge.fail_title_default': 'Challenge Failed',
             'challenge.fail_title_cond': 'Condition not met, try again',
             'challenge.complete_sub': 'Challenge Complete!',
-            'challenge.complete_cardback': 'Card back added to collection (coming soon)',
+            'challenge.complete_cardback': '{name} added to collection',
             'challenge.cond_prefix': 'Clear Condition: ',
             'challenge.fail_cond_prefix': 'Condition not met: ',
             'challenge.undo_forbidden_toast': 'Undo is forbidden in this challenge',
-            'challenge.badge_coming': 'Card Back (coming soon)',
+            'challenge.badge_coming': 'Unlocked',
             'challenge.stage': 'STAGE {n}',
             'challenge.unlock_wins': 'Win {value} times',
             'challenge.unlock_stage': 'Complete {name} first',
@@ -5225,11 +5250,11 @@
                 'challenge.fail_title_default': '挑戰失敗',
                 'challenge.fail_title_cond': '條件未達成，再試一次',
                 'challenge.complete_sub': '挑戰完成！',
-                'challenge.complete_cardback': '牌背已加入收藏（即將推出）',
+                'challenge.complete_cardback': '{name} 已加入收藏',
                 'challenge.cond_prefix': '通關條件：',
                 'challenge.fail_cond_prefix': '未達成條件：',
                 'challenge.undo_forbidden_toast': '此關卡禁止撤銷',
-                'challenge.badge_coming': '牌背解鎖（即將推出）',
+                'challenge.badge_coming': '已解鎖',
                 'challenge.stage': 'STAGE {n}',
                 'challenge.unlock_wins': '需 {value} 勝',
                 'challenge.unlock_stage': '需完成「{name}」',
@@ -5439,11 +5464,11 @@
                 'challenge.fail_title_default': 'チャレンジ失敗',
                 'challenge.fail_title_cond': '条件未達成、再挑戦',
                 'challenge.complete_sub': 'チャレンジ達成！',
-                'challenge.complete_cardback': 'カードバック追加（近日公開）',
+                'challenge.complete_cardback': '{name} がコレクションに追加されました',
                 'challenge.cond_prefix': 'クリア条件：',
                 'challenge.fail_cond_prefix': '条件未達成：',
                 'challenge.undo_forbidden_toast': 'このステージではアンドゥ禁止',
-                'challenge.badge_coming': 'カードバック（近日公開）',
+                'challenge.badge_coming': '解除済',
                 'challenge.stage': 'STAGE {n}',
                 'challenge.unlock_wins': '{value}回勝利で解放',
                 'challenge.unlock_stage': '「{name}」を攻略してください',
@@ -5652,11 +5677,11 @@
                 'challenge.fail_title_default': '도전 실패',
                 'challenge.fail_title_cond': '조건 미달성, 다시 시도',
                 'challenge.complete_sub': '도전 완료!',
-                'challenge.complete_cardback': '카드 뒷면 추가 (출시 예정)',
+                'challenge.complete_cardback': '{name} 컬렉션에 추가됨',
                 'challenge.cond_prefix': '클리어 조건: ',
                 'challenge.fail_cond_prefix': '조건 미달성: ',
                 'challenge.undo_forbidden_toast': '이 스테이지는 되돌리기 금지',
-                'challenge.badge_coming': '카드 뒷면 (출시 예정)',
+                'challenge.badge_coming': '해금됨',
                 'challenge.stage': 'STAGE {n}',
                 'challenge.unlock_wins': '{value}회 승리 필요',
                 'challenge.unlock_stage': '「{name}」 클리어 필요',
@@ -5865,11 +5890,11 @@
                 'challenge.fail_title_default': 'Desafío fallido',
                 'challenge.fail_title_cond': 'Condición no cumplida, inténtalo de nuevo',
                 'challenge.complete_sub': '¡Desafío completado!',
-                'challenge.complete_cardback': 'Reverso de carta añadido (próximamente)',
+                'challenge.complete_cardback': '{name} añadido a la colección',
                 'challenge.cond_prefix': 'Condición: ',
                 'challenge.fail_cond_prefix': 'Condición no cumplida: ',
                 'challenge.undo_forbidden_toast': 'Deshacer está prohibido en este nivel',
-                'challenge.badge_coming': 'Reverso de carta (próximamente)',
+                'challenge.badge_coming': 'Desbloqueado',
                 'challenge.stage': 'NIVEL {n}',
                 'challenge.unlock_wins': 'Gana {value} veces',
                 'challenge.unlock_stage': 'Completa «{name}» primero',
@@ -6078,11 +6103,11 @@
                 'challenge.fail_title_default': 'Desafio falhou',
                 'challenge.fail_title_cond': 'Condição não atingida, tente novamente',
                 'challenge.complete_sub': 'Desafio completo!',
-                'challenge.complete_cardback': 'Capa de carta adicionada (em breve)',
+                'challenge.complete_cardback': '{name} adicionado à coleção',
                 'challenge.cond_prefix': 'Condição: ',
                 'challenge.fail_cond_prefix': 'Condição não atingida: ',
                 'challenge.undo_forbidden_toast': 'Desfazer é proibido neste nível',
-                'challenge.badge_coming': 'Capa de carta (em breve)',
+                'challenge.badge_coming': 'Desbloqueado',
                 'challenge.stage': 'NÍVEL {n}',
                 'challenge.unlock_wins': 'Vença {value} vezes',
                 'challenge.unlock_stage': 'Complete «{name}» primeiro',
@@ -6291,11 +6316,11 @@
                 'challenge.fail_title_default': 'ด่านล้มเหลว',
                 'challenge.fail_title_cond': 'ไม่บรรลุเงื่อนไข ลองอีกครั้ง',
                 'challenge.complete_sub': 'ผ่านด่านแล้ว!',
-                'challenge.complete_cardback': 'ลายไพ่เพิ่มลงในคอลเลกชัน (เร็วๆ นี้)',
+                'challenge.complete_cardback': 'เพิ่ม {name} ลงในคอลเลกชัน',
                 'challenge.cond_prefix': 'เงื่อนไข: ',
                 'challenge.fail_cond_prefix': 'ไม่บรรลุเงื่อนไข: ',
                 'challenge.undo_forbidden_toast': 'ด่านนี้ห้ามใช้ย้อนกลับ',
-                'challenge.badge_coming': 'ลายไพ่ (เร็วๆ นี้)',
+                'challenge.badge_coming': 'ปลดล็อกแล้ว',
                 'challenge.stage': 'ด่าน {n}',
                 'challenge.unlock_wins': 'ชนะ {value} ครั้ง',
                 'challenge.unlock_stage': 'ผ่าน {name} ก่อน',
@@ -6504,11 +6529,11 @@
                 'challenge.fail_title_default': 'Tantangan Gagal',
                 'challenge.fail_title_cond': 'Syarat tidak terpenuhi, coba lagi',
                 'challenge.complete_sub': 'Tantangan Selesai!',
-                'challenge.complete_cardback': 'Sampul kartu ditambahkan (segera hadir)',
+                'challenge.complete_cardback': '{name} ditambahkan ke koleksi',
                 'challenge.cond_prefix': 'Syarat: ',
                 'challenge.fail_cond_prefix': 'Syarat tidak terpenuhi: ',
                 'challenge.undo_forbidden_toast': 'Undo dilarang di level ini',
-                'challenge.badge_coming': 'Sampul kartu (segera hadir)',
+                'challenge.badge_coming': 'Terbuka',
                 'challenge.stage': 'LEVEL {n}',
                 'challenge.unlock_wins': 'Menang {value} kali',
                 'challenge.unlock_stage': 'Selesaikan «{name}» dulu',
@@ -6718,11 +6743,11 @@
                 'challenge.fail_title_default': 'Défi échoué',
                 'challenge.fail_title_cond': 'Condition non remplie, réessayez',
                 'challenge.complete_sub': 'Défi réussi !',
-                'challenge.complete_cardback': 'Dos de carte ajouté (bientôt disponible)',
+                'challenge.complete_cardback': '{name} ajouté à la collection',
                 'challenge.cond_prefix': 'Condition : ',
                 'challenge.fail_cond_prefix': 'Condition non remplie : ',
                 'challenge.undo_forbidden_toast': 'Annuler est interdit dans ce niveau',
-                'challenge.badge_coming': 'Dos de carte (bientôt)',
+                'challenge.badge_coming': 'Débloqué',
                 'challenge.stage': 'NIVEAU {n}',
                 'challenge.unlock_wins': 'Gagnez {value} fois',
                 'challenge.unlock_stage': 'Terminez « {name} » en premier',
@@ -6931,11 +6956,11 @@
                 'challenge.fail_title_default': '挑战失败',
                 'challenge.fail_title_cond': '条件未达成，再试一次',
                 'challenge.complete_sub': '挑战完成！',
-                'challenge.complete_cardback': '牌背已加入收藏（即将推出）',
+                'challenge.complete_cardback': '{name} 已加入收藏',
                 'challenge.cond_prefix': '通关条件：',
                 'challenge.fail_cond_prefix': '未达成条件：',
                 'challenge.undo_forbidden_toast': '此关卡禁止撤销',
-                'challenge.badge_coming': '牌背解锁（即将推出）',
+                'challenge.badge_coming': '已解锁',
                 'challenge.stage': 'STAGE {n}',
                 'challenge.unlock_wins': '需 {value} 胜',
                 'challenge.unlock_stage': '需完成「{name}」',
@@ -7144,11 +7169,11 @@
                 'challenge.fail_title_default': 'Herausforderung gescheitert',
                 'challenge.fail_title_cond': 'Bedingung nicht erfüllt, nochmal versuchen',
                 'challenge.complete_sub': 'Herausforderung bestanden!',
-                'challenge.complete_cardback': 'Kartenrückseite hinzugefügt (demnächst)',
+                'challenge.complete_cardback': '{name} zur Sammlung hinzugefügt',
                 'challenge.cond_prefix': 'Bedingung: ',
                 'challenge.fail_cond_prefix': 'Bedingung nicht erfüllt: ',
                 'challenge.undo_forbidden_toast': 'Rückgängig ist in diesem Level verboten',
-                'challenge.badge_coming': 'Kartenrückseite (demnächst)',
+                'challenge.badge_coming': 'Freigeschaltet',
                 'challenge.stage': 'STUFE {n}',
                 'challenge.unlock_wins': '{value}× gewinnen',
                 'challenge.unlock_stage': '«{name}» zuerst abschließen',
@@ -7357,11 +7382,11 @@
                 'challenge.fail_title_default': 'Sfida fallita',
                 'challenge.fail_title_cond': 'Condizione non soddisfatta, riprova',
                 'challenge.complete_sub': 'Sfida completata!',
-                'challenge.complete_cardback': 'Retro carta aggiunto (prossimamente)',
+                'challenge.complete_cardback': '{name} aggiunto alla collezione',
                 'challenge.cond_prefix': 'Condizione: ',
                 'challenge.fail_cond_prefix': 'Condizione non soddisfatta: ',
                 'challenge.undo_forbidden_toast': 'Annulla vietato in questo livello',
-                'challenge.badge_coming': 'Retro carta (prossimamente)',
+                'challenge.badge_coming': 'Sbloccato',
                 'challenge.stage': 'LIVELLO {n}',
                 'challenge.unlock_wins': 'Vinci {value} volte',
                 'challenge.unlock_stage': 'Completa «{name}» prima',
@@ -7570,11 +7595,11 @@
                 'challenge.fail_title_default': 'Desafio falhado',
                 'challenge.fail_title_cond': 'Condição não cumprida, tente novamente',
                 'challenge.complete_sub': 'Desafio completo!',
-                'challenge.complete_cardback': 'Verso da carta adicionado (brevemente)',
+                'challenge.complete_cardback': '{name} adicionado à coleção',
                 'challenge.cond_prefix': 'Condição: ',
                 'challenge.fail_cond_prefix': 'Condição não cumprida: ',
                 'challenge.undo_forbidden_toast': 'Desfazer proibido neste nível',
-                'challenge.badge_coming': 'Verso da carta (brevemente)',
+                'challenge.badge_coming': 'Desbloqueado',
                 'challenge.stage': 'NÍVEL {n}',
                 'challenge.unlock_wins': 'Ganha {value} vezes',
                 'challenge.unlock_stage': 'Completa «{name}» primeiro',
@@ -7783,11 +7808,11 @@
                 'challenge.fail_title_default': 'Uitdaging mislukt',
                 'challenge.fail_title_cond': 'Voorwaarde niet behaald, probeer opnieuw',
                 'challenge.complete_sub': 'Uitdaging voltooid!',
-                'challenge.complete_cardback': 'Kaartrug toegevoegd (binnenkort beschikbaar)',
+                'challenge.complete_cardback': '{name} toegevoegd aan collectie',
                 'challenge.cond_prefix': 'Voorwaarde: ',
                 'challenge.fail_cond_prefix': 'Voorwaarde niet behaald: ',
                 'challenge.undo_forbidden_toast': 'Ongedaan maken verboden in dit level',
-                'challenge.badge_coming': 'Kaartrug (binnenkort)',
+                'challenge.badge_coming': 'Ontgrendeld',
                 'challenge.stage': 'LEVEL {n}',
                 'challenge.unlock_wins': '{value}× winnen',
                 'challenge.unlock_stage': 'Voltooi «{name}» eerst',
@@ -7996,11 +8021,11 @@
                 'challenge.fail_title_default': 'Вызов провален',
                 'challenge.fail_title_cond': 'Условие не выполнено, попробуйте снова',
                 'challenge.complete_sub': 'Вызов пройден!',
-                'challenge.complete_cardback': 'Рубашка карты добавлена (скоро)',
+                'challenge.complete_cardback': '{name} добавлена в коллекцию',
                 'challenge.cond_prefix': 'Условие: ',
                 'challenge.fail_cond_prefix': 'Условие не выполнено: ',
                 'challenge.undo_forbidden_toast': 'Отмена хода запрещена на этом уровне',
-                'challenge.badge_coming': 'Рубашка карты (скоро)',
+                'challenge.badge_coming': 'Разблокировано',
                 'challenge.stage': 'УРОВЕНЬ {n}',
                 'challenge.unlock_wins': 'Победите {value} раз',
                 'challenge.unlock_stage': 'Сначала пройдите «{name}»',
@@ -8209,11 +8234,11 @@
                 'challenge.fail_title_default': 'Wyzwanie nieudane',
                 'challenge.fail_title_cond': 'Warunek niespełniony, spróbuj ponownie',
                 'challenge.complete_sub': 'Wyzwanie ukończone!',
-                'challenge.complete_cardback': 'Rewers karty dodany (wkrótce)',
+                'challenge.complete_cardback': '{name} dodany do kolekcji',
                 'challenge.cond_prefix': 'Warunek: ',
                 'challenge.fail_cond_prefix': 'Warunek niespełniony: ',
                 'challenge.undo_forbidden_toast': 'Cofanie jest zabronione na tym poziomie',
-                'challenge.badge_coming': 'Rewers karty (wkrótce)',
+                'challenge.badge_coming': 'Odblokowane',
                 'challenge.stage': 'POZIOM {n}',
                 'challenge.unlock_wins': 'Wygraj {value} razy',
                 'challenge.unlock_stage': 'Ukończ «{name}» najpierw',
@@ -8422,11 +8447,11 @@
                 'challenge.fail_title_default': 'Görev Başarısız',
                 'challenge.fail_title_cond': 'Koşul karşılanmadı, tekrar dene',
                 'challenge.complete_sub': 'Görev Tamamlandı!',
-                'challenge.complete_cardback': 'Kart arkası eklendi (yakında)',
+                'challenge.complete_cardback': '{name} koleksiyona eklendi',
                 'challenge.cond_prefix': 'Koşul: ',
                 'challenge.fail_cond_prefix': 'Koşul karşılanmadı: ',
                 'challenge.undo_forbidden_toast': 'Bu seviyede geri alma yasak',
-                'challenge.badge_coming': 'Kart arkası (yakında)',
+                'challenge.badge_coming': 'Kilidi açıldı',
                 'challenge.stage': 'AŞAMA {n}',
                 'challenge.unlock_wins': '{value} kez kazan',
                 'challenge.unlock_stage': 'Önce «{name}» tamamla',
@@ -8635,11 +8660,11 @@
     'challenge.fail_title_default': 'Thử thách thất bại',
     'challenge.fail_title_cond': 'Không đạt điều kiện, thử lại',
     'challenge.complete_sub': 'Hoàn thành thử thách!',
-    'challenge.complete_cardback': 'Mặt sau bài đã thêm vào (sắp ra mắt)',
+    'challenge.complete_cardback': 'Đã thêm {name} vào bộ sưu tập',
     'challenge.cond_prefix': 'Điều kiện: ',
     'challenge.fail_cond_prefix': 'Không đạt điều kiện: ',
     'challenge.undo_forbidden_toast': 'Hoàn tác bị cấm ở màn này',
-    'challenge.badge_coming': 'Mặt sau bài (sắp ra mắt)',
+    'challenge.badge_coming': 'Đã mở khóa',
     'challenge.stage': 'GIAI ĐOẠN {n}',
     'challenge.unlock_wins': 'Thắng {value} lần',
     'challenge.unlock_stage': 'Hoàn thành «{name}» trước',
@@ -9062,6 +9087,8 @@
                 data[currentChallengeId].completed = true;
                 data[currentChallengeId].completedAt = new Date().toISOString();
                 saveChallengesData(data);
+                // Unlock the matching cardback
+                unlockCardBack(currentChallengeId);
                 const lvl = CHALLENGE_LEVELS.find(c => c.id === currentChallengeId);
                 setTimeout(() => showChallengeCompleteOverlay(currentChallengeId), 3600);
             } else {
@@ -9074,6 +9101,11 @@
         function showChallengeCompleteOverlay(id) {
             const titleEl = document.getElementById('challenge-complete-title');
             if (titleEl) titleEl.textContent = t('challenge.' + id + '.name');
+            // Substitute the cardback name into the reward line
+            const cb = CARD_BACKS.find(c => c.id === id);
+            const cbName = cb ? (currentLocale === 'zh-Hant' ? cb.nameZH : cb.nameEN) : '';
+            const cbEl = document.querySelector('.challenge-complete-cardback');
+            if (cbEl) cbEl.textContent = t('challenge.complete_cardback', { name: cbName });
             const overlay = document.getElementById('challenge-complete-overlay');
             if (overlay) overlay.style.display = 'flex';
         }
@@ -9701,6 +9733,13 @@
                 { id: 'fullsweep',     ok: fullSweepWins >= 1 },
                 { id: 'dailyregular',  ok: dailyWins >= 7 },
                 { id: 'chainreaction', ok: comboGameWins >= 1 },
+                // Extreme Challenge rewards
+                { id: 'shilian',       ok: !!loadChallengesData()['shilian']?.completed },
+                { id: 'tianzhu',       ok: !!loadChallengesData()['tianzhu']?.completed },
+                { id: 'xingbao',       ok: !!loadChallengesData()['xingbao']?.completed },
+                { id: 'lunhui',        ok: !!loadChallengesData()['lunhui']?.completed },
+                { id: 'jufeng',        ok: !!loadChallengesData()['jufeng']?.completed },
+                { id: 'yongheng',      ok: !!loadChallengesData()['yongheng']?.completed },
             ];
             for (const target of targets) {
                 if (!target.ok) continue;

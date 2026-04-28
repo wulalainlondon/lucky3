@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lucky3-v2026.04.28.01';
+const CACHE_NAME = 'lucky3-v2026.04.28.02';
 const FONTS_CACHE = 'lucky3-fonts-v1';
 const ASSETS_TO_CACHE = [
     './',
