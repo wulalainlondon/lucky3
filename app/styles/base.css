@@ -1495,6 +1495,31 @@
         .cb-preview-chainreaction { background-image: url('../cardback/chainreaction.png'); }
         #deck-pile.cb-chainreaction { box-shadow: 3px 3px 0 #1a1938, 0 0 10px rgba(120,190,255,0.2); }
 
+        /* ── Extreme Challenge cardbacks ──────────────────────────────────── */
+        #deck-pile.cb-shilian,
+        .cb-preview-shilian { background-image: url('../cardback/shilian.png'); }
+        #deck-pile.cb-shilian { box-shadow: 3px 3px 0 #0a0a0a, 0 0 10px rgba(192,192,192,0.18); }
+
+        #deck-pile.cb-tianzhu,
+        .cb-preview-tianzhu { background-image: url('../cardback/tianzhu.png'); }
+        #deck-pile.cb-tianzhu { box-shadow: 3px 3px 0 #0a1a2a, 0 0 10px rgba(128,180,220,0.22); }
+
+        #deck-pile.cb-xingbao,
+        .cb-preview-xingbao { background-image: url('../cardback/xingbao.png'); }
+        #deck-pile.cb-xingbao { box-shadow: 3px 3px 0 #1a0530, 0 0 10px rgba(255,170,68,0.32); }
+
+        #deck-pile.cb-lunhui,
+        .cb-preview-lunhui { background-image: url('../cardback/lunhui.png'); }
+        #deck-pile.cb-lunhui { box-shadow: 3px 3px 0 #050f08, 0 0 10px rgba(136,221,170,0.22); }
+
+        #deck-pile.cb-jufeng,
+        .cb-preview-jufeng { background-image: url('../cardback/jufeng.png'); }
+        #deck-pile.cb-jufeng { box-shadow: 3px 3px 0 #050f15, 0 0 10px rgba(170,238,221,0.22); }
+
+        #deck-pile.cb-yongheng,
+        .cb-preview-yongheng { background-image: url('../cardback/yongheng.png'); }
+        #deck-pile.cb-yongheng { box-shadow: 3px 3px 0 #1a1005, 0 0 10px rgba(255,215,0,0.32); }
+
         /* ── Card Back Collection Grid UI ─── */
         .cb-grid {
             display: grid;
