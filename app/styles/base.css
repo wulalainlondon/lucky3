@@ -1421,6 +1421,7 @@
             box-shadow: 3px 3px 0 #0d47a1;
             cursor: pointer;
             overflow: hidden;
+            border: none;
         }
         #deck-pile::before,
         #deck-pile::after,
@@ -1678,7 +1679,7 @@
 
         .card.face-down {
             background: linear-gradient(135deg, #0d47a1 0%, #1565c0 45%, #1e88e5 100%);
-            border: 1px solid #e3f2fd;
+            border: none;
             color: transparent;
             overflow: hidden;
         }
@@ -1712,7 +1713,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            border-color: rgba(255, 255, 255, 0.45);
+            border: none;
         }
 
         .card.face-down.use-cardback::before,
