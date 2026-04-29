@@ -3426,7 +3426,9 @@
             margin-bottom: 6px;
             text-align: center;
         }
-        /* ===== AD BANNER ===== */
+        /* ===== AD BANNER =====
+           Default visible (Capacitor app always shows it for non-premium players).
+           Body class toggles override visibility — same pattern as root index.html. */
         .ad-banner {
             width: 100%;
             background: rgba(0,0,0,0.7);
@@ -3438,6 +3440,7 @@
             min-height: 50px;
             z-index: 10;
         }
+        body.is-tutorial-active .ad-banner { display: none; }
         .ad-banner-inner {
             display: flex;
             align-items: center;

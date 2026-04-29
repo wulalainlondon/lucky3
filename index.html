@@ -4517,7 +4517,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.29-v1';
+        const APP_VERSION = '2026.04.29-v2';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -5035,6 +5035,7 @@
             'challenge.btn_continue': 'Continue',
             'challenge.fail_title_default': 'Challenge Failed',
             'challenge.fail_title_cond': 'Condition not met, try again',
+            'challenge.fail_max_deals': 'Exceeded {target} deals',
             'challenge.complete_sub': 'Challenge Complete!',
             'challenge.complete_cardback': '{name} added to collection',
             'challenge.cond_prefix': 'Clear Condition: ',
@@ -5249,6 +5250,7 @@
                 'challenge.btn_continue': '繼續',
                 'challenge.fail_title_default': '挑戰失敗',
                 'challenge.fail_title_cond': '條件未達成，再試一次',
+                'challenge.fail_max_deals': '發牌數超過 {target} 次',
                 'challenge.complete_sub': '挑戰完成！',
                 'challenge.complete_cardback': '{name} 已加入收藏',
                 'challenge.cond_prefix': '通關條件：',
@@ -5463,6 +5465,7 @@
                 'challenge.btn_continue': '続ける',
                 'challenge.fail_title_default': 'チャレンジ失敗',
                 'challenge.fail_title_cond': '条件未達成、再挑戦',
+                'challenge.fail_max_deals': '配牌数が {target} 回を超えました',
                 'challenge.complete_sub': 'チャレンジ達成！',
                 'challenge.complete_cardback': '{name} がコレクションに追加されました',
                 'challenge.cond_prefix': 'クリア条件：',
@@ -5676,6 +5679,7 @@
                 'challenge.btn_continue': '계속',
                 'challenge.fail_title_default': '도전 실패',
                 'challenge.fail_title_cond': '조건 미달성, 다시 시도',
+                'challenge.fail_max_deals': '발급 카드가 {target}회를 초과했습니다',
                 'challenge.complete_sub': '도전 완료!',
                 'challenge.complete_cardback': '{name} 컬렉션에 추가됨',
                 'challenge.cond_prefix': '클리어 조건: ',
@@ -5889,6 +5893,7 @@
                 'challenge.btn_continue': 'Continuar',
                 'challenge.fail_title_default': 'Desafío fallido',
                 'challenge.fail_title_cond': 'Condición no cumplida, inténtalo de nuevo',
+                'challenge.fail_max_deals': 'Repartos superados: {target}',
                 'challenge.complete_sub': '¡Desafío completado!',
                 'challenge.complete_cardback': '{name} añadido a la colección',
                 'challenge.cond_prefix': 'Condición: ',
@@ -6102,6 +6107,7 @@
                 'challenge.btn_continue': 'Continuar',
                 'challenge.fail_title_default': 'Desafio falhou',
                 'challenge.fail_title_cond': 'Condição não atingida, tente novamente',
+                'challenge.fail_max_deals': 'Mais de {target} distribuições',
                 'challenge.complete_sub': 'Desafio completo!',
                 'challenge.complete_cardback': '{name} adicionado à coleção',
                 'challenge.cond_prefix': 'Condição: ',
@@ -6315,6 +6321,7 @@
                 'challenge.btn_continue': 'ดำเนินต่อ',
                 'challenge.fail_title_default': 'ด่านล้มเหลว',
                 'challenge.fail_title_cond': 'ไม่บรรลุเงื่อนไข ลองอีกครั้ง',
+                'challenge.fail_max_deals': 'แจกไพ่เกิน {target} ครั้ง',
                 'challenge.complete_sub': 'ผ่านด่านแล้ว!',
                 'challenge.complete_cardback': 'เพิ่ม {name} ลงในคอลเลกชัน',
                 'challenge.cond_prefix': 'เงื่อนไข: ',
@@ -6528,6 +6535,7 @@
                 'challenge.btn_continue': 'Lanjut',
                 'challenge.fail_title_default': 'Tantangan Gagal',
                 'challenge.fail_title_cond': 'Syarat tidak terpenuhi, coba lagi',
+                'challenge.fail_max_deals': 'Lebih dari {target} pembagian',
                 'challenge.complete_sub': 'Tantangan Selesai!',
                 'challenge.complete_cardback': '{name} ditambahkan ke koleksi',
                 'challenge.cond_prefix': 'Syarat: ',
@@ -6742,6 +6750,7 @@
                 'challenge.btn_continue': 'Continuer',
                 'challenge.fail_title_default': 'Défi échoué',
                 'challenge.fail_title_cond': 'Condition non remplie, réessayez',
+                'challenge.fail_max_deals': 'Plus de {target} distributions',
                 'challenge.complete_sub': 'Défi réussi !',
                 'challenge.complete_cardback': '{name} ajouté à la collection',
                 'challenge.cond_prefix': 'Condition : ',
@@ -6955,6 +6964,7 @@
                 'challenge.btn_continue': '继续',
                 'challenge.fail_title_default': '挑战失败',
                 'challenge.fail_title_cond': '条件未达成，再试一次',
+                'challenge.fail_max_deals': '发牌数超过 {target} 次',
                 'challenge.complete_sub': '挑战完成！',
                 'challenge.complete_cardback': '{name} 已加入收藏',
                 'challenge.cond_prefix': '通关条件：',
@@ -7168,6 +7178,7 @@
                 'challenge.btn_continue': 'Weiter',
                 'challenge.fail_title_default': 'Herausforderung gescheitert',
                 'challenge.fail_title_cond': 'Bedingung nicht erfüllt, nochmal versuchen',
+                'challenge.fail_max_deals': 'Mehr als {target} Austeilungen',
                 'challenge.complete_sub': 'Herausforderung bestanden!',
                 'challenge.complete_cardback': '{name} zur Sammlung hinzugefügt',
                 'challenge.cond_prefix': 'Bedingung: ',
@@ -7381,6 +7392,7 @@
                 'challenge.btn_continue': 'Continua',
                 'challenge.fail_title_default': 'Sfida fallita',
                 'challenge.fail_title_cond': 'Condizione non soddisfatta, riprova',
+                'challenge.fail_max_deals': 'Più di {target} distribuzioni',
                 'challenge.complete_sub': 'Sfida completata!',
                 'challenge.complete_cardback': '{name} aggiunto alla collezione',
                 'challenge.cond_prefix': 'Condizione: ',
@@ -7594,6 +7606,7 @@
                 'challenge.btn_continue': 'Continuar',
                 'challenge.fail_title_default': 'Desafio falhado',
                 'challenge.fail_title_cond': 'Condição não cumprida, tente novamente',
+                'challenge.fail_max_deals': 'Mais de {target} distribuições',
                 'challenge.complete_sub': 'Desafio completo!',
                 'challenge.complete_cardback': '{name} adicionado à coleção',
                 'challenge.cond_prefix': 'Condição: ',
@@ -7807,6 +7820,7 @@
                 'challenge.btn_continue': 'Doorgaan',
                 'challenge.fail_title_default': 'Uitdaging mislukt',
                 'challenge.fail_title_cond': 'Voorwaarde niet behaald, probeer opnieuw',
+                'challenge.fail_max_deals': 'Meer dan {target} delingen',
                 'challenge.complete_sub': 'Uitdaging voltooid!',
                 'challenge.complete_cardback': '{name} toegevoegd aan collectie',
                 'challenge.cond_prefix': 'Voorwaarde: ',
@@ -8020,6 +8034,7 @@
                 'challenge.btn_continue': 'Продолжить',
                 'challenge.fail_title_default': 'Вызов провален',
                 'challenge.fail_title_cond': 'Условие не выполнено, попробуйте снова',
+                'challenge.fail_max_deals': 'Превышено {target} раздач',
                 'challenge.complete_sub': 'Вызов пройден!',
                 'challenge.complete_cardback': '{name} добавлена в коллекцию',
                 'challenge.cond_prefix': 'Условие: ',
@@ -8233,6 +8248,7 @@
                 'challenge.btn_continue': 'Kontynuuj',
                 'challenge.fail_title_default': 'Wyzwanie nieudane',
                 'challenge.fail_title_cond': 'Warunek niespełniony, spróbuj ponownie',
+                'challenge.fail_max_deals': 'Przekroczono {target} rozdań',
                 'challenge.complete_sub': 'Wyzwanie ukończone!',
                 'challenge.complete_cardback': '{name} dodany do kolekcji',
                 'challenge.cond_prefix': 'Warunek: ',
@@ -8446,6 +8462,7 @@
                 'challenge.btn_continue': 'Devam',
                 'challenge.fail_title_default': 'Görev Başarısız',
                 'challenge.fail_title_cond': 'Koşul karşılanmadı, tekrar dene',
+                'challenge.fail_max_deals': '{target} dağıtımı aşıldı',
                 'challenge.complete_sub': 'Görev Tamamlandı!',
                 'challenge.complete_cardback': '{name} koleksiyona eklendi',
                 'challenge.cond_prefix': 'Koşul: ',
@@ -8659,6 +8676,7 @@
     'challenge.btn_continue': 'Tiếp tục',
     'challenge.fail_title_default': 'Thử thách thất bại',
     'challenge.fail_title_cond': 'Không đạt điều kiện, thử lại',
+    'challenge.fail_max_deals': 'Vượt quá {target} lần chia bài',
     'challenge.complete_sub': 'Hoàn thành thử thách!',
     'challenge.complete_cardback': 'Đã thêm {name} vào bộ sưu tập',
     'challenge.cond_prefix': 'Điều kiện: ',
@@ -10348,7 +10366,9 @@
                 .then(r => r.json())
                 .then(meta => {
                     const t = document.getElementById('focus-widget-title');
-                    if (t) t.textContent = meta.title || focusId;
+                    if (!t) return;
+                    const isZH = (currentLocale || '').startsWith('zh');
+                    t.textContent = isZH ? (meta.title || meta.titleEn || focusId) : (meta.titleEn || meta.title || focusId);
                 })
                 .catch(() => {});
         }
@@ -10495,7 +10515,13 @@
                 puzzle.className = 'gallery-puzzle';
                 const maxW = Math.min(window.innerWidth * 0.88, 420);
                 const pieceW = Math.floor((maxW - (meta.cols - 1) * 2) / meta.cols);
-                const pieceH = Math.floor(pieceW * (meta.orientation === 'portrait' ? 1.5 : meta.orientation === 'landscape' ? 0.67 : 1));
+                let aspect;
+                if (Number.isFinite(meta.pieceW) && Number.isFinite(meta.pieceH) && meta.pieceW > 0) {
+                    aspect = meta.pieceH / meta.pieceW;
+                } else {
+                    aspect = meta.orientation === 'portrait' ? 1.5 : meta.orientation === 'landscape' ? 0.67 : 1;
+                }
+                const pieceH = Math.floor(pieceW * aspect);
                 puzzle.style.gridTemplateColumns = `repeat(${meta.cols}, ${pieceW}px)`;
 
                 for (let r = 0; r < meta.rows; r++) {

@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.04.26-v8';
+        const APP_VERSION = '2026.04.29-v2';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -748,6 +748,7 @@
         let gameMode = 'normal';
         let undoUsedThisGame = false;
         let columnsCleared = 0;
+        let columnsClearedSet = new Set(); // distinct slot ids cleared this game (for fullsweep)
         let comboEventsThisGame = 0;
         let _slotCompressHidden = {}; // slotId → fixed hidden count for wave-compression
         let lastGameStats = null; // { timeStr, moves, combo }
@@ -945,6 +946,7 @@
             winCardSuit = '';
             undoUsedThisGame = false;
             columnsCleared = 0;
+            columnsClearedSet = new Set();
             comboEventsThisGame = 0;
             setUndoEnabled(false);
             updateHeaderModeTag();
@@ -1090,7 +1092,8 @@
             if (!currentChallengeId) return false;
             const lvl = CHALLENGE_LEVELS.find(c => c.id === currentChallengeId);
             if (!lvl || lvl.condition !== 'no-undo') return false;
-            challengeUndoViolated = true;
+            // Soft block: undo doesn't execute (caller checks return value), so the
+            // player did NOT cheat — just toast the rule and keep their run alive.
             showChallengeUndoBlockedToast();
             return true;
         }
@@ -2115,7 +2118,9 @@
                 .then(r => r.json())
                 .then(meta => {
                     const titleEl = document.getElementById('focus-widget-title');
-                    if (titleEl) titleEl.textContent = meta.title || focusId;
+                    if (!titleEl) return;
+                    const isZH = (currentLocale || '').startsWith('zh');
+                    titleEl.textContent = isZH ? (meta.title || meta.titleEn || focusId) : (meta.titleEn || meta.title || focusId);
                 })
                 .catch(() => {});
         }
@@ -2281,7 +2286,8 @@
             if (entry.collected.length >= total && !entry.completedAt) {
                 entry.completedAt = Date.now();
             }
-            if (!wasComplete && !!entry.completedAt) {
+            const justCompleted = !wasComplete && !!entry.completedAt;
+            if (justCompleted) {
                 galleryUiState.frameRevealPaintingId = currentGalleryMeta.id;
             }
             galleryUiState.lastUnlocked = `${currentGalleryMeta.id}:${idx}`;
@@ -2290,6 +2296,10 @@
             currentGalleryData = entry;
             openGalleryDetail(currentGalleryMeta, currentGalleryData);
             renderGalleryList();
+            // Stardust completion deserves the same reveal celebration as a natural drop.
+            if (justCompleted) {
+                setTimeout(() => showPaintingReveal(currentGalleryMeta.id), 600);
+            }
         }
 
         function openGalleryDetail(meta, galleryData) {
@@ -2329,7 +2339,16 @@
                 puzzle.className = 'gallery-puzzle';
                 const maxW = Math.min(window.innerWidth * 0.88, 420);
                 const pieceW = Math.floor((maxW - (meta.cols - 1) * 2) / meta.cols);
-                const pieceH = Math.floor(pieceW * (meta.orientation === 'portrait' ? 1.5 : meta.orientation === 'landscape' ? 0.67 : 1));
+                // Derive piece aspect from actual meta.pieceW/pieceH (slice_painting.py
+                // writes the real dimensions). Fall back to orientation flag for legacy
+                // metas that don't have pieceW/H.
+                let aspect;
+                if (Number.isFinite(meta.pieceW) && Number.isFinite(meta.pieceH) && meta.pieceW > 0) {
+                    aspect = meta.pieceH / meta.pieceW;
+                } else {
+                    aspect = meta.orientation === 'portrait' ? 1.5 : meta.orientation === 'landscape' ? 0.67 : 1;
+                }
+                const pieceH = Math.floor(pieceW * aspect);
                 puzzle.style.gridTemplateColumns = `repeat(${meta.cols}, ${pieceW}px)`;
 
                 for (let r = 0; r < meta.rows; r++) {
@@ -2486,6 +2505,13 @@
             fullsweep: buildCardbackConfig('../cardback/fullsweep.png', 'FORGE_ROYAL', 'rgba(80, 255, 130, 0.85)', 'FORGE'),
             dailyregular: buildCardbackConfig('../cardback/dailyregular.png', 'LIFE_STELLAR', 'rgba(255, 200, 80, 0.9)', 'LIFE'),
             chainreaction: buildCardbackConfig('../cardback/chainreaction.png', 'ARC_CYAN', 'rgba(120, 190, 255, 0.95)', 'ARC'),
+            // Extreme Challenge rewards — themed to match the cardback art
+            shilian:  buildCardbackConfig('../cardback/shilian.png',  'FORGE_STEEL',  'rgba(192, 192, 192, 0.85)', 'FORGE'),
+            tianzhu:  buildCardbackConfig('../cardback/tianzhu.png',  'ARC_CYAN',     'rgba(160, 200, 232, 0.9)',  'ARC'),
+            xingbao:  buildCardbackConfig('../cardback/xingbao.png',  'EMBER_BRIGHT', 'rgba(255, 170, 68, 0.95)',  'FORGE'),
+            lunhui:   buildCardbackConfig('../cardback/lunhui.png',   'LIFE_FOREST',  'rgba(136, 221, 170, 0.9)',  'LIFE'),
+            jufeng:   buildCardbackConfig('../cardback/jufeng.png',   'ARC_GREEN',    'rgba(170, 238, 221, 0.9)',  'ARC'),
+            yongheng: buildCardbackConfig('../cardback/yongheng.png', 'FORGE_ROYAL',  'rgba(255, 215, 0, 1.0)',    'FORGE'),
         };
 
         let activeCardbackId = 'classic';
@@ -2668,7 +2694,7 @@
                 { id: 'combo5', ok: maxCombo >= 5 },      // Combo Expert
                 { id: 'speed18', ok: bestMoves != null && bestMoves <= 18 }, // Speed Runner
                 { id: 'ironwill', ok: noUndoWins >= 1 },  // Iron Will
-                { id: 'suitcollector', ok: Object.values(suitWins).every(Boolean) }, // Suit Collector
+                { id: 'suitcollector', ok: !!(suitWins.spade && suitWins.heart && suitWins.diamond && suitWins.club) }, // Suit Collector — explicit (Object.values({}).every is vacuously true)
                 { id: 'luckydraw', ok: suitWins.spade === true }, // Lucky Draw
                 { id: 'fullsweep', ok: fullSweepWins >= 1 }, // Full Sweep
                 { id: 'dailyregular', ok: dailyWins >= 7 }, // Daily Regular
@@ -2985,15 +3011,9 @@
             const overlay = document.getElementById('tutorial-overlay');
             if (!overlay) return;
             overlay.classList.toggle('show', show);
-            // Hide ad banner during tutorial, restore after
-            const adBanner = document.getElementById('ad-banner');
-            if (adBanner) {
-                if (show) {
-                    adBanner.style.display = 'none';
-                } else {
-                    adBanner.style.display = 'none';
-                }
-            }
+            // Drive ad-banner visibility via body class — same pattern as root.
+            // Inline style would survive past the tutorial and permanently hide the banner.
+            document.body.classList.toggle('is-tutorial-active', show);
         }
 
         function startTutorial(force = false) {
@@ -4152,7 +4172,7 @@
             // New achievements
             if (!undoUsedThisGame) achievements.noUndoWins += 1;
             if (gameMode === 'daily') achievements.dailyWins += 1;
-            if (columnsCleared >= 4) achievements.fullSweepWins += 1;
+            if (columnsClearedSet.size >= 4) achievements.fullSweepWins += 1;
             if (comboEventsThisGame >= 3) achievements.comboGameWins += 1;
             if (winCardSuit && winCardSuit !== 'void') achievements.suitWins[winCardSuit] = true;
 
@@ -4604,6 +4624,7 @@
             winCardSuit = '';
             undoUsedThisGame = false;
             columnsCleared = 0;
+            columnsClearedSet = new Set();
             comboEventsThisGame = 0;
 
             // 重新渲染
@@ -5319,6 +5340,7 @@
                     if (slot.cards.length === 0) {
                         colCleared = true;
                         columnsCleared++;
+                        columnsClearedSet.add(slotId);
                         showColumnClearFX(slotId);
                     }
 
@@ -5386,18 +5408,28 @@
             nextSlotIndex = (slots.indexOf(target) + 1) % 4;
 
             const skippedLegalClear = hasAnyLegalClear();
+
+            // Pre-check max-deals BEFORE mutating state — otherwise a fail leaves
+            // historyStack/moveCount/challengeDealCount dirty without a card popped,
+            // and a subsequent undo would push `undefined` into the deck (save killer).
+            if (currentChallengeId) {
+                const lvl = CHALLENGE_LEVELS.find(c => c.id === currentChallengeId);
+                if (lvl && lvl.condition === 'max-deals' && challengeDealCount + 1 > lvl.target) {
+                    isBusy = false;
+                    showChallengeFailOverlay(
+                        t('challenge.fail_title_default'),
+                        t('challenge.fail_max_deals', { target: lvl.target })
+                    );
+                    return;
+                }
+            }
+
             historyStack.push({ type: 'deal', slotId: target.id, prevIdx, skippedLegalClear });
             setUndoEnabled(true);
             moveCount++;
             if (currentChallengeId) {
                 challengeDealCount++;
                 updateChallengeHud();
-                const lvl = CHALLENGE_LEVELS.find(c => c.id === currentChallengeId);
-                if (lvl && lvl.condition === 'max-deals' && challengeDealCount > lvl.target) {
-                    isBusy = false;
-                    showChallengeFailOverlay('挑戰失敗', '發牌數超過 ' + lvl.target + ' 次');
-                    return;
-                }
             }
             playSound('deal');
             updateDeckWarnState();
@@ -5611,7 +5643,19 @@
             moveCount = Math.max(0, moveCount - 1);
             if (gameMode === 'daily') { dailyUndoCount++; updateUndoCountDisplay(); }
             if (last.type === 'deal') {
-                const s = slots.find(x => x.id === last.slotId); deck.push(s.cards.pop()); nextSlotIndex = last.prevIdx;
+                const s = slots.find(x => x.id === last.slotId);
+                if (s.cards.length === 0) {
+                    // Defensive: shouldn't happen, but pushing pop() of empty array would
+                    // put `undefined` into deck and corrupt the save on next reload.
+                    historyStack.push(last);
+                    moveCount = Math.max(0, moveCount + 1);
+                    return false;
+                }
+                deck.push(s.cards.pop()); nextSlotIndex = last.prevIdx;
+                if (currentChallengeId) {
+                    challengeDealCount = Math.max(0, challengeDealCount - 1);
+                    updateChallengeHud();
+                }
             } else {
                 const s = slots.find(x => x.id === last.slotId); s.active = true;
                 // 從回收堆移除最後三張牌
@@ -5662,6 +5706,9 @@
 
         async function rewindToFirstMissedClear() {
             if (isBusy || historyStack.length === 0) return;
+            // Block deadlock-rewind in no-undo challenges — otherwise it bypasses
+            // interceptChallengeUndo() and gives free undo through the back door.
+            if (interceptChallengeUndo()) return;
             const rewindIndex = findFirstMissedClearHistoryIndex();
             if (rewindIndex < 0) {
                 undo();
@@ -6777,7 +6824,21 @@
                 hasWon,
                 gameMode,
                 currentSeed,
-                elapsedSec
+                elapsedSec,
+                // Per-game flags (achievement integrity — without these, reload-cheating
+                // can trivially earn noUndoWins / fullSweepWins / comboGameWins).
+                undoUsedThisGame,
+                columnsCleared,
+                comboEventsThisGame,
+                columnsClearedSet: Array.from(columnsClearedSet || []),
+                dailyUndoCount,
+                currentGameGrade,
+                winCardSuit,
+                // Challenge state (without these, reload silently degrades a challenge
+                // to a normal game; condition counters reset).
+                currentChallengeId,
+                challengeUndoViolated,
+                challengeDealCount,
             };
         }
 
@@ -6821,11 +6882,27 @@
                 hasWon = Boolean(parsed.hasWon);
                 gameMode = parsed.gameMode === 'daily' ? 'daily' : 'normal';
                 currentSeed = Number.isInteger(parsed.currentSeed) ? parsed.currentSeed : null;
+                // Per-game flags
+                undoUsedThisGame = !!parsed.undoUsedThisGame;
+                columnsCleared = Number.isInteger(parsed.columnsCleared) ? parsed.columnsCleared : 0;
+                comboEventsThisGame = Number.isInteger(parsed.comboEventsThisGame) ? parsed.comboEventsThisGame : 0;
+                columnsClearedSet = new Set(Array.isArray(parsed.columnsClearedSet) ? parsed.columnsClearedSet : []);
+                dailyUndoCount = Number.isInteger(parsed.dailyUndoCount) ? parsed.dailyUndoCount : 0;
+                currentGameGrade = (parsed.currentGameGrade === 'g1' || parsed.currentGameGrade === 'g2' || parsed.currentGameGrade === 'g3') ? parsed.currentGameGrade : 'g2';
+                winCardSuit = typeof parsed.winCardSuit === 'string' ? parsed.winCardSuit : '';
+                // Challenge state
+                currentChallengeId = (typeof parsed.currentChallengeId === 'string' && CHALLENGE_LEVELS.find(c => c.id === parsed.currentChallengeId)) ? parsed.currentChallengeId : null;
+                challengeUndoViolated = !!parsed.challengeUndoViolated;
+                challengeDealCount = Number.isInteger(parsed.challengeDealCount) ? parsed.challengeDealCount : 0;
                 deadlockShown = false;
                 selected = [];
                 const elapsedSec = Number.isFinite(parsed.elapsedSec) ? Math.max(0, parsed.elapsedSec) : 0;
                 startTime = Date.now() - elapsedSec * 1000;
                 updateHeaderModeTag();
+                if (currentChallengeId) {
+                    showChallengeHud(true);
+                    updateChallengeHud();
+                }
                 return true;
             } catch (_) {
                 return false;
