@@ -1,0 +1,83 @@
+{
+  "timestamp": "2026-05-02T08:47:07.856Z",
+  "windowDays": 28,
+  "tierCount": {
+    "hard": 4,
+    "normal": 16,
+    "hardplus": 4,
+    "easy": 4
+  },
+  "uniqueSeedCount": 28,
+  "sample": [
+    {
+      "date": "2026-04-30",
+      "tier": "hard",
+      "poolSize": 500,
+      "idx": 117,
+      "seed": 2416550243
+    },
+    {
+      "date": "2026-05-01",
+      "tier": "normal",
+      "poolSize": 500,
+      "idx": 188,
+      "seed": 3945993596
+    },
+    {
+      "date": "2026-05-02",
+      "tier": "normal",
+      "poolSize": 500,
+      "idx": 283,
+      "seed": 2834982492
+    },
+    {
+      "date": "2026-05-03",
+      "tier": "hardplus",
+      "poolSize": 500,
+      "idx": 76,
+      "seed": 109899742
+    },
+    {
+      "date": "2026-05-04",
+      "tier": "easy",
+      "poolSize": 500,
+      "idx": 444,
+      "seed": 4002048091
+    },
+    {
+      "date": "2026-05-05",
+      "tier": "normal",
+      "poolSize": 500,
+      "idx": 460,
+      "seed": 2563083279
+    },
+    {
+      "date": "2026-05-06",
+      "tier": "normal",
+      "poolSize": 500,
+      "idx": 411,
+      "seed": 4113931367
+    },
+    {
+      "date": "2026-05-07",
+      "tier": "hard",
+      "poolSize": 500,
+      "idx": 296,
+      "seed": 2105664323
+    },
+    {
+      "date": "2026-05-08",
+      "tier": "normal",
+      "poolSize": 500,
+      "idx": 217,
+      "seed": 734136522
+    },
+    {
+      "date": "2026-05-09",
+      "tier": "normal",
+      "poolSize": 500,
+      "idx": 48,
+      "seed": 3396568092
+    }
+  ]
+}

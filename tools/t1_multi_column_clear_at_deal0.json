@@ -1,0 +1,3330 @@
+[
+  {
+    "seed": 1246172113,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3194856182,
+    "cols": [
+      0,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1025249918,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 469079525,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2903978685,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2414238797,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2372702231,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1736746466,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1778285358,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 590374947,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3033311544,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3027448728,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 343662874,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3504544789,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1502156567,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2414819686,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2080003115,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1619883869,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2507906236,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2320335253,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 171890058,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2220631264,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1275487573,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3817756728,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2758720810,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1908926873,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2867786655,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 394683741,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1040494880,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1704176725,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 881591485,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3287569149,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 394301275,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2729094411,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1476457149,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 315879561,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 966538287,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1406976301,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 626688371,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 480511344,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3257090949,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4272447926,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 596932903,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3289675744,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2415938681,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2458779922,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2488595392,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2682955054,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 338820329,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2039368522,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2905397434,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 505527300,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 662827126,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3229068002,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3687775664,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1958499996,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 36161965,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1704281226,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1198569990,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 212682601,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2603848493,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3891500075,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3017556615,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 546145058,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2989106757,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2329823883,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1698330451,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3907813944,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 861875615,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 628249190,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 155503763,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4254456344,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 180738002,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 964527312,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1981859739,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 376592120,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3426477203,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4116110195,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 262609592,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3472076333,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 463514335,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 694504478,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 929077171,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2560606236,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3888691235,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2340472821,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 701519048,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2751613475,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3220719974,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 594347075,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1193041047,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 76119085,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3127689125,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3516047132,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 851448709,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3081604141,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3078676524,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 902130983,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2369880445,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 704053645,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2701964121,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 379635908,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2678381573,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1523712339,
+    "cols": [
+      0,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 399604783,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1401186131,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3280534286,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1119978266,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3998662146,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3250866764,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1547374349,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3405558510,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3869199256,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1769826324,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1976295736,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2973140867,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2422484982,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2349973487,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3915061886,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 194301993,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2063782615,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 567571160,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 347947555,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3257415900,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2037627822,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1707511729,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1341611773,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3195787152,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 497594697,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2798952108,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2752404717,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 893327414,
+    "cols": [
+      0,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1992941557,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3933049765,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1331671212,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1561634331,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2870377276,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1512991598,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1788804837,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 967124157,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3749154967,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2033291274,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1396974264,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 765580946,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2056376111,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1612214473,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1231406467,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3362966824,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1358759532,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1716789087,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4128706127,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 657745963,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4116854698,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2436573312,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2626468840,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2904143436,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1715142975,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3490326989,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2306328816,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3317130178,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3325205802,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1610766750,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 337494547,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2051276661,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3994084355,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4133046660,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1063197588,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1657452599,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1338150388,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 493963758,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 728476601,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 929415407,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2574343440,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2803208212,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 493954838,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3829801218,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 20883161,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2727846895,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4257640991,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3723711619,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2080323031,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3777916153,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1139191964,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4106098931,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1525651486,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3022856906,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 380111580,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4261414402,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2840173023,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 345907158,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3082351141,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1324024264,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1286378848,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2074990047,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1649515997,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3696675527,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2105601240,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1222337811,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1801131626,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 97928290,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3969635686,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1004238106,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1730873269,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4273697053,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3529980718,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1041064253,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4201068848,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 571982900,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4097496909,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3519584939,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 303890187,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3847634061,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2979562847,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1759011804,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1128006969,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2934137498,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1556044219,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3644723830,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2324489691,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1807287063,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3408993942,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1735204390,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2326481305,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1534582412,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4264541168,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3731946109,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 914427509,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3582124366,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3120331390,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1416625302,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3003496617,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2229742809,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2917080175,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3013199790,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1982621330,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1295380100,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1900755983,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2505771803,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1038258831,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1748677670,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 698252664,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1041750442,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1823618690,
+    "cols": [
+      0,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2769058407,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 891379679,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4103656266,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3774582212,
+    "cols": [
+      0,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1707914156,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1827542231,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1068539182,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3270793641,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1029837369,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 358558627,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4219719573,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2063869309,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2137889636,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1403516842,
+    "cols": [
+      0,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2157645799,
+    "cols": [
+      0,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2821632129,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1466560890,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 138820155,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 582444257,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1814168218,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1584898281,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2367944734,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1876505548,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 112438138,
+    "cols": [
+      0,
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 163253825,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3108749872,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2043665703,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3433479804,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3781911014,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2252682177,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2197080211,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1981781336,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 657597232,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 648174610,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4097358044,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2666741321,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1204738419,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1529465533,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1515098935,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2161587383,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3817386292,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2096559252,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3958505054,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4004285082,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3643086210,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4003237091,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2321259682,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3931879897,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1033940061,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1557533542,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1685472346,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1831300482,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4098742603,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2866320163,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3639606581,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1219408539,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 678553353,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 122533084,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1619680553,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 182672594,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3674809184,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4152363869,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 911509567,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3887279092,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1025203535,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3993284534,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3658383899,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2839584208,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 342436159,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1583697193,
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2544222719,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4249685027,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 4204511952,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3928416317,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 161215604,
+    "cols": [
+      0,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 77064173,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 845624854,
+    "cols": [
+      0,
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 33,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3063961662,
+    "cols": [
+      0,
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 3,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 1490020904,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 605415995,
+    "cols": [
+      1,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2762349986,
+    "cols": [
+      0,
+      1
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 12604818,
+    "cols": [
+      1,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 30,
+    "recycleCount": 1
+  },
+  {
+    "seed": 2026494471,
+    "cols": [
+      0,
+      2
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 3199742267,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 31,
+    "recycleCount": 1
+  },
+  {
+    "seed": 574455779,
+    "cols": [
+      2,
+      3
+    ],
+    "clearColsAtDeal0": 2,
+    "dealCount": 33,
+    "recycleCount": 1
+  }
+]

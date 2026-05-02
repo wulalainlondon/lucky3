@@ -14,36 +14,28 @@ function mulberry32(a) {
     };
 }
 
-const TARGET   = 500;
+const TARGET = 500;
 const MAX_TRIES = 3000000;
-const RNG_SEED  = 0x20260421;
+const RNG_SEED = 0x20260502;
+const TAG = 'v4_20260502';
 
-// T1 閃電：開場儀式，極快拿籤詩
 function passesT1(s) {
     return s.won && s.dealCount >= 28 && s.dealCount <= 33 &&
            s.recycleCount === 1 && s.maxCombo >= 2 && s.firstElimAt <= 0;
 }
-
-// T2 暖身：同 recycle=1，首次 combo 3
 function passesT2(s) {
     return s.won && s.dealCount >= 42 && s.dealCount <= 58 &&
            s.recycleCount === 1 && s.maxCombo >= 3 && s.firstElimAt <= 1;
 }
-
-// T3 銜接：首次 recycle=2，局短讓玩家消化新機制
 function passesT3(s) {
     return s.won && s.dealCount >= 55 && s.dealCount <= 72 &&
            s.recycleCount === 2 && s.maxCombo >= 3 && s.firstElimAt <= 2;
 }
-
-// T4 流動：熟悉 recycle 後拉長，舒適挑戰區
 function passesT4(s) {
     return s.won && s.dealCount >= 78 && s.dealCount <= 98 &&
            s.recycleCount >= 2 && s.recycleCount <= 3 &&
            s.maxCombo >= 3 && s.firstElimAt <= 2;
 }
-
-// T5 挑戰：多次反轉，給想要更多的玩家
 function passesT5(s) {
     return s.won && s.dealCount >= 100 && s.dealCount <= 125 &&
            s.recycleCount >= 3 && s.recycleCount <= 6 &&
@@ -51,7 +43,7 @@ function passesT5(s) {
 }
 
 function generate() {
-    const rng  = mulberry32(RNG_SEED);
+    const rng = mulberry32(RNG_SEED);
     const seen = new Set();
     const t1 = [], t2 = [], t3 = [], t4 = [], t5 = [];
     let tries = 0;
@@ -82,28 +74,35 @@ function generate() {
 }
 
 function writeJson(filePath, data) {
+    if (fs.existsSync(filePath)) {
+        throw new Error(`Refuse overwrite existing file: ${filePath}`);
+    }
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n', 'utf8');
 }
 
 function main() {
     const out = {
-        t1: path.resolve(__dirname, 'seed_pool_t1_lightning_500.json'),
-        t2: path.resolve(__dirname, 'seed_pool_t2_warmup_500.json'),
-        t3: path.resolve(__dirname, 'seed_pool_t3_bridge_500.json'),
-        t4: path.resolve(__dirname, 'seed_pool_t4_flow_500.json'),
-        t5: path.resolve(__dirname, 'seed_pool_t5_challenge_500.json'),
-        merged: path.resolve(__dirname, 'seed_pool_daily_cycle_v3_2500.json'),
+        t1: path.resolve(__dirname, `seed_pool_t1_lightning_500_${TAG}.json`),
+        t2: path.resolve(__dirname, `seed_pool_t2_warmup_500_${TAG}.json`),
+        t3: path.resolve(__dirname, `seed_pool_t3_bridge_500_${TAG}.json`),
+        t4: path.resolve(__dirname, `seed_pool_t4_flow_500_${TAG}.json`),
+        t5: path.resolve(__dirname, `seed_pool_t5_challenge_500_${TAG}.json`),
+        merged: path.resolve(__dirname, `seed_pool_daily_cycle_2500_${TAG}.json`),
     };
 
     const startAt = new Date().toISOString();
-    const result  = generate();
-    const doneAt  = new Date().toISOString();
+    const result = generate();
+    const doneAt = new Date().toISOString();
 
     const makeMeta = (tier, found, criteria) => ({
-        generatedAt: doneAt, startedAt: startAt,
-        tries: result.tries, found, target: TARGET,
+        generatedAt: doneAt,
+        startedAt: startAt,
+        tries: result.tries,
         skippedOpeningMultiClear: result.skippedOpeningMultiClear,
-        tier, criteria,
+        found,
+        target: TARGET,
+        tier,
+        criteria,
     });
 
     writeJson(out.t1, { meta: makeMeta('T1-lightning', result.t1.length, {
@@ -129,19 +128,29 @@ function main() {
     const merged = result.t1.concat(result.t2, result.t3, result.t4, result.t5);
     writeJson(out.merged, {
         meta: {
-            generatedAt: doneAt, version: 'daily-cycle-v3',
+            generatedAt: doneAt,
+            startedAt: startAt,
+            version: TAG,
+            tries: result.tries,
             skippedOpeningMultiClear: result.skippedOpeningMultiClear,
-            from: { t1: result.t1.length, t2: result.t2.length, t3: result.t3.length,
-                    t4: result.t4.length, t5: result.t5.length },
+            from: { t1: result.t1.length, t2: result.t2.length, t3: result.t3.length, t4: result.t4.length, t5: result.t5.length },
             total: merged.length,
         },
         seeds: merged,
     });
 
     const ok = [result.t1, result.t2, result.t3, result.t4, result.t5].every(p => p.length === TARGET);
-    console.log(JSON.stringify({ ok, tries: result.tries, skippedOpeningMultiClear: result.skippedOpeningMultiClear,
-        t1: result.t1.length, t2: result.t2.length, t3: result.t3.length,
-        t4: result.t4.length, t5: result.t5.length }, null, 2));
+    console.log(JSON.stringify({
+        ok,
+        tries: result.tries,
+        skippedOpeningMultiClear: result.skippedOpeningMultiClear,
+        t1: result.t1.length,
+        t2: result.t2.length,
+        t3: result.t3.length,
+        t4: result.t4.length,
+        t5: result.t5.length,
+        out,
+    }, null, 2));
     if (!ok) process.exitCode = 1;
 }
 

@@ -1,0 +1,176 @@
+{
+  "scannedPoolFiles": 12,
+  "globalBadSeedCount": 1537,
+  "jsonResults": [
+    {
+      "file": "tools/seed_pool_daily_cycle_v1_1500.json",
+      "before": 1500,
+      "after": 990,
+      "removed": 510
+    },
+    {
+      "file": "tools/seed_pool_daily_cycle_v2_2000.json",
+      "before": 2000,
+      "after": 1197,
+      "removed": 803
+    },
+    {
+      "file": "tools/seed_pool_daily_cycle_v3_2500.json",
+      "before": 2500,
+      "after": 1464,
+      "removed": 1036
+    },
+    {
+      "file": "tools/seed_pool_ez_first_500.json",
+      "before": 500,
+      "after": 187,
+      "removed": 313
+    },
+    {
+      "file": "tools/seed_pool_g15_bridge_500.json",
+      "before": 500,
+      "after": 207,
+      "removed": 293
+    },
+    {
+      "file": "tools/seed_pool_g2_flow_500.json",
+      "before": 500,
+      "after": 384,
+      "removed": 116
+    },
+    {
+      "file": "tools/seed_pool_g3_soft_challenge_500.json",
+      "before": 500,
+      "after": 419,
+      "removed": 81
+    },
+    {
+      "file": "tools/seed_pool_t1_lightning_500.json",
+      "before": 172,
+      "after": 172,
+      "removed": 0
+    },
+    {
+      "file": "tools/seed_pool_t2_warmup_500.json",
+      "before": 500,
+      "after": 210,
+      "removed": 290
+    },
+    {
+      "file": "tools/seed_pool_t3_bridge_500.json",
+      "before": 500,
+      "after": 296,
+      "removed": 204
+    },
+    {
+      "file": "tools/seed_pool_t4_flow_500.json",
+      "before": 500,
+      "after": 361,
+      "removed": 139
+    },
+    {
+      "file": "tools/seed_pool_t5_challenge_500.json",
+      "before": 500,
+      "after": 425,
+      "removed": 75
+    }
+  ],
+  "patchResults": [
+    {
+      "file": "app/src/main.js",
+      "constName": "T1_LIGHTNING_SEED_POOL",
+      "found": true,
+      "before": 172,
+      "after": 172,
+      "removed": 0
+    },
+    {
+      "file": "app/src/main.js",
+      "constName": "T2_WARMUP_SEED_POOL",
+      "found": true,
+      "before": 500,
+      "after": 210,
+      "removed": 290
+    },
+    {
+      "file": "app/src/main.js",
+      "constName": "T3_BRIDGE_SEED_POOL",
+      "found": true,
+      "before": 500,
+      "after": 296,
+      "removed": 204
+    },
+    {
+      "file": "app/src/main.js",
+      "constName": "T4_FLOW_SEED_POOL",
+      "found": true,
+      "before": 500,
+      "after": 361,
+      "removed": 139
+    },
+    {
+      "file": "app/src/main.js",
+      "constName": "T5_CHALLENGE_SEED_POOL",
+      "found": true,
+      "before": 500,
+      "after": 425,
+      "removed": 75
+    },
+    {
+      "file": "app/src/main.js",
+      "constName": "COMBO_MASTER_SEED_POOL",
+      "found": true,
+      "before": 1000,
+      "after": 1000,
+      "removed": 0
+    },
+    {
+      "file": "index.html",
+      "constName": "T1_LIGHTNING_SEED_POOL",
+      "found": true,
+      "before": 172,
+      "after": 172,
+      "removed": 0
+    },
+    {
+      "file": "index.html",
+      "constName": "T2_WARMUP_SEED_POOL",
+      "found": true,
+      "before": 500,
+      "after": 210,
+      "removed": 290
+    },
+    {
+      "file": "index.html",
+      "constName": "T3_BRIDGE_SEED_POOL",
+      "found": true,
+      "before": 500,
+      "after": 296,
+      "removed": 204
+    },
+    {
+      "file": "index.html",
+      "constName": "T4_FLOW_SEED_POOL",
+      "found": true,
+      "before": 500,
+      "after": 361,
+      "removed": 139
+    },
+    {
+      "file": "index.html",
+      "constName": "T5_CHALLENGE_SEED_POOL",
+      "found": true,
+      "before": 500,
+      "after": 425,
+      "removed": 75
+    },
+    {
+      "file": "index.html",
+      "constName": "COMBO_MASTER_SEED_POOL",
+      "found": true,
+      "before": 1000,
+      "after": 1000,
+      "removed": 0
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-05-02T08:46:51.071Z",
+  "tierPools": {
+    "T1_LIGHTNING_SEED_POOL": {
+      "count": 500,
+      "badMultiClearOpening": 0,
+      "maxOpeningClearableCols": 1,
+      "hist": {
+        "0": 0,
+        "1": 500,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      }
+    },
+    "T2_WARMUP_SEED_POOL": {
+      "count": 500,
+      "badMultiClearOpening": 0,
+      "maxOpeningClearableCols": 1,
+      "hist": {
+        "0": 54,
+        "1": 446,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      }
+    },
+    "T3_BRIDGE_SEED_POOL": {
+      "count": 500,
+      "badMultiClearOpening": 0,
+      "maxOpeningClearableCols": 1,
+      "hist": {
+        "0": 134,
+        "1": 366,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      }
+    },
+    "T4_FLOW_SEED_POOL": {
+      "count": 500,
+      "badMultiClearOpening": 0,
+      "maxOpeningClearableCols": 1,
+      "hist": {
+        "0": 132,
+        "1": 368,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      }
+    },
+    "T5_CHALLENGE_SEED_POOL": {
+      "count": 500,
+      "badMultiClearOpening": 0,
+      "maxOpeningClearableCols": 1,
+      "hist": {
+        "0": 214,
+        "1": 286,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      }
+    }
+  }
+}
