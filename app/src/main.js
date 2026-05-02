@@ -1755,8 +1755,12 @@
         // ── Gallery System ─────────────────────────────────────────────────────
         const GALLERY_KEY = 'lucky3-gallery-v2';
         const DAILY_WINS_KEY = 'lucky3-daily-wins-v2';
+        const PLAYER_FIRST_SEEN_KEY = 'lucky3-player-first-seen-v1';
         const FRAGMENT_EXCHANGE_COST = 5;
         const DROP_PITY_LIMIT = 2;
+        const ENABLE_SECOND_WIN_GUARANTEE = true;
+        const ENABLE_NEW_PLAYER_UNIQUE_PROTECTION = true;
+        const NEW_PLAYER_PROTECTION_DAYS = 7;
 
         const PAINTINGS = [
             { id: '001', cols: 4, rows: 3 },
@@ -1772,11 +1776,20 @@
             { id: '011', cols: 4, rows: 3 },
             { id: '012', cols: 3, rows: 4 },
         ];
+        const DEFAULT_GALLERY_SERIES = [
+            { id: 'early', name: { zh: '初光展廳', en: 'Early Light Hall' }, order: 1, paintingIds: ['001', '002', '003', '004'] },
+            { id: 'nature', name: { zh: '自然展廳', en: 'Nature Hall' }, order: 2, paintingIds: ['005', '006', '007', '008'] },
+            { id: 'modern', name: { zh: '現代展廳', en: 'Modern Hall' }, order: 3, paintingIds: ['009', '010', '011', '012'] },
+            { id: 'archive', name: { zh: '典藏展廳', en: 'Archive Hall' }, order: 99, paintingIds: [] },
+        ];
 
         let paintingBasePathCache = (location.pathname && location.pathname.includes('/app/')) ? 'paintings' : 'app/paintings';
         let currentGalleryMeta = null;
         let currentGalleryData = null;
+        let currentGalleryNavIds = [];
         const galleryUiState = { lastUnlocked: null, frameRevealPaintingId: null };
+        const paintingMetaCache = new Map();
+        let galleryManifestCache = null;
 
         function emptyGalleryState() {
             return {
@@ -1867,6 +1880,19 @@
             return dw.count;
         }
 
+        function getPlayerAgeDays() {
+            const today = toLocalDateKey();
+            let firstSeen = '';
+            try { firstSeen = String(localStorage.getItem(PLAYER_FIRST_SEEN_KEY) || ''); } catch (_) { }
+            if (!firstSeen) {
+                firstSeen = today;
+                try { localStorage.setItem(PLAYER_FIRST_SEEN_KEY, firstSeen); } catch (_) { }
+            }
+            const ms = new Date(`${today}T00:00:00`).getTime() - new Date(`${firstSeen}T00:00:00`).getTime();
+            if (!Number.isFinite(ms)) return 1;
+            return Math.max(1, Math.floor(ms / 86400000) + 1);
+        }
+
         async function resolvePaintingBasePath() {
             const candidates = [paintingBasePathCache, 'paintings', 'app/paintings'];
             for (const base of candidates) {
@@ -1889,9 +1915,69 @@
         function paintingMetaSrc(id) {
             return `${paintingBasePathCache}/${id}/meta.json`;
         }
+        function galleryManifestSrc() {
+            return `${paintingBasePathCache}/gallery_manifest.json`;
+        }
+
+        async function loadGalleryManifest() {
+            if (galleryManifestCache) return galleryManifestCache;
+            try {
+                const res = await fetch(galleryManifestSrc(), { cache: 'no-store' });
+                if (!res.ok) return null;
+                const json = await res.json();
+                galleryManifestCache = json && typeof json === 'object' ? json : null;
+                return galleryManifestCache;
+            } catch (_) {
+                return null;
+            }
+        }
 
         function paintingPieceSrc(id, row, col) {
             return `${paintingBasePathCache}/${id}/pieces/r${row}c${col}.jpg`;
+        }
+
+        async function loadPaintingMeta(id) {
+            if (paintingMetaCache.has(id)) return paintingMetaCache.get(id);
+            try {
+                const res = await fetch(paintingMetaSrc(id), { cache: 'no-store' });
+                if (!res.ok) return null;
+                const meta = await res.json();
+                paintingMetaCache.set(id, meta);
+                return meta;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        function getDiscoveredPaintingIds(state) {
+            return PAINTINGS
+                .filter((p) => getCollectedSet(state, p.id).size > 0 || !!getPaintingEntry(state, p.id).completedAt)
+                .map((p) => p.id);
+        }
+
+        function getSeriesLabel(seriesId) {
+            const locale = currentLocale || 'en';
+            const defs = getActiveSeriesDefs();
+            const s = defs.find((x) => x.id === seriesId);
+            if (!s) return seriesId;
+            return locale.startsWith('zh') ? (s.name.zh || s.name.en || seriesId) : (s.name.en || s.name.zh || seriesId);
+        }
+
+        function getActiveSeriesDefs() {
+            if (Array.isArray(galleryManifestCache?.series) && galleryManifestCache.series.length > 0) {
+                return galleryManifestCache.series;
+            }
+            return DEFAULT_GALLERY_SERIES;
+        }
+
+        function resolvePaintingSeriesId(meta, paintingId) {
+            if (meta && typeof meta.series === 'string' && meta.series.trim()) return meta.series.trim();
+            const manifestHit = Array.isArray(galleryManifestCache?.paintings)
+                ? galleryManifestCache.paintings.find((p) => p && p.id === paintingId && typeof p.series === 'string' && p.series.trim())
+                : null;
+            if (manifestHit) return manifestHit.series.trim();
+            const hit = DEFAULT_GALLERY_SERIES.find((s) => Array.isArray(s.paintingIds) && s.paintingIds.includes(paintingId));
+            return hit ? hit.id : 'archive';
         }
 
         function getPaintingEntry(state, paintingId) {
@@ -1928,7 +2014,7 @@
                 return { canDrop: false, guaranteed: false, rate: 0 };
             }
             let rate = 0.7;
-            if (winCount === 2) rate = 0.7;
+            if (winCount === 2) rate = ENABLE_SECOND_WIN_GUARANTEE ? 1 : 0.7;
             else if (winCount === 3) rate = 0.9;
             else rate = 1;
             const guaranteed = pityNoDrop >= DROP_PITY_LIMIT;
@@ -2115,7 +2201,15 @@
                 return;
             }
 
-            const candidate = pickDropCandidate(state);
+            const inNewPlayerWindow = ENABLE_NEW_PLAYER_UNIQUE_PROTECTION && getPlayerAgeDays() <= NEW_PLAYER_PROTECTION_DAYS;
+            const shouldForceUniqueSecondWin = inNewPlayerWindow && winCount === 2;
+            let candidate = null;
+            if (shouldForceUniqueSecondWin) {
+                const uncollected = uncollectedPieces(state);
+                candidate = pickRandom(uncollected.length > 0 ? uncollected : allPieces());
+            } else {
+                candidate = pickDropCandidate(state);
+            }
             if (!candidate) return;
 
             state.pityNoDrop = 0;
@@ -2235,58 +2329,147 @@
             if (!statsEl) return;
             const pity = Number(state.pityNoDrop) || 0;
             const pityText = pity >= DROP_PITY_LIMIT ? t('gallery.pity_ready') : t('gallery.pity', { count: pity, total: DROP_PITY_LIMIT });
+            const discovered = getDiscoveredPaintingIds(state).length;
+            const total = PAINTINGS.length;
             statsEl.innerHTML = `
                 <div class="gallery-progress-text" style="text-align:center">
                     ${t('gallery.dust')}: <strong style="color:#ffd700">${state.dust || 0}</strong>
                     &nbsp;&nbsp;·&nbsp;&nbsp;
                     ${pityText}
+                    &nbsp;&nbsp;·&nbsp;&nbsp;
+                    ${discovered}/${total}
                 </div>`;
         }
 
         async function renderGalleryList() {
             ensureGalleryDom();
             await resolvePaintingBasePath();
+            await loadGalleryManifest();
             const list = document.getElementById('gallery-list');
             if (!list) return;
             const state = loadGalleryState();
             renderGalleryStats(state);
             list.innerHTML = '';
 
-            const loadMeta = async (id) => {
-                try {
-                    const res = await fetch(paintingMetaSrc(id));
-                    return await res.json();
-                } catch (_) { return null; }
-            };
+            const discoveredIds = new Set(getDiscoveredPaintingIds(state));
+            const featuredIds = PAINTINGS.map((p) => p.id).filter((id) => discoveredIds.has(id)).slice(0, 3);
+            if (featuredIds.length > 0) {
+                const hall = document.createElement('div');
+                hall.className = 'gallery-hall-row';
+                for (const id of featuredIds) {
+                    const meta = await loadPaintingMeta(id);
+                    if (!meta) continue;
+                    const title = (currentLocale || 'en') === 'en' || !meta.title ? (meta.titleEn || meta.title || id) : meta.title;
+                    const tile = document.createElement('button');
+                    tile.type = 'button';
+                    tile.className = 'gallery-hall-tile';
+                    tile.innerHTML = `<img src="${paintingCoverSrc(id)}" alt="${title}"><span>${title}</span>`;
+                    tile.addEventListener('click', async () => {
+                        const freshMeta = await loadPaintingMeta(id);
+                        if (!freshMeta) return;
+                        openGalleryDetailById(id, freshMeta);
+                    });
+                    hall.appendChild(tile);
+                }
+                if (hall.childElementCount > 0) list.appendChild(hall);
+            }
 
+            const cards = [];
             for (const p of PAINTINGS) {
-                const meta = await loadMeta(p.id);
+                const meta = await loadPaintingMeta(p.id);
                 if (!meta) continue;
                 const entry = getPaintingEntry(state, p.id);
                 const collected = (entry.collected || []).length;
                 const total = meta.totalPieces || (meta.cols * meta.rows);
                 const pct = Math.round((collected / total) * 100);
                 const isComplete = collected >= total;
+                const isDiscovered = discoveredIds.has(p.id);
                 const locale = currentLocale || 'en';
                 const title = (locale === 'en' || !meta.title) ? (meta.titleEn || meta.title) : meta.title;
+                const seriesId = resolvePaintingSeriesId(meta, p.id);
+                cards.push({
+                    id: p.id,
+                    seriesId,
+                    collected,
+                    total,
+                    pct,
+                    isComplete,
+                    isDiscovered,
+                    title,
+                    orientation: meta.orientation,
+                });
+            }
 
-                const card = document.createElement('div');
-                card.className = `gallery-card${isComplete ? ' completed' : ''}`;
-                card.innerHTML = `
-                    <div class="gallery-card-thumb ${meta.orientation}">
-                        <img src="${paintingCoverSrc(p.id)}" alt="${title}">
+            currentGalleryNavIds = cards.filter((c) => c.isDiscovered).map((c) => c.id);
+            const seriesMap = new Map();
+            for (const s of getActiveSeriesDefs()) seriesMap.set(s.id, { ...s, cards: [] });
+            for (const c of cards) {
+                if (!seriesMap.has(c.seriesId)) {
+                    seriesMap.set(c.seriesId, {
+                        id: c.seriesId,
+                        name: { zh: c.seriesId, en: c.seriesId },
+                        order: 90,
+                        paintingIds: [],
+                        cards: [],
+                    });
+                }
+                seriesMap.get(c.seriesId).cards.push(c);
+            }
+            const orderedSeries = [...seriesMap.values()]
+                .filter((s) => s.cards.length > 0)
+                .sort((a, b) => (a.order || 99) - (b.order || 99));
+
+            for (const series of orderedSeries) {
+                const discoveredCount = series.cards.filter((x) => x.isDiscovered).length;
+                const completeCount = series.cards.filter((x) => x.isComplete).length;
+                const section = document.createElement('div');
+                section.className = 'gallery-series-section';
+                section.innerHTML = `
+                    <div class="gallery-series-header">
+                        <div class="gallery-series-title">${getSeriesLabel(series.id)}</div>
+                        <div class="gallery-series-stat">${completeCount}/${series.cards.length} · ${discoveredCount}/${series.cards.length}</div>
+                    </div>
+                `;
+                const seriesList = document.createElement('div');
+                seriesList.className = 'gallery-series-list';
+
+                for (const c of series.cards) {
+                    const card = document.createElement('div');
+                    card.className = `gallery-card${c.isComplete ? ' completed' : ''}`;
+                    const cardTitle = c.isDiscovered ? c.title : '???';
+                    card.innerHTML = `
+                    <div class="gallery-card-thumb ${c.orientation}">
+                        ${c.isDiscovered ? `<img src="${paintingCoverSrc(c.id)}" alt="${c.title}">` : '<div class="gallery-card-thumb-mask">未揭幕</div>'}
                     </div>
                     <div class="gallery-card-info">
-                        <div class="gallery-card-title">${title}</div>
+                        <div class="gallery-card-title">${cardTitle}</div>
                         <div class="gallery-progress-bar">
-                            <div class="gallery-progress-fill" style="width:${pct}%"></div>
+                            <div class="gallery-progress-fill" style="width:${c.pct}%"></div>
                         </div>
-                        <div class="gallery-progress-text">${collected} / ${total} ${t('gallery.pieces')}</div>
+                        <div class="gallery-progress-text">${c.collected} / ${c.total} ${t('gallery.pieces')}</div>
                     </div>
-                    <div class="gallery-card-lock">${isComplete ? '✦' : '○'}</div>`;
-                card.addEventListener('click', () => openGalleryDetail(meta, entry));
-                list.appendChild(card);
+                    <div class="gallery-card-lock">${c.isComplete ? '✦' : (c.isDiscovered ? '○' : '🔒')}</div>`;
+                    if (c.isDiscovered) {
+                        card.addEventListener('click', async () => {
+                            const meta = await loadPaintingMeta(c.id);
+                            if (!meta) return;
+                            openGalleryDetailById(c.id, meta);
+                        });
+                    } else {
+                        card.classList.add('locked');
+                    }
+                    seriesList.appendChild(card);
+                }
+                section.appendChild(seriesList);
+                list.appendChild(section);
             }
+        }
+
+        function openGalleryDetailById(paintingId, preloadedMeta) {
+            const state = loadGalleryState();
+            const entry = getPaintingEntry(state, paintingId);
+            if (!preloadedMeta) return;
+            openGalleryDetail(preloadedMeta, entry);
         }
 
         function openGallery() {
@@ -2350,7 +2533,16 @@
 
             const locale = currentLocale || 'en';
             const title = (locale === 'en' || !meta.title) ? (meta.titleEn || meta.title) : meta.title;
-            if (titleEl) titleEl.textContent = title;
+            const navIdx = currentGalleryNavIds.indexOf(meta.id);
+            const prevId = navIdx > 0 ? currentGalleryNavIds[navIdx - 1] : null;
+            const nextId = navIdx >= 0 && navIdx < currentGalleryNavIds.length - 1 ? currentGalleryNavIds[navIdx + 1] : null;
+            if (titleEl) {
+                titleEl.innerHTML = `<span>${title}</span>
+                <span class="gallery-detail-nav">
+                    <button type="button" class="gallery-nav-btn" ${prevId ? '' : 'disabled'} onclick="openGalleryNeighbor(-1)">‹</button>
+                    <button type="button" class="gallery-nav-btn" ${nextId ? '' : 'disabled'} onclick="openGalleryNeighbor(1)">›</button>
+                </span>`;
+            }
 
             const state = loadGalleryState();
             const collected = new Set(galleryData.collected || []);
@@ -2420,6 +2612,18 @@
                 body.appendChild(footer);
             }
             overlay.classList.add('show');
+        }
+
+        async function openGalleryNeighbor(direction) {
+            if (!currentGalleryMeta) return;
+            const idx = currentGalleryNavIds.indexOf(currentGalleryMeta.id);
+            if (idx < 0) return;
+            const targetId = currentGalleryNavIds[idx + direction];
+            if (!targetId) return;
+            const meta = await loadPaintingMeta(targetId);
+            if (!meta) return;
+            const state = loadGalleryState();
+            openGalleryDetail(meta, getPaintingEntry(state, targetId));
         }
         // ── End Gallery System ─────────────────────────────────────────────────
 

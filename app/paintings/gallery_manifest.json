@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "series": [
+    {
+      "id": "early",
+      "name": { "zh": "初光展廳", "en": "Early Light Hall" },
+      "order": 1
+    },
+    {
+      "id": "nature",
+      "name": { "zh": "自然展廳", "en": "Nature Hall" },
+      "order": 2
+    },
+    {
+      "id": "modern",
+      "name": { "zh": "現代展廳", "en": "Modern Hall" },
+      "order": 3
+    },
+    {
+      "id": "archive",
+      "name": { "zh": "典藏展廳", "en": "Archive Hall" },
+      "order": 99
+    }
+  ],
+  "paintings": [
+    { "id": "001", "series": "early" },
+    { "id": "002", "series": "early" },
+    { "id": "003", "series": "early" },
+    { "id": "004", "series": "early" },
+    { "id": "005", "series": "nature" },
+    { "id": "006", "series": "nature" },
+    { "id": "007", "series": "nature" },
+    { "id": "008", "series": "nature" },
+    { "id": "009", "series": "modern" },
+    { "id": "010", "series": "modern" },
+    { "id": "011", "series": "modern" },
+    { "id": "012", "series": "modern" }
+  ]
+}
