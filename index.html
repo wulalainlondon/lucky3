@@ -4930,7 +4930,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.02-v3';
+        const APP_VERSION = '2026.05.02-v4';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -4948,6 +4948,7 @@
         }
         const DAILY_CHALLENGE_KEY = 'lucky3-daily-challenge-v1';
         const DEV_MODE_KEY = 'lucky3-dev-mode-v1';
+        const SEED_CHEAT_MODE_KEY = 'lucky3-seed-cheat-mode-v1';
         const PREMIUM_KEY = 'lucky3-premium';
 
         // ── Card Back Collection ────────────────────────────────────────────────
@@ -9495,8 +9496,11 @@
         // ── End Extreme Challenge ─────────────────────────────────────────
 
         let developerMode = false;
+        let seedCheatMode = false;
         let devTapCount = 0;
         let devTapTimer = null;
+        let cheatTapCount = 0;
+        let cheatTapTimer = null;
         let rewindSequenceActive = false;
         let rewindLockTagTimer = null;
 
@@ -10001,9 +10005,23 @@
             }
         }
 
+        function loadSeedCheatMode() {
+            try {
+                return localStorage.getItem(SEED_CHEAT_MODE_KEY) === '1';
+            } catch (_) {
+                return false;
+            }
+        }
+
         function saveDeveloperMode() {
             try {
                 localStorage.setItem(DEV_MODE_KEY, developerMode ? '1' : '0');
+            } catch (_) { }
+        }
+
+        function saveSeedCheatMode() {
+            try {
+                localStorage.setItem(SEED_CHEAT_MODE_KEY, seedCheatMode ? '1' : '0');
             } catch (_) { }
         }
 
@@ -11192,6 +11210,26 @@
                         showAchievementToast(
                             developerMode ? t('toast.dev_on_title') : t('toast.dev_off_title'),
                             developerMode ? t('toast.dev_on_body') : t('toast.dev_off_body')
+                        );
+                    }
+                });
+            }
+            const versionEl = document.getElementById('setting-version');
+            if (versionEl && !versionEl.dataset.cheatBound) {
+                versionEl.dataset.cheatBound = '1';
+                versionEl.addEventListener('click', () => {
+                    cheatTapCount += 1;
+                    if (cheatTapTimer) clearTimeout(cheatTapTimer);
+                    cheatTapTimer = setTimeout(() => {
+                        cheatTapCount = 0;
+                    }, 1200);
+                    if (cheatTapCount >= 5) {
+                        cheatTapCount = 0;
+                        seedCheatMode = !seedCheatMode;
+                        saveSeedCheatMode();
+                        showAchievementToast(
+                            seedCheatMode ? '🧪 Seed Cheat ON' : '🧪 Seed Cheat OFF',
+                            seedCheatMode ? 'DEAL 會先用上方優先 greedy 自動消除，再發牌。' : '已關閉 seed 測試自動消除。'
                         );
                     }
                 });
@@ -13071,6 +13109,27 @@
             return null;
         }
 
+        function findUpperGreedyClearMove() {
+            for (const slot of slots) {
+                if (!slot.active) continue;
+                const len = slot.cards.length;
+                if (len < 3) continue;
+                const candidates = [
+                    [0, 1, len - 1],
+                    [0, len - 2, len - 1],
+                    [len - 3, len - 2, len - 1]
+                ];
+                for (const indices of candidates) {
+                    if (indices.some(i => i < 0 || i >= len)) continue;
+                    const sum = indices.reduce((acc, i) => acc + slot.cards[i].val, 0);
+                    if ([9, 19, 29].includes(sum)) {
+                        return { slotId: slot.id, indices: [...indices].sort((a, b) => a - b), sum };
+                    }
+                }
+            }
+            return null;
+        }
+
         function performClearMove(slotId, sortedIndices, sum) {
             const slot = slots.find(s => s.id === slotId);
             if (!slot) return Promise.resolve(false);
@@ -13226,7 +13285,13 @@
             if (isBusy) return;
             clearHintHighlight();
 
-            if (developerMode && !tutorial.active) {
+            if (seedCheatMode && !tutorial.active) {
+                const autoMove = findUpperGreedyClearMove();
+                if (autoMove) {
+                    await performClearMove(autoMove.slotId, autoMove.indices, autoMove.sum);
+                    if (hasWon || isBusy) return;
+                }
+            } else if (developerMode && !tutorial.active) {
                 const autoMove = findFirstLegalClearMove();
                 if (autoMove) {
                     await performClearMove(autoMove.slotId, autoMove.indices, autoMove.sum);
@@ -14419,6 +14484,7 @@
         window.addEventListener('orientationchange', syncBoardScale);
 
         developerMode = loadDeveloperMode();
+        seedCheatMode = loadSeedCheatMode();
         settings = loadSettings();
         achievements = loadAchievements();
         loadCardBack();
