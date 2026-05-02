@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.02-v5';
+        const APP_VERSION = '2026.05.02-v6';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -757,6 +757,7 @@
         let columnsCleared = 0;
         let columnsClearedSet = new Set(); // distinct slot ids cleared this game (for fullsweep)
         let dealCount = 0; // successful deal actions in this game
+        let recycleCount = 0; // recycle actions in this game
         let columnClearEvents = []; // [{ slotId, dealCount, moveCount, elapsedSec }]
         let comboEventsThisGame = 0;
         let _slotCompressHidden = {}; // slotId → fixed hidden count for wave-compression
@@ -963,6 +964,7 @@
             columnsCleared = 0;
             columnsClearedSet = new Set();
             dealCount = 0;
+            recycleCount = 0;
             columnClearEvents = [];
             comboEventsThisGame = 0;
             setUndoEnabled(false);
@@ -4926,6 +4928,7 @@
             columnsCleared = 0;
             columnsClearedSet = new Set();
             dealCount = 0;
+            recycleCount = 0;
             columnClearEvents = [];
             comboEventsThisGame = 0;
 
@@ -5860,6 +5863,7 @@
         function recycleDeck() {
             if (isBusy || clearedGroups.length === 0) return;
             isBusy = true;
+            recycleCount++;
             playSound('recycle');
             // 按消除組順序回收：第一組消除的牌回到牌堆最上方（最先被抽到）
             const groupsInReturnOrder = [];
@@ -6837,6 +6841,8 @@
                         <div class="win-stat-row"><span>${t('win.stat.time')}</span><strong data-countup="${elapsedSec}" data-format="time">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.moves')}</span><strong data-countup="${moveCount}">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.clear_moves')}</span><strong data-countup="${clearMoveCount}">0</strong></div>
+                        <div class="win-stat-row"><span>${t('win.stat.deals')}</span><strong data-countup="${dealCount}">0</strong></div>
+                        <div class="win-stat-row"><span>${t('win.stat.recycles')}</span><strong data-countup="${recycleCount}">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.max_combo')}</span><strong data-countup="${maxCombo}">0</strong></div>
                     </div>
                     <p class="win-move-note">${t('win.stat.moves_note')}</p>
@@ -7230,6 +7236,7 @@
                 undoUsedThisGame,
                 columnsCleared,
                 dealCount,
+                recycleCount,
                 columnClearEvents,
                 comboEventsThisGame,
                 columnsClearedSet: Array.from(columnsClearedSet || []),
@@ -7298,6 +7305,7 @@
                 undoUsedThisGame = !!parsed.undoUsedThisGame;
                 columnsCleared = Number.isInteger(parsed.columnsCleared) ? parsed.columnsCleared : 0;
                 dealCount = Number.isInteger(parsed.dealCount) ? parsed.dealCount : 0;
+                recycleCount = Number.isInteger(parsed.recycleCount) ? parsed.recycleCount : 0;
                 columnClearEvents = Array.isArray(parsed.columnClearEvents) && parsed.columnClearEvents.every(isValidColumnClearEvent)
                     ? parsed.columnClearEvents
                     : [];

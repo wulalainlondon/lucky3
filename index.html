@@ -4934,7 +4934,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.02-v5';
+        const APP_VERSION = '2026.05.02-v6';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -5416,6 +5416,8 @@
             'win.stat.time': 'Time',
             'win.stat.moves': 'Moves',
             'win.stat.clear_moves': 'Clear Moves',
+            'win.stat.deals': 'Deals',
+            'win.stat.recycles': 'Recycles',
             'win.stat.max_combo': 'Max Combo',
             'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
             'win.play_again': 'Play Again',
@@ -5627,6 +5629,8 @@
                 'win.stat.time': '用時',
                 'win.stat.moves': '總步數',
                 'win.stat.clear_moves': '消除步數',
+                'win.stat.deals': '發牌次數',
+                'win.stat.recycles': '回收次數',
                 'win.stat.max_combo': '最高連擊',
                 'win.stat.moves_note': '總步數 = 發牌次數 + 消除次數（Undo 會回退計數）',
                 'win.play_again': '再來一局',
@@ -5819,6 +5823,8 @@
                 'win.stat.time': 'タイム',
                 'win.stat.moves': '手数',
                 'win.stat.clear_moves': 'Clear Moves',
+                'win.stat.deals': 'Deals',
+                'win.stat.recycles': 'Recycles',
                 'win.stat.max_combo': '最高コンボ',
                 'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
                 'win.play_again': 'もう一度',
@@ -6029,6 +6035,8 @@
                 'win.stat.time': '시간',
                 'win.stat.moves': '수',
                 'win.stat.clear_moves': 'Clear Moves',
+                'win.stat.deals': 'Deals',
+                'win.stat.recycles': 'Recycles',
                 'win.stat.max_combo': '최고 콤보',
                 'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
                 'win.play_again': '다시 플레이',
@@ -6239,6 +6247,8 @@
     'win.stat.time': 'Tiempo',
     'win.stat.moves': 'Movimientos',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Combo máximo',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Jugar de nuevo',
@@ -6449,6 +6459,8 @@
     'win.stat.time': 'Tempo',
     'win.stat.moves': 'Jogadas',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Combo máximo',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Jogar de novo',
@@ -6659,6 +6671,8 @@
     'win.stat.time': 'เวลา',
     'win.stat.moves': 'จำนวนตา',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'คอมโบสูงสุด',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'เล่นอีกครั้ง',
@@ -6869,6 +6883,8 @@
     'win.stat.time': 'Waktu',
     'win.stat.moves': 'Langkah',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Combo maks',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Main lagi',
@@ -7079,6 +7095,8 @@
     'win.stat.time': 'Temps',
     'win.stat.moves': 'Coups',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Combo max',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Rejouer',
@@ -7290,6 +7308,8 @@
     'win.stat.time': '用时',
     'win.stat.moves': '总步数',
     'win.stat.clear_moves': '消除步数',
+    'win.stat.deals': '发牌次数',
+    'win.stat.recycles': '回收次数',
     'win.stat.max_combo': '最高连击',
     'win.stat.moves_note': '总步数 = 发牌次数 + 消除次数（Undo 会回退计数）',
     'win.play_again': '再来一局',
@@ -7500,6 +7520,8 @@
     'win.stat.time': 'Zeit',
     'win.stat.moves': 'Züge',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Max-Combo',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Nochmal spielen',
@@ -7710,6 +7732,8 @@
     'win.stat.time': 'Tempo',
     'win.stat.moves': 'Mosse',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Combo max',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Gioca ancora',
@@ -7920,6 +7944,8 @@
     'win.stat.time': 'Tempo',
     'win.stat.moves': 'Jogadas',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Combo máximo',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Jogar novamente',
@@ -8130,6 +8156,8 @@
     'win.stat.time': 'Tijd',
     'win.stat.moves': 'Zetten',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Max combo',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Opnieuw spelen',
@@ -8340,6 +8368,8 @@
     'win.stat.time': 'Время',
     'win.stat.moves': 'Ходы',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Макс. комбо',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Играть снова',
@@ -8550,6 +8580,8 @@
     'win.stat.time': 'Czas',
     'win.stat.moves': 'Ruchy',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Maks. combo',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Zagraj ponownie',
@@ -8760,6 +8792,8 @@
     'win.stat.time': 'Süre',
     'win.stat.moves': 'Hamleler',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Maks. Kombo',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Tekrar Oyna',
@@ -8970,6 +9004,8 @@
     'win.stat.time': 'Thời gian',
     'win.stat.moves': 'Số nước',
     'win.stat.clear_moves': 'Clear Moves',
+    'win.stat.deals': 'Deals',
+    'win.stat.recycles': 'Recycles',
     'win.stat.max_combo': 'Combo tối đa',
     'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Chơi lại',
@@ -9184,6 +9220,8 @@
         let undoUsedThisGame = false;
         let columnsCleared = 0;
         let comboEventsThisGame = 0;
+        let dealCount = 0;
+        let recycleCount = 0;
         const _slotRenderCache = {};
         let _slotCompressHidden = {};
         function resetDealHapticCount() { /* root: no haptic counter */ }
@@ -9376,6 +9414,8 @@
             undoUsedThisGame = false;
             columnsCleared = 0;
             comboEventsThisGame = 0;
+            dealCount = 0;
+            recycleCount = 0;
             setUndoEnabled(false);
             updateHeaderModeTag();
             syncBoardScale();
@@ -12704,6 +12744,8 @@
             moveCount = 0;
             clearMoveCount = 0;
             dailyUndoCount = 0;
+            dealCount = 0;
+            recycleCount = 0;
             updateUndoCountDisplay();
             maxCombo = 0;
             hasWon = false;
@@ -13407,6 +13449,7 @@
             historyStack.push({ type: 'deal', slotId: target.id, prevIdx, skippedLegalClear });
             setUndoEnabled(true);
             moveCount++;
+            dealCount++;
             playSound('deal');
             updateDeckWarnState();
             onTutorialEvent('deal');
@@ -13471,6 +13514,7 @@
         function recycleDeck() {
             if (isBusy || clearedGroups.length === 0) return;
             isBusy = true;
+            recycleCount++;
             playSound('recycle');
             // 按消除組順序回收：第一組消除的牌回到牌堆最上方（最先被抽到）
             const groupsInReturnOrder = [];
@@ -14130,6 +14174,8 @@
                         <div class="win-stat-row"><span>${t('win.stat.time')}</span><strong data-countup="${elapsedSec}" data-format="time">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.moves')}</span><strong data-countup="${moveCount}">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.clear_moves')}</span><strong data-countup="${clearMoveCount}">0</strong></div>
+                        <div class="win-stat-row"><span>${t('win.stat.deals')}</span><strong data-countup="${dealCount}">0</strong></div>
+                        <div class="win-stat-row"><span>${t('win.stat.recycles')}</span><strong data-countup="${recycleCount}">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.max_combo')}</span><strong data-countup="${maxCombo}">0</strong></div>
                     </div>
                     <p class="win-move-note">${t('win.stat.moves_note')}</p>
@@ -14511,6 +14557,8 @@
                 gameMode,
                 currentSeed,
                 currentDifficultyTag,
+                dealCount,
+                recycleCount,
                 elapsedSec
             };
         }
@@ -14557,6 +14605,8 @@
                 gameMode = parsed.gameMode === 'daily' ? 'daily' : 'normal';
                 currentSeed = Number.isInteger(parsed.currentSeed) ? parsed.currentSeed : null;
                 currentDifficultyTag = typeof parsed.currentDifficultyTag === 'string' ? parsed.currentDifficultyTag : '';
+                dealCount = Number.isInteger(parsed.dealCount) ? parsed.dealCount : 0;
+                recycleCount = Number.isInteger(parsed.recycleCount) ? parsed.recycleCount : 0;
                 deadlockShown = false;
                 selected = [];
                 const elapsedSec = Number.isFinite(parsed.elapsedSec) ? Math.max(0, parsed.elapsedSec) : 0;
