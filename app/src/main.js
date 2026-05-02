@@ -5434,6 +5434,12 @@
                 return;
             }
 
+            // 有可消除組合時，按 DEAL 先提示，不直接發牌。
+            if (hasAnyLegalClear()) {
+                showHintHighlight();
+                return;
+            }
+
             // Deal時取消選取
             if (selected.length > 0) {
                 selected = [];

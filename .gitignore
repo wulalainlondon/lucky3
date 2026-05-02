@@ -13,3 +13,9 @@ tools/KEYSTORE_CREDENTIALS.md
 # Local scratch files
 index.html.bak
 solver.js
+.backup-precrop/
+tools/__pycache__/
+
+# Store/listing assets generated locally
+app/store-screenshots*/
+app/store-videos/
