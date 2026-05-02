@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.02-v4';
+        const APP_VERSION = '2026.05.02-v5';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -742,7 +742,7 @@
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
         const _slotRenderCache = {}; // slot.id -> fingerprint，用於 differential rendering
         let autoEliminateTimer = null;
-        let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
+        let winInterval = null, moveCount = 0, clearMoveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
         let magicMomentActive = false;
         let magicMomentTimer = null;
         let settings = { ...DEFAULT_SETTINGS };
@@ -764,6 +764,7 @@
         let dailyUndoCount = 0;
         let currentSeed = null;
         let currentGameGrade = 'g2'; // 'g2' | 'g3'，用於 BGM 切換
+        let currentDifficultyTag = '';
         let lastDailyRankText = '';
         let developerMode = false;
         let seedCheatMode = false;
@@ -929,6 +930,7 @@
             currentChallengeId = id;
             challengeUndoViolated = false;
             challengeDealCount = 0;
+            currentDifficultyTag = 'CHALLENGE';
             deck = [];
             discardPile = [];
             clearedGroups = [];
@@ -950,6 +952,7 @@
             lastCleared = null;
             startTime = Date.now();
             moveCount = 0;
+            clearMoveCount = 0;
             dailyUndoCount = 0;
             updateUndoCountDisplay();
             maxCombo = 0;
@@ -1211,20 +1214,25 @@
             // 輪播：T1 → T2 → 循環 [T3, T4, T5]
             if (runIndex === 0) {
                 currentGameGrade = 'g1';
+                currentDifficultyTag = 'T1';
                 seed = pickFromPool(T1_LIGHTNING_SEED_POOL, 't1');
             } else if (runIndex === 1) {
                 currentGameGrade = 'g2';
+                currentDifficultyTag = 'T2';
                 seed = pickFromPool(T2_WARMUP_SEED_POOL, 't2');
             } else {
                 const cycle = (runIndex - 2) % 3; // 0=T3, 1=T4, 2=T5
                 if (cycle === 0) {
                     currentGameGrade = 'g2';
+                    currentDifficultyTag = 'T3';
                     seed = pickFromPool(T3_BRIDGE_SEED_POOL, 't3-' + runIndex);
                 } else if (cycle === 1) {
                     currentGameGrade = 'g2';
+                    currentDifficultyTag = 'T4';
                     seed = pickFromPool(T4_FLOW_SEED_POOL, 't4-' + runIndex);
                 } else {
                     currentGameGrade = 'g3';
+                    currentDifficultyTag = comboMasterActive ? 'T5+' : 'T5';
                     if (comboMasterActive) {
                         seed = pickFromPool(COMBO_MASTER_SEED_POOL, 'combo-' + runIndex)
                             ?? pickFromPool(T5_CHALLENGE_SEED_POOL, 't5-' + runIndex);
@@ -1285,6 +1293,11 @@
             if (tier === 'easy') currentGameGrade = 'g1';
             else if (tier === 'normal' || tier === 'hard') currentGameGrade = 'g2';
             else currentGameGrade = 'g3';
+            if (tier === 'easy') currentDifficultyTag = 'Daily Easy';
+            else if (tier === 'normal') currentDifficultyTag = 'Daily Normal';
+            else if (tier === 'hard') currentDifficultyTag = 'Daily Hard';
+            else if (tier === 'hardplus') currentDifficultyTag = 'Daily Hard+';
+            else currentDifficultyTag = 'Daily Peak';
             return pool[idx] >>> 0;
         }
 
@@ -1754,12 +1767,21 @@
         function updateHeaderModeTag() {
             const tag = document.getElementById('header-mode-tag');
             if (!tag) return;
+            const seedText = Number.isInteger(currentSeed) ? `Seed:${currentSeed}` : '';
             if (gameMode === 'daily') {
-                tag.innerText = t('header.daily_tag', { date: toLocalDateKey() });
+                const dailyText = t('header.daily_tag', { date: toLocalDateKey() });
+                const parts = [dailyText, currentDifficultyTag, seedText].filter(Boolean);
+                tag.innerText = parts.join(' · ');
                 tag.classList.add('show');
             } else {
-                tag.innerText = '';
-                tag.classList.remove('show');
+                const parts = [currentDifficultyTag, seedText].filter(Boolean);
+                if (parts.length > 0) {
+                    tag.innerText = parts.join(' · ');
+                    tag.classList.add('show');
+                } else {
+                    tag.innerText = '';
+                    tag.classList.remove('show');
+                }
             }
             updateUndoCountDisplay();
         }
@@ -4859,6 +4881,7 @@
                 deck = buildTutorialDeck();
                 gameMode = 'normal';
                 currentSeed = null;
+                currentDifficultyTag = 'TUTORIAL';
             } else {
                 gameMode = targetMode;
                 const pickedSeed = gameMode === 'daily' ? pickDailySeed() : pickCuratedSeed();
@@ -4870,6 +4893,7 @@
                     shuffleInPlace(fullDeck);
                     deck = fullDeck;
                     currentSeed = null;
+                    currentDifficultyTag = 'RANDOM';
                 } else {
                     deck = buildSeededDeck(pickedSeed);
                     currentSeed = pickedSeed;
@@ -4891,6 +4915,7 @@
             lastCleared = null;
             startTime = Date.now();
             moveCount = 0;
+            clearMoveCount = 0;
             dailyUndoCount = 0;
             updateUndoCountDisplay();
             maxCombo = 0;
@@ -5634,6 +5659,7 @@
                     maxCombo = Math.max(maxCombo, combo);
                     if (currentChallengeId) updateChallengeHud();
                     moveCount++;
+                    clearMoveCount++;
                     let colCleared = false;
                     if (slot.cards.length === 0) {
                         colCleared = true;
@@ -5672,7 +5698,9 @@
 
         // --- 發牌與消除 ---
         async function dealOneCard() {
-            if (isBusy) return;
+            const now = Date.now();
+            if (isBusy || now < dealInputLockedUntil) return;
+            dealInputLockedUntil = now + getDelay(180);
             clearHintHighlight();
 
             if (seedCheatMode && !tutorial.active) {
@@ -5974,6 +6002,7 @@
                     updateChallengeHud();
                 }
             } else {
+                clearMoveCount = Math.max(0, clearMoveCount - 1);
                 const s = slots.find(x => x.id === last.slotId); s.active = true;
                 // 從回收堆移除最後三張牌
                 discardPile.splice(-3);
@@ -6094,6 +6123,7 @@
             const all = slots.flatMap(s => s.cards);
             const isZeroClear = all.length === 0;
             const isLucky3 = all.length === 1 && all[0].val === 3;
+            let luckyCardEl = null;
 
             if (!isZeroClear && !isLucky3) return;
             const useLuckyEnding = true;
@@ -6125,9 +6155,28 @@
             if (PixiLayer.ready) PixiLayer.triggerWinBurst();
 
             if (useLuckyEnding) {
-                const card = document.querySelector('.card');
+                if (isLucky3) {
+                    const slot = slots.find((s) => s.cards.length === 1 && s.cards[0].val === 3);
+                    const card = slot ? document.querySelector(`#col-${slot.id} .card`) : null;
+                    if (card) {
+                        const rect = card.getBoundingClientRect();
+                        card.style.position = 'fixed';
+                        card.style.left = `${rect.left}px`;
+                        card.style.top = `${rect.top}px`;
+                        card.style.width = `${rect.width}px`;
+                        card.style.height = `${rect.height}px`;
+                        card.style.margin = '0';
+                        card.style.zIndex = '10012';
+                        card.style.transition = `left ${getDelay(460)}ms cubic-bezier(0.22,0.61,0.36,1), top ${getDelay(460)}ms cubic-bezier(0.22,0.61,0.36,1), transform ${getDelay(460)}ms cubic-bezier(0.22,0.61,0.36,1), box-shadow ${getDelay(460)}ms ease`;
+                        requestAnimationFrame(() => {
+                            card.style.left = `${(window.innerWidth - rect.width) / 2}px`;
+                            card.style.top = `${(window.innerHeight - rect.height) / 2}px`;
+                        });
+                        luckyCardEl = card;
+                    }
+                }
+                const card = luckyCardEl || document.querySelector('.card');
                 if (card) {
-                    card.style.transition = 'all 0.6s ease';
                     card.style.transform = 'scale(1.1)';
                     card.style.boxShadow = '0 0 20px var(--gold), 0 0 40px rgba(255,215,0,0.5)';
                 }
@@ -6139,7 +6188,7 @@
             // === Stage 2: Card Celebration (600-1600ms) ===
             setTimeout(() => {
                 if (useLuckyEnding) {
-                    const card = document.querySelector('.card');
+                    const card = luckyCardEl || document.querySelector('.card');
                     if (card) {
                         card.classList.add('lucky-three-win');
                         const r = card.getBoundingClientRect();
@@ -6712,7 +6761,7 @@
             const timeStr = document.querySelector('.win-stat-row strong[data-format="time"]')?.textContent || '';
             const movesEl = document.querySelectorAll('.win-stat-row strong');
             const moves = movesEl[1]?.textContent || '';
-            const combo = movesEl[2]?.textContent || '';
+            const combo = movesEl[3]?.textContent || '';
             const resultLine = `🃏 ${emoji} Lucky Win`;
             return `Lucky 3 · ${date}\n⏱ ${timeStr} · 🎯 ${moves} moves · 🔥 Combo ×${combo}\n${resultLine}`;
         }
@@ -6787,8 +6836,10 @@
                     <div class="win-stats">
                         <div class="win-stat-row"><span>${t('win.stat.time')}</span><strong data-countup="${elapsedSec}" data-format="time">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.moves')}</span><strong data-countup="${moveCount}">0</strong></div>
+                        <div class="win-stat-row"><span>${t('win.stat.clear_moves')}</span><strong data-countup="${clearMoveCount}">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.max_combo')}</span><strong data-countup="${maxCombo}">0</strong></div>
                     </div>
+                    <p class="win-move-note">${t('win.stat.moves_note')}</p>
                     ${fortuneText ? `<p class="win-fortune">${fortuneText}</p>` : ''}
                     <details class="win-mystery">
                         <summary class="win-mystery-toggle">${t('win.mystery.toggle')}</summary>
@@ -6918,9 +6969,11 @@
         let hintHoldTimer = null;
         let hintClearTimer = null;
         let rewindFocusTimer = null;
+        let dealInputLockedUntil = 0;
 
         function showHintHighlight() {
             clearHintHighlight();
+            dealInputLockedUntil = Date.now() + getDelay(520);
             const move = findFirstLegalClearMove();
             const deckEl = document.getElementById('deck-pile');
             if (!move) {
@@ -7165,10 +7218,12 @@
                 combo,
                 lastCleared,
                 moveCount,
+                clearMoveCount,
                 maxCombo,
                 hasWon,
                 gameMode,
                 currentSeed,
+                currentDifficultyTag,
                 elapsedSec,
                 // Per-game flags (achievement integrity — without these, reload-cheating
                 // can trivially earn noUndoWins / fullSweepWins / comboGameWins).
@@ -7233,10 +7288,12 @@
                 combo = Number.isInteger(parsed.combo) ? parsed.combo : 0;
                 lastCleared = parsed.lastCleared && isValidCard(parsed.lastCleared) ? parsed.lastCleared : null;
                 moveCount = Number.isInteger(parsed.moveCount) ? parsed.moveCount : 0;
+                clearMoveCount = Number.isInteger(parsed.clearMoveCount) ? parsed.clearMoveCount : 0;
                 maxCombo = Number.isInteger(parsed.maxCombo) ? parsed.maxCombo : 0;
                 hasWon = Boolean(parsed.hasWon);
                 gameMode = parsed.gameMode === 'daily' ? 'daily' : 'normal';
                 currentSeed = Number.isInteger(parsed.currentSeed) ? parsed.currentSeed : null;
+                currentDifficultyTag = typeof parsed.currentDifficultyTag === 'string' ? parsed.currentDifficultyTag : '';
                 // Per-game flags
                 undoUsedThisGame = !!parsed.undoUsedThisGame;
                 columnsCleared = Number.isInteger(parsed.columnsCleared) ? parsed.columnsCleared : 0;

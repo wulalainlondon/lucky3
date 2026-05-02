@@ -1320,6 +1320,10 @@
             box-shadow: 3px 3px 0 #0d47a1;
             border: none;
         }
+        /* Classic asset has a thin light edge; scale up slightly to hide it. */
+        #deck-pile.has-cardback:not([class*="cb-"]) {
+            background-size: 104% 104%;
+        }
         #deck-pile.has-cardback.cb-retro_gold    { background-image: url('./app/cardback/lucky3_retro_classic_gold.png'); box-shadow: 3px 3px 0 #171d2a, 0 0 10px rgba(218,165,32,0.2); }
         #deck-pile.has-cardback.cb-nightgold     { background-image: url('./app/cardback/nightgold.png'); box-shadow: 3px 3px 0 #000, 0 0 10px rgba(218,165,32,0.25); }
         #deck-pile.has-cardback.cb-forest        { background-image: url('./app/cardback/forest.png'); box-shadow: 3px 3px 0 #020802; }
@@ -4930,7 +4934,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.02-v4';
+        const APP_VERSION = '2026.05.02-v5';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -5411,7 +5415,9 @@
             'win.subtitle': 'Outstanding! You cleared the entire board ✨',
             'win.stat.time': 'Time',
             'win.stat.moves': 'Moves',
+            'win.stat.clear_moves': 'Clear Moves',
             'win.stat.max_combo': 'Max Combo',
+            'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
             'win.play_again': 'Play Again',
             'win.share': '📋 Share Result',
             'win.best.new_fastest': '🎉 New best this run: fastest time ({time})',
@@ -5620,7 +5626,9 @@
                 'win.subtitle': '超讚！你把牌局收乾淨了 ✨',
                 'win.stat.time': '用時',
                 'win.stat.moves': '總步數',
+                'win.stat.clear_moves': '消除步數',
                 'win.stat.max_combo': '最高連擊',
+                'win.stat.moves_note': '總步數 = 發牌次數 + 消除次數（Undo 會回退計數）',
                 'win.play_again': '再來一局',
                 'win.share': '📋 分享結果',
                 'win.best.new_fastest': '🎉 本局最佳成績：破自己最快時間（{time}）',
@@ -5810,7 +5818,9 @@
                 'win.subtitle': '素晴らしい！ボードを完全にクリアしました ✨',
                 'win.stat.time': 'タイム',
                 'win.stat.moves': '手数',
+                'win.stat.clear_moves': 'Clear Moves',
                 'win.stat.max_combo': '最高コンボ',
+                'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
                 'win.play_again': 'もう一度',
                 'win.share': '📋 結果をシェア',
                 'win.best.new_fastest': '🎉 今回のベスト：最速タイム更新（{time}）',
@@ -6018,7 +6028,9 @@
                 'win.subtitle': '훌륭해요! 보드를 완전히 클리어했습니다 ✨',
                 'win.stat.time': '시간',
                 'win.stat.moves': '수',
+                'win.stat.clear_moves': 'Clear Moves',
                 'win.stat.max_combo': '최고 콤보',
+                'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
                 'win.play_again': '다시 플레이',
                 'win.share': '📋 결과 공유',
                 'win.best.new_fastest': '🎉 이번 최고 기록: 최단 시간 경신 ({time})',
@@ -6226,7 +6238,9 @@
     'win.subtitle': '¡Sobresaliente! Limpiaste todo el tablero ✨',
     'win.stat.time': 'Tiempo',
     'win.stat.moves': 'Movimientos',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Combo máximo',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Jugar de nuevo',
     'win.best.new_fastest': '🎉 Nuevo récord: tiempo más rápido ({time})',
     'win.best.new_fewest_moves': '✨ Nuevo récord: menos movimientos ({moves})',
@@ -6434,7 +6448,9 @@
     'win.subtitle': 'Excelente! Você limpou todo o tabuleiro ✨',
     'win.stat.time': 'Tempo',
     'win.stat.moves': 'Jogadas',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Combo máximo',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Jogar de novo',
     'win.best.new_fastest': '🎉 Novo recorde: tempo mais rápido ({time})',
     'win.best.new_fewest_moves': '✨ Novo recorde: menos jogadas ({moves})',
@@ -6642,7 +6658,9 @@
     'win.subtitle': 'ยอดเยี่ยม! คุณเคลียร์กระดานทั้งหมดแล้ว ✨',
     'win.stat.time': 'เวลา',
     'win.stat.moves': 'จำนวนตา',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'คอมโบสูงสุด',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'เล่นอีกครั้ง',
     'win.best.new_fastest': '🎉 สถิติใหม่: เวลาเร็วที่สุด ({time})',
     'win.best.new_fewest_moves': '✨ สถิติใหม่: ตาน้อยที่สุด ({moves})',
@@ -6850,7 +6868,9 @@
     'win.subtitle': 'Luar biasa! Anda membersihkan seluruh papan ✨',
     'win.stat.time': 'Waktu',
     'win.stat.moves': 'Langkah',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Combo maks',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Main lagi',
     'win.best.new_fastest': '🎉 Rekor baru: waktu tercepat ({time})',
     'win.best.new_fewest_moves': '✨ Rekor baru: langkah tersedikit ({moves})',
@@ -7058,7 +7078,9 @@
     'win.subtitle': 'Remarquable ! Vous avez vidé tout le plateau ✨',
     'win.stat.time': 'Temps',
     'win.stat.moves': 'Coups',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Combo max',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Rejouer',
     'win.share': '📋 Partager le résultat',
     'win.best.new_fastest': '🎉 Nouveau record : temps le plus rapide ({time})',
@@ -7267,7 +7289,9 @@
     'win.subtitle': '超赞！你把牌局收干净了 ✨',
     'win.stat.time': '用时',
     'win.stat.moves': '总步数',
+    'win.stat.clear_moves': '消除步数',
     'win.stat.max_combo': '最高连击',
+    'win.stat.moves_note': '总步数 = 发牌次数 + 消除次数（Undo 会回退计数）',
     'win.play_again': '再来一局',
     'win.share': '📋 分享结果',
     'win.best.new_fastest': '🎉 本局最佳成绩：破自己最快时间（{time}）',
@@ -7475,7 +7499,9 @@
     'win.subtitle': 'Hervorragend! Du hast das gesamte Brett geleert ✨',
     'win.stat.time': 'Zeit',
     'win.stat.moves': 'Züge',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Max-Combo',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Nochmal spielen',
     'win.share': '📋 Ergebnis teilen',
     'win.best.new_fastest': '🎉 Neuer Rekord: schnellste Zeit ({time})',
@@ -7683,7 +7709,9 @@
     'win.subtitle': 'Straordinario! Hai svuotato l\'intero tavolo ✨',
     'win.stat.time': 'Tempo',
     'win.stat.moves': 'Mosse',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Combo max',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Gioca ancora',
     'win.share': '📋 Condividi risultato',
     'win.best.new_fastest': '🎉 Nuovo record: tempo più veloce ({time})',
@@ -7891,7 +7919,9 @@
     'win.subtitle': 'Notável! Esvaziou todo o tabuleiro ✨',
     'win.stat.time': 'Tempo',
     'win.stat.moves': 'Jogadas',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Combo máximo',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Jogar novamente',
     'win.best.new_fastest': '🎉 Novo recorde: tempo mais rápido ({time})',
     'win.best.new_fewest_moves': '✨ Novo recorde: menos jogadas ({moves})',
@@ -8099,7 +8129,9 @@
     'win.subtitle': 'Uitstekend! Je hebt het hele bord geleegd ✨',
     'win.stat.time': 'Tijd',
     'win.stat.moves': 'Zetten',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Max combo',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Opnieuw spelen',
     'win.best.new_fastest': '🎉 Nieuw record: snelste tijd ({time})',
     'win.best.new_fewest_moves': '✨ Nieuw record: minste zetten ({moves})',
@@ -8307,7 +8339,9 @@
     'win.subtitle': 'Превосходно! Ты очистил всё поле ✨',
     'win.stat.time': 'Время',
     'win.stat.moves': 'Ходы',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Макс. комбо',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Играть снова',
     'win.best.new_fastest': '🎉 Новый рекорд: самое быстрое время ({time})',
     'win.best.new_fewest_moves': '✨ Новый рекорд: меньше всего ходов ({moves})',
@@ -8515,7 +8549,9 @@
     'win.subtitle': 'Znakomicie! Wyczyściłeś całą planszę ✨',
     'win.stat.time': 'Czas',
     'win.stat.moves': 'Ruchy',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Maks. combo',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Zagraj ponownie',
     'win.best.new_fastest': '🎉 Nowy rekord: najszybszy czas ({time})',
     'win.best.new_fewest_moves': '✨ Nowy rekord: najmniej ruchów ({moves})',
@@ -8723,7 +8759,9 @@
     'win.subtitle': 'Mükemmel! Tüm tahtayı temizledin ✨',
     'win.stat.time': 'Süre',
     'win.stat.moves': 'Hamleler',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Maks. Kombo',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Tekrar Oyna',
     'win.best.new_fastest': '🎉 Yeni rekord: en hızlı süre ({time})',
     'win.best.new_fewest_moves': '✨ Yeni rekord: en az hamle ({moves})',
@@ -8931,7 +8969,9 @@
     'win.subtitle': 'Xuất sắc! Đã dọn sạch toàn bộ bàn ✨',
     'win.stat.time': 'Thời gian',
     'win.stat.moves': 'Số nước',
+    'win.stat.clear_moves': 'Clear Moves',
     'win.stat.max_combo': 'Combo tối đa',
+    'win.stat.moves_note': 'Total moves = deals + clears (undo rewinds count).',
     'win.play_again': 'Chơi lại',
     'win.best.new_fastest': '🎉 Kỷ lục mới: thời gian nhanh nhất ({time})',
     'win.best.new_fewest_moves': '✨ Kỷ lục mới: ít nước nhất ({moves})',
@@ -9124,7 +9164,7 @@
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
         let timerPausedAt = null, timerPausedMs = 0;
         let autoEliminateTimer = null;
-        let winInterval = null, moveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
+        let winInterval = null, moveCount = 0, clearMoveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
         let settings = { ...DEFAULT_SETTINGS };
         let achievements = { ...DEFAULT_ACHIEVEMENTS };
         let audioCtx = null;
@@ -9136,6 +9176,7 @@
         let dailyUndoCount = 0;
         let currentSeed = null;
         let currentGameGrade = 'g2'; // 'g1' | 'g2' | 'g3'，用於 BGM 切換
+        let currentDifficultyTag = '';
         let lastDailyRankText = '';
         // ── Challenge mode dependencies (stubs for root, full impl in app/) ──
         let comboFocusActive = false;
@@ -9303,6 +9344,7 @@
             currentChallengeId = id;
             challengeUndoViolated = false;
             challengeDealCount = 0;
+            currentDifficultyTag = 'CHALLENGE';
             deck = [];
             discardPile = [];
             clearedGroups = [];
@@ -9324,6 +9366,7 @@
             lastCleared = null;
             startTime = Date.now();
             moveCount = 0;
+            clearMoveCount = 0;
             dailyUndoCount = 0;
             updateUndoCountDisplay();
             maxCombo = 0;
@@ -9586,20 +9629,25 @@
             // 輪播：T1 → T2 → 循環 [T3, T4, T5]
             if (runIndex === 0) {
                 currentGameGrade = 'g1';
+                currentDifficultyTag = 'T1';
                 seed = pickFromPool(T1_LIGHTNING_SEED_POOL, 't1');
             } else if (runIndex === 1) {
                 currentGameGrade = 'g2';
+                currentDifficultyTag = 'T2';
                 seed = pickFromPool(T2_WARMUP_SEED_POOL, 't2');
             } else {
                 const cycle = (runIndex - 2) % 3; // 0=T3, 1=T4, 2=T5
                 if (cycle === 0) {
                     currentGameGrade = 'g2';
+                    currentDifficultyTag = 'T3';
                     seed = pickFromPool(T3_BRIDGE_SEED_POOL, 't3-' + runIndex);
                 } else if (cycle === 1) {
                     currentGameGrade = 'g2';
+                    currentDifficultyTag = 'T4';
                     seed = pickFromPool(T4_FLOW_SEED_POOL, 't4-' + runIndex);
                 } else {
                     currentGameGrade = 'g3';
+                    currentDifficultyTag = comboMasterActive ? 'T5+' : 'T5';
                     if (comboMasterActive) {
                         seed = pickFromPool(COMBO_MASTER_SEED_POOL, 'combo-' + runIndex)
                             ?? pickFromPool(T5_CHALLENGE_SEED_POOL, 't5-' + runIndex);
@@ -9660,6 +9708,11 @@
             if (tier === 'easy') currentGameGrade = 'g1';
             else if (tier === 'normal' || tier === 'hard') currentGameGrade = 'g2';
             else currentGameGrade = 'g3';
+            if (tier === 'easy') currentDifficultyTag = 'Daily Easy';
+            else if (tier === 'normal') currentDifficultyTag = 'Daily Normal';
+            else if (tier === 'hard') currentDifficultyTag = 'Daily Hard';
+            else if (tier === 'hardplus') currentDifficultyTag = 'Daily Hard+';
+            else currentDifficultyTag = 'Daily Peak';
             return pool[idx] >>> 0;
         }
 
@@ -10229,12 +10282,21 @@
         function updateHeaderModeTag() {
             const tag = document.getElementById('header-mode-tag');
             if (!tag) return;
+            const seedText = Number.isInteger(currentSeed) ? `Seed:${currentSeed}` : '';
             if (gameMode === 'daily') {
-                tag.innerText = t('header.daily_tag', { date: toLocalDateKey() });
+                const dailyText = t('header.daily_tag', { date: toLocalDateKey() });
+                const parts = [dailyText, currentDifficultyTag, seedText].filter(Boolean);
+                tag.innerText = parts.join(' · ');
                 tag.classList.add('show');
             } else {
-                tag.innerText = '';
-                tag.classList.remove('show');
+                const parts = [currentDifficultyTag, seedText].filter(Boolean);
+                if (parts.length > 0) {
+                    tag.innerText = parts.join(' · ');
+                    tag.classList.add('show');
+                } else {
+                    tag.innerText = '';
+                    tag.classList.remove('show');
+                }
             }
             updateUndoCountDisplay();
         }
@@ -12604,6 +12666,7 @@
                 deck = buildTutorialDeck();
                 gameMode = 'normal';
                 currentSeed = null;
+                currentDifficultyTag = 'TUTORIAL';
             } else {
                 gameMode = targetMode;
                 const pickedSeed = gameMode === 'daily' ? pickDailySeed() : pickCuratedSeed();
@@ -12615,6 +12678,7 @@
                     shuffleInPlace(fullDeck);
                     deck = fullDeck;
                     currentSeed = null;
+                    currentDifficultyTag = 'RANDOM';
                 } else {
                     deck = buildSeededDeck(pickedSeed);
                     currentSeed = pickedSeed;
@@ -12638,6 +12702,7 @@
             timerPausedAt = null;
             timerPausedMs = 0;
             moveCount = 0;
+            clearMoveCount = 0;
             dailyUndoCount = 0;
             updateUndoCountDisplay();
             maxCombo = 0;
@@ -13258,6 +13323,7 @@
                     selected = [];
                     maxCombo = Math.max(maxCombo, combo);
                     moveCount++;
+                    clearMoveCount++;
                     playSound('clear', { sum, combo });
                     let colCleared = false;
                     if (slot.cards.length === 0) {
@@ -13282,7 +13348,9 @@
 
         // --- 發牌與消除 ---
         async function dealOneCard(isChained = false) {
-            if (isBusy) return;
+            const now = Date.now();
+            if (isBusy || now < dealInputLockedUntil) return;
+            dealInputLockedUntil = now + getDelay(180);
             clearHintHighlight();
 
             if (seedCheatMode && !tutorial.active) {
@@ -13524,6 +13592,7 @@
             if (last.type === 'deal') {
                 const s = slots.find(x => x.id === last.slotId); deck.push(s.cards.pop()); nextSlotIndex = last.prevIdx;
             } else {
+                clearMoveCount = Math.max(0, clearMoveCount - 1);
                 const s = slots.find(x => x.id === last.slotId); s.active = true;
                 // 從回收堆移除最後三張牌
                 discardPile.splice(-3);
@@ -13593,6 +13662,7 @@
             const all = slots.flatMap(s => s.cards);
             const isZeroClear = all.length === 0;
             const isLucky3 = all.length === 1 && all[0].val === 3;
+            let luckyCardEl = null;
 
             if (!isZeroClear && !isLucky3) return;
             const destinyThreeCard = isZeroClear
@@ -13618,9 +13688,23 @@
             if (PixiLayer.ready) PixiLayer.triggerWinBurst();
 
             if (isLucky3) {
-                const card = document.querySelector('.card');
+                const slot = slots.find((s) => s.cards.length === 1 && s.cards[0].val === 3);
+                const card = slot ? document.querySelector(`#col-${slot.id} .card`) : document.querySelector('.card');
                 if (card) {
-                    card.style.transition = 'all 0.6s ease';
+                    const rect = card.getBoundingClientRect();
+                    card.style.position = 'fixed';
+                    card.style.left = `${rect.left}px`;
+                    card.style.top = `${rect.top}px`;
+                    card.style.width = `${rect.width}px`;
+                    card.style.height = `${rect.height}px`;
+                    card.style.margin = '0';
+                    card.style.zIndex = '10012';
+                    card.style.transition = `left ${getDelay(460)}ms cubic-bezier(0.22,0.61,0.36,1), top ${getDelay(460)}ms cubic-bezier(0.22,0.61,0.36,1), transform ${getDelay(460)}ms cubic-bezier(0.22,0.61,0.36,1), box-shadow ${getDelay(460)}ms ease`;
+                    requestAnimationFrame(() => {
+                        card.style.left = `${(window.innerWidth - rect.width) / 2}px`;
+                        card.style.top = `${(window.innerHeight - rect.height) / 2}px`;
+                    });
+                    luckyCardEl = card;
                     card.style.transform = 'scale(1.1)';
                     card.style.boxShadow = '0 0 20px var(--gold), 0 0 40px rgba(255,215,0,0.5)';
                 }
@@ -13629,7 +13713,7 @@
             // === Stage 2: Card Celebration (600-1600ms) ===
             setTimeout(() => {
                 if (isLucky3) {
-                    const card = document.querySelector('.card');
+                    const card = luckyCardEl || document.querySelector('.card');
                     if (card) {
                         card.classList.add('lucky-three-win');
                         const r = card.getBoundingClientRect();
@@ -13979,7 +14063,7 @@
             const timeStr = document.querySelector('.win-stat-row strong[data-format="time"]')?.textContent || '';
             const movesEl = document.querySelectorAll('.win-stat-row strong');
             const moves = movesEl[1]?.textContent || '';
-            const combo = movesEl[2]?.textContent || '';
+            const combo = movesEl[3]?.textContent || '';
             const resultLine = `🃏 ${emoji} Lucky Win`;
             return `Lucky 3 · ${date}\n⏱ ${timeStr} · 🎯 ${moves} moves · 🔥 Combo ×${combo}\n${resultLine}`;
         }
@@ -14045,8 +14129,10 @@
                     <div class="win-stats">
                         <div class="win-stat-row"><span>${t('win.stat.time')}</span><strong data-countup="${elapsedSec}" data-format="time">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.moves')}</span><strong data-countup="${moveCount}">0</strong></div>
+                        <div class="win-stat-row"><span>${t('win.stat.clear_moves')}</span><strong data-countup="${clearMoveCount}">0</strong></div>
                         <div class="win-stat-row"><span>${t('win.stat.max_combo')}</span><strong data-countup="${maxCombo}">0</strong></div>
                     </div>
+                    <p class="win-move-note">${t('win.stat.moves_note')}</p>
                     ${fortuneText ? `<p class="win-fortune">${fortuneText}</p>` : ''}
                     ${dailyMsg ? `<p class="win-daily">${dailyMsg}</p>` : ''}
                     ${rankMsg ? `<p class="win-daily">${rankMsg}</p>` : ''}
@@ -14166,9 +14252,11 @@
         let hintHoldTimer = null;
         let hintClearTimer = null;
         let rewindFocusTimer = null;
+        let dealInputLockedUntil = 0;
 
         function showHintHighlight() {
             clearHintHighlight();
+            dealInputLockedUntil = Date.now() + getDelay(520);
             const move = findFirstLegalClearMove();
             const deckEl = document.getElementById('deck-pile');
             if (!move) {
@@ -14417,10 +14505,12 @@
                 combo,
                 lastCleared,
                 moveCount,
+                clearMoveCount,
                 maxCombo,
                 hasWon,
                 gameMode,
                 currentSeed,
+                currentDifficultyTag,
                 elapsedSec
             };
         }
@@ -14461,10 +14551,12 @@
                 combo = Number.isInteger(parsed.combo) ? parsed.combo : 0;
                 lastCleared = parsed.lastCleared && isValidCard(parsed.lastCleared) ? parsed.lastCleared : null;
                 moveCount = Number.isInteger(parsed.moveCount) ? parsed.moveCount : 0;
+                clearMoveCount = Number.isInteger(parsed.clearMoveCount) ? parsed.clearMoveCount : 0;
                 maxCombo = Number.isInteger(parsed.maxCombo) ? parsed.maxCombo : 0;
                 hasWon = Boolean(parsed.hasWon);
                 gameMode = parsed.gameMode === 'daily' ? 'daily' : 'normal';
                 currentSeed = Number.isInteger(parsed.currentSeed) ? parsed.currentSeed : null;
+                currentDifficultyTag = typeof parsed.currentDifficultyTag === 'string' ? parsed.currentDifficultyTag : '';
                 deadlockShown = false;
                 selected = [];
                 const elapsedSec = Number.isFinite(parsed.elapsedSec) ? Math.max(0, parsed.elapsedSec) : 0;
