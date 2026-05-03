@@ -72,6 +72,7 @@
             pointer-events: none;
             z-index: 0;
             animation: felt-ambient calc(12s * var(--anim-scale)) ease-in-out infinite alternate;
+            transition: opacity 0.25s ease-out;
         }
 
         @keyframes felt-ambient {
@@ -941,12 +942,10 @@
         }
 
         @keyframes combo-slam {
-            0%   { scale: 2.0; opacity: 0; transform: translate(-50%, -50%); }
-            8%   { scale: 0.92; opacity: 1; transform: translate(-50%, -50%); }
-            16%  { scale: 1.06; transform: translate(-50%, -50%); }
-            28%  { scale: 1.0;  transform: translate(-50%, -50%); }
-            70%  { opacity: 1; transform: translate(-50%, -50%); }
-            100% { opacity: 0; transform: translate(-50%, -140%); }
+            0%   { opacity: 0; transform: translate(-50%, -64%) scale(1.14); }
+            22%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+            55%  { opacity: 1; transform: translate(-50%, -53%) scale(0.99); }
+            100% { opacity: 0; transform: translate(-50%, -110%) scale(0.97); }
         }
 
         /* Border flash on combo ≥ 2 */
@@ -1202,18 +1201,41 @@
             color: #fff;
             -webkit-text-stroke: 1px rgba(255,215,0,0.6);
             filter: drop-shadow(0 0 16px rgba(255,215,0,0.5)) drop-shadow(0 0 4px rgba(255,255,255,0.3));
-            animation: combo-slam calc(1.6s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation: combo-slam calc(1.6s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards,
+                       combo-pulse-4 0.85s ease-in-out 0.36s infinite;
         }
         .combo-text.tier-5 {
             font-size: 5rem;
             color: #fff;
             -webkit-text-stroke: 1.5px rgba(255,215,0,0.7);
             filter: drop-shadow(0 0 20px rgba(255,215,0,0.6)) drop-shadow(0 0 40px rgba(255,200,0,0.25)) drop-shadow(0 0 4px rgba(255,255,255,0.5));
+            animation: combo-slam calc(1.6s * var(--anim-scale)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards,
+                       combo-pulse-5 0.65s ease-in-out 0.36s infinite;
+        }
+
+        .combo-text.tier-3.combo-lite,
+        .combo-text.tier-4.combo-lite,
+        .combo-text.tier-5.combo-lite {
+            font-size: clamp(1.4rem, 4.2vw, 2.35rem);
+            -webkit-text-stroke: 0;
+            -webkit-text-fill-color: currentColor;
+            background: none;
+            filter: none;
+            animation: combo-lite-fade calc(0.9s * var(--anim-scale)) ease-out forwards;
         }
 
         @keyframes combo-shimmer {
             0% { background-position: 0% 50%; }
             100% { background-position: 200% 50%; }
+        }
+
+        @keyframes combo-pulse-4 {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(255,215,0,0.35)) drop-shadow(0 0 2px rgba(255,255,255,0.25)); }
+            50%       { filter: drop-shadow(0 0 22px rgba(255,215,0,0.65)) drop-shadow(0 0 10px rgba(255,255,255,0.45)); }
+        }
+        @keyframes combo-pulse-5 {
+            0%, 100% { filter: drop-shadow(0 0 12px rgba(255,215,0,0.45)) drop-shadow(0 0 4px rgba(255,255,255,0.35)); }
+            40%       { filter: drop-shadow(0 0 32px rgba(255,215,0,0.85)) drop-shadow(0 0 16px rgba(255,255,255,0.65)); }
         }
 
         /* --- Column Cleared Glow --- */
@@ -3799,7 +3821,7 @@
             width: clamp(64px, 15vw, 84px);
             height: clamp(64px, 15vw, 84px);
             pointer-events: none;
-            z-index: 9700;
+            z-index: 9998;
             transform: translate(-50%, -50%) translateY(8px) scale(0.9);
             border-radius: 50%;
             border: 1px solid rgba(255, 215, 120, 0.55);
@@ -3861,6 +3883,120 @@
             from { transform: scale(0.9); opacity: 0.45; }
             to   { transform: scale(1.18); opacity: 0; }
         }
+
+@keyframes spirit-fox-traverse {
+    0%   { transform: translateX(calc(-100% - 24px)) translateY(12px); opacity: 0; }
+    7%   { opacity: 1; }
+    30%  { transform: translateX(18vw) translateY(-10px); }
+    55%  { transform: translateX(42vw) translateY(-14px); }
+    78%  { transform: translateX(68vw) translateY(-4px); }
+    93%  { opacity: 1; }
+    100% { transform: translateX(calc(100vw + 24px)) translateY(8px); opacity: 0; }
+}
+
+@keyframes spirit-eagle-ascent {
+    0%   { transform: translate(-50%, calc(50vh + 120px)) scale(0.88); opacity: 0; }
+    9%   { transform: translate(-50%, calc(50vh - 20px)) scale(0.94); opacity: 1; }
+    25%  { transform: translate(-50%, 12vh) scale(1.0); }
+    38%  { transform: translate(-50%, -2vh) scale(0.97); }
+    52%  { transform: translate(-50%, -16vh) scale(1.02); }
+    65%  { transform: translate(-50%, -30vh) scale(0.98); }
+    80%  { transform: translate(-50%, -44vh) scale(1.01); opacity: 1; }
+    100% { transform: translate(-50%, calc(-50vh - 160px)) scale(0.9); opacity: 0; }
+}
+
+@keyframes spirit-lion-manifest {
+    0%   { transform: translate(-50%, -50%) scale(1.3);  opacity: 0;    filter: blur(12px); }
+    20%  { transform: translate(-50%, -50%) scale(1.0);  opacity: 0.78; filter: blur(0px); }
+    28%  { transform: translate(-50%, -50%) scale(1.05); opacity: 0.85; }
+    38%  { transform: translate(-50%, -50%) scale(0.98); opacity: 0.76; }
+    68%  { transform: translate(-50%, -50%) scale(1.0);  opacity: 0.72; filter: blur(0px); }
+    100% { transform: translate(-50%, -50%) scale(1.1);  opacity: 0;    filter: blur(6px); }
+}
+
+@keyframes lion-shockwave {
+    0%   { transform: translate(-50%, -50%) scale(0.4); opacity: 0.6; }
+    100% { transform: translate(-50%, -50%) scale(4.0); opacity: 0; }
+}
+
+/* ── 狐靈橫穿 ── */
+.spirit-beast.spirit-fox {
+    width: clamp(260px, 48vw, 420px);
+    height: auto;
+    left: 0;
+    top: auto;
+    bottom: 38%;
+    border-radius: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+    z-index: 9500;
+    transform: none;
+    animation: spirit-fox-traverse 1.8s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+.spirit-beast.spirit-fox .spirit-beast-icon {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(255, 200, 80, 0.55));
+}
+
+/* ── 鷹靈飛升 ── */
+.spirit-beast.spirit-eagle {
+    width: clamp(200px, 40vw, 340px);
+    height: auto;
+    left: 50%;
+    top: 50%;
+    border-radius: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+    z-index: 9600;
+    transform: translate(-50%, calc(50vh + 120px)) scale(0.88);
+    animation: spirit-eagle-ascent 2.0s cubic-bezier(0.3, 0.1, 0.3, 1) forwards;
+}
+.spirit-beast.spirit-eagle .spirit-beast-icon {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 22px rgba(255, 200, 80, 0.6));
+}
+
+/* ── 獅靈顯現 ── */
+.spirit-beast.spirit-lion {
+    width: clamp(300px, 62vw, 520px);
+    height: clamp(300px, 62vw, 520px);
+    left: 50%;
+    top: 50%;
+    border-radius: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+    z-index: 50;
+    -webkit-mask-image: radial-gradient(circle, black 35%, transparent 72%);
+    mask-image: radial-gradient(circle, black 35%, transparent 72%);
+    animation: spirit-lion-manifest 3.0s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+}
+.spirit-beast.spirit-lion .spirit-beast-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: drop-shadow(0 0 28px rgba(255, 200, 60, 0.7));
+}
+
+/* ── 吼叫衝擊波 ── */
+.lion-shockwave {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: clamp(300px, 62vw, 520px);
+    height: clamp(300px, 62vw, 520px);
+    border-radius: 50%;
+    border: 3px solid rgba(255, 215, 0, 0.5);
+    pointer-events: none;
+    z-index: 51;
+    animation: lion-shockwave 0.85s ease-out forwards;
+}
 
         /* --- 3. 深夜星空 --- */
         body.night-sky::after {
