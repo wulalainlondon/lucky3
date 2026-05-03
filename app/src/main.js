@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.03-v5';
+        const APP_VERSION = '2026.05.03-v6';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -1626,7 +1626,8 @@
                 const headerH = document.getElementById('header')?.offsetHeight || 60;
                 let boardH;
                 if (board.clientHeight > 100) {
-                    boardH = board.clientHeight - 20;
+                    const boardPadV = (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0);
+                    boardH = board.clientHeight - boardPadV - 20;
                 } else {
                     const footerH = document.getElementById('footer')?.offsetHeight || 90;
                     boardH = viewportH - headerH - footerH - 30;
@@ -5063,7 +5064,9 @@
                 // UI chrome are automatically accounted for — no guesswork needed.
                 let _availH;
                 if (board.clientHeight > 100) {
-                    _availH = board.clientHeight - 10; // 10px safety margin
+                    const _boardStyle = getComputedStyle(board);
+                    const _boardPadV = (parseFloat(_boardStyle.paddingTop) || 0) + (parseFloat(_boardStyle.paddingBottom) || 0);
+                    _availH = board.clientHeight - _boardPadV - 10;
                 } else {
                     const _headerH = document.getElementById('header')?.offsetHeight || 60;
                     const _footerH = _isSidebar ? 0 : (document.getElementById('footer')?.offsetHeight || 90);
