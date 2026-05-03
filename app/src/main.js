@@ -740,6 +740,7 @@
         });
         let deck = [], slots = [], discardPile = [], clearedGroups = [];
         let selected = [], nextSlotIndex = 0, isBusy = false, historyStack = [], combo = 0, lastCleared = null, startTime = Date.now();
+        let _gameEpoch = 0;
         const _slotRenderCache = {}; // slot.id -> fingerprint，用於 differential rendering
         let autoEliminateTimer = null;
         let winInterval = null, moveCount = 0, clearMoveCount = 0, maxCombo = 0, hasWon = false, deadlockShown = false;
@@ -975,10 +976,15 @@
             resetDealHapticCount();
             updateChallengeHud();
             showChallengeHud(true);
+            const epoch = ++_gameEpoch;
             const omenPromise = deck.length > 0
                 ? showOmenCard(deck[deck.length - 1]?.suit || null)
                 : Promise.resolve();
-            omenPromise.then(() => runOpeningDealAnimation(3, null)).then(() => {
+            omenPromise.then(() => {
+                if (epoch !== _gameEpoch) return;
+                return runOpeningDealAnimation(3, null, epoch);
+            }).then(() => {
+                if (epoch !== _gameEpoch) return;
                 updateDiscard();
                 saveGameState();
                 if (!hasWon) checkDeadlock();
@@ -1380,7 +1386,7 @@
             }
         }
 
-        function runOpeningDealAnimation(cardsPerColumn = 3, queueOverride = null) {
+        function runOpeningDealAnimation(cardsPerColumn = 3, queueOverride = null, epoch = _gameEpoch) {
             const queue = Array.isArray(queueOverride) && queueOverride.length > 0
                 ? [...queueOverride]
                 : (() => {
@@ -1399,6 +1405,7 @@
 
             return new Promise((resolve) => {
                 const step = (index) => {
+                    if (epoch !== _gameEpoch) { isBusy = false; resolve(); return; }
                     if (index >= queue.length || deck.length === 0) {
                         isBusy = false;
                         resolve();
@@ -1441,6 +1448,7 @@
                     );
 
                     motion.onfinish = () => {
+                        if (epoch !== _gameEpoch) { fly.remove(); resolve(); return; }
                         slot.cards.push(card);
                         fly.remove();
                         render();
@@ -4941,10 +4949,15 @@
             const tutorialOpeningQueue = tutorialDeckMode ? [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2] : null;
             resetDealHapticCount();
             // 靈牌儀式：非教學模式才顯示
+            const epoch = ++_gameEpoch;
             const omenPromise = (!tutorialDeckMode && deck.length > 0)
                 ? showOmenCard(deck[deck.length - 1]?.suit || null)
                 : Promise.resolve();
-            omenPromise.then(() => runOpeningDealAnimation(3, tutorialOpeningQueue)).then(() => {
+            omenPromise.then(() => {
+                if (epoch !== _gameEpoch) return;
+                return runOpeningDealAnimation(3, tutorialOpeningQueue, epoch);
+            }).then(() => {
+                if (epoch !== _gameEpoch) return;
                 updateDiscard();
                 saveGameState();
                 if (!hasWon) checkDeadlock();
