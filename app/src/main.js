@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.02-v6';
+        const APP_VERSION = '2026.05.03-v1';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -6184,6 +6184,9 @@
                         card.style.height = `${rect.height}px`;
                         card.style.margin = '0';
                         card.style.zIndex = '10012';
+                        // Move out of #board subtree so subsequent board transforms
+                        // (e.g. screenShake) cannot shift this fixed element.
+                        document.body.appendChild(card);
                         card.style.transition = `left ${getDelay(460)}ms cubic-bezier(0.22,0.61,0.36,1), top ${getDelay(460)}ms cubic-bezier(0.22,0.61,0.36,1), transform ${getDelay(460)}ms cubic-bezier(0.22,0.61,0.36,1), box-shadow ${getDelay(460)}ms ease`;
                         requestAnimationFrame(() => {
                             card.style.left = `${(window.innerWidth - rect.width) / 2}px`;
