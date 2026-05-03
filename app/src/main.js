@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.03-v6';
+        const APP_VERSION = '2026.05.03-v7';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -1547,22 +1547,28 @@
             const meta = SPIRIT_BEASTS[tier];
             if (!meta) return;
             const el = document.createElement('div');
-            el.className = `spirit-beast ${meta.cls}`;
-            const discardEl = document.getElementById('discard-pile');
-            if (discardEl) {
-                const rect = discardEl.getBoundingClientRect();
-                const iconSize = Math.max(64, Math.min(84, window.innerWidth * 0.15));
-                const anchorX = rect.left + rect.width / 2;
-                const anchorY = Math.max(iconSize * 0.55 + 8, rect.top - Math.max(18, iconSize * 0.34));
-                el.style.left = `${Math.round(anchorX)}px`;
-                el.style.top = `${Math.round(anchorY)}px`;
+            if (tier === 3) {
+                el.className = 'spirit-beast spirit-fox';
+                el.innerHTML = `<img class="spirit-beast-icon" src="${meta.icon}" alt="" />`;
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), getDelay(1800));
+            } else if (tier === 4) {
+                el.className = 'spirit-beast spirit-eagle';
+                el.innerHTML = `<img class="spirit-beast-icon" src="${meta.icon}" alt="" />`;
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), getDelay(2000));
+            } else if (tier === 5) {
+                el.className = 'spirit-beast spirit-lion';
+                el.innerHTML = `<img class="spirit-beast-icon" src="${meta.icon}" alt="" />`;
+                document.body.appendChild(el);
+                setTimeout(() => {
+                    const wave = document.createElement('div');
+                    wave.className = 'lion-shockwave';
+                    document.body.appendChild(wave);
+                    setTimeout(() => wave.remove(), getDelay(850));
+                }, getDelay(600));
+                setTimeout(() => el.remove(), getDelay(3000));
             }
-            el.innerHTML = `
-                <div class="spirit-beast-core">
-                    <img class="spirit-beast-icon" src="${meta.icon}" alt="" />
-                </div>`;
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), getDelay(1120));
         }
 
         // --- 4. 選牌光圈脈衝 ---
@@ -6427,16 +6433,14 @@
                 if (useLiteVariant) {
                     ParticleSystem.emit('fountain', cx, cy, { count: 6 });
                 } else if (tier >= 5) {
-                    SHAKE.medium();
-                    ParticleSystem.emit('fireworks', cx, cy, { count: 24 });
+                    ParticleSystem.emit('fountain', cx, cy, { count: 20, colorStart: '#fff8e0', colorEnd: '#ffd700' });
                     const vig = document.createElement('div');
                     vig.className = 'golden-vignette';
                     document.body.appendChild(vig);
                     setTimeout(() => vig.remove(), getDelay(1400));
                     showSpiritBeast(5);
                 } else if (tier >= 4) {
-                    SHAKE.light();
-                    ParticleSystem.emit('confetti', cx, cy, { count: 16 });
+                    ParticleSystem.emit('fountain', cx, cy, { count: 12 });
                     const warm = document.createElement('div');
                     warm.className = 'warm-flash';
                     document.body.appendChild(warm);
