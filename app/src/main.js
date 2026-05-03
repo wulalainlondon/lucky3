@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.03-v4';
+        const APP_VERSION = '2026.05.03-v5';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -5719,7 +5719,7 @@
         }
 
         // --- 發牌與消除 ---
-        async function dealOneCard() {
+        async function dealOneCard(isChained = false) {
             BGM.tryResume();
             const now = Date.now();
             if (isBusy || now < dealInputLockedUntil) return;
@@ -5773,6 +5773,7 @@
             const target = slots[(nextSlotIndex + slots.indexOf(avail)) % 4];
             const prevIdx = nextSlotIndex;
             nextSlotIndex = (slots.indexOf(target) + 1) % 4;
+            const prevCardCount = target.cards.length;
 
             const skippedLegalClear = hasAnyLegalClear();
 
@@ -5863,6 +5864,9 @@
                             canClear ? { count: 10, colorStart: '#4eff91', colorEnd: '#ffd700' } : {}
                         );
                     }
+                    if (!isChained && prevCardCount === 1 && deck.length > 0 && !hasWon) {
+                        setTimeout(() => dealOneCard(true), getDelay(80));
+                    }
                     isBusy = false;
                     checkDeadlock();
                     saveGameState();
@@ -5873,6 +5877,9 @@
                     fly.remove();
                     render();
                     ParticleSystem.emit('dust', rect.left + rect.width / 2, targetTop + 10);
+                    if (!isChained && prevCardCount === 1 && deck.length > 0 && !hasWon) {
+                        setTimeout(() => dealOneCard(true), getDelay(80));
+                    }
                     isBusy = false;
                     checkDeadlock();
                     saveGameState();
@@ -5907,6 +5914,9 @@
                 isBusy = false;
                 checkDeadlock();
                 saveGameState();
+                if (!hasWon && deck.length > 0) {
+                    setTimeout(() => dealOneCard(), getDelay(100));
+                }
             };
 
             if (settings.recycleAnim) {
