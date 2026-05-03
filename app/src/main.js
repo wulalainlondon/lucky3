@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.03-v3';
+        const APP_VERSION = '2026.05.03-v4';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -2777,30 +2777,30 @@
         }
 
         const CARDBACK_REGISTRY = {
-            classic: buildCardbackConfig('../cardback/classic.png', 'CRYSTAL', 'rgba(255, 215, 0, 0.9)', 'CRYSTAL'),
-            classic_blue: buildCardbackConfig('../cardback/classic.png', 'CRYSTAL', 'rgba(100, 180, 255, 0.9)', 'CRYSTAL'),
-            classic_red: buildCardbackConfig('../cardback/classic.png', 'CRYSTAL', 'rgba(255, 100, 120, 0.9)', 'CRYSTAL'),
-            retro_gold: buildCardbackConfig('../cardback/lucky3_retro_classic_gold.png', 'FORGE_GOLD', 'rgba(218, 165, 32, 1)', 'FORGE'),
-            nightgold: buildCardbackConfig('../cardback/nightgold.png', 'EMBER_DARK', 'rgba(218, 165, 32, 0.95)', 'FORGE'),
-            forest: buildCardbackConfig('../cardback/forest.png', 'LIFE_FOREST', 'rgba(60, 220, 80, 0.85)', 'LIFE'),
-            crimson: buildCardbackConfig('../cardback/crimson.png', 'EMBER_BRIGHT', 'rgba(255, 60, 40, 0.9)', 'FORGE'),
-            void: buildCardbackConfig('../cardback/void.png', 'VOID_PURPLE', 'rgba(180, 120, 255, 0.9)', 'VOID'),
-            lucky: buildCardbackConfig('../cardback/lucky.png', 'LIFE_FESTIVE', 'rgba(255, 215, 0, 0.9)', 'LIFE'),
-            combo5: buildCardbackConfig('../cardback/combo5.png', 'ARC_CYAN', 'rgba(40, 220, 255, 0.95)', 'ARC'),
-            speed18: buildCardbackConfig('../cardback/speed18.png', 'ARC_GREEN', 'rgba(120, 190, 255, 0.9)', 'ARC'),
-            ironwill: buildCardbackConfig('../cardback/ironwill.png', 'FORGE_STEEL', 'rgba(200, 210, 230, 0.85)', 'FORGE'),
-            suitcollector: buildCardbackConfig('../cardback/suitcollector.png', 'LIFE_SUIT', 'rgba(255, 215, 0, 0.9)', 'LIFE'),
-            luckydraw: buildCardbackConfig('../cardback/luckydraw.png', 'VOID_DARK', 'rgba(218, 165, 32, 0.9)', 'VOID'),
-            fullsweep: buildCardbackConfig('../cardback/fullsweep.png', 'FORGE_ROYAL', 'rgba(80, 255, 130, 0.85)', 'FORGE'),
-            dailyregular: buildCardbackConfig('../cardback/dailyregular.png', 'LIFE_STELLAR', 'rgba(255, 200, 80, 0.9)', 'LIFE'),
-            chainreaction: buildCardbackConfig('../cardback/chainreaction.png', 'ARC_CYAN', 'rgba(120, 190, 255, 0.95)', 'ARC'),
+            classic: buildCardbackConfig('./cardback/classic.png', 'CRYSTAL', 'rgba(255, 215, 0, 0.9)', 'CRYSTAL'),
+            classic_blue: buildCardbackConfig('./cardback/classic.png', 'CRYSTAL', 'rgba(100, 180, 255, 0.9)', 'CRYSTAL'),
+            classic_red: buildCardbackConfig('./cardback/classic.png', 'CRYSTAL', 'rgba(255, 100, 120, 0.9)', 'CRYSTAL'),
+            retro_gold: buildCardbackConfig('./cardback/lucky3_retro_classic_gold.png', 'FORGE_GOLD', 'rgba(218, 165, 32, 1)', 'FORGE'),
+            nightgold: buildCardbackConfig('./cardback/nightgold.png', 'EMBER_DARK', 'rgba(218, 165, 32, 0.95)', 'FORGE'),
+            forest: buildCardbackConfig('./cardback/forest.png', 'LIFE_FOREST', 'rgba(60, 220, 80, 0.85)', 'LIFE'),
+            crimson: buildCardbackConfig('./cardback/crimson.png', 'EMBER_BRIGHT', 'rgba(255, 60, 40, 0.9)', 'FORGE'),
+            void: buildCardbackConfig('./cardback/void.png', 'VOID_PURPLE', 'rgba(180, 120, 255, 0.9)', 'VOID'),
+            lucky: buildCardbackConfig('./cardback/lucky.png', 'LIFE_FESTIVE', 'rgba(255, 215, 0, 0.9)', 'LIFE'),
+            combo5: buildCardbackConfig('./cardback/combo5.png', 'ARC_CYAN', 'rgba(40, 220, 255, 0.95)', 'ARC'),
+            speed18: buildCardbackConfig('./cardback/speed18.png', 'ARC_GREEN', 'rgba(120, 190, 255, 0.9)', 'ARC'),
+            ironwill: buildCardbackConfig('./cardback/ironwill.png', 'FORGE_STEEL', 'rgba(200, 210, 230, 0.85)', 'FORGE'),
+            suitcollector: buildCardbackConfig('./cardback/suitcollector.png', 'LIFE_SUIT', 'rgba(255, 215, 0, 0.9)', 'LIFE'),
+            luckydraw: buildCardbackConfig('./cardback/luckydraw.png', 'VOID_DARK', 'rgba(218, 165, 32, 0.9)', 'VOID'),
+            fullsweep: buildCardbackConfig('./cardback/fullsweep.png', 'FORGE_ROYAL', 'rgba(80, 255, 130, 0.85)', 'FORGE'),
+            dailyregular: buildCardbackConfig('./cardback/dailyregular.png', 'LIFE_STELLAR', 'rgba(255, 200, 80, 0.9)', 'LIFE'),
+            chainreaction: buildCardbackConfig('./cardback/chainreaction.png', 'ARC_CYAN', 'rgba(120, 190, 255, 0.95)', 'ARC'),
             // Extreme Challenge rewards — themed to match the cardback art
-            shilian:  buildCardbackConfig('../cardback/shilian.png',  'FORGE_STEEL',  'rgba(192, 192, 192, 0.85)', 'FORGE'),
-            tianzhu:  buildCardbackConfig('../cardback/tianzhu.png',  'ARC_CYAN',     'rgba(160, 200, 232, 0.9)',  'ARC'),
-            xingbao:  buildCardbackConfig('../cardback/xingbao.png',  'EMBER_BRIGHT', 'rgba(255, 170, 68, 0.95)',  'FORGE'),
-            lunhui:   buildCardbackConfig('../cardback/lunhui.png',   'LIFE_FOREST',  'rgba(136, 221, 170, 0.9)',  'LIFE'),
-            jufeng:   buildCardbackConfig('../cardback/jufeng.png',   'ARC_GREEN',    'rgba(170, 238, 221, 0.9)',  'ARC'),
-            yongheng: buildCardbackConfig('../cardback/yongheng.png', 'FORGE_ROYAL',  'rgba(255, 215, 0, 1.0)',    'FORGE'),
+            shilian:  buildCardbackConfig('./cardback/shilian.png',  'FORGE_STEEL',  'rgba(192, 192, 192, 0.85)', 'FORGE'),
+            tianzhu:  buildCardbackConfig('./cardback/tianzhu.png',  'ARC_CYAN',     'rgba(160, 200, 232, 0.9)',  'ARC'),
+            xingbao:  buildCardbackConfig('./cardback/xingbao.png',  'EMBER_BRIGHT', 'rgba(255, 170, 68, 0.95)',  'FORGE'),
+            lunhui:   buildCardbackConfig('./cardback/lunhui.png',   'LIFE_FOREST',  'rgba(136, 221, 170, 0.9)',  'LIFE'),
+            jufeng:   buildCardbackConfig('./cardback/jufeng.png',   'ARC_GREEN',    'rgba(170, 238, 221, 0.9)',  'ARC'),
+            yongheng: buildCardbackConfig('./cardback/yongheng.png', 'FORGE_ROYAL',  'rgba(255, 215, 0, 1.0)',    'FORGE'),
         };
 
         let activeCardbackId = 'classic';
@@ -6499,7 +6499,7 @@
                 const cfg = getCurrentCardbackConfig();
                 if (cardbackId && cardbackId !== 'classic') f.classList.add(`cb-${cardbackId}`);
                 f.classList.add('use-cardback');
-                f.style.backgroundImage = cfg.image || "url('../cardback/classic.png')";
+                f.style.backgroundImage = cfg.image || "url('./cardback/classic.png')";
                 f.style.backgroundSize = 'cover';
                 f.style.backgroundPosition = 'center';
                 f.style.backgroundRepeat = 'no-repeat';
