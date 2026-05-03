@@ -1617,8 +1617,15 @@
             let cardW = Math.min(maxCard, Math.max(minCard, Math.floor(usable / 4)));
 
             // Sidebar uses tighter overlap (78% hidden vs 72%) so cards can be
-            // larger while still fitting 10-deep stacks in limited height
-            const overlapFactor = isSidebarMode ? 0.78 : 0.72;
+            // larger while still fitting 10-deep stacks in limited height.
+            // Overlap shrinks further when rank/suit scale is large so the
+            // corner label remains visible on peeking cards (1rem = 16px assumed).
+            const _rankScale = normalizeCardScale(settings?.cardRankScale ?? 1);
+            const _suitScale = normalizeCardScale(settings?.cardSuitScale ?? 1);
+            const _cornerH = 4 + 16 * 0.85 * _rankScale + 16 * 0.65 * _suitScale;
+            const _maxOverlap = isSidebarMode ? 0.82 : 0.78;
+            const _minOverlap = isSidebarMode ? 0.62 : 0.55;
+            const overlapFactor = Math.max(_minOverlap, Math.min(_maxOverlap, 1 - (_cornerH + 5) / cardH));
 
             // In landscape, constrain card size by available height
             // so tall stacks (10+ cards) don't overflow
@@ -1766,6 +1773,7 @@
             settings[key] = value;
             applySettings();
             saveSettings();
+            if (key === 'cardRankScale' || key === 'cardSuitScale') syncBoardScale();
         }
 
         function switchSettingsTab(idx) {
@@ -2638,7 +2646,7 @@
                         piece.className = `gallery-piece${isUnlocked ? unlockTag : ' locked'}`;
                         piece.style.width = `${pieceW}px`;
                         piece.style.height = `${pieceH}px`;
-                        piece.innerHTML = `<img src="${paintingPieceSrc(meta.id, r, c)}" alt="">`;
+                        if (isUnlocked) piece.innerHTML = `<img src="${paintingPieceSrc(meta.id, r, c)}" alt="">`;
                         puzzle.appendChild(piece);
                     }
                 }
