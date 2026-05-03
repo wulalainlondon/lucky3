@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.03-v1';
+        const APP_VERSION = '2026.05.03-v2';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -1250,10 +1250,16 @@
                 }
             }
 
-            state.dayKey = today;
-            state.runIndex = runIndex + 1;
-            saveDailyNormalCycleState(state);
+            // Do NOT advance runIndex here — only advance on win (see advanceDailyNormalCycle).
             return seed;
+        }
+
+        function advanceDailyNormalCycle() {
+            const today = toLocalDateKey();
+            let state = loadDailyNormalCycleState();
+            if (state.dayKey !== today) state = { dayKey: today, runIndex: 0 };
+            state.runIndex += 1;
+            saveDailyNormalCycleState(state);
         }
 
         function dailySeedIndex(dateKey) {
@@ -1777,21 +1783,12 @@
         function updateHeaderModeTag() {
             const tag = document.getElementById('header-mode-tag');
             if (!tag) return;
-            const seedText = Number.isInteger(currentSeed) ? `Seed:${currentSeed}` : '';
             if (gameMode === 'daily') {
-                const dailyText = t('header.daily_tag', { date: toLocalDateKey() });
-                const parts = [dailyText, currentDifficultyTag, seedText].filter(Boolean);
-                tag.innerText = parts.join(' · ');
+                tag.innerText = t('header.daily_tag', { date: toLocalDateKey() });
                 tag.classList.add('show');
             } else {
-                const parts = [currentDifficultyTag, seedText].filter(Boolean);
-                if (parts.length > 0) {
-                    tag.innerText = parts.join(' · ');
-                    tag.classList.add('show');
-                } else {
-                    tag.innerText = '';
-                    tag.classList.remove('show');
-                }
+                tag.innerText = '';
+                tag.classList.remove('show');
             }
             updateUndoCountDisplay();
         }
@@ -4180,23 +4177,26 @@
         // ── Background Music Engine ──────────────────────────────────
         const BGM = (() => {
             const TRACKS = {
+                g1: _soundBasePath + 'bgm.mp3',
                 g2: _soundBasePath + 'bgm_g2.mp3',
                 g3: _soundBasePath + 'bgm_g3.mp3',
             };
+            const normalise = t => (TRACKS[t] ? t : 'g2');
             const TARGET_VOL = 0.45;
             let currentTrack = 'g2';
             let activeEl = null;
             let running = false;
+            let playBlocked = false;
 
             function makeEl(track) {
-                const el = new Audio(TRACKS[track] || TRACKS.g2);
+                const el = new Audio(TRACKS[normalise(track)] || TRACKS.g2);
                 el.loop = true;
                 el.volume = 0;
                 return el;
             }
 
             function fadeIn(el) {
-                el.play().catch(() => {});
+                el.play().catch(() => { playBlocked = true; });
                 let v = el.volume;
                 const timer = setInterval(() => {
                     v = Math.min(v + 0.05, TARGET_VOL);
@@ -4205,16 +4205,12 @@
                 }, 80);
             }
 
-            function fadeOut(el, cb) {
+            function fadeOut(el) {
                 let v = el.volume;
                 const timer = setInterval(() => {
                     v = Math.max(v - 0.05, 0);
                     el.volume = v;
-                    if (v <= 0) {
-                        clearInterval(timer);
-                        el.pause();
-                        if (cb) cb();
-                    }
+                    if (v <= 0) { clearInterval(timer); el.pause(); }
                 }, 80);
             }
 
@@ -4228,17 +4224,26 @@
                 stop() {
                     if (!running) return;
                     running = false;
-                    if (activeEl) fadeOut(activeEl, () => { activeEl = null; });
+                    const el = activeEl;
+                    activeEl = null;
+                    if (el) fadeOut(el);
                 },
                 sync(enabled) {
                     if (enabled) this.start(); else this.stop();
                 },
+                // Call on first user interaction to unblock autoplay-blocked BGM
+                tryResume() {
+                    if (!running || !playBlocked) return;
+                    playBlocked = false;
+                    if (activeEl) activeEl.play().catch(() => { playBlocked = true; });
+                },
                 setTrack(track) {
-                    if (track === currentTrack) return;
-                    currentTrack = track;
+                    const key = normalise(track);
+                    if (key === currentTrack) return;
+                    currentTrack = key;
                     if (!running) return;
                     const old = activeEl;
-                    activeEl = makeEl(track);
+                    activeEl = makeEl(key);
                     fadeIn(activeEl);
                     if (old) fadeOut(old);
                 }
@@ -5121,6 +5126,7 @@
         <div class="card-suit-small">${card.suit}</div>
     </div>`;
                     div.onclick = () => {
+                        BGM.tryResume();
                         if (isBusy) return;
                         const sIdx = selected.findIndex(s => s.slotId === slot.id && s.idx === idx);
                         if (sIdx > -1) {
@@ -5714,6 +5720,7 @@
 
         // --- 發牌與消除 ---
         async function dealOneCard() {
+            BGM.tryResume();
             const now = Date.now();
             if (isBusy || now < dealInputLockedUntil) return;
             dealInputLockedUntil = now + getDelay(180);
@@ -6153,6 +6160,7 @@
                 winCardSuit = nextCard && nextCard.val === 3 ? nextCard.suit : '';
             }
             hasWon = true;
+            if (gameMode === 'normal') advanceDailyNormalCycle();
             const destinyThreeCard = isZeroClear
                 ? (() => {
                     const top = deck.length > 0 ? deck[deck.length - 1] : null;
