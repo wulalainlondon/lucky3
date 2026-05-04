@@ -1426,8 +1426,15 @@
                     }
 
                     const card = deck.pop();
-                    const deckRect = document.getElementById('deck-pile').getBoundingClientRect();
+                    const deckEl = document.getElementById('deck-pile');
                     const colEl = document.getElementById(`col-${slotId}`);
+                    if (!deckEl || !colEl) {
+                        slot.cards.push(card);
+                        render();
+                        setTimeout(() => step(index + 1), getDelay(85));
+                        return;
+                    }
+                    const deckRect = deckEl.getBoundingClientRect();
                     const colRect = colEl.getBoundingClientRect();
                     const targetTop = getDealTargetTop(colEl, slot.cards.length);
                     const fly = createFly(card, deckRect);
@@ -1453,7 +1460,10 @@
                         }
                     );
 
-                    motion.onfinish = () => {
+                    let stepDone = false;
+                    const stepComplete = () => {
+                        if (stepDone) return;
+                        stepDone = true;
                         if (epoch !== _gameEpoch) { fly.remove(); resolve(); return; }
                         slot.cards.push(card);
                         fly.remove();
@@ -1471,6 +1481,9 @@
                         }
                         setTimeout(() => step(index + 1), getDelay(85));
                     };
+                    motion.onfinish = stepComplete;
+                    // Fallback: certain browsers/webviews may skip WAAPI onfinish.
+                    setTimeout(stepComplete, flyDuration + getDelay(100));
                 };
 
                 step(0);
@@ -2289,6 +2302,8 @@
         async function updateFocusWidget() {
             const el = document.getElementById('focus-widget');
             if (!el) return;
+            el.style.display = 'none';
+            return;
             const state = loadGalleryState();
             const focusId = state.focusPaintingId;
             const painting = PAINTINGS.find(p => p.id === focusId);
