@@ -1667,22 +1667,8 @@
             }
 
             const cardH = Math.round(cardW * 1.42);
-            // Derive stack spacing from corner glyph block so the peeking step
-            // tracks player rank/suit scale settings instead of fixed magic gaps.
-            const rankPx = 16 * 0.85 * _rankScale;
-            const suitPx = 16 * 0.65 * _suitScale;
-            const cornerPad = 4;
-            const safetyPx = 2;
-            const minVisibleStep = 9;
-            // Tight corner-driven spacing:
-            // 1) Estimate corner block from rank/suit scales (weighted to real glyph footprint)
-            // 2) Cap by card-height ratio so landscape never exposes center suit block
-            const cornerDrivenStep = Math.round(cornerPad + rankPx * 0.62 + suitPx * 0.62 + safetyPx);
-            const maxVisibleStep = Math.max(minVisibleStep, Math.round(cardH * 0.22));
-            const visibleStep = Math.max(
-                minVisibleStep,
-                Math.min(maxVisibleStep, cornerDrivenStep)
-            );
+            // Fixed stack spacing across portrait/landscape and all screen sizes.
+            const visibleStep = 21;
             const overlap = -Math.round(cardH - visibleStep);
 
             document.documentElement.style.setProperty('--card-w', `${cardW}px`);

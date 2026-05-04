@@ -335,7 +335,7 @@
 
         @media (min-width: 450px) {
             .card {
-                margin-bottom: -85px;
+                margin-bottom: var(--fixed-gap);
             }
         }
 
