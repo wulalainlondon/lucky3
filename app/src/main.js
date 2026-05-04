@@ -2797,8 +2797,12 @@
 
         function buildCardbackConfig(imagePath, theme, glow, miiFxProfile) {
             const preset = MII_PROFILE_PRESETS[miiFxProfile] || MII_PROFILE_PRESETS.CRYSTAL;
+            let resolvedImage = imagePath;
+            try {
+                resolvedImage = new URL(imagePath, window.location.href).href;
+            } catch (_) { }
             return {
-                image: `url('${imagePath}')`,
+                image: `url('${resolvedImage}')`,
                 theme,
                 glow,
                 miiFxProfile,
