@@ -1800,7 +1800,10 @@
         function switchSettingsTab(idx) {
             document.querySelectorAll('.settings-tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
             document.querySelectorAll('.settings-tab-pane').forEach((p, i) => p.classList.toggle('active', i === idx));
-            if (idx === 4) renderCardBackGrid();
+            if (idx === 4) {
+                preloadCardbackImages();
+                renderCardBackGrid();
+            }
         }
 
         function toggleSettings(show) {
@@ -2838,6 +2841,39 @@
             jufeng:   buildCardbackConfig('./cardback/jufeng.webp',   'ARC_GREEN',    'rgba(170, 238, 221, 0.9)',  'ARC'),
             yongheng: buildCardbackConfig('./cardback/yongheng.webp', 'FORGE_ROYAL',  'rgba(255, 215, 0, 1.0)',    'FORGE'),
         };
+        let _cardbackPreloadStarted = false;
+        let _cardbackRenderSeq = 0;
+
+        function extractImageUrl(cssUrl) {
+            const m = String(cssUrl || '').match(/^url\((['"]?)(.*?)\1\)$/);
+            return m ? m[2] : '';
+        }
+
+        function preloadCardbackImages() {
+            if (_cardbackPreloadStarted) return;
+            _cardbackPreloadStarted = true;
+            const urls = Array.from(new Set(Object.values(CARDBACK_REGISTRY).map(cfg => extractImageUrl(cfg.image)).filter(Boolean)));
+            const warmOne = (url) => {
+                try {
+                    const img = new Image();
+                    img.decoding = 'async';
+                    img.loading = 'eager';
+                    img.src = url;
+                    if (typeof img.decode === 'function') img.decode().catch(() => { });
+                } catch (_) { }
+            };
+            urls.slice(0, 6).forEach(warmOne);
+            const rest = urls.slice(6);
+            if (rest.length === 0) return;
+            const idle = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ timeRemaining: () => 6 }), 1));
+            let idx = 0;
+            const step = () => {
+                let budget = 4;
+                while (idx < rest.length && budget-- > 0) warmOne(rest[idx++]);
+                if (idx < rest.length) idle(step);
+            };
+            idle(step);
+        }
 
         let activeCardbackId = 'classic';
 
@@ -3075,11 +3111,13 @@
         function renderCardBackGrid() {
             const grid = document.getElementById('cb-grid');
             if (!grid) return;
+            const renderSeq = ++_cardbackRenderSeq;
+            grid.innerHTML = '<div class="cb-loading">Loading card backs...</div>';
             const unlocked = getUnlockedCardBacks();
             const current  = localStorage.getItem(CARD_BACK_KEY) || 'classic';
             const isZH     = currentLocale === 'zh-Hant';
             const LOCK_SVG = `<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>`;
-            grid.innerHTML = CARD_BACKS.map(cb => {
+            const rows = CARD_BACKS.map(cb => {
                 const isUnlocked = unlocked.includes(cb.id);
                 const isSelected = cb.id === current;
                 const name       = isZH ? cb.nameZH : cb.nameEN;
@@ -3093,7 +3131,18 @@
                     <div class="cb-name">${name}</div>
                     ${!isUnlocked ? `<div class="cb-hint">${hint}</div>` : ''}
                 </div>`;
-            }).join('');
+            });
+            grid.innerHTML = '';
+            const chunkSize = 6;
+            let idx = 0;
+            const appendChunk = () => {
+                if (renderSeq !== _cardbackRenderSeq) return;
+                const html = rows.slice(idx, idx + chunkSize).join('');
+                if (html) grid.insertAdjacentHTML('beforeend', html);
+                idx += chunkSize;
+                if (idx < rows.length) requestAnimationFrame(appendChunk);
+            };
+            requestAnimationFrame(appendChunk);
         }
         // ── End Card Back Collection ────────────────────────────────────────────
 
@@ -7422,6 +7471,8 @@
         updateFocusWidget();
         updateStreakFlame();
         loadCardBack();
+        const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 150));
+        idle(() => preloadCardbackImages());
         bindSettingsUI();
         setLocale(settings.locale, { persist: false });
         applySettings();
