@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.05-v11';
+        const APP_VERSION = '2026.05.05-v12';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -1815,6 +1815,12 @@
             if (show) switchSettingsTab(0);
         }
 
+        function togglePause(show) {
+            const overlay = document.getElementById('pause-overlay');
+            if (!overlay) return;
+            overlay.classList.toggle('show', show);
+        }
+
         function updateHeaderModeTag() {
             const tag = document.getElementById('header-mode-tag');
             if (!tag) return;
@@ -1831,6 +1837,12 @@
         function onSettingsOverlayClick(event) {
             if (event.target && event.target.id === 'settings-overlay') {
                 toggleSettings(false);
+            }
+        }
+
+        function onPauseOverlayClick(event) {
+            if (event.target && event.target.id === 'pause-overlay') {
+                togglePause(false);
             }
         }
 
@@ -3168,6 +3180,7 @@
         function showHomeScreen() {
             const el = document.getElementById('home-screen');
             if (!el) return;
+            togglePause(false);
             // 有儲存的進度才顯示「繼續」
             const continueBtn = document.getElementById('home-btn-continue');
             if (continueBtn) {
@@ -3228,6 +3241,16 @@
 
         function homeOpenLeaderboard() {
             openDailyLeaderboard();
+        }
+
+        function pauseRestartRun() {
+            togglePause(false);
+            openRestartConfirm();
+        }
+
+        function pauseGoHome() {
+            togglePause(false);
+            showHomeScreen();
         }
         // ── End Home Screen ────────────────────────────────────────────────────
 
