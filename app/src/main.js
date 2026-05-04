@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.05-v8';
+        const APP_VERSION = '2026.05.05-v9';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -1671,9 +1671,10 @@
             // Keep a stable baseline while allowing larger rank/suit settings.
             const baseStep = 21;
             const scaleBoost = Math.max(_rankScale, _suitScale) - 1;
-            const visibleStep = Math.round(
+            const dynamicStep = Math.round(
                 Math.max(21, Math.min(32, baseStep + scaleBoost * 12))
             );
+            const visibleStep = viewportW >= 900 ? 30 : dynamicStep;
             const overlap = -Math.round(cardH - visibleStep);
 
             document.documentElement.style.setProperty('--card-w', `${cardW}px`);
