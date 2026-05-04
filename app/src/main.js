@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.04-v2';
+        const APP_VERSION = '2026.05.04-v3';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -1635,15 +1635,13 @@
             const maxCard = viewportW >= 1200 ? 154 : viewportW >= 900 ? 132 : 96;
             let cardW = Math.min(maxCard, Math.max(minCard, Math.floor(usable / 4)));
 
-            // Sidebar uses tighter overlap (78% hidden vs 72%) so cards can be
-            // larger while still fitting 10-deep stacks in limited height.
-            // Overlap shrinks further when rank/suit scale is large so the
-            // corner label remains visible on peeking cards (1rem = 16px assumed).
+            // Use one unified overlap model for portrait + landscape.
+            // Overlap shrinks when rank/suit scale grows so corner labels remain visible.
             const _rankScale = normalizeCardScale(settings?.cardRankScale ?? 1);
             const _suitScale = normalizeCardScale(settings?.cardSuitScale ?? 1);
             const _cornerH = 4 + 16 * 0.85 * _rankScale + 16 * 0.65 * _suitScale;
-            const _maxOverlap = isSidebarMode ? 0.82 : 0.78;
-            const _minOverlap = isSidebarMode ? 0.62 : 0.55;
+            const _maxOverlap = 0.78;
+            const _minOverlap = 0.55;
             const calcOverlapFactor = (h) => Math.max(_minOverlap, Math.min(_maxOverlap, 1 - (_cornerH + 5) / Math.max(1, h)));
             const overlapFactorForLayout = calcOverlapFactor(Math.round(cardW * 1.42));
 
@@ -1665,13 +1663,7 @@
                 // Reserve height for 11 cards to prevent landscape overflow.
                 const maxStackCards = 11;
                 const maxCardByHeight = Math.floor(boardH / (1 + (maxStackCards - 1) * visibleRatio) / 1.42);
-                if (isSidebarMode) {
-                    // Height is the absolute constraint — never let minCard override it
-                    cardW = Math.min(cardW, maxCardByHeight);
-                    cardW = Math.max(cardW, 48); // absolute readability floor
-                } else {
-                    cardW = Math.min(cardW, Math.max(minCard, maxCardByHeight));
-                }
+                cardW = Math.min(cardW, Math.max(minCard, maxCardByHeight));
             }
 
             const cardH = Math.round(cardW * 1.42);
@@ -4130,9 +4122,17 @@
         function showNumberFlyout(cards, colEl, sum, isError = false) {
             if (!colEl) return;
             const footer = document.getElementById('footer');
+            const board = document.getElementById('board');
+            const colRect = colEl.getBoundingClientRect();
+            const boardRect = board ? board.getBoundingClientRect() : null;
             const footerTop = footer ? footer.getBoundingClientRect().top : window.innerHeight * 0.85;
-            const targetX = window.innerWidth / 2;
-            const targetY = footerTop - 36;
+            const minBoardX = boardRect ? (boardRect.left + 24) : 24;
+            const maxBoardX = boardRect ? (boardRect.right - 24) : (window.innerWidth - 24);
+            const preferredX = colRect.left + (colRect.width / 2);
+            const targetX = Math.min(maxBoardX, Math.max(minBoardX, preferredX));
+            const topFromFooter = footerTop - 36;
+            const boardBottomCap = boardRect ? (boardRect.bottom - 18) : topFromFooter;
+            const targetY = Math.min(topFromFooter, boardBottomCap);
             const errClass = isError ? ' error' : '';
             const flyouts = [];
 
