@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.04-v6';
+        const APP_VERSION = '2026.05.05-v7';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -5222,11 +5222,7 @@
         <div class="card-rank">${card.rank}</div>
         <div class="card-suit-small">${card.suit}</div>
     </div>
-    <div class="card-center-suit">${card.suit}</div>
-    <div class="card-corner card-br">
-        <div class="card-rank">${card.rank}</div>
-        <div class="card-suit-small">${card.suit}</div>
-    </div>`;
+    <div class="card-center-suit">${card.suit}</div>`;
                     div.onclick = () => {
                         BGM.tryResume();
                         if (isBusy) return;
@@ -6581,11 +6577,7 @@
         <div class="card-rank">${data.rank}</div>
         <div class="card-suit-small">${data.suit}</div>
     </div>
-    <div class="card-center-suit">${data.suit}</div>
-    <div class="card-corner card-br">
-        <div class="card-rank">${data.rank}</div>
-        <div class="card-suit-small">${data.suit}</div>
-    </div>`;
+    <div class="card-center-suit">${data.suit}</div>`;
         }
 
         function revealFlyCard(f, data) {

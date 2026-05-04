@@ -296,6 +296,7 @@
             right: 5px;
             transform: rotate(180deg);
         }
+        .card-br { display: none; }
 
         .card-rank {
             font-family: 'Cinzel', 'Noto Sans Symbols2', 'Segoe UI Symbol', serif;
@@ -5221,6 +5222,7 @@
         bottom: 6px;
         right: 7px;
     }
+    .card-br { display: none; }
 
     .card-center-suit {
         font-size: calc(1.9rem * var(--card-suit-scale));
