@@ -1644,7 +1644,8 @@
             const _cornerH = 4 + 16 * 0.85 * _rankScale + 16 * 0.65 * _suitScale;
             const _maxOverlap = isSidebarMode ? 0.82 : 0.78;
             const _minOverlap = isSidebarMode ? 0.62 : 0.55;
-            const overlapFactor = Math.max(_minOverlap, Math.min(_maxOverlap, 1 - (_cornerH + 5) / cardH));
+            const calcOverlapFactor = (h) => Math.max(_minOverlap, Math.min(_maxOverlap, 1 - (_cornerH + 5) / Math.max(1, h)));
+            const overlapFactorForLayout = calcOverlapFactor(Math.round(cardW * 1.42));
 
             // In landscape, constrain card size by available height
             // so tall stacks (10+ cards) don't overflow
@@ -1659,7 +1660,7 @@
                     boardH = viewportH - headerH - footerH - 30;
                 }
                 // visibleRatio = fraction of each peeking card that shows above the next
-                const visibleRatio = 1 - overlapFactor;
+                const visibleRatio = 1 - overlapFactorForLayout;
                 // A 30-deal scenario can produce 11-card stacks in 4 columns.
                 // Reserve height for 11 cards to prevent landscape overflow.
                 const maxStackCards = 11;
@@ -1674,6 +1675,7 @@
             }
 
             const cardH = Math.round(cardW * 1.42);
+            const overlapFactor = calcOverlapFactor(cardH);
             const overlap = -Math.round(cardH * overlapFactor);
 
             document.documentElement.style.setProperty('--card-w', `${cardW}px`);
