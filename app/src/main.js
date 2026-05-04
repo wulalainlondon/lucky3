@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.04-v4';
+        const APP_VERSION = '2026.05.04-v5';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -1672,12 +1672,13 @@
             const rankPx = 16 * 0.85 * _rankScale;
             const suitPx = 16 * 0.65 * _suitScale;
             const cornerPad = 4;
-            const safetyPx = 6;
-            const minVisibleStep = 12;
-            const maxVisibleStep = Math.max(minVisibleStep, Math.round(cardH * (1 - _minOverlap)));
+            const safetyPx = 2;
+            const minVisibleStep = 10;
+            // Pure corner-driven spacing: only reveal corner glyph area (+tiny safety)
+            // and keep independent from card-height ratio so landscape won't expose center suit.
             const visibleStep = Math.max(
                 minVisibleStep,
-                Math.min(maxVisibleStep, Math.round(cornerPad + rankPx + suitPx + safetyPx))
+                Math.round(cornerPad + rankPx + suitPx + safetyPx)
             );
             const overlap = -Math.round(cardH - visibleStep);
 
