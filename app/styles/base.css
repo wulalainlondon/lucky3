@@ -37,7 +37,7 @@
             --anim-scale: 1;
             --board-max-width: 860px;
             --board-gap: 8px;
-            --cardback-image: url('../cardback/classic.png');
+            --cardback-image: url('../cardback/classic.webp');
             --mii-glow-color: rgba(255, 215, 0, 0.9);
             --mii-text-color: #fff;
             --mii-text-border: rgba(255, 255, 255, 0.4);
@@ -1445,7 +1445,7 @@
         }
 
         #deck-pile {
-            background-image: var(--cardback-image, url('../cardback/classic.png'));
+            background-image: var(--cardback-image, url('../cardback/classic.webp'));
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -1471,88 +1471,88 @@
             background-position: center;
             background-repeat: no-repeat;
         }
-        .cb-preview-classic { background-image: url('../cardback/classic.png'); }
+        .cb-preview-classic { background-image: url('../cardback/classic.webp'); }
         #deck-pile.cb-retro_gold,
-        .cb-preview-retro_gold { background-image: url('../cardback/lucky3_retro_classic_gold.png'); }
+        .cb-preview-retro_gold { background-image: url('../cardback/lucky3_retro_classic_gold.webp'); }
         #deck-pile.cb-retro_gold { box-shadow: 3px 3px 0 #171d2a, 0 0 10px rgba(218,165,32,0.2); }
 
         #deck-pile.cb-nightgold,
-        .cb-preview-nightgold { background-image: url('../cardback/nightgold.png'); }
+        .cb-preview-nightgold { background-image: url('../cardback/nightgold.webp'); }
         #deck-pile.cb-nightgold { box-shadow: 3px 3px 0 #000, 0 0 10px rgba(218,165,32,0.25); }
 
         #deck-pile.cb-forest,
-        .cb-preview-forest { background-image: url('../cardback/forest.png'); }
+        .cb-preview-forest { background-image: url('../cardback/forest.webp'); }
         #deck-pile.cb-forest { box-shadow: 3px 3px 0 #020802; }
 
         #deck-pile.cb-crimson,
-        .cb-preview-crimson { background-image: url('../cardback/crimson.png'); }
+        .cb-preview-crimson { background-image: url('../cardback/crimson.webp'); }
         #deck-pile.cb-crimson { box-shadow: 3px 3px 0 #180202; }
 
         #deck-pile.cb-void,
         .cb-preview-void {
-            background-image: url('../cardback/void.png');
+            background-image: url('../cardback/void.webp');
         }
         #deck-pile.cb-void { box-shadow: 3px 3px 0 #000; }
 
         #deck-pile.cb-lucky,
-        .cb-preview-lucky { background-image: url('../cardback/lucky.png'); }
+        .cb-preview-lucky { background-image: url('../cardback/lucky.webp'); }
         #deck-pile.cb-lucky { box-shadow: 3px 3px 0 #020210, 0 0 10px rgba(218,165,32,0.18); }
 
         #deck-pile.cb-combo5,
-        .cb-preview-combo5 { background-image: url('../cardback/combo5.png'); }
+        .cb-preview-combo5 { background-image: url('../cardback/combo5.webp'); }
         #deck-pile.cb-combo5 { box-shadow: 3px 3px 0 #0b2a36, 0 0 10px rgba(64,220,255,0.28); }
 
         #deck-pile.cb-speed18,
-        .cb-preview-speed18 { background-image: url('../cardback/speed18.png'); }
+        .cb-preview-speed18 { background-image: url('../cardback/speed18.webp'); }
         #deck-pile.cb-speed18 { box-shadow: 3px 3px 0 #0f2d47, 0 0 10px rgba(120,190,255,0.22); }
 
         #deck-pile.cb-ironwill,
-        .cb-preview-ironwill { background-image: url('../cardback/ironwill.png'); }
+        .cb-preview-ironwill { background-image: url('../cardback/ironwill.webp'); }
         #deck-pile.cb-ironwill { box-shadow: 3px 3px 0 #1b1e2a; }
 
         #deck-pile.cb-suitcollector,
-        .cb-preview-suitcollector { background-image: url('../cardback/suitcollector.png'); }
+        .cb-preview-suitcollector { background-image: url('../cardback/suitcollector.webp'); }
         #deck-pile.cb-suitcollector { box-shadow: 3px 3px 0 #1b2a33, 0 0 10px rgba(218,165,32,0.2); }
 
         #deck-pile.cb-luckydraw,
-        .cb-preview-luckydraw { background-image: url('../cardback/luckydraw.png'); }
+        .cb-preview-luckydraw { background-image: url('../cardback/luckydraw.webp'); }
         #deck-pile.cb-luckydraw { box-shadow: 3px 3px 0 #121d3a, 0 0 10px rgba(218,165,32,0.25); }
 
         #deck-pile.cb-fullsweep,
-        .cb-preview-fullsweep { background-image: url('../cardback/fullsweep.png'); }
+        .cb-preview-fullsweep { background-image: url('../cardback/fullsweep.webp'); }
         #deck-pile.cb-fullsweep { box-shadow: 3px 3px 0 #143020; }
 
         #deck-pile.cb-dailyregular,
-        .cb-preview-dailyregular { background-image: url('../cardback/dailyregular.png'); }
+        .cb-preview-dailyregular { background-image: url('../cardback/dailyregular.webp'); }
         #deck-pile.cb-dailyregular { box-shadow: 3px 3px 0 #16314a, 0 0 10px rgba(218,165,32,0.16); }
 
         #deck-pile.cb-chainreaction,
-        .cb-preview-chainreaction { background-image: url('../cardback/chainreaction.png'); }
+        .cb-preview-chainreaction { background-image: url('../cardback/chainreaction.webp'); }
         #deck-pile.cb-chainreaction { box-shadow: 3px 3px 0 #1a1938, 0 0 10px rgba(120,190,255,0.2); }
 
         /* ── Extreme Challenge cardbacks ──────────────────────────────────── */
         #deck-pile.cb-shilian,
-        .cb-preview-shilian { background-image: url('../cardback/shilian.png'); }
+        .cb-preview-shilian { background-image: url('../cardback/shilian.webp'); }
         #deck-pile.cb-shilian { box-shadow: 3px 3px 0 #0a0a0a, 0 0 10px rgba(192,192,192,0.18); }
 
         #deck-pile.cb-tianzhu,
-        .cb-preview-tianzhu { background-image: url('../cardback/tianzhu.png'); }
+        .cb-preview-tianzhu { background-image: url('../cardback/tianzhu.webp'); }
         #deck-pile.cb-tianzhu { box-shadow: 3px 3px 0 #0a1a2a, 0 0 10px rgba(128,180,220,0.22); }
 
         #deck-pile.cb-xingbao,
-        .cb-preview-xingbao { background-image: url('../cardback/xingbao.png'); }
+        .cb-preview-xingbao { background-image: url('../cardback/xingbao.webp'); }
         #deck-pile.cb-xingbao { box-shadow: 3px 3px 0 #1a0530, 0 0 10px rgba(255,170,68,0.32); }
 
         #deck-pile.cb-lunhui,
-        .cb-preview-lunhui { background-image: url('../cardback/lunhui.png'); }
+        .cb-preview-lunhui { background-image: url('../cardback/lunhui.webp'); }
         #deck-pile.cb-lunhui { box-shadow: 3px 3px 0 #050f08, 0 0 10px rgba(136,221,170,0.22); }
 
         #deck-pile.cb-jufeng,
-        .cb-preview-jufeng { background-image: url('../cardback/jufeng.png'); }
+        .cb-preview-jufeng { background-image: url('../cardback/jufeng.webp'); }
         #deck-pile.cb-jufeng { box-shadow: 3px 3px 0 #050f15, 0 0 10px rgba(170,238,221,0.22); }
 
         #deck-pile.cb-yongheng,
-        .cb-preview-yongheng { background-image: url('../cardback/yongheng.png'); }
+        .cb-preview-yongheng { background-image: url('../cardback/yongheng.webp'); }
         #deck-pile.cb-yongheng { box-shadow: 3px 3px 0 #1a1005, 0 0 10px rgba(255,215,0,0.32); }
 
         /* ── Card Back Collection Grid UI ─── */
@@ -1769,7 +1769,7 @@
         }
 
         .card.face-down.use-cardback {
-            background-image: var(--cardback-image, url('../cardback/classic.png'));
+            background-image: var(--cardback-image, url('../cardback/classic.webp'));
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
