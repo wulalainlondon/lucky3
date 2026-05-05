@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.05-v13';
+        const APP_VERSION = '2026.05.05-v14';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -5890,8 +5890,10 @@
                 return;
             }
 
-            // 有可消除組合時，按 DEAL 先提示，不直接發牌。
-            if (hasAnyLegalClear()) {
+            // 一般模式：有可消除組合時，按 DEAL 先提示，不直接發牌。
+            // 每日挑戰 / 極限挑戰：不擋 DEAL，允許直接發牌。
+            const shouldBlockDealForHint = gameMode !== 'daily' && !currentChallengeId;
+            if (shouldBlockDealForHint && hasAnyLegalClear()) {
                 showHintHighlight();
                 return;
             }
@@ -7137,7 +7139,6 @@
         }
 
         // ── Hint System ──────────────────────────────────────────────
-        let hintHoldTimer = null;
         let hintClearTimer = null;
         let rewindFocusTimer = null;
         let dealInputLockedUntil = 0;
@@ -7302,28 +7303,6 @@
             setTimeout(() => trail.remove(), getDelay(180));
         }
 
-        function initHintLongPress() {
-            const deckEl = document.getElementById('deck-pile');
-            if (!deckEl) return;
-
-            const startHold = () => {
-                deckEl.classList.add('hint-press');
-                hintHoldTimer = setTimeout(() => {
-                    deckEl.classList.remove('hint-press');
-                    showHintHighlight();
-                }, 1500);
-            };
-
-            const cancelHold = () => {
-                deckEl.classList.remove('hint-press');
-                if (hintHoldTimer) { clearTimeout(hintHoldTimer); hintHoldTimer = null; }
-            };
-
-            deckEl.addEventListener('pointerdown', startHold);
-            deckEl.addEventListener('pointerup',   cancelHold);
-            deckEl.addEventListener('pointerleave', cancelHold);
-            deckEl.addEventListener('contextmenu', e => e.preventDefault());
-        }
         // ── End Hint System ───────────────────────────────────────────
 
         function updateUndoCountDisplay() {
@@ -7572,7 +7551,6 @@
         // ===== END ADS SYSTEM =====
 
         showHomeScreen();
-        initHintLongPress();
         initAdSystem();
         preloadSounds();
 

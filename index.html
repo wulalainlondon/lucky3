@@ -9,6 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="./styles/base.css">
     <title>Lucky 3 Solitaire</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cinzel+Decorative:wght@700;900&display=swap');
@@ -2925,10 +2926,6 @@
             50%       { filter: brightness(1.35) drop-shadow(0 0 6px #00e676); }
         }
 
-        #deck-pile.hint-press {
-            transform: scale(0.94);
-            transition: transform 0.15s ease;
-        }
         .win-share-btn {
             margin-top: 8px;
             width: 100%;
@@ -4580,7 +4577,6 @@
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(1)" data-i18n="settings.tab_profile">🌐 Profile</button>
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(2)" data-i18n="settings.tab_play">🎮 Play</button>
                 <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(3)" data-i18n="settings.tab_visual">🎴 Visual</button>
-                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(4)">🃏 Cards</button>
             </div>
 
             <!-- Tab 0: 音效與顯示 -->
@@ -4704,10 +4700,7 @@
                     </div>
                     <input id="setting-card-suit-scale" class="setting-control-range" type="range" min="75" max="200" step="5" value="100" aria-label="Card Suit Size">
                 </div>
-            </div>
-
-            <!-- Tab 4: 牌背收藏 -->
-            <div class="settings-tab-pane" id="stab-4">
+                <div class="visual-preview-title" style="margin-top:12px;">Card Backs</div>
                 <div class="cb-grid" id="cb-grid"></div>
             </div>
 

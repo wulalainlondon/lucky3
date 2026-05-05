@@ -1,6 +1,6 @@
 {
   "name": "lucky3",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "main": "pixi.min.js",
   "scripts": {
     "sync": "npx cap sync",
