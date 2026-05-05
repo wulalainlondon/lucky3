@@ -6271,3 +6271,62 @@ body.imperial-quake { animation: quake-anim 0.85s ease-out; }
     font-size: 0.9rem; font-weight: 700;
 }
 .buy-confirm-ok:hover { background: rgba(255,215,0,0.28); }
+
+/* ── P2a Effect Theme Shop ─────────────────────────── */
+.et-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
+}
+.et-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 8px 8px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+}
+.et-card:active { transform: scale(0.97); }
+.et-state-equipped { border-color: rgba(255,215,0,0.7); background: rgba(255,215,0,0.07); }
+.et-state-owned    { border-color: rgba(100,220,140,0.5); }
+.et-state-buyable  { border-color: rgba(80,180,255,0.45); }
+.et-state-unaffordable { opacity: 0.5; cursor: default; }
+.et-state-free     { border-color: rgba(255,255,255,0.2); }
+
+.et-preview {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+}
+.et-glow-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+}
+.et-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #e8e8e8;
+    text-align: center;
+    line-height: 1.2;
+}
+.et-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    text-align: center;
+}
+.et-equipped     { background: rgba(255,215,0,0.2);  color: #ffd700; border: 1px solid rgba(255,215,0,0.5); }
+.et-owned        { background: rgba(100,220,140,0.15); color: #6eff9a; border: 1px solid rgba(100,220,140,0.4); }
+.et-buyable      { background: rgba(80,180,255,0.15); color: #7ecfff; border: 1px solid rgba(80,180,255,0.4); }
+.et-unaffordable { background: rgba(120,120,120,0.15); color: #888; border: 1px solid rgba(120,120,120,0.3); }
+.et-free         { background: rgba(255,255,255,0.06); color: #aaa;  border: 1px solid rgba(255,255,255,0.15); }

@@ -2018,6 +2018,7 @@
                 preloadCardbackImages();
                 renderCardBackGrid();
             }
+            if (idx === 4) renderEffectThemeGrid();
         }
 
         function toggleSettings(show) {
@@ -3141,6 +3142,7 @@
         }
 
         let activeCardbackId = 'classic';
+        let activeEffectThemeId = 'crystal';
 
         function getCardbackConfig(id) {
             return CARDBACK_REGISTRY[id] || CARDBACK_REGISTRY.classic;
@@ -3162,6 +3164,17 @@
             '♦': ['#E65100', '#FFF9C4'],
             '♣': ['#1B5E20', '#A5D6A7'],
         };
+
+        const EFFECT_THEMES = [
+            { id: 'crystal', particleTheme: 'CRYSTAL',     miiProfile: 'CRYSTAL', glowColor: 'rgba(255, 215, 0, 0.9)',   nameEN: 'Crystal',      nameZH: '水晶',     priceCoins: null, shopVisible: true },
+            { id: 'ember',   particleTheme: 'EMBER_BRIGHT', miiProfile: 'FORGE',   glowColor: 'rgba(255, 60, 40, 0.9)',   nameEN: 'Ember',        nameZH: '烈焰',     priceCoins: 80,   shopVisible: true },
+            { id: 'void',    particleTheme: 'VOID_PURPLE',  miiProfile: 'VOID',    glowColor: 'rgba(180, 120, 255, 0.9)', nameEN: 'Void',         nameZH: '虛空',     priceCoins: 100,  shopVisible: true },
+            { id: 'arc',     particleTheme: 'ARC_CYAN',     miiProfile: 'ARC',     glowColor: 'rgba(40, 220, 255, 0.95)', nameEN: 'Arc',          nameZH: '弧光',     priceCoins: 80,   shopVisible: true },
+            { id: 'life',    particleTheme: 'LIFE_FOREST',  miiProfile: 'LIFE',    glowColor: 'rgba(60, 220, 80, 0.85)',  nameEN: 'Life',         nameZH: '生命',     priceCoins: 80,   shopVisible: true },
+            { id: 'forge',   particleTheme: 'FORGE_ROYAL',  miiProfile: 'FORGE',   glowColor: 'rgba(255, 215, 0, 1.0)',   nameEN: 'Royal Forge',  nameZH: '皇家鍛爐', priceCoins: 120,  shopVisible: true },
+        ];
+        const EFFECT_THEME_REGISTRY = Object.fromEntries(EFFECT_THEMES.map(et => [et.id, et]));
+        const DEFAULT_EFFECT_THEME_ID = 'crystal';
 
         const THEME_CONFIGS = {
             CRYSTAL: {
@@ -3356,17 +3369,30 @@
             activeCardbackId = safeId;
             localStorage.setItem(CARD_BACK_KEY, safeId);
             pile.dataset.cardback = safeId;
+            document.documentElement.style.setProperty('--cardback-image', cfg.image);
+            const eq = loadEquipped();
+            eq.cardBackId = safeId;
+            saveEquipped(eq);
+        }
 
+        function applyEffectTheme(id) {
+            const safeId = EFFECT_THEME_REGISTRY[id] ? id : DEFAULT_EFFECT_THEME_ID;
+            const et = EFFECT_THEME_REGISTRY[safeId];
+            const preset = MII_PROFILE_PRESETS[et.miiProfile] || MII_PROFILE_PRESETS.CRYSTAL;
             const rootStyle = document.documentElement.style;
-            rootStyle.setProperty('--cardback-image', cfg.image);
-            rootStyle.setProperty('--mii-glow-color', cfg.glow || 'rgba(255, 215, 0, 0.9)');
-            rootStyle.setProperty('--mii-text-color', cfg.miiText?.default?.color || '#fff');
-            rootStyle.setProperty('--mii-text-border', cfg.miiText?.default?.border || 'rgba(255, 255, 255, 0.4)');
-            rootStyle.setProperty('--mii-text-bg', cfg.miiText?.default?.bg || 'rgba(16, 18, 20, 0.88)');
+            rootStyle.setProperty('--mii-glow-color', et.glowColor);
+            rootStyle.setProperty('--mii-text-color', preset.miiText.default.color);
+            rootStyle.setProperty('--mii-text-border', preset.miiText.default.border);
+            rootStyle.setProperty('--mii-text-bg', preset.miiText.default.bg);
+            activeEffectThemeId = safeId;
+            const eq = loadEquipped();
+            eq.effectThemeId = safeId;
+            saveEquipped(eq);
         }
 
         function loadCardBack() {
             applyCardBack(localStorage.getItem(CARD_BACK_KEY) || 'classic');
+            applyEffectTheme(getEquippedEffectThemeId());
         }
 
         function selectCardBack(id) {
@@ -3506,6 +3532,22 @@
             localStorage.setItem(COSMETIC_OWNED_KEY, JSON.stringify(o));
         }
 
+        function loadEquipped() {
+            try {
+                const raw = JSON.parse(localStorage.getItem(COSMETIC_EQUIPPED_KEY) || 'null');
+                return { cardBackId: 'classic', effectThemeId: DEFAULT_EFFECT_THEME_ID, ...raw };
+            } catch { return { cardBackId: 'classic', effectThemeId: DEFAULT_EFFECT_THEME_ID }; }
+        }
+
+        function saveEquipped(eq) {
+            localStorage.setItem(COSMETIC_EQUIPPED_KEY, JSON.stringify(eq));
+        }
+
+        function getEquippedEffectThemeId() {
+            if (activeEffectThemeId && EFFECT_THEME_REGISTRY[activeEffectThemeId]) return activeEffectThemeId;
+            return loadEquipped().effectThemeId || DEFAULT_EFFECT_THEME_ID;
+        }
+
         function migrateCardBackInventory() {
             const MIGRATED_FLAG = 'lucky3-cb-migrated-v1';
             if (localStorage.getItem(MIGRATED_FLAG)) return;
@@ -3518,6 +3560,24 @@
                 }
             } catch (_) {}
             localStorage.setItem(MIGRATED_FLAG, '1');
+        }
+
+        function migrateEquippedToV2() {
+            const MIGRATED_V2 = 'lucky3-equipped-v2';
+            if (localStorage.getItem(MIGRATED_V2)) return;
+            try {
+                const eq = loadEquipped();
+                if (!eq.cardBackId || eq.cardBackId === 'classic') {
+                    eq.cardBackId = localStorage.getItem(CARD_BACK_KEY) || 'classic';
+                }
+                if (!eq.effectThemeId || !EFFECT_THEME_REGISTRY[eq.effectThemeId]) {
+                    const profileMap = { CRYSTAL: 'crystal', FORGE: 'forge', VOID: 'void', ARC: 'arc', LIFE: 'life' };
+                    const cbCfg = getCardbackConfig(eq.cardBackId);
+                    eq.effectThemeId = profileMap[cbCfg.miiFxProfile] || DEFAULT_EFFECT_THEME_ID;
+                }
+                saveEquipped(eq);
+            } catch (_) {}
+            localStorage.setItem(MIGRATED_V2, '1');
         }
 
         function isOwnedCardback(id) {
@@ -3579,6 +3639,113 @@
             }
         }
 
+        function isOwnedEffectTheme(id) {
+            if (id === DEFAULT_EFFECT_THEME_ID) return true;
+            return loadOwnedCosmetics().effectThemes.includes(id);
+        }
+
+        function buyEffectTheme(id) {
+            const et = EFFECT_THEME_REGISTRY[id];
+            if (!et || !et.priceCoins) return false;
+            if (isOwnedEffectTheme(id)) return false;
+            if (loadWallet().coins < et.priceCoins) return false;
+            if (!spendCoins(et.priceCoins, `buy_effect_${id}`)) return false;
+            const owned = loadOwnedCosmetics();
+            if (!owned.effectThemes.includes(id)) owned.effectThemes.push(id);
+            saveOwnedCosmetics(owned);
+            return true;
+        }
+
+        function selectEffectTheme(id) {
+            if (!isOwnedEffectTheme(id)) {
+                if (EFFECT_THEME_REGISTRY[id]?.priceCoins) showBuyEffectConfirm(id);
+                return;
+            }
+            applyEffectTheme(id);
+            renderEffectThemeGrid();
+        }
+
+        function showBuyEffectConfirm(id) {
+            const et = EFFECT_THEME_REGISTRY[id];
+            if (!et) return;
+            const isZH = currentLocale === 'zh-Hant';
+            const name = isZH ? et.nameZH : et.nameEN;
+            const w = loadWallet();
+            document.getElementById('buy-effect-confirm-dialog')?.remove();
+            const dlg = document.createElement('div');
+            dlg.id = 'buy-effect-confirm-dialog';
+            dlg.className = 'buy-confirm-dialog';
+            dlg.innerHTML = `<div class="buy-confirm-inner">
+                <div class="buy-confirm-title">${isZH ? '購買特效主題' : 'Buy Effect Theme'}</div>
+                <div class="buy-confirm-name">${name}</div>
+                <div class="buy-confirm-price">🪙 ${et.priceCoins}</div>
+                <div class="buy-confirm-balance">${isZH ? `目前：${w.coins} 幣` : `Balance: ${w.coins}`}</div>
+                <div class="buy-confirm-btns">
+                    <button class="buy-confirm-ok" onclick="confirmBuyEffect('${id}')">${isZH ? '確認購買' : 'Buy'}</button>
+                    <button class="buy-confirm-cancel" onclick="document.getElementById('buy-effect-confirm-dialog')?.remove()">${isZH ? '取消' : 'Cancel'}</button>
+                </div>
+            </div>`;
+            document.body.appendChild(dlg);
+        }
+
+        function confirmBuyEffect(id) {
+            document.getElementById('buy-effect-confirm-dialog')?.remove();
+            if (buyEffectTheme(id)) {
+                applyEffectTheme(id);
+                renderEffectThemeGrid();
+                renderCoinHud();
+                showCoinEarnFx(-(EFFECT_THEME_REGISTRY[id]?.priceCoins || 0), 'spend');
+            }
+        }
+
+        function renderEffectThemeGrid() {
+            const grid = document.getElementById('et-grid');
+            if (!grid) return;
+            const isZH = currentLocale === 'zh-Hant';
+            const w = loadWallet();
+            const equippedId = getEquippedEffectThemeId();
+
+            grid.innerHTML = EFFECT_THEMES.map(et => {
+                const name = isZH ? et.nameZH : et.nameEN;
+                const owned = isOwnedEffectTheme(et.id);
+                const equipped = et.id === equippedId;
+                const canAfford = w.coins >= (et.priceCoins || 0);
+                const particleCfg = THEME_CONFIGS[et.particleTheme];
+                const c1 = particleCfg?.colors?.[0] || '#fff';
+                const c2 = particleCfg?.colors?.[1] || '#888';
+
+                let badge = '';
+                let stateClass = '';
+                let clickAttr = `onclick="selectEffectTheme('${et.id}')"`;
+
+                if (equipped) {
+                    badge = `<div class="et-badge et-equipped">${isZH ? '裝備中' : 'Equipped'}</div>`;
+                    stateClass = 'et-state-equipped';
+                } else if (owned) {
+                    badge = `<div class="et-badge et-owned">${isZH ? '已擁有' : 'Owned'}</div>`;
+                    stateClass = 'et-state-owned';
+                } else if (et.priceCoins && canAfford) {
+                    badge = `<div class="et-badge et-buyable">🪙 ${et.priceCoins}</div>`;
+                    stateClass = 'et-state-buyable';
+                } else if (et.priceCoins) {
+                    badge = `<div class="et-badge et-unaffordable">🪙 ${et.priceCoins}</div>`;
+                    stateClass = 'et-state-unaffordable';
+                    clickAttr = '';
+                } else {
+                    badge = `<div class="et-badge et-free">${isZH ? '免費' : 'Free'}</div>`;
+                    stateClass = 'et-state-free';
+                }
+
+                return `<div class="et-card ${stateClass}" ${clickAttr}>
+                    <div class="et-preview" style="background:linear-gradient(135deg,${c1} 0%,${c2} 100%)">
+                        <div class="et-glow-ring" style="box-shadow:0 0 14px 5px ${et.glowColor},inset 0 0 8px 2px ${et.glowColor}"></div>
+                    </div>
+                    <div class="et-name">${name}</div>
+                    ${badge}
+                </div>`;
+            }).join('');
+        }
+
         function showCoinEarnFx(amount, type = 'earn') {
             const el = document.createElement('div');
             el.className = `coin-earn-fx${type === 'spend' ? ' coin-spend-fx' : ''}`;
@@ -3611,6 +3778,7 @@
 
         function showHomeScreen() {
             migrateCardBackInventory();
+            migrateEquippedToV2();
             const el = document.getElementById('home-screen');
             if (!el) return;
             togglePause(false);
@@ -5842,7 +6010,8 @@
         }
 
         function getCurrentTheme() {
-            return getCurrentCardbackConfig().theme || null;
+            const et = EFFECT_THEME_REGISTRY[activeEffectThemeId] || EFFECT_THEME_REGISTRY[DEFAULT_EFFECT_THEME_ID];
+            return et.particleTheme || 'CRYSTAL';
         }
 
         function spawnThemeParticles(theme, trigger, x, y, opts = {}) {
@@ -5965,10 +6134,9 @@
 
         function showMiiFX(colEl, incomingCard, existingCards) {
             if (!colEl) return;
-            const cbCfg = getCurrentCardbackConfig();
-            const defaultTextStyle = cbCfg.miiText?.default || {};
-            const chanceTextStyle = cbCfg.miiText?.chance || defaultTextStyle;
-            const haptic = cbCfg.hapticProfile || {};
+            const et = EFFECT_THEME_REGISTRY[activeEffectThemeId] || EFFECT_THEME_REGISTRY[DEFAULT_EFFECT_THEME_ID];
+            const preset = MII_PROFILE_PRESETS[et.miiProfile] || MII_PROFILE_PRESETS.CRYSTAL;
+            const haptic = preset.haptic || {};
 
             // 判斷落下後是否能湊出有效消除
             const canClear = Array.isArray(existingCards) && incomingCard
