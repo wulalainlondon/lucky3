@@ -3262,7 +3262,7 @@
         }
 
         function homeOpenSettings() {
-            runAfterHomeHidden(() => toggleSettings(true));
+            toggleSettings(true);
         }
 
         function homeOpenCardBacks() {
