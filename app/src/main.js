@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.05-v12';
+        const APP_VERSION = '2026.05.05-v13';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -835,9 +835,11 @@
         }
 
         function homeOpenChallengeSelect() {
-            renderChallengeGrid();
-            const overlay = document.getElementById('challenge-select-overlay');
-            if (overlay) overlay.style.display = 'flex';
+            runAfterHomeHidden(() => {
+                renderChallengeGrid();
+                const overlay = document.getElementById('challenge-select-overlay');
+                if (overlay) overlay.style.display = 'flex';
+            });
         }
         function closeChallengeSelect() {
             const overlay = document.getElementById('challenge-select-overlay');
@@ -3226,21 +3228,33 @@
             hideHomeScreen(() => init(true, { mode: 'daily' }));
         }
 
+        function runAfterHomeHidden(action) {
+            const homeEl = document.getElementById('home-screen');
+            const homeVisible = !!(homeEl && getComputedStyle(homeEl).display !== 'none');
+            if (!homeVisible) {
+                action?.();
+                return;
+            }
+            hideHomeScreen(action);
+        }
+
         function homeOpenSettings() {
-            toggleSettings(true);
+            runAfterHomeHidden(() => toggleSettings(true));
         }
 
         function homeOpenCardBacks() {
-            toggleSettings(true);
-            switchSettingsTab(3);
+            runAfterHomeHidden(() => {
+                toggleSettings(true);
+                switchSettingsTab(3);
+            });
         }
 
         function homeOpenAchievements() {
-            openAchievements();
+            runAfterHomeHidden(() => openAchievements());
         }
 
         function homeOpenLeaderboard() {
-            openDailyLeaderboard();
+            runAfterHomeHidden(() => openDailyLeaderboard());
         }
 
         function pauseRestartRun() {
@@ -4970,6 +4984,7 @@
             if (bigMsg) bigMsg.remove();
             const winOverlay = document.getElementById('win-overlay');
             if (winOverlay) winOverlay.remove();
+            document.querySelectorAll('[data-win-float="1"], .win-dim-overlay').forEach((el) => el.remove());
             const deadlockOverlay = document.getElementById('deadlock-overlay');
             if (deadlockOverlay) deadlockOverlay.remove();
             const rewindOverlay = document.getElementById('rewind-overlay');
@@ -6302,6 +6317,7 @@
 
             // === Stage 1: Dramatic Pause (0-600ms) ===
             const overlay = document.createElement('div');
+            overlay.className = 'win-dim-overlay';
             overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0);pointer-events:none;z-index:9990;transition:background 600ms ease';
             document.body.appendChild(overlay);
             requestAnimationFrame(() => { overlay.style.background = 'rgba(0,0,0,0.3)'; });
@@ -6322,6 +6338,7 @@
                         card.style.height = `${rect.height}px`;
                         card.style.margin = '0';
                         card.style.zIndex = '10012';
+                        card.dataset.winFloat = '1';
                         // Move out of #board subtree so subsequent board transforms
                         // (e.g. screenShake) cannot shift this fixed element.
                         document.body.appendChild(card);
