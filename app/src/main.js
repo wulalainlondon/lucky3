@@ -29,7 +29,7 @@
         }
 
         const suits = ['♠', '♥', '♦', '♣'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-        const APP_VERSION = '2026.05.05-v14';
+        const APP_VERSION = '2026.05.05-v15';
         const GAME_STATE_KEY = 'lucky3-current-game';
         const SETTINGS_KEY = 'lucky3-settings';
         const TUTORIAL_STATE_KEY = 'lucky3-tutorial-state-v1';
@@ -1553,9 +1553,10 @@
 
         // --- 3. 連擊靈獸浮現 ---
         const SPIRIT_BEASTS = {
-            3: { cls: 'tier-3', icon: 'comboicon/tier3.png' },
-            4: { cls: 'tier-4', icon: 'comboicon/tier4.png' },
-            5: { cls: 'tier-5', icon: 'comboicon/tier5.png' },
+            2: { cls: 'tier-2', icon: 'comboicon/tier3.png' },
+            3: { cls: 'tier-3', icon: 'comboicon/tier4.png' },
+            4: { cls: 'tier-4', icon: 'comboicon/tier5.png' },
+            5: { cls: 'tier-5', icon: 'comboicon/tier6.png' },
         };
         Object.values(SPIRIT_BEASTS).forEach((meta) => {
             const preload = new Image();
@@ -1566,23 +1567,34 @@
             const meta = SPIRIT_BEASTS[tier];
             if (!meta) return;
             const el = document.createElement('div');
-            if (tier === 3) {
+            if (tier === 2) {
                 el.className = 'spirit-beast spirit-fox';
                 el.innerHTML = `<img class="spirit-beast-icon" src="${meta.icon}" alt="" />`;
                 document.body.appendChild(el);
                 setTimeout(() => el.remove(), getDelay(1800));
-            } else if (tier === 4) {
+            } else if (tier === 3) {
                 el.className = 'spirit-beast spirit-eagle';
                 el.innerHTML = `<img class="spirit-beast-icon" src="${meta.icon}" alt="" />`;
                 document.body.appendChild(el);
                 setTimeout(() => el.remove(), getDelay(2000));
-            } else if (tier === 5) {
+            } else if (tier === 4) {
                 el.className = 'spirit-beast spirit-lion';
                 el.innerHTML = `<img class="spirit-beast-icon" src="${meta.icon}" alt="" />`;
                 document.body.appendChild(el);
                 setTimeout(() => {
                     const wave = document.createElement('div');
                     wave.className = 'lion-shockwave';
+                    document.body.appendChild(wave);
+                    setTimeout(() => wave.remove(), getDelay(850));
+                }, getDelay(600));
+                setTimeout(() => el.remove(), getDelay(3000));
+            } else if (tier === 5) {
+                el.className = 'spirit-beast spirit-phoenix';
+                el.innerHTML = `<img class="spirit-beast-icon" src="${meta.icon}" alt="" />`;
+                document.body.appendChild(el);
+                setTimeout(() => {
+                    const wave = document.createElement('div');
+                    wave.className = 'phoenix-solar-flare';
                     document.body.appendChild(wave);
                     setTimeout(() => wave.remove(), getDelay(850));
                 }, getDelay(600));
@@ -1817,8 +1829,15 @@
         function toggleSettings(show) {
             const overlay = document.getElementById('settings-overlay');
             if (!overlay) return;
-            overlay.classList.toggle('show', show);
-            if (show) switchSettingsTab(0);
+            if (show) {
+                overlay.classList.remove('closing');
+                overlay.classList.add('show');
+                switchSettingsTab(0);
+            } else {
+                overlay.classList.remove('show');
+                overlay.classList.add('closing');
+                setTimeout(() => overlay.classList.remove('closing'), 260);
+            }
         }
 
         function togglePause(show) {
@@ -5147,7 +5166,11 @@
         function confirmRestartGame() {
             closeRestartConfirm();
             maybeShowInterstitial(() => {
-                init(true, { mode: gameMode });
+                if (currentChallengeId) {
+                    startChallengeGame(currentChallengeId);
+                } else {
+                    init(true, { mode: gameMode });
+                }
             });
         }
 
@@ -5329,7 +5352,13 @@
                 if (existingCol) {
                     board.replaceChild(col, existingCol);
                 } else {
-                    board.appendChild(col);
+                    // 按 slot.id 順序插入，避免 undo 後 column 排在錯誤位置
+                    const nextCol = [...board.children].find(child => {
+                        const cid = parseInt(child.id?.replace('col-', ''));
+                        return !isNaN(cid) && cid > slot.id;
+                    });
+                    if (nextCol) board.insertBefore(col, nextCol);
+                    else board.appendChild(col);
                 }
             });
 
@@ -6564,21 +6593,19 @@
                     vig.className = 'golden-vignette';
                     document.body.appendChild(vig);
                     setTimeout(() => vig.remove(), getDelay(1400));
-                    showSpiritBeast(5);
                 } else if (tier >= 4) {
                     ParticleSystem.emit('fountain', cx, cy, { count: 12 });
                     const warm = document.createElement('div');
                     warm.className = 'warm-flash';
                     document.body.appendChild(warm);
                     setTimeout(() => warm.remove(), getDelay(560));
-                    showSpiritBeast(4);
                 } else if (tier >= 3) {
                     ParticleSystem.emit('fountain', cx, cy, { count: 10 });
-                    showSpiritBeast(3);
                 } else if (tier >= 2) {
                     ParticleSystem.emit('fountain', cx, cy, { count: 10 });
                 }
-                // combo=2: starts at tier-3 by design
+                const beastTier = Math.max(2, Math.min(5, capturedCombo));
+                showSpiritBeast(beastTier);
             }, getDelay(200));
         }
 
