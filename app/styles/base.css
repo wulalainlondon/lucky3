@@ -232,7 +232,7 @@
             width: min(100%, var(--board-max-width));
             margin-inline: auto;
             box-sizing: border-box;
-            transition: all calc(0.6s * var(--anim-scale)) cubic-bezier(0.4, 0, 0.2, 1);
+            /* no transition — prevents layout flash when columns are added/removed */
         }
 
         .column {

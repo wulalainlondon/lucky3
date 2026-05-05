@@ -1635,6 +1635,7 @@
         }
         // ═══════════════════════════════════════════════════════
 
+        let _syncBoardScaleCache = '';
         function syncBoardScale() {
             const board = document.getElementById('board');
             if (!board) return;
@@ -1697,6 +1698,10 @@
             );
             const visibleStep = viewportW >= 900 ? largeScreenDynamicStep : dynamicStep;
             const overlap = -Math.round(cardH - visibleStep);
+
+            const cacheKey = `${cardW},${cardH},${overlap}`;
+            if (cacheKey === _syncBoardScaleCache) return;
+            _syncBoardScaleCache = cacheKey;
 
             document.documentElement.style.setProperty('--card-w', `${cardW}px`);
             document.documentElement.style.setProperty('--card-h', `${cardH}px`);
@@ -1814,7 +1819,7 @@
             settings[key] = value;
             applySettings();
             saveSettings();
-            if (key === 'cardRankScale' || key === 'cardSuitScale') syncBoardScale();
+            if (key === 'cardRankScale' || key === 'cardSuitScale') { _syncBoardScaleCache = ''; syncBoardScale(); }
         }
 
         function switchSettingsTab(idx) {
@@ -7587,6 +7592,7 @@
 
         // 視窗大小改變時重新計算 home screen 居中
         window.addEventListener('resize', () => {
+            _syncBoardScaleCache = '';
             const hs = document.getElementById('home-screen');
             if (hs && hs.style.display !== 'none') centerHomeContent();
         });
