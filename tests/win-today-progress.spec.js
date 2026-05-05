@@ -36,7 +36,7 @@ test('第一勝後 win panel 顯示 1 個 filled dot 和 70% 提示', async ({ p
     await expect(page.locator('.win-today-hint')).toContainText('70%');
 });
 
-test('zero-clear 勝利也顯示進度帶和 70% 提示', async ({ page }) => {
+test('清空盤面勝利也顯示進度帶和 70% 提示', async ({ page }) => {
     await page.evaluate(() => {
         slots.forEach(s => { s.cards = []; });
         deck.length = 0;

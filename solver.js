@@ -92,12 +92,16 @@ function simulate(seed, options = {}) {
     let maxCombo = 0;
     let comboTriggers = 0;
     let firstElimAt = -1;
+    let miiPeekCount = 0;  // 發牌到恰好 2 張欄位的次數
+    let miiChanceCount = 0; // 其中落下後可消除的次數
     const columnClearEvents = []; // [{ col, dealCount, move, elimCount }]
+    const comboEventDeals = []; // 每次 combo 觸發時的 dealCount
 
     for (let move = 0; move < maxMoves; move++) {
         const allCards = cols.flatMap((c, i) => active[i] ? c : []);
         if (allCards.length === 0 || (allCards.length === 1 && allCards[0].val === 3)) {
             const winType = allCards.length === 0 ? 'zero-clear' : 'lucky3';
+            const colClearDealsLeft = columnClearEvents.map(e => dealCount - e.dealCount);
             return {
                 won: true,
                 winType,
@@ -111,6 +115,11 @@ function simulate(seed, options = {}) {
                 openingClearableCols,
                 openingMultiClear,
                 columnClearEvents,
+                colClearDealsLeft,
+                miiPeekCount,
+                miiChanceCount,
+                lateComboRatio: comboTriggers === 0 ? null
+                    : comboEventDeals.filter(d => d >= dealCount / 2).length / comboTriggers,
             };
         }
 
@@ -131,7 +140,10 @@ function simulate(seed, options = {}) {
             elimCount++;
             currentCombo++;
             if (currentCombo > maxCombo) maxCombo = currentCombo;
-            if (currentCombo >= 2) comboTriggers++;
+            if (currentCombo >= 2) {
+                comboTriggers++;
+                comboEventDeals.push(dealCount);
+            }
 
             if (cols[c].length === 0) {
                 active[c] = false;
@@ -163,6 +175,9 @@ function simulate(seed, options = {}) {
                     openingClearableCols,
                     openingMultiClear,
                     columnClearEvents,
+                    colClearDealsLeft: columnClearEvents.map(e => dealCount - e.dealCount),
+                    miiPeekCount,
+                    miiChanceCount,
                 };
             }
 
@@ -182,7 +197,12 @@ function simulate(seed, options = {}) {
         for (let i = 0; i < 4; i++) {
             const c = (nextDealCol + i) % 4;
             if (!active[c]) continue;
+            const isMii = cols[c].length === 2;
             cols[c].push(deck.pop());
+            if (isMii) {
+                miiPeekCount++;
+                if (legalMoves(cols[c]).length > 0) miiChanceCount++;
+            }
             nextDealCol = (c + 1) % 4;
             dealCount++;
             currentCombo = 0;
@@ -205,6 +225,11 @@ function simulate(seed, options = {}) {
                 openingClearableCols,
                 openingMultiClear,
                 columnClearEvents,
+                colClearDealsLeft: columnClearEvents.map(e => dealCount - e.dealCount),
+                miiPeekCount,
+                miiChanceCount,
+                lateComboRatio: comboTriggers === 0 ? null
+                    : comboEventDeals.filter(d => d >= dealCount / 2).length / comboTriggers,
             };
         }
     }

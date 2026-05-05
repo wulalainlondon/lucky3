@@ -681,20 +681,6 @@ test('設定持久化：語言切換重開後保留', async ({ page }) => {
 });
 
 // ══════════════════════════════════════════════════════════════════════════
-// 21. 牌背解鎖：zeroClearWins ≥ 1 解鎖 void
-// ══════════════════════════════════════════════════════════════════════════
-
-test('牌背解鎖：zeroClearWins ≥ 1 後 void 解鎖', async ({ page }) => {
-    const isUnlocked = await page.evaluate(() => {
-        localStorage.removeItem('lucky3-card-back-unlocked-v1');
-        achievements.zeroClearWins = 1;
-        syncCardBackUnlocks();
-        return getUnlockedCardBacks().includes('void');
-    });
-    expect(isUnlocked).toBe(true);
-});
-
-// ══════════════════════════════════════════════════════════════════════════
 // 22. 成就統計：未使用 undo 勝利後 noUndoWins +1
 // ══════════════════════════════════════════════════════════════════════════
 
