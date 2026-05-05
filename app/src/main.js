@@ -2954,50 +2954,74 @@
         const CARD_BACK_KEY      = 'lucky3-card-back-v1';
         const CARD_BACK_UNLOCKED = 'lucky3-card-back-unlocked-v1';
         const DEFAULT_UNLOCKED_CARD_BACKS = ['classic', 'retro_gold'];
+        const WALLET_KEY          = 'lucky3-wallet-v1';
+        const COSMETIC_OWNED_KEY  = 'lucky3-cosmetic-owned-v1';
+        const COSMETIC_EQUIPPED_KEY = 'lucky3-cosmetic-equipped-v1';
         const CARD_BACKS = [
             { id: 'classic',   nameEN: 'Classic Blue', nameZH: '經典藍',
-              condEN: 'Default',               condZH: '預設解鎖',         cond: null },
+              condEN: 'Default',               condZH: '預設解鎖',         cond: null,
+              priceCoins: null, shopVisible: true },
             { id: 'retro_gold', nameEN: 'Retro Gold',  nameZH: '復古鎏金',
-              condEN: 'Default style option', condZH: '預設樣式可選',      cond: null },
-            { id: 'nightgold', nameEN: 'Night Gold',   nameZH: '夜金',
-              condEN: 'Win 20 games',          condZH: '累積勝利 20 場', cond: 'wins20' },
-            { id: 'forest',    nameEN: 'Deep Forest',  nameZH: '深林',
-              condEN: 'Win 10 games',          condZH: '累積勝 10 局',     cond: 'wins10' },
-            { id: 'crimson',   nameEN: 'Crimson',      nameZH: '赤焰',
-              condEN: '7-day win streak',      condZH: '連續 7 天勝利',    cond: 'streak7' },
+              condEN: 'Default style option', condZH: '預設樣式可選',      cond: null,
+              priceCoins: null, shopVisible: true },
             { id: 'void',      nameEN: 'Void',         nameZH: '虛空',
-              condEN: 'Win 1 game',            condZH: '完成 1 場勝利',     cond: 'void' },
-            { id: 'lucky',     nameEN: 'Lucky',        nameZH: 'Lucky',
-              condEN: 'Win 50 games',          condZH: '累積勝 50 局',     cond: 'wins50' },
-            { id: 'combo5',    nameEN: 'Combo Nova',   nameZH: '連擊新星',
-              condEN: 'Combo Expert (x5)',     condZH: '連擊高手（x5）',   cond: 'combo5' },
-            { id: 'speed18',   nameEN: 'Speed Crest',  nameZH: '疾速徽印',
-              condEN: 'Speed Runner (<=18)',   condZH: '快手玩家（18步內）', cond: 'speed18' },
-            { id: 'ironwill',  nameEN: 'Iron Oath',    nameZH: '鋼鐵誓約',
-              condEN: 'Iron Will (No Undo)',   condZH: '鐵血意志（無 Undo）', cond: 'ironwill' },
-            { id: 'suitcollector', nameEN: 'Four Sigils', nameZH: '四象徽記',
-              condEN: 'Suit Collector (4/4)',  condZH: '四色收集家（4/4）', cond: 'suitcollector' },
-            { id: 'luckydraw', nameEN: 'Spade Destiny', nameZH: '黑桃天命',
-              condEN: 'Lucky Draw (Final ♠3)', condZH: '幸運抽選（最後牌♠3）', cond: 'luckydraw' },
-            { id: 'fullsweep', nameEN: 'Sweep Crown',  nameZH: '全掃王冠',
-              condEN: 'Full Sweep (4 columns)', condZH: '全欄清除（4欄）', cond: 'fullsweep' },
-            { id: 'dailyregular', nameEN: 'Daily Orbit', nameZH: '每日軌跡',
-              condEN: 'Daily Regular (7 wins)', condZH: '每日常客（7 勝）', cond: 'dailyregular' },
+              condEN: 'Win 1 game',            condZH: '完成 1 場勝利',     cond: 'void',
+              priceCoins: 60, shopVisible: true },
+            { id: 'nightgold', nameEN: 'Night Gold',   nameZH: '夜金',
+              condEN: 'Win 20 games',          condZH: '累積勝利 20 場', cond: 'wins20',
+              priceCoins: 80, shopVisible: true },
+            { id: 'forest',    nameEN: 'Deep Forest',  nameZH: '深林',
+              condEN: 'Win 10 games',          condZH: '累積勝 10 局',     cond: 'wins10',
+              priceCoins: 80, shopVisible: true },
             { id: 'chainreaction', nameEN: 'Chain Flux', nameZH: '連鎖脈衝',
-              condEN: 'Chain Reaction (3+ combos)', condZH: '連鎖反應（同局 3+ combo）', cond: 'chainreaction' },
-            // Extreme Challenge rewards
+              condEN: 'Chain Reaction (3+ combos)', condZH: '連鎖反應（同局 3+ combo）', cond: 'chainreaction',
+              priceCoins: 120, shopVisible: true },
+            { id: 'dailyregular', nameEN: 'Daily Orbit', nameZH: '每日軌跡',
+              condEN: 'Daily Regular (7 wins)', condZH: '每日常客（7 勝）', cond: 'dailyregular',
+              priceCoins: 140, shopVisible: true },
+            { id: 'luckydraw', nameEN: 'Spade Destiny', nameZH: '黑桃天命',
+              condEN: 'Lucky Draw (Final ♠3)', condZH: '幸運抽選（最後牌♠3）', cond: 'luckydraw',
+              priceCoins: 160, shopVisible: true },
+            { id: 'fullsweep', nameEN: 'Sweep Crown',  nameZH: '全掃王冠',
+              condEN: 'Full Sweep (4 columns)', condZH: '全欄清除（4欄）', cond: 'fullsweep',
+              priceCoins: 180, shopVisible: true },
+            { id: 'combo5',    nameEN: 'Combo Nova',   nameZH: '連擊新星',
+              condEN: 'Combo Expert (x5)',     condZH: '連擊高手（x5）',   cond: 'combo5',
+              priceCoins: 180, shopVisible: true },
+            { id: 'suitcollector', nameEN: 'Four Sigils', nameZH: '四象徽記',
+              condEN: 'Suit Collector (4/4)',  condZH: '四色收集家（4/4）', cond: 'suitcollector',
+              priceCoins: 200, shopVisible: true },
+            { id: 'ironwill',  nameEN: 'Iron Oath',    nameZH: '鋼鐵誓約',
+              condEN: 'Iron Will (No Undo)',   condZH: '鐵血意志（無 Undo）', cond: 'ironwill',
+              priceCoins: 220, shopVisible: true },
+            { id: 'speed18',   nameEN: 'Speed Crest',  nameZH: '疾速徽印',
+              condEN: 'Speed Runner (<=18)',   condZH: '快手玩家（18步內）', cond: 'speed18',
+              priceCoins: 260, shopVisible: true },
+            { id: 'crimson',   nameEN: 'Crimson',      nameZH: '赤焰',
+              condEN: '7-day win streak',      condZH: '連續 7 天勝利',    cond: 'streak7',
+              priceCoins: 260, shopVisible: true },
+            { id: 'lucky',     nameEN: 'Lucky',        nameZH: 'Lucky',
+              condEN: 'Win 50 games',          condZH: '累積勝 50 局',     cond: 'wins50',
+              priceCoins: 320, shopVisible: true },
+            // Extreme Challenge rewards — shop hidden, achievement-only
             { id: 'shilian',  nameEN: 'Trial',         nameZH: '試煉',
-              condEN: 'Complete the Trial challenge',         condZH: '完成「試煉」挑戰', cond: 'challenge_shilian' },
+              condEN: 'Complete the Trial challenge',         condZH: '完成「試煉」挑戰', cond: 'challenge_shilian',
+              priceCoins: null, shopVisible: false },
             { id: 'tianzhu',  nameEN: 'Sky Pillar',    nameZH: '天柱',
-              condEN: 'Complete the Sky Pillar challenge',    condZH: '完成「天柱」挑戰', cond: 'challenge_tianzhu' },
+              condEN: 'Complete the Sky Pillar challenge',    condZH: '完成「天柱」挑戰', cond: 'challenge_tianzhu',
+              priceCoins: null, shopVisible: false },
             { id: 'xingbao',  nameEN: 'Star Burst',    nameZH: '星爆',
-              condEN: 'Complete the Star Burst challenge',    condZH: '完成「星爆」挑戰', cond: 'challenge_xingbao' },
+              condEN: 'Complete the Star Burst challenge',    condZH: '完成「星爆」挑戰', cond: 'challenge_xingbao',
+              priceCoins: null, shopVisible: false },
             { id: 'lunhui',   nameEN: 'Reincarnation', nameZH: '輪迴',
-              condEN: 'Complete the Reincarnation challenge', condZH: '完成「輪迴」挑戰', cond: 'challenge_lunhui' },
+              condEN: 'Complete the Reincarnation challenge', condZH: '完成「輪迴」挑戰', cond: 'challenge_lunhui',
+              priceCoins: null, shopVisible: false },
             { id: 'jufeng',   nameEN: 'Hurricane',     nameZH: '颶風',
-              condEN: 'Complete the Hurricane challenge',     condZH: '完成「颶風」挑戰', cond: 'challenge_jufeng' },
+              condEN: 'Complete the Hurricane challenge',     condZH: '完成「颶風」挑戰', cond: 'challenge_jufeng',
+              priceCoins: null, shopVisible: false },
             { id: 'yongheng', nameEN: 'Eternity',      nameZH: '永恆',
-              condEN: 'Complete the Eternity challenge',      condZH: '完成「永恆」挑戰', cond: 'challenge_yongheng' },
+              condEN: 'Complete the Eternity challenge',      condZH: '完成「永恆」挑戰', cond: 'challenge_yongheng',
+              priceCoins: null, shopVisible: false },
         ];
 
         // ── Card Back Registry (single source for image/theme/mii fx) ─────────
@@ -3344,7 +3368,11 @@
         }
 
         function selectCardBack(id) {
-            if (!getUnlockedCardBacks().includes(id)) return;
+            if (!isOwnedCardback(id)) {
+                const cb = CARD_BACKS.find(c => c.id === id);
+                if (cb?.priceCoins) showBuyCardbackConfirm(id);
+                return;
+            }
             applyCardBack(id);
             renderCardBackGrid();
         }
@@ -3354,25 +3382,50 @@
             if (!grid) return;
             const renderSeq = ++_cardbackRenderSeq;
             grid.innerHTML = '<div class="cb-loading">Loading card backs...</div>';
-            const unlocked = getUnlockedCardBacks();
             const current  = localStorage.getItem(CARD_BACK_KEY) || 'classic';
             const isZH     = currentLocale === 'zh-Hant';
             const LOCK_SVG = `<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>`;
-            const rows = CARD_BACKS.map(cb => {
-                const isUnlocked = unlocked.includes(cb.id);
-                const isSelected = cb.id === current;
-                const name       = isZH ? cb.nameZH : cb.nameEN;
-                const hint       = isZH ? cb.condZH  : cb.condEN;
-                return `<div class="cb-item${isSelected ? ' cb-selected' : ''}${!isUnlocked ? ' cb-locked' : ''}"
-                             onclick="${isUnlocked ? `selectCardBack('${cb.id}')` : ''}">
-                    <div class="cb-preview cb-preview-${cb.id}">
-                        ${!isUnlocked ? `<div class="cb-lock-icon">${LOCK_SVG}</div>` : ''}
-                        ${isSelected  ? '<div class="cb-selected-mark">✓</div>' : ''}
-                    </div>
-                    <div class="cb-name">${name}</div>
-                    ${!isUnlocked ? `<div class="cb-hint">${hint}</div>` : ''}
-                </div>`;
-            });
+            const w = loadWallet();
+            const rows = CARD_BACKS
+                .filter(cb => cb.shopVisible !== false || isOwnedCardback(cb.id))
+                .map(cb => {
+                    const owned      = isOwnedCardback(cb.id);
+                    const isSelected = cb.id === current;
+                    const name       = isZH ? cb.nameZH : cb.nameEN;
+                    const isShopItem = cb.priceCoins !== null;
+                    const canAfford  = isShopItem && w.coins >= cb.priceCoins;
+                    const shortfall  = isShopItem ? cb.priceCoins - w.coins : 0;
+
+                    let statusHtml = '';
+                    let clickHandler = '';
+                    let extraClass = '';
+
+                    if (owned) {
+                        statusHtml = isSelected
+                            ? `<div class="cb-badge cb-equipped">${isZH ? '裝備中' : 'Equipped'}</div>`
+                            : `<div class="cb-badge cb-owned">${isZH ? '已擁有' : 'Owned'}</div>`;
+                        clickHandler = `onclick="selectCardBack('${cb.id}')"`;
+                    } else if (isShopItem && canAfford) {
+                        statusHtml = `<div class="cb-badge cb-price cb-buyable" onclick="showBuyCardbackConfirm('${cb.id}')">🪙 ${cb.priceCoins}</div>`;
+                        clickHandler = `onclick="showBuyCardbackConfirm('${cb.id}')"`;
+                    } else if (isShopItem && !canAfford) {
+                        statusHtml = `<div class="cb-badge cb-price cb-unaffordable">🪙 ${cb.priceCoins} <span class="cb-shortfall">(差${shortfall})</span></div>`;
+                        extraClass  = ' cb-unaffordable-item';
+                    } else {
+                        const hint = isZH ? cb.condZH : cb.condEN;
+                        statusHtml = `<div class="cb-lock-icon">${LOCK_SVG}</div><div class="cb-hint">${hint}</div>`;
+                        extraClass  = ' cb-locked';
+                    }
+
+                    return `<div class="cb-item${isSelected ? ' cb-selected' : ''}${extraClass}" ${clickHandler}>
+                        <div class="cb-preview cb-preview-${cb.id}">
+                            ${!owned && !isShopItem ? `<div class="cb-lock-overlay">${LOCK_SVG}</div>` : ''}
+                            ${isSelected ? '<div class="cb-selected-mark">✓</div>' : ''}
+                        </div>
+                        <div class="cb-name">${name}</div>
+                        ${statusHtml}
+                    </div>`;
+                });
             grid.innerHTML = '';
             const chunkSize = 6;
             let idx = 0;
@@ -3385,6 +3438,143 @@
             };
             requestAnimationFrame(appendChunk);
         }
+
+        // ── Wallet & Cosmetics System ───────────────────────────────────────────
+        function loadWallet() {
+            try {
+                const raw = JSON.parse(localStorage.getItem(WALLET_KEY) || 'null');
+                return {
+                    coins: 0, lifetimeEarned: 0, lifetimeSpent: 0,
+                    lastDailyBonusDate: '', todayEarned: 0, todayDate: '',
+                    ...raw
+                };
+            } catch { return { coins: 0, lifetimeEarned: 0, lifetimeSpent: 0, lastDailyBonusDate: '', todayEarned: 0, todayDate: '' }; }
+        }
+
+        function saveWallet(w) {
+            localStorage.setItem(WALLET_KEY, JSON.stringify(w));
+        }
+
+        function addCoins(amount, reason = '') {
+            const w = loadWallet();
+            w.coins += amount;
+            w.lifetimeEarned += amount;
+            saveWallet(w);
+            renderCoinHud();
+        }
+
+        function spendCoins(amount, reason = '') {
+            const w = loadWallet();
+            if (w.coins < amount) return false;
+            w.coins -= amount;
+            w.lifetimeSpent += amount;
+            saveWallet(w);
+            renderCoinHud();
+            return true;
+        }
+
+        function grantCoinsOnWin({ predictionMatched = false, firstWinToday = false } = {}) {
+            const w = loadWallet();
+            const today = toLocalDateKey();
+            if (w.todayDate !== today) { w.todayEarned = 0; w.todayDate = today; }
+            let base = w.todayEarned >= 200 ? 4 : w.todayEarned >= 150 ? 8 : 12;
+            let bonus = 0;
+            if (predictionMatched) bonus += 18;
+            if (firstWinToday && w.lastDailyBonusDate !== today) {
+                bonus += 20;
+                w.lastDailyBonusDate = today;
+            }
+            const total = base + bonus;
+            w.coins += total;
+            w.lifetimeEarned += total;
+            w.todayEarned += total;
+            saveWallet(w);
+            renderCoinHud();
+            return { base, bonus, total };
+        }
+
+        function loadOwnedCosmetics() {
+            try {
+                const raw = JSON.parse(localStorage.getItem(COSMETIC_OWNED_KEY) || 'null');
+                return { cardbacks: [], effectThemes: [], cardFaces: [], ...raw };
+            } catch { return { cardbacks: [], effectThemes: [], cardFaces: [] }; }
+        }
+
+        function saveOwnedCosmetics(o) {
+            localStorage.setItem(COSMETIC_OWNED_KEY, JSON.stringify(o));
+        }
+
+        function isOwnedCardback(id) {
+            if (DEFAULT_UNLOCKED_CARD_BACKS.includes(id)) return true;
+            if (getUnlockedCardBacks().includes(id)) return true;
+            return loadOwnedCosmetics().cardbacks.includes(id);
+        }
+
+        function buyCardback(id) {
+            const cb = CARD_BACKS.find(c => c.id === id);
+            if (!cb || !cb.priceCoins) return false;
+            if (isOwnedCardback(id)) return false;
+            const w = loadWallet();
+            if (w.coins < cb.priceCoins) return false;
+            if (!spendCoins(cb.priceCoins, `buy_cardback_${id}`)) return false;
+            const owned = loadOwnedCosmetics();
+            if (!owned.cardbacks.includes(id)) owned.cardbacks.push(id);
+            saveOwnedCosmetics(owned);
+            return true;
+        }
+
+        function renderCoinHud() {
+            const el = document.getElementById('coin-hud');
+            if (!el) return;
+            const w = loadWallet();
+            el.textContent = `🪙 ${w.coins}`;
+        }
+
+        function showBuyCardbackConfirm(id) {
+            const cb = CARD_BACKS.find(c => c.id === id);
+            if (!cb) return;
+            const w = loadWallet();
+            const isZH = currentLocale === 'zh-Hant';
+            const name = isZH ? cb.nameZH : cb.nameEN;
+            const existing = document.getElementById('buy-confirm-dialog');
+            if (existing) existing.remove();
+            const dlg = document.createElement('div');
+            dlg.id = 'buy-confirm-dialog';
+            dlg.className = 'buy-confirm-dialog';
+            dlg.innerHTML = `
+                <div class="buy-confirm-inner">
+                    <div class="buy-confirm-name">${name}</div>
+                    <div class="buy-confirm-price">🪙 ${cb.priceCoins}</div>
+                    <div class="buy-confirm-balance">${isZH ? '目前' : 'Balance'}: 🪙 ${w.coins}</div>
+                    <div class="buy-confirm-btns">
+                        <button class="buy-confirm-cancel" onclick="document.getElementById('buy-confirm-dialog')?.remove()">${isZH ? '取消' : 'Cancel'}</button>
+                        <button class="buy-confirm-ok" onclick="confirmBuyCardback('${id}')">${isZH ? '確認購買' : 'Buy'}</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(dlg);
+        }
+
+        function confirmBuyCardback(id) {
+            document.getElementById('buy-confirm-dialog')?.remove();
+            const success = buyCardback(id);
+            if (success) {
+                selectCardBack(id);
+                showCoinEarnFx(-(CARD_BACKS.find(c => c.id === id)?.priceCoins || 0), 'spend');
+            }
+        }
+
+        function showCoinEarnFx(amount, type = 'earn') {
+            const el = document.createElement('div');
+            el.className = `coin-earn-fx${type === 'spend' ? ' coin-spend-fx' : ''}`;
+            el.textContent = type === 'spend' ? `−${Math.abs(amount)} 🪙` : `+${amount} 🪙`;
+            el.style.left = `${window.innerWidth / 2}px`;
+            el.style.top  = `${window.innerHeight * 0.28}px`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1400);
+        }
+        // ── End Wallet & Cosmetics System ───────────────────────────────────────
+
         // ── End Card Back Collection ────────────────────────────────────────────
 
         // ── Home Screen ────────────────────────────────────────────────────────
@@ -7219,6 +7409,11 @@
             lastFortuneText = fortuneText;
             const predictionMatched = predictionSuit && winCardSuit && predictionSuit === winCardSuit;
             onWinDropFragment(predictionMatched ? 2 : 1); // 命中預測時碎片獎勵 x2
+            const coinResult = grantCoinsOnWin({
+                predictionMatched: !!predictionMatched,
+                firstWinToday: isFirstWinToday
+            });
+            setTimeout(() => showCoinEarnFx(coinResult.total), 800);
             updateStreakFlame();
             const _dw = loadDailyWins();
             const _winCount = _dw.count;
@@ -7251,6 +7446,7 @@
                     ${prevStats ? `<div class="win-prev-stats">上局 ${prevStats.timeStr} · ${prevStats.moves}步 · ×${prevStats.combo}</div>` : ''}
                     <h2 class="win-title shimmer-text">LUCKY 3 JACKPOT</h2>
                     <p class="win-subtitle">${t('win.subtitle')}</p>
+                    <div class="win-coins-earned">+${coinResult.total} 🪙${coinResult.bonus > 0 ? ` <span class="win-coins-bonus">(+${coinResult.bonus} 加成)</span>` : ''}</div>
                     ${_progressHtml}
                     ${_taskHint ? `<div class="win-task-hint">${_taskHint}</div>` : ''}
                     ${_streak >= 1 ? `<div class="win-streak-line">🔥 連勝 ${_streak} 天</div>` : ''}
@@ -7758,6 +7954,7 @@
         updateFocusWidget();
         updateStreakFlame();
         loadCardBack();
+        renderCoinHud();
         const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 150));
         idle(() => preloadCardbackImages());
         bindSettingsUI();

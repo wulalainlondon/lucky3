@@ -6170,3 +6170,104 @@ body.imperial-quake { animation: quake-anim 0.85s ease-out; }
         padding-top: 34px;
     }
 }
+
+/* ══ 金幣 HUD ══ */
+.coin-hud {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--gold, #ffd700);
+    letter-spacing: 0.5px;
+    margin-top: 3px;
+    white-space: nowrap;
+}
+
+/* ══ 金幣浮動動畫 ══ */
+.coin-earn-fx {
+    position: fixed;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffd700;
+    text-shadow: 0 0 12px rgba(255,215,0,0.7);
+    pointer-events: none;
+    z-index: 19999;
+    animation: coin-earn-rise 1.4s ease-out forwards;
+    white-space: nowrap;
+}
+.coin-spend-fx { color: #ff9966; text-shadow: 0 0 10px rgba(255,120,60,0.6); }
+@keyframes coin-earn-rise {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(0); }
+    15%  { opacity: 1; }
+    80%  { opacity: 0.9; transform: translateX(-50%) translateY(-64px); }
+    100% { opacity: 0;   transform: translateX(-50%) translateY(-90px); }
+}
+
+/* ══ 勝利面板金幣行 ══ */
+.win-coins-earned {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffd700;
+    margin: 6px 0 2px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+.win-coins-bonus {
+    font-size: 0.82rem;
+    color: #ffe8a0;
+    font-weight: 500;
+}
+
+/* ══ 牌背商店卡片狀態 ══ */
+.cb-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 3px;
+    text-align: center;
+}
+.cb-equipped  { background: rgba(255,215,0,0.18); color: #ffd700; border: 1px solid rgba(255,215,0,0.4); }
+.cb-owned     { background: rgba(100,200,100,0.12); color: #8fde8f; border: 1px solid rgba(100,220,100,0.3); }
+.cb-price     { cursor: pointer; }
+.cb-buyable   { background: rgba(255,215,0,0.12); color: #ffd700; border: 1px solid rgba(255,215,0,0.35); }
+.cb-buyable:hover { background: rgba(255,215,0,0.22); }
+.cb-unaffordable { background: rgba(120,120,120,0.1); color: #888; border: 1px solid rgba(120,120,120,0.2); cursor: default; }
+.cb-shortfall { font-size: 0.65rem; opacity: 0.7; }
+.cb-unaffordable-item { opacity: 0.7; }
+
+/* ══ 購買確認 Dialog ══ */
+.buy-confirm-dialog {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 19000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.buy-confirm-inner {
+    background: var(--bg, #1a1a2e);
+    border: 1px solid rgba(255,215,0,0.35);
+    border-radius: 14px;
+    padding: 24px 28px;
+    min-width: 220px;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.buy-confirm-name  { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.buy-confirm-price { font-size: 1.4rem; font-weight: 800; color: #ffd700; margin: 8px 0; }
+.buy-confirm-balance { font-size: 0.8rem; color: #aaa; margin-bottom: 16px; }
+.buy-confirm-btns  { display: flex; gap: 10px; justify-content: center; }
+.buy-confirm-cancel {
+    padding: 8px 18px; border-radius: 8px;
+    background: rgba(255,255,255,0.08); color: #ccc;
+    border: 1px solid rgba(255,255,255,0.15); cursor: pointer; font-size: 0.9rem;
+}
+.buy-confirm-ok {
+    padding: 8px 18px; border-radius: 8px;
+    background: rgba(255,215,0,0.18); color: #ffd700;
+    border: 1px solid rgba(255,215,0,0.45); cursor: pointer;
+    font-size: 0.9rem; font-weight: 700;
+}
+.buy-confirm-ok:hover { background: rgba(255,215,0,0.28); }
