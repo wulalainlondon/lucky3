@@ -3166,6 +3166,7 @@
         };
 
         const EFFECT_THEMES = [
+            { id: 'auto',    particleTheme: null,           miiProfile: null,      glowColor: null,                       nameEN: 'Match Cardback', nameZH: '跟隨牌背', priceCoins: null, shopVisible: true },
             { id: 'crystal', particleTheme: 'CRYSTAL',     miiProfile: 'CRYSTAL', glowColor: 'rgba(255, 215, 0, 0.9)',   nameEN: 'Crystal',      nameZH: '水晶',     priceCoins: null, shopVisible: true },
             { id: 'ember',   particleTheme: 'EMBER_BRIGHT', miiProfile: 'FORGE',   glowColor: 'rgba(255, 60, 40, 0.9)',   nameEN: 'Ember',        nameZH: '烈焰',     priceCoins: 80,   shopVisible: true },
             { id: 'void',    particleTheme: 'VOID_PURPLE',  miiProfile: 'VOID',    glowColor: 'rgba(180, 120, 255, 0.9)', nameEN: 'Void',         nameZH: '虛空',     priceCoins: 100,  shopVisible: true },
@@ -3174,7 +3175,7 @@
             { id: 'forge',   particleTheme: 'FORGE_ROYAL',  miiProfile: 'FORGE',   glowColor: 'rgba(255, 215, 0, 1.0)',   nameEN: 'Royal Forge',  nameZH: '皇家鍛爐', priceCoins: 120,  shopVisible: true },
         ];
         const EFFECT_THEME_REGISTRY = Object.fromEntries(EFFECT_THEMES.map(et => [et.id, et]));
-        const DEFAULT_EFFECT_THEME_ID = 'crystal';
+        const DEFAULT_EFFECT_THEME_ID = 'auto';
 
         const THEME_CONFIGS = {
             CRYSTAL: {
@@ -3373,18 +3374,27 @@
             const eq = loadEquipped();
             eq.cardBackId = safeId;
             saveEquipped(eq);
+            if (activeEffectThemeId === 'auto') applyEffectTheme('auto');
         }
 
         function applyEffectTheme(id) {
-            const safeId = EFFECT_THEME_REGISTRY[id] ? id : DEFAULT_EFFECT_THEME_ID;
-            const et = EFFECT_THEME_REGISTRY[safeId];
-            const preset = MII_PROFILE_PRESETS[et.miiProfile] || MII_PROFILE_PRESETS.CRYSTAL;
-            const rootStyle = document.documentElement.style;
-            rootStyle.setProperty('--mii-glow-color', et.glowColor);
-            rootStyle.setProperty('--mii-text-color', preset.miiText.default.color);
-            rootStyle.setProperty('--mii-text-border', preset.miiText.default.border);
-            rootStyle.setProperty('--mii-text-bg', preset.miiText.default.bg);
+            const safeId = EFFECT_THEME_REGISTRY[id] ? id : 'auto';
             activeEffectThemeId = safeId;
+            const rootStyle = document.documentElement.style;
+            if (safeId === 'auto') {
+                const cbCfg = getCurrentCardbackConfig();
+                rootStyle.setProperty('--mii-glow-color', cbCfg.glow || 'rgba(255,215,0,0.9)');
+                rootStyle.setProperty('--mii-text-color', cbCfg.miiText?.default?.color || '#fff');
+                rootStyle.setProperty('--mii-text-border', cbCfg.miiText?.default?.border || 'rgba(255,255,255,0.4)');
+                rootStyle.setProperty('--mii-text-bg', cbCfg.miiText?.default?.bg || 'rgba(16,18,20,0.88)');
+            } else {
+                const et = EFFECT_THEME_REGISTRY[safeId];
+                const preset = MII_PROFILE_PRESETS[et.miiProfile] || MII_PROFILE_PRESETS.CRYSTAL;
+                rootStyle.setProperty('--mii-glow-color', et.glowColor);
+                rootStyle.setProperty('--mii-text-color', preset.miiText.default.color);
+                rootStyle.setProperty('--mii-text-border', preset.miiText.default.border);
+                rootStyle.setProperty('--mii-text-bg', preset.miiText.default.bg);
+            }
             const eq = loadEquipped();
             eq.effectThemeId = safeId;
             saveEquipped(eq);
@@ -3535,8 +3545,8 @@
         function loadEquipped() {
             try {
                 const raw = JSON.parse(localStorage.getItem(COSMETIC_EQUIPPED_KEY) || 'null');
-                return { cardBackId: 'classic', effectThemeId: DEFAULT_EFFECT_THEME_ID, ...raw };
-            } catch { return { cardBackId: 'classic', effectThemeId: DEFAULT_EFFECT_THEME_ID }; }
+                return { cardBackId: 'classic', effectThemeId: 'auto', ...raw };
+            } catch { return { cardBackId: 'classic', effectThemeId: 'auto' }; }
         }
 
         function saveEquipped(eq) {
@@ -3570,14 +3580,23 @@
                 if (!eq.cardBackId || eq.cardBackId === 'classic') {
                     eq.cardBackId = localStorage.getItem(CARD_BACK_KEY) || 'classic';
                 }
-                if (!eq.effectThemeId || !EFFECT_THEME_REGISTRY[eq.effectThemeId]) {
-                    const profileMap = { CRYSTAL: 'crystal', FORGE: 'forge', VOID: 'void', ARC: 'arc', LIFE: 'life' };
-                    const cbCfg = getCardbackConfig(eq.cardBackId);
-                    eq.effectThemeId = profileMap[cbCfg.miiFxProfile] || DEFAULT_EFFECT_THEME_ID;
-                }
+                eq.effectThemeId = 'auto';
                 saveEquipped(eq);
             } catch (_) {}
             localStorage.setItem(MIGRATED_V2, '1');
+        }
+
+        function migrateEffectAutoReset() {
+            const FLAG = 'lucky3-effect-auto-v1';
+            if (localStorage.getItem(FLAG)) return;
+            try {
+                const eq = loadEquipped();
+                if (eq.effectThemeId !== 'auto') {
+                    eq.effectThemeId = 'auto';
+                    saveEquipped(eq);
+                }
+            } catch (_) {}
+            localStorage.setItem(FLAG, '1');
         }
 
         function isOwnedCardback(id) {
@@ -3710,9 +3729,20 @@
                 const owned = isOwnedEffectTheme(et.id);
                 const equipped = et.id === equippedId;
                 const canAfford = w.coins >= (et.priceCoins || 0);
-                const particleCfg = THEME_CONFIGS[et.particleTheme];
-                const c1 = particleCfg?.colors?.[0] || '#fff';
-                const c2 = particleCfg?.colors?.[1] || '#888';
+                let c1, c2, glowStyle;
+                if (et.id === 'auto') {
+                    const cbTheme = getCurrentCardbackConfig().theme || 'CRYSTAL';
+                    const autoCfg = THEME_CONFIGS[cbTheme];
+                    c1 = autoCfg?.colors?.[0] || '#ccc';
+                    c2 = autoCfg?.colors?.[1] || '#888';
+                    const cbGlow = getCurrentCardbackConfig().glow || 'rgba(255,215,0,0.7)';
+                    glowStyle = `box-shadow:0 0 14px 5px ${cbGlow},inset 0 0 8px 2px ${cbGlow}`;
+                } else {
+                    const particleCfg = THEME_CONFIGS[et.particleTheme];
+                    c1 = particleCfg?.colors?.[0] || '#fff';
+                    c2 = particleCfg?.colors?.[1] || '#888';
+                    glowStyle = `box-shadow:0 0 14px 5px ${et.glowColor},inset 0 0 8px 2px ${et.glowColor}`;
+                }
 
                 let badge = '';
                 let stateClass = '';
@@ -3738,7 +3768,7 @@
 
                 return `<div class="et-card ${stateClass}" ${clickAttr}>
                     <div class="et-preview" style="background:linear-gradient(135deg,${c1} 0%,${c2} 100%)">
-                        <div class="et-glow-ring" style="box-shadow:0 0 14px 5px ${et.glowColor},inset 0 0 8px 2px ${et.glowColor}"></div>
+                        <div class="et-glow-ring" style="${glowStyle}"></div>
                     </div>
                     <div class="et-name">${name}</div>
                     ${badge}
@@ -3779,6 +3809,7 @@
         function showHomeScreen() {
             migrateCardBackInventory();
             migrateEquippedToV2();
+            migrateEffectAutoReset();
             const el = document.getElementById('home-screen');
             if (!el) return;
             togglePause(false);
@@ -6010,8 +6041,9 @@
         }
 
         function getCurrentTheme() {
-            const et = EFFECT_THEME_REGISTRY[activeEffectThemeId] || EFFECT_THEME_REGISTRY[DEFAULT_EFFECT_THEME_ID];
-            return et.particleTheme || 'CRYSTAL';
+            if (activeEffectThemeId === 'auto') return getCurrentCardbackConfig().theme || 'CRYSTAL';
+            const et = EFFECT_THEME_REGISTRY[activeEffectThemeId];
+            return (et && et.particleTheme) ? et.particleTheme : getCurrentCardbackConfig().theme || 'CRYSTAL';
         }
 
         function spawnThemeParticles(theme, trigger, x, y, opts = {}) {
@@ -6134,9 +6166,14 @@
 
         function showMiiFX(colEl, incomingCard, existingCards) {
             if (!colEl) return;
-            const et = EFFECT_THEME_REGISTRY[activeEffectThemeId] || EFFECT_THEME_REGISTRY[DEFAULT_EFFECT_THEME_ID];
-            const preset = MII_PROFILE_PRESETS[et.miiProfile] || MII_PROFILE_PRESETS.CRYSTAL;
-            const haptic = preset.haptic || {};
+            let haptic;
+            if (activeEffectThemeId === 'auto') {
+                haptic = getCurrentCardbackConfig().hapticProfile || {};
+            } else {
+                const et = EFFECT_THEME_REGISTRY[activeEffectThemeId] || EFFECT_THEME_REGISTRY['crystal'];
+                const preset = MII_PROFILE_PRESETS[et.miiProfile] || MII_PROFILE_PRESETS.CRYSTAL;
+                haptic = preset.haptic || {};
+            }
 
             // 判斷落下後是否能湊出有效消除
             const canClear = Array.isArray(existingCards) && incomingCard
