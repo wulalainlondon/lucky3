@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="diamond">
+  <!--
+    Diamond: pure four-point rhombus, no curves.
+
+    Vertices:
+      Top    (50, 7)   — top apex
+      Right  (90, 50)  — right vertex, at vertical midpoint
+      Bottom (50, 93)  — bottom apex
+      Left   (10, 50)  — left vertex, at vertical midpoint
+
+    Height = 86px, Width = 80px → aspect ratio ≈ 1.075:1 (slightly taller).
+    Straight L commands only — the diamond is the sharpest suit.
+  -->
+  <path fill="currentColor" d="
+    M 50,7
+    L 90,50
+    L 50,93
+    L 10,50
+    Z
+  "/>
+</svg>

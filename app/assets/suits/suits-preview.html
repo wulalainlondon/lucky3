@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucky3 — Suit SVG Preview</title>
+  <style>
+    :root {
+      --red:   #C0392B;
+      --black: #1A1A1A;
+      --bg-light: #F5F0E8;
+      --bg-dark:  #1A1A1A;
+      --bg-mid:   #2C2C2C;
+      --accent:   #E8C84A;
+      --font-mono: 'Courier New', Courier, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-light);
+      color: var(--black);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 32px 40px 24px;
+      border-bottom: 2px solid var(--black);
+    }
+
+    header h1 {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 4px;
+    }
+
+    header p {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── SIZE ROW LABELS ── */
+    .size-label {
+      display: inline-block;
+      width: 48px;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      opacity: 0.5;
+      vertical-align: middle;
+    }
+
+    /* ── SECTION WRAPPER ── */
+    section {
+      padding: 32px 40px;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+    }
+
+    section h2 {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 20px;
+    }
+
+    /* ── SUIT GRID ── */
+    .suit-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .suit-name {
+      width: 56px;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+
+    .size-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .suit-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .suit-cell span {
+      font-size: 10px;
+      opacity: 0.4;
+      letter-spacing: 0.05em;
+    }
+
+    .suit-cell img,
+    .suit-cell object {
+      display: block;
+    }
+
+    /* ── LIGHT BACKGROUND SECTION ── */
+    .on-light { background: var(--bg-light); }
+    .on-light .suit-icon { color: var(--black); }
+    .on-light .suit-icon.red { color: var(--red); }
+
+    /* ── DARK BACKGROUND SECTION ── */
+    .on-dark {
+      background: var(--bg-dark);
+      color: var(--bg-light);
+    }
+    .on-dark h2 { color: var(--bg-light); }
+    .on-dark .suit-name { color: var(--bg-light); }
+    .on-dark .suit-cell span { color: var(--bg-light); }
+    .on-dark .suit-icon { color: var(--bg-light); }
+    .on-dark .suit-icon.red { color: #E05C4C; }
+
+    /* ── ACCENT BACKGROUND SECTION ── */
+    .on-accent {
+      background: var(--accent);
+      color: var(--black);
+    }
+    .on-accent .suit-icon { color: var(--black); }
+    .on-accent .suit-icon.red { color: var(--red); }
+
+    /* ── SVG INLINE — used via <img> with filter trick for color ── */
+    /* We use inline <img> pointing to local SVG files.
+       To demonstrate currentColor, we overlay each img inside
+       a container that applies CSS color via filter. */
+
+    /* Better approach: inline the SVGs as <object> or use CSS mask.
+       We use the CSS mask technique for true currentColor demonstration. */
+    .suit-icon {
+      display: inline-block;
+      /* mask-image set inline via style attr */
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      -webkit-mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-position: center;
+      mask-size: contain;
+      background-color: currentColor;
+    }
+
+    /* ── INLINE SVG TEST (bottom section) ── */
+    .inline-test {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .inline-card {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .inline-card-dark {
+      background: var(--bg-mid);
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .card-corner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .card-corner .rank {
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .card-corner svg {
+      display: block;
+    }
+
+    .black-suit { color: var(--black); }
+    .red-suit   { color: var(--red); }
+    .white-suit { color: #F5F0E8; }
+
+    footer {
+      padding: 24px 40px;
+      font-size: 10px;
+      opacity: 0.35;
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Lucky3 — P3 Sprint A</h1>
+  <p>SVG Suit Glyph Preview</p>
+</header>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 1: LIGHT BACKGROUND, BLACK + RED
+     ═══════════════════════════════════════════════ -->
+<section class="on-light">
+  <h2>Light Background — Black &amp; Red</h2>
+
+  <!-- SPADE -->
+  <div class="suit-row">
+    <span class="suit-name">spade</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:16px;height:16px;"></span>
+        <span>16px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:24px;height:24px;"></span>
+        <span>24px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEART -->
+  <div class="suit-row">
+    <span class="suit-name">heart</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:16px;height:16px;"></span>
+        <span>16px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:24px;height:24px;"></span>
+        <span>24px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIAMOND -->
+  <div class="suit-row">
+    <span class="suit-name">diamond</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:16px;height:16px;"></span>
+        <span>16px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:24px;height:24px;"></span>
+        <span>24px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLUB -->
+  <div class="suit-row">
+    <span class="suit-name">club</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:16px;height:16px;"></span>
+        <span>16px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:24px;height:24px;"></span>
+        <span>24px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 2: DARK BACKGROUND
+     ═══════════════════════════════════════════════ -->
+<section class="on-dark">
+  <h2>Dark Background — White &amp; Red</h2>
+
+  <div class="suit-row">
+    <span class="suit-name">spade</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon white-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:16px;height:16px;"></span>
+        <span>16px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon white-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:24px;height:24px;"></span>
+        <span>24px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon white-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon white-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="suit-row">
+    <span class="suit-name">heart</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:16px;height:16px;color:#E05C4C;"></span>
+        <span>16px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:24px;height:24px;color:#E05C4C;"></span>
+        <span>24px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:48px;height:48px;color:#E05C4C;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:96px;height:96px;color:#E05C4C;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="suit-row">
+    <span class="suit-name">diamond</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:16px;height:16px;color:#E05C4C;"></span>
+        <span>16px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:24px;height:24px;color:#E05C4C;"></span>
+        <span>24px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:48px;height:48px;color:#E05C4C;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:96px;height:96px;color:#E05C4C;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="suit-row">
+    <span class="suit-name">club</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon white-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:16px;height:16px;"></span>
+        <span>16px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon white-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:24px;height:24px;"></span>
+        <span>24px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon white-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon white-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 3: ACCENT BACKGROUND
+     ═══════════════════════════════════════════════ -->
+<section class="on-accent">
+  <h2>Accent Background (Golden) — Black &amp; Red</h2>
+
+  <div class="suit-row">
+    <span class="suit-name">spade</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(spade.svg);mask-image:url(spade.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="suit-row">
+    <span class="suit-name">heart</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(heart.svg);mask-image:url(heart.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="suit-row">
+    <span class="suit-name">diamond</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon red-suit" style="-webkit-mask-image:url(diamond.svg);mask-image:url(diamond.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="suit-row">
+    <span class="suit-name">club</span>
+    <div class="size-group">
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:48px;height:48px;"></span>
+        <span>48px</span>
+      </div>
+      <div class="suit-cell">
+        <span class="suit-icon black-suit" style="-webkit-mask-image:url(club.svg);mask-image:url(club.svg);width:96px;height:96px;"></span>
+        <span>96px</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 4: INLINE SVG — TRUE currentColor TEST
+     Embeds raw SVG so CSS color propagates directly.
+     This is how Lucky3 should actually use these glyphs.
+     ═══════════════════════════════════════════════ -->
+<section class="on-light">
+  <h2>Inline SVG — currentColor Propagation (Simulated Card Corners)</h2>
+  <div class="inline-test">
+
+    <!-- White card, black spade A -->
+    <div class="inline-card">
+      <div class="card-corner black-suit">
+        <span class="rank">A</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="18" height="18">
+          <path fill="currentColor" fill-rule="nonzero" d="M 50,8 C 28,22 8,40 8,56 C 8,70 20,76 32,70 C 26,78 18,82 10,82 C 18,90 30,90 44,86 L 44,70 C 30,75 16,68 16,56 C 16,42 38,26 50,14 C 62,26 84,42 84,56 C 84,68 70,75 56,70 L 56,86 C 70,90 82,90 90,82 C 82,82 74,78 68,70 C 80,76 92,70 92,56 C 92,40 72,22 50,8 Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- White card, red heart K -->
+    <div class="inline-card">
+      <div class="card-corner red-suit">
+        <span class="rank">K</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="18" height="18">
+          <path fill="currentColor" d="M 50,90 C 46,86 8,62 8,38 C 8,20 20,10 32,10 C 40,10 47,14 50,20 C 53,14 60,10 68,10 C 80,10 92,20 92,38 C 92,62 54,86 50,90 Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- White card, red diamond Q -->
+    <div class="inline-card">
+      <div class="card-corner red-suit">
+        <span class="rank">Q</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="18" height="18">
+          <path fill="currentColor" d="M 50,7 L 90,50 L 50,93 L 10,50 Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- White card, black club J -->
+    <div class="inline-card">
+      <div class="card-corner black-suit">
+        <span class="rank">J</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="18" height="18">
+          <path fill="currentColor" fill-rule="nonzero" d="M 50,8 C 61.05,8 70,16.95 70,28 C 70,39.05 61.05,48 50,48 C 38.95,48 30,39.05 30,28 C 30,16.95 38.95,8 50,8 Z M 32,32 C 43.05,32 52,40.95 52,52 C 52,63.05 43.05,72 32,72 C 20.95,72 12,63.05 12,52 C 12,40.95 20.95,32 32,32 Z M 68,32 C 79.05,32 88,40.95 88,52 C 88,63.05 79.05,72 68,72 C 56.95,72 48,63.05 48,52 C 48,40.95 56.95,32 68,32 Z M 44,65 L 44,80 C 30,84 18,90 18,92 C 26,95 38,95 50,95 C 62,95 74,95 82,92 C 82,90 70,84 56,80 L 56,65 Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Dark card, white spade A -->
+    <div class="inline-card inline-card-dark">
+      <div class="card-corner white-suit">
+        <span class="rank">A</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="18" height="18">
+          <path fill="currentColor" fill-rule="nonzero" d="M 50,8 C 28,22 8,40 8,56 C 8,70 20,76 32,70 C 26,78 18,82 10,82 C 18,90 30,90 44,86 L 44,70 C 30,75 16,68 16,56 C 16,42 38,26 50,14 C 62,26 84,42 84,56 C 84,68 70,75 56,70 L 56,86 C 70,90 82,90 90,82 C 82,82 74,78 68,70 C 80,76 92,70 92,56 C 92,40 72,22 50,8 Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Dark card, red heart K -->
+    <div class="inline-card inline-card-dark">
+      <div class="card-corner" style="color:#E05C4C;">
+        <span class="rank">K</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="18" height="18">
+          <path fill="currentColor" d="M 50,90 C 46,86 8,62 8,38 C 8,20 20,10 32,10 C 40,10 47,14 50,20 C 53,14 60,10 68,10 C 80,10 92,20 92,38 C 92,62 54,86 50,90 Z"/>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 5: PATH DATA REFERENCE
+     ═══════════════════════════════════════════════ -->
+<section class="on-light">
+  <h2>Path Data Reference</h2>
+  <table style="border-collapse:collapse;width:100%;font-size:11px;">
+    <thead>
+      <tr style="border-bottom:2px solid var(--black);">
+        <th style="text-align:left;padding:8px 12px;letter-spacing:0.1em;">SUIT</th>
+        <th style="text-align:left;padding:8px 12px;letter-spacing:0.1em;">SUBPATHS</th>
+        <th style="text-align:left;padding:8px 12px;letter-spacing:0.1em;">KEY POINTS</th>
+        <th style="text-align:left;padding:8px 12px;letter-spacing:0.1em;">NOTES</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1);">
+        <td style="padding:10px 12px;font-weight:bold;">♠ Spade</td>
+        <td style="padding:10px 12px;opacity:0.6;">1</td>
+        <td style="padding:10px 12px;opacity:0.6;">Apex (50,8) · Wings (8,56)/(92,56) · Stem col (44–56,70–86)</td>
+        <td style="padding:10px 12px;opacity:0.6;">Inverted heart blade + stem + base wings; all one path</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1);">
+        <td style="padding:10px 12px;font-weight:bold;">♥ Heart</td>
+        <td style="padding:10px 12px;opacity:0.6;">1</td>
+        <td style="padding:10px 12px;opacity:0.6;">Cusp (50,90) · Notch (50,20) · Bumps cresting ≈x:8/92 · Top divots (32,10)/(68,10)</td>
+        <td style="padding:10px 12px;opacity:0.6;">Two cubic bezier arcs from bottom cusp, meeting at top notch</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1);">
+        <td style="padding:10px 12px;font-weight:bold;">♦ Diamond</td>
+        <td style="padding:10px 12px;opacity:0.6;">1</td>
+        <td style="padding:10px 12px;opacity:0.6;">Top (50,7) · Right (90,50) · Bottom (50,93) · Left (10,50)</td>
+        <td style="padding:10px 12px;opacity:0.6;">Pure rhombus, straight lines only, H×W = 86×80</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 12px;font-weight:bold;">♣ Club</td>
+        <td style="padding:10px 12px;opacity:0.6;">4</td>
+        <td style="padding:10px 12px;opacity:0.6;">Circles: r=20 at (50,28),(32,52),(68,52) · Stem col (44–56,65–80)</td>
+        <td style="padding:10px 12px;opacity:0.6;">3× circle bezier subpaths + 1 stem/wings subpath; fill-rule:nonzero</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  Lucky3 / P3 Sprint A / SVG Suit Glyph System / 2026-05-06
+</footer>
+
+</body>
+</html>

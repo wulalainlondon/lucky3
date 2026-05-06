@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="heart">
+  <!--
+    Heart: single closed path.
+
+    Construction — parametric heart from two tangent circular arcs:
+      Start at bottom cusp (50,90).
+      Left side: line up to left-arc entry (18,60), then cubic bezier through
+        the left bump. Left circle center ≈ (28,36). Arc sweeps from entry
+        at (18,60) up and around the left bump, cresting near (14,34),
+        then into the top-notch at (50,30).
+      Right side: mirrors exactly. From (50,30) down the right bump crest
+        (86,34), sweeping down to (82,60), then back down to (50,90).
+
+    The top notch at (50,30) is the inward dip between the two bumps.
+    Bottom cusp is sharp — cubic bezier control points converge tightly.
+  -->
+  <path fill="currentColor" d="
+    M 50,90
+    C 46,86 8,62 8,38
+    C 8,20 20,10 32,10
+    C 40,10 47,14 50,20
+    C 53,14 60,10 68,10
+    C 80,10 92,20 92,38
+    C 92,62 54,86 50,90
+    Z
+  "/>
+</svg>
