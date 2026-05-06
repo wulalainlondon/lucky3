@@ -2011,14 +2011,33 @@
             if (key === 'cardRankScale' || key === 'cardSuitScale') { _syncBoardScaleCache = ''; syncBoardScale(); }
         }
 
+        function detectFaceThemeCapabilities() {
+            const caps = {
+                filter:         CSS.supports('filter', 'drop-shadow(0 0 1px black)'),
+                backdropFilter: CSS.supports('backdrop-filter', 'blur(1px)') || CSS.supports('-webkit-backdrop-filter', 'blur(1px)'),
+                mixBlend:       CSS.supports('mix-blend-mode', 'multiply'),
+                oklch:          CSS.supports('color', 'oklch(0 0 0)'),
+                highDPR:        window.devicePixelRatio >= 2,
+            };
+            const tier = (caps.filter && caps.mixBlend) ? 'full'
+                       : caps.filter                    ? 'lite'
+                       :                                  'fallback';
+            window.__faceThemeTier = tier;
+            document.documentElement.dataset.faceThemeTier = tier;
+            return tier;
+        }
+
+        function switchCosmeticsSubTab(subIdx) {
+            document.querySelectorAll('.cosmetics-sub-btn').forEach((b, i) => b.classList.toggle('active', i === subIdx));
+            document.querySelectorAll('.cosmetics-sub-pane').forEach((p, i) => p.classList.toggle('active', i === subIdx));
+            if (subIdx === 0) { preloadCardbackImages(); renderCardBackGrid(); }
+            if (subIdx === 1) renderEffectThemeGrid();
+        }
+
         function switchSettingsTab(idx) {
             document.querySelectorAll('.settings-tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
             document.querySelectorAll('.settings-tab-pane').forEach((p, i) => p.classList.toggle('active', i === idx));
-            if (idx === 3) {
-                preloadCardbackImages();
-                renderCardBackGrid();
-            }
-            if (idx === 4) renderEffectThemeGrid();
+            if (idx === 3) switchCosmeticsSubTab(0);
         }
 
         function toggleSettings(show) {
@@ -3810,6 +3829,7 @@
             migrateCardBackInventory();
             migrateEquippedToV2();
             migrateEffectAutoReset();
+            detectFaceThemeCapabilities();
             const el = document.getElementById('home-screen');
             if (!el) return;
             togglePause(false);

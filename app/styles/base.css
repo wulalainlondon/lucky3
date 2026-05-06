@@ -42,6 +42,18 @@
             --mii-text-color: #fff;
             --mii-text-border: rgba(255, 255, 255, 0.4);
             --mii-text-bg: rgba(16, 18, 20, 0.88);
+            /* P3 Face Theme Geometry Tokens */
+            --face-bg:            linear-gradient(160deg, #fffef7 0%, #f8f4e8 100%);
+            --face-fg:            #111111;
+            --face-red:           #c0392b;
+            --face-border-color:  #d4c9a8;
+            --face-border-width:  1px;
+            --face-border-radius: 6px;
+            --face-shadow:        0 3px 8px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.8);
+            --face-corner-inset:  4px;
+            --face-rank-size:     0.85rem;
+            --face-suit-size:     0.65rem;
+            --face-center-size:   2.8rem;
         }
 
         body, button, input, select, textarea {
@@ -252,17 +264,17 @@
             height: var(--card-h);
             max-width: var(--card-w);
             max-height: var(--card-h);
-            background: linear-gradient(160deg, #fffef7 0%, #f8f4e8 100%);
-            border-radius: 6px;
-            color: black;
+            background: var(--face-bg);
+            border-radius: var(--face-border-radius);
+            color: var(--face-fg);
             position: relative;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.8);
+            box-shadow: var(--face-shadow);
             transition: transform calc(0.25s * var(--anim-scale)) cubic-bezier(0.18, 0.89, 0.32, 1.28);
             display: flex;
             flex-direction: column;
             padding: 6px;
             box-sizing: border-box;
-            border: 1px solid #d4c9a8;
+            border: var(--face-border-width) solid var(--face-border-color);
             margin-bottom: var(--fixed-gap);
         }
 
@@ -300,7 +312,7 @@
 
         .card-rank {
             font-family: 'Cinzel', 'Noto Sans Symbols2', 'Segoe UI Symbol', serif;
-            font-size: calc(0.85rem * var(--card-rank-scale));
+            font-size: calc(var(--face-rank-size) * var(--card-rank-scale));
             font-weight: 900;
             line-height: 1;
         }
@@ -316,7 +328,7 @@
             top: 8px;
             right: 7.5px;
             font-family: 'Cinzel', 'Noto Sans Symbols2', 'Segoe UI Symbol', serif;
-            font-size: calc(0.65rem * var(--card-suit-scale));
+            font-size: calc(var(--face-suit-size) * var(--card-suit-scale));
             line-height: 1.1;
             font-weight: 900;
         }
@@ -340,7 +352,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             font-family: 'Cinzel', 'Noto Sans Symbols2', 'Segoe UI Symbol', serif;
-            font-size: calc(2.8rem * var(--card-suit-scale));
+            font-size: calc(var(--face-center-size) * var(--card-suit-scale));
             line-height: 1;
             z-index: 1;
         }
@@ -645,7 +657,7 @@
         }
 
         .card.red {
-            color: #c0392b;
+            color: var(--face-red);
         }
 
         .card.is-fading {
@@ -6330,3 +6342,49 @@ body.imperial-quake { animation: quake-anim 0.85s ease-out; }
 .et-buyable      { background: rgba(80,180,255,0.15); color: #7ecfff; border: 1px solid rgba(80,180,255,0.4); }
 .et-unaffordable { background: rgba(120,120,120,0.15); color: #888; border: 1px solid rgba(120,120,120,0.3); }
 .et-free         { background: rgba(255,255,255,0.06); color: #aaa;  border: 1px solid rgba(255,255,255,0.15); }
+
+/* ── P3 Sprint A: Face Theme Capability Tiers ──────── */
+[data-face-theme-tier="lite"] .face-texture-layer { opacity: 0.4; }
+[data-face-theme-tier="fallback"] .face-texture-layer,
+[data-face-theme-tier="fallback"] .face-effect-layer { display: none; }
+
+/* ── P3 Sprint A: Cosmetics Super-Tab ─────────────── */
+.cosmetics-sub-tabs {
+    display: flex;
+    gap: 2px;
+    padding: 8px 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 2px;
+}
+.cosmetics-sub-btn {
+    flex: 1;
+    padding: 7px 4px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.78rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    letter-spacing: 0.02em;
+}
+.cosmetics-sub-btn.active {
+    color: #ffd700;
+    border-bottom-color: #ffd700;
+}
+.cosmetics-sub-btn.cosmetics-sub-disabled {
+    opacity: 0.32;
+    cursor: default;
+}
+.cosmetics-sub-pane { display: none; }
+.cosmetics-sub-pane.active { display: block; }
+.face-theme-coming-soon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
+    color: rgba(255,255,255,0.3);
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+}

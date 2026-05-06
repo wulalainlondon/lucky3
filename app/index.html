@@ -89,10 +89,9 @@
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(0)" data-i18n="settings.tab_audio">🔊 Audio</button>
                 <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab(1)" data-i18n="settings.tab_visual">🎴 Visual</button>
                 <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(2)" data-i18n="settings.tab_play">🎮 Play</button>
-                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(3)" data-i18n="settings.tab_cardback">Cards</button>
-                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(4)" data-i18n="settings.tab_effects">✨ FX</button>
-                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(5)" data-i18n="settings.tab_profile">🌐 Profile</button>
-                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(6)" data-i18n="settings.tab_about">About</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(3)" data-i18n="settings.tab_cosmetics">🎨 Style</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(4)" data-i18n="settings.tab_profile">🌐 Profile</button>
+                <button type="button" class="settings-tab-btn" onclick="switchSettingsTab(5)" data-i18n="settings.tab_about">About</button>
             </div>
 
             <div class="settings-body">
@@ -199,18 +198,26 @@
                 <button type="button" class="settings-restart" onclick="resetGameFromSettings()" data-i18n="settings.restart_game">Restart Game</button>
             </div>
 
-            <!-- Tab 3: 牌背收藏 -->
+            <!-- Tab 3: 外觀（牌背 / 特效 / 牌面） -->
             <div class="settings-tab-pane" id="stab-3">
-                <div class="cb-grid" id="cb-grid"></div>
+                <div class="cosmetics-sub-tabs">
+                    <button class="cosmetics-sub-btn active" onclick="switchCosmeticsSubTab(0)" data-i18n="settings.sub_cardback">牌背</button>
+                    <button class="cosmetics-sub-btn" onclick="switchCosmeticsSubTab(1)" data-i18n="settings.sub_effects">特效</button>
+                    <button class="cosmetics-sub-btn cosmetics-sub-disabled" onclick="switchCosmeticsSubTab(2)" data-i18n="settings.sub_face">牌面</button>
+                </div>
+                <div class="cosmetics-sub-pane active" id="cosm-0">
+                    <div class="cb-grid" id="cb-grid"></div>
+                </div>
+                <div class="cosmetics-sub-pane" id="cosm-1">
+                    <div class="et-grid" id="et-grid"></div>
+                </div>
+                <div class="cosmetics-sub-pane" id="cosm-2">
+                    <div class="face-theme-coming-soon" data-i18n="settings.face_coming_soon">牌面主題即將推出</div>
+                </div>
             </div>
 
-            <!-- Tab 4: 特效主題 -->
+            <!-- Tab 4: 個人化 -->
             <div class="settings-tab-pane" id="stab-4">
-                <div class="et-grid" id="et-grid"></div>
-            </div>
-
-            <!-- Tab 5: 個人化 -->
-            <div class="settings-tab-pane" id="stab-5">
                 <div class="setting-row">
                     <div class="setting-label" data-i18n="settings.language">Language</div>
                     <select id="setting-language" class="setting-control">
@@ -244,8 +251,8 @@
                 </div>
             </div>
 
-            <!-- Tab 6: 關於 -->
-            <div class="settings-tab-pane" id="stab-6">
+            <!-- Tab 5: 關於 -->
+            <div class="settings-tab-pane" id="stab-5">
                 <div class="about-section">
                     <div class="about-section-title" data-i18n="about.mystery_title">The Math Secret</div>
                     <p class="about-section-body" data-i18n="about.mystery_body"></p>
